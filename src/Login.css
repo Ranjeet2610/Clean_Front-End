@@ -1,0 +1,14 @@
+.bg_login{
+    background-image: url("../src/images/BackGround_Login_copy.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.logo{
+    background-image: url("../src/images/BackGround_Login_copy.jpg");
+    border-radius: 10px;
+}
+.casinobg{
+    background-image: url("./images/livegame.jpg");
+
+}

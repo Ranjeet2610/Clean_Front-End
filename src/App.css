@@ -1,0 +1,25 @@
+.logocolor {
+  color: white !important;
+}
+
+.matchodds {
+  margin-top: -51% !important;
+  margin-left: -8% !important;
+  padding: 8%;
+}
+
+
+
+.matchBox {
+  margin-left: 51% !important;
+    margin-top: 9% !important;
+}
+.modal-dialog .modal-content label{
+  color: #000 !important;
+}
+.modal .blue_button{
+  margin-right: 10px;
+}
+.panel-body ul li a{
+  cursor: pointer;
+}

@@ -1,0 +1,33 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+.modal {
+    background-color: rgba(0,0,0,0.75);
+}
+.modal-dialog {
+    position: absolute;
+    left: 50%;
+    top:40%;
+    transform: translate(-50%,-50%) !important;
+}
+.modalWrapper{
+    /* background: #fff; */
+    width:80%;
+    max-width: 500px;
+    margin: 4rem auto;
+    /* padding: 5rem auto; */
+    transition: all 1s ease;
+}
+
+.modalBody{
+    padding: 1.5rem 1rem;
+    border: 10px solid #fff;
+    color:white;
+    background: rgb(172, 5, 5);
+}
