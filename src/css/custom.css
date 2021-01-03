@@ -1350,3 +1350,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding:5px;
   padding-left:10px;
 }
+
+@media only screen and (max-width : 991px) {
+  .mobileBetBox{
+    display: block;
+  }
+  .desktopBetBox{
+    display: none;
+  }
+}
+@media only screen and (min-width : 992px) {
+  .mobileBetBox{
+    display: none;
+  }
+  .desktopBetBox{
+    display: block;
+  }
+}

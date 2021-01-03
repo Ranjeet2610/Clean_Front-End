@@ -194,7 +194,7 @@ export default class Liveevents extends Component {
                                     <input type="checkbox" name={item.eventId} checked={this.state.checkedItems.get(item.eventId)} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
                                   </td>
                                   <td className="text-center red">
-                                    <Link to="#" role="button" name={item.eventName} id={item.eventId} onClick={(e) => this.addInitialOdds(e)} data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false">Add Initial Odds</Link> |&nbsp; 
+                                    <Link role="button" name={item.eventName} id={item.eventId} onClick={(e) => this.addInitialOdds(e)} data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false">Add Initial Odds</Link> |&nbsp; 
                                     <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link> |&nbsp;
                                     <Link to={'/eventfancyodds/' + item.eventId}>Fancy Odds</Link>
                                   </td>
