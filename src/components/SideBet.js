@@ -234,7 +234,7 @@ export default class SideBet extends Component {
 
   StaKeAmount=(val,ods,type)=>{
     document.getElementById('stakeValue').value = val
-    if(this.props.betData.betType !=undefined){
+    if(this.props.betData.betType !== undefined){
       if(type=='Back'){
         this.setState({
           profit:Math.round(val),

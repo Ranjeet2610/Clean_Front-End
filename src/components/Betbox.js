@@ -84,7 +84,7 @@ export default class BetBox extends Component {
           },5000);
         }
         else{
-          if(this.props.betData.betType !=undefined){
+          if(this.props.betData.betType !== undefined){
             const obj = {
               userName:JSON.parse(localStorage.getItem('data')).userName,
               description:localStorage.getItem('matchname'),
@@ -234,8 +234,8 @@ export default class BetBox extends Component {
         this.props.handleInput(e.target.value);
       }
 
-    StaKeAmount = (val, ods, type) => {
-        document.getElementById('stakeValue').value = val
+    StaKeAmount = (val, ods, type, index) => {
+      document.getElementsByClassName("stake-input")[index].value = val
         if (this.props.betData.betType != undefined) {
             if (type == 'Back') {
                 this.setState({
@@ -351,7 +351,7 @@ export default class BetBox extends Component {
         }
     }
     ClearAllSelection = () => {
-        document.getElementById('stakeValue').value = 0;
+        document.getElementsByClassName("stake-input")[this.props.index].value = 0;
         let dval = 0.0;
         this.setState({
             profit: dval,
@@ -360,11 +360,11 @@ export default class BetBox extends Component {
         });
     }
     closeWindow = () =>{
-        document.getElementById('stakeValue').value=0
+        document.getElementsByClassName("stake-input")[this.props.index].value = 0
+        //document.getElementById('stakeValue').value=0
         this.props.handleRemove("none");
       }
     render() {
-        //console.log(this.props);
         let ods = 0;
         let runnerName = '';
         let type = '';
@@ -411,7 +411,7 @@ export default class BetBox extends Component {
                             <div className="item form-group" id=" ">
                                 <span className="stake_label">Stake</span>
                                 <div className="stack_input_field numbers-row">
-                                    <input type="number" pattern="[0-9]*" step={1} id="stakeValue" name="stack" ref={(input) => { this.stackInput = input }} onChange={this.handleChange} defaultValue={0} min="0" className="calProfitLoss stake-input form-control  CommanBtn" />
+                                    <input type="number" pattern="[0-9]*" step={1} name="stack" ref={(input) => { this.stackInput = input }} onChange={this.handleChange} defaultValue={0} min="0" className="calProfitLoss stake-input form-control CommanBtn" />
                                     <input type="hidden" name="selectionId" id="selectionId" ref={(input) => { this.selectionIdInput = input }} value={selectionId} defaultValue className="form-control" />
                                     <input type="hidden" name="runnerName" id="runnerName" ref={(input) => { this.runnerNameInput = input }} value={runnerName} defaultValue className="form-control" />
                                     <input type="hidden" name="matchId" id="matchId" ref={(input) => { this.matchIdInput = input }} defaultValue className="form-control" />
@@ -427,7 +427,7 @@ export default class BetBox extends Component {
                             {
                                 this.state.chipStake.map((item) => {
                                     return (
-                                        <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={() => this.StaKeAmount(item, ods, type)}>{item}</button>
+                                        <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={() => this.StaKeAmount(item, ods, type, this.props.index)}>{item}</button>
                                     )
                                 })
                             }

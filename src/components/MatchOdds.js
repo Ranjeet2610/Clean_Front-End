@@ -108,7 +108,13 @@ export default class MatchOdds extends Component {
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
       if (width <= 991) {
         displayTest = [...this.state.display];
-        displayTest[index] = "block";
+        displayTest.forEach((item, i) => {
+          if (i === index) {
+            displayTest[index] = "block";
+          } else {
+            displayTest[i] = "none";
+          }
+        });
       } else {
         displayTest = "block";
       }
@@ -232,7 +238,7 @@ export default class MatchOdds extends Component {
     if (index !== 'desktop') {
       displayTest = this.state.display;
       displayTest[index] = style;
-    }else{
+    } else {
       displayTest = style;
     }
 
@@ -479,6 +485,7 @@ export default class MatchOdds extends Component {
                                         <td colSpan="7">
                                           <div className="mobileBetBox">
                                             <BetBox stake={0}
+                                              index={index}
                                               betData={this.state.betData}
                                               betProfit={this.state.betProfit}
                                               handleRemove={(style, num) => {
