@@ -112,13 +112,15 @@ export default class SideBet extends Component {
        
     e.preventDefault();
     if(this.stackInput.value < 99 || this.stackInput.value > 49999 ){
-      this.props.handleBetPlaceBox("Choose Stack...",'red','e')
+      // this.props.handleBetPlaceBox("Choose Stack...",'red','e')
+      this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       setTimeout(()=>{
         window.location.reload();     
       },5000);
     }
     else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
-      this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
+      // this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
+      this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
       setTimeout(()=>{
         window.location.reload();     
       },5000);
@@ -148,7 +150,8 @@ export default class SideBet extends Component {
           }
           this.users.getMyprofile(obj1,data=>{
             localStorage.setItem('data',JSON.stringify(data.data));
-            this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+            // this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+            this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
             setTimeout(()=>{
               window.location.reload();     
             },5000);
@@ -191,7 +194,8 @@ export default class SideBet extends Component {
                 userid:JSON.parse(localStorage.getItem('data')).id
               }
               this.users.getUserExposure(obj3,expodata=>{
-                this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+                // this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                 setTimeout(()=>{
                   window.location.reload();     
                 },5000);

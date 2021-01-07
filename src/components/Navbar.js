@@ -265,9 +265,10 @@ componentDidMount(){
       password: JSON.parse(localStorage.getItem('data')).passwordString
     };
     this.users.login(user,data=>{
-      localStorage.setItem('data', JSON.stringify(data.data.data));
+      // localStorage.setItem('data', JSON.stringify(data.data.data));
       this.setState({
-        balance:data.data.data.walletBalance
+        // balance:data.data.data.walletBalance
+        balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
       })
     })
   }

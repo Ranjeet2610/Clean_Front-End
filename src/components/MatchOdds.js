@@ -8,6 +8,8 @@ import Service from "../Services/Service";
 import LiveEvents from "../Services/livevents";
 import Footer from "./footer";
 import BetBox from "./Betbox";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 
 export default class MatchOdds extends Component {
   constructor(props) {
@@ -253,10 +255,24 @@ export default class MatchOdds extends Component {
   handleBetPlaceBox = (notfyMsg, bgColor, notfyStatus) => {
     this.setState({
       notifyMsg: notfyMsg,
-      display_status: 'block',
-      bgColor: bgColor,
+      // display_status: 'block',
+      // bgColor: bgColor,
       notifyStatus: notfyStatus
     })
+    switch (notfyStatus) {
+      // case 'info':
+      //   NotificationManager.info('Info message');
+      //   break;
+      case 'success':
+        NotificationManager.success(notfyMsg);
+        break;
+      // case 'warning':
+      //   NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+      //   break;
+      case 'error':
+        NotificationManager.error(notfyMsg);
+        break;
+    }
   }
 
   getProfitandLoss = async (profit, loss, status) => {
@@ -283,6 +299,7 @@ export default class MatchOdds extends Component {
       <div>
         <Navbar />
         <Sidebar />
+        <NotificationContainer/>
         <div className="forModal" />
         <div class="container body">
           <div class="main_container" id="sticky">
@@ -291,15 +308,16 @@ export default class MatchOdds extends Component {
               ////////////////// NOTIFICATION BOX ////////////////////////////////
             }
 
-            <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.display_status, backgroundColor: this.state.bgColor/*"#d63031"*/ }}>
-              <div className="error-head" style={{ padding: "3px 0" }}>
-                {this.state.notifyStatus === "s" ? <h2>SUCCESS</h2> : <h2>ERROR</h2>}
-              </div>
-              <div className="error-mess" style={{ padding: "5px 0" }}>
-                <h6>{this.state.notifyMsg}</h6>
-              </div>
-            </div>
-
+            {
+            //   <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.display_status, backgroundColor: this.state.bgColor/*"#d63031"*/ }}>
+            //   <div className="error-head" style={{ padding: "3px 0" }}>
+            //     {this.state.notifyStatus === "s" ? <h2>SUCCESS</h2> : <h2>ERROR</h2>}
+            //   </div>
+            //   <div className="error-mess" style={{ padding: "5px 0" }}>
+            //     <h6>{this.state.notifyMsg}</h6>
+            //   </div>
+            // </div>
+}
             <div class="right_col" role="main">
               <div class="fullrow tile_count">
                 <div className="col-md-8">
