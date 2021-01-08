@@ -111,7 +111,7 @@ export default class SideBet extends Component {
     device = 3;
        
     e.preventDefault();
-    if(this.stackInput.value < 99 || this.stackInput.value > 49999 ){
+    if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
       // this.props.handleBetPlaceBox("Choose Stack...",'red','e')
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       setTimeout(()=>{

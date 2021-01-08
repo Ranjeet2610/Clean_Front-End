@@ -10,11 +10,14 @@ import Footer from "./footer";
 import BetBox from "./Betbox";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
+import Sound from "../images/Recording.mp3";
+import Loader from 'react-loader-spinner'
 
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       avilBlack: [
         {
           price: 0,
@@ -177,6 +180,9 @@ export default class MatchOdds extends Component {
   componentDidMount() {
     var service = new Service();
     var livevents = new LiveEvents();
+    this.setState({
+      load:true
+    })
     this.interval = setInterval(() => {
       service.getListMarketType(this.props.match.params.id, (data) => {
         this.setState({
@@ -195,6 +201,10 @@ export default class MatchOdds extends Component {
         // console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",data);
       })
     }, 1000);
+    
+    this.setState({
+      load:false
+    })
 
     let countDownDate = new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime();
     var myfunc = setInterval(() => {
@@ -256,21 +266,17 @@ export default class MatchOdds extends Component {
     this.setState({
       notifyMsg: notfyMsg,
       // display_status: 'block',
-      // bgColor: bgColor,
+      bgColor: bgColor,
       notifyStatus: notfyStatus
     })
     switch (notfyStatus) {
-      // case 'info':
-      //   NotificationManager.info('Info message');
-      //   break;
       case 'success':
-        NotificationManager.success(notfyMsg);
+        NotificationManager.success(notfyMsg,"Success");
+        const audioEl = document.getElementsByClassName("audio_element")[0]
+        audioEl.play()
         break;
-      // case 'warning':
-      //   NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
-      //   break;
       case 'error':
-        NotificationManager.error(notfyMsg);
+        NotificationManager.error(notfyMsg,"Error");
         break;
     }
   }
@@ -300,8 +306,17 @@ export default class MatchOdds extends Component {
         <Navbar />
         <Sidebar />
         <NotificationContainer/>
+        <audio className="audio_element">
+          <source src={Sound} />
+        </audio>
         <div className="forModal" />
-        <div class="container body">
+        {
+          this.state.load ? 
+          <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div>:
+        <div>
+          <div class="container body">
           <div class="main_container" id="sticky">
 
             {
@@ -832,6 +847,8 @@ export default class MatchOdds extends Component {
             </div>
           </div>
         </div>
+        </div>
+        }
       </div>
     );
   }

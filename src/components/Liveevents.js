@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
+import Loader from 'react-loader-spinner'
 import Navbar from './Navbar';
 import Livevents from '../Services/livevents';
 import Footer from './footer'
@@ -9,6 +10,7 @@ export default class Liveevents extends Component {
   constructor(props){
     super(props);
     this.state = {
+      load:false,
       tableHead:["S.No.","Event_Id","Event_Name","Event_Date","Status","Action"],
       notifyMsg:'',
       msgBox:'none',
@@ -45,12 +47,16 @@ export default class Liveevents extends Component {
       }));
      });
     this.setState({
-      resdata:allEvents
+      resdata:allEvents,
+      load: false
     })
   });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.setState({
+      load: true
+    })
   this.events.getLiveEvents('',data=>{
     let allEvents = data.data;
     let isEventlive = allEvents.map(item => {
@@ -59,7 +65,8 @@ export default class Liveevents extends Component {
       }));
     });
     this.setState({
-      resdata:allEvents
+      resdata:allEvents,
+      load: false
     })
   });
   }
@@ -89,16 +96,25 @@ export default class Liveevents extends Component {
   });
   }
 
-  addmarketevents = () => {
+  addmarketevents = async() => {
+    await this.setState({
+      load:true
+    })
   this.events.storeLiveEvents({},data=>{
     this.setState({
       notifyMsg: "Market Events Added Successfully.",
-      msgBox: "block",
+      msgBox: "block"
     });
+    this.reloadData()
     setTimeout(() => {
-      window.location.reload();
+      this.setState({
+        msgBox:'none'
+      })
     }, 3000);
   });
+  // this.setState({
+  //   load:false
+  // })
   }
 
   handleSubmit = (event) => {
@@ -127,6 +143,12 @@ export default class Liveevents extends Component {
   render(){
     return (
       <div>
+    {
+      this.state.load ?
+      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+          <Loader type="Grid" color="#6c1945" height={100} width={100} />
+      </div> :
+      <div>
         <Navbar />
         <div className="forModal" />  
         <div className="container body">
@@ -136,6 +158,7 @@ export default class Liveevents extends Component {
   ///////////////////////////////////// NOTIFY MSG BOX /////////////////////////////////////////
 }
 
+           {
             <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "2%", zIndex: "100", display:this.state.msgBox, backgroundColor: "green" }} >
               <div className="error-head" style={{ padding: "3px 0" }}>
                 <h2>SUCCESS</h2>
@@ -144,6 +167,7 @@ export default class Liveevents extends Component {
                 <h6>{this.state.notifyMsg}</h6>
               </div>
             </div>
+            }
 
 {
   /////////////////////////////////// TITLE LIVEEVENTS //////////////////////////////////////////////
@@ -263,6 +287,8 @@ export default class Liveevents extends Component {
           </div>
         </div>  
         <Footer/>     
+      </div>
+    }
       </div>
     )
   }
