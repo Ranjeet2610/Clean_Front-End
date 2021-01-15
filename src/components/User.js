@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Users from "../Services/users";
@@ -9,6 +10,7 @@ export default class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       tableHead: ["S.No", "User_ID", "Website", "Master", "Winnings", "Credit_Limits", "Exposure", "Balance", "M.comm", "S.comm", "View More"],
       Cpwd: '',
       msgBox: 'none',
@@ -83,6 +85,9 @@ export default class User extends Component {
 
   componentDidMount() {
     if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
+      this.setState({
+        load:true
+      })
       this.users.getUsersforMaster(this.props.match.params.username, (data) => {
         this.setState({
           data: data.data,
@@ -91,7 +96,8 @@ export default class User extends Component {
         let totalBalance = 0;
         this.state.data.map((ele) => totalBalance += ele.walletBalance);
         this.setState({
-          totalBalance
+          totalBalance,
+        load:false
         });
       });
       const obj = {
@@ -104,6 +110,9 @@ export default class User extends Component {
       });
     }
     else {
+      this.setState({
+        load:true
+      })
       this.users.getAllusers((data) => {
         this.setState({
           data: data.data,
@@ -112,7 +121,8 @@ export default class User extends Component {
         let totalBalance = 0;
         this.state.data.map((ele) => totalBalance += ele.walletBalance);
         this.setState({
-          totalBalance
+          totalBalance,
+          load:false
         });
       });
     }
@@ -509,6 +519,11 @@ export default class User extends Component {
         <Navbar />
         <Sidebar />
         <div className="forModal" />
+      {
+        this.state.load ?
+        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -520,15 +535,14 @@ export default class User extends Component {
             {
               ////////////////////////////////////// NOTIFY BOX /////////////////////////////////
             }
-
-            <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" /*"#d63031"*/, }} >
+            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green"}} >
               <div className="error-head" style={{ padding: "3px 0" }}>
                 <h2>SUCCESS</h2>
               </div>
               <div className="error-mess" style={{ padding: "5px 0" }}>
                 <h6>{this.state.notifyMsg}</h6>
               </div>
-            </div>
+            </div> */}
 
             {
               ////////////////////////////////////// USER HEADER /////////////////////////////////
@@ -647,7 +661,7 @@ export default class User extends Component {
               </div>
 
               {
-                ////////////////////////////////////// TABLE FOR CHANGE PASSWORD /////////////////////////////////
+                ////////////////////////////////////// TABLE FOR USER /////////////////////////////////
               }
 
               <div className="clearfix" />
@@ -1019,6 +1033,7 @@ export default class User extends Component {
             </div>
           </div>
         </div>
+      }  
         <Footer />
       </div>
     );

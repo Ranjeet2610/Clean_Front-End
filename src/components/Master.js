@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from 'react-loader-spinner';
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -10,6 +11,7 @@ export default class Master extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       tableHead: ["S.No.", "User_ID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Partnership", "Partnership_Cacino", "Partnership_TeenPatti", "M.comm", "S.comm", "View More"],
       msgBox: 'none',
       Cpwd: '',
@@ -67,12 +69,16 @@ export default class Master extends Component {
 
   componentDidMount() {
     if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
+      this.setState({
+        load:true
+      })
       const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
       this.users.getmasterforSupermaster(obj, (data) => {
         this.setState({
           data: data.data,
           searchFilter: data.data,
           walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+          load:false
         });
         let totalBalance = 0;
         this.state.data.map((ele) => {
@@ -82,11 +88,15 @@ export default class Master extends Component {
       })
     }
     else {
+      this.setState({
+        load:true
+      })
       this.users.getMastersforAdmin((data) => {
         this.setState({
           data: data.data,
           searchFilter: data.data,
           walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+          load:false
         });
         let totalBalance = 0;
         this.state.data.map((ele) => {
@@ -629,6 +639,11 @@ export default class Master extends Component {
         <Navbar />
         <Sidebar />
         <div className="forModal" />
+      {
+        this.state.load ?
+        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -641,14 +656,14 @@ export default class Master extends Component {
               ///////////////////////////// NOTIFY MESSAGE BOX ////////////////////////////////////////////////////////
             }
 
-            <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
+            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
               <div className="error-head" style={{ padding: "3px 0" }}>
                 <h2>SUCCESS</h2>
               </div>
               <div className="error-mess" style={{ padding: "5px 0" }}>
                 <h6>{this.state.notifyMsg}</h6>
               </div>
-            </div>
+            </div> */}
 
             {
               ///////////////////////////////// TITLE OF MASTER LISTING /////////////////////////////////////////////////
@@ -1195,6 +1210,7 @@ export default class Master extends Component {
             </div>
           </div>
         </div>
+       }  
         <Footer />
       </div>
     );

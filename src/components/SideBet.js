@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Pagination from './Pagination'
 import Service from '../Services/Service';
 import Users from '../Services/users'
 import {Link} from 'react-router-dom'
@@ -7,6 +8,9 @@ export default class SideBet extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        currentPage:1,
+        postsPerPage:10,
+        load:false,
         tableHead:["No.","Runner","Client","Odds","Stack","Bet Type","P&L","Time","ID","IP"],
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
@@ -30,6 +34,8 @@ export default class SideBet extends Component {
   }
 
   handleChange=(e)=>{
+    let teamSelection = this.props.betData.pData.runnerName;
+    let teamBetType = this.state.betData.type;
     e.preventDefault();
     let odds = this.state.betData.odds-1;
     if(this.state.betData.type === 'Back'){
@@ -96,6 +102,11 @@ export default class SideBet extends Component {
         });
       }
     }
+     /*14Jan sachin */
+     setTimeout(()=> {
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,"true");
+    }, 500)
+    /*14Jan sachin */
     if(this.props.betData.betType ==undefined)
     this.props.handleInput(e.target.value);
   }
@@ -237,6 +248,7 @@ export default class SideBet extends Component {
   }
 
   StaKeAmount=(val,ods,type)=>{
+    let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
       if(type=='Back'){
@@ -244,16 +256,16 @@ export default class SideBet extends Component {
           profit:Math.round(val),
           loss:val?val:0.0
         })
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
       }
       else{
         this.setState({
           profit:Math.round(val),
           loss:val?val:0.0
         })
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
       }
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
     }
     else{
       let odds = ods-1;
@@ -262,7 +274,7 @@ export default class SideBet extends Component {
           profit:(odds*val).toFixed(2),
           loss:val?val:0.0
         },()=>{
-          this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
@@ -296,7 +308,7 @@ export default class SideBet extends Component {
           profit:val,
           loss:(odds*val).toFixed(2)
         },()=>{
-          this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.runnderData.map(item=>{
@@ -325,7 +337,7 @@ export default class SideBet extends Component {
           });
         }
       }
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,"true");
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
       this.props.handleInput(val);
     }
   }
@@ -367,6 +379,12 @@ export default class SideBet extends Component {
     clearInterval(this.interval);
   }
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
   //this is called to before render method
 
   componentWillReceiveProps(nextProps){ 
@@ -400,6 +418,9 @@ export default class SideBet extends Component {
       loss:dval,
       display: 'none'
     });
+    let teamSelection = this.props.betData.pData.runnerName;
+    let type = this.props.betData.betType;
+    this.props.getProfitandLoss(dval, dval,teamSelection,type,"true");
   }
 
   handleSubmit=(event)=> {
@@ -429,6 +450,10 @@ export default class SideBet extends Component {
     if(this.props.setdisplay=='block'){
       display = {display:'block'};
     }
+
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div className="col-md-4 col-xs-12">
@@ -601,7 +626,7 @@ export default class SideBet extends Component {
                       <tbody>
                       {
                         this.state.betHistroy.length>0 &&
-                          this.state.betHistroy.map((item,index)=>{
+                          currentPosts.map((item,index)=>{
                             return(
                               <tr>
                                 <td>{index+1}</td>
@@ -619,6 +644,13 @@ export default class SideBet extends Component {
                           })
                       }
                       </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colSpan={16}>
+                              <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                          </td>  
+                        </tr>  
+                      </tfoot>    
                     </table>
                   </div>
                 </div>

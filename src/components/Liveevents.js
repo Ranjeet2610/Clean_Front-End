@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Loader from 'react-loader-spinner'
 import Navbar from './Navbar';
@@ -96,25 +97,22 @@ export default class Liveevents extends Component {
   });
   }
 
-  addmarketevents = async() => {
-    await this.setState({
-      load:true
-    })
+  addmarketevents = () => {
+    // await this.setState({
+    //   load:true
+    // })
   this.events.storeLiveEvents({},data=>{
     this.setState({
       notifyMsg: "Market Events Added Successfully.",
       msgBox: "block"
     });
+    switch ('success') {
+      case 'success':
+        NotificationManager.success(this.state.notifyMsg,"Success");
+        break;
+    }
     this.reloadData()
-    setTimeout(() => {
-      this.setState({
-        msgBox:'none'
-      })
-    }, 3000);
   });
-  // this.setState({
-  //   load:false
-  // })
   }
 
   handleSubmit = (event) => {
@@ -143,13 +141,14 @@ export default class Liveevents extends Component {
   render(){
     return (
       <div>
+        <Navbar />
+        <NotificationContainer/>
     {
       this.state.load ?
       <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
           <Loader type="Grid" color="#6c1945" height={100} width={100} />
       </div> :
       <div>
-        <Navbar />
         <div className="forModal" />  
         <div className="container body">
           <div className="main_container" id="sticky" style={{width:'100%'}}>
@@ -159,14 +158,14 @@ export default class Liveevents extends Component {
 }
 
            {
-            <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "2%", zIndex: "100", display:this.state.msgBox, backgroundColor: "green" }} >
-              <div className="error-head" style={{ padding: "3px 0" }}>
-                <h2>SUCCESS</h2>
-              </div>
-              <div className="error-mess" style={{ padding: "5px 0" }}>
-                <h6>{this.state.notifyMsg}</h6>
-              </div>
-            </div>
+            // <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "2%", zIndex: "100", display:this.state.msgBox, backgroundColor: "green" }} >
+            //   <div className="error-head" style={{ padding: "3px 0" }}>
+            //     <h2>SUCCESS</h2>
+            //   </div>
+            //   <div className="error-mess" style={{ padding: "5px 0" }}>
+            //     <h6>{this.state.notifyMsg}</h6>
+            //   </div>
+            // </div>
             }
 
 {
