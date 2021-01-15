@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Account from '../Services/account';
@@ -8,6 +9,7 @@ export default class Cacstatement extends Component {
   constructor(props){
     super(props);
     this.state = {
+      load:false,
       tableHead:["S.No.","Date","Description","Credit","Debit","Balance"],
       filteredTab:["AllTransaction","FreeChips","Settlement","Profit&Loss","Statement"],
       resdata:'',
@@ -20,7 +22,10 @@ export default class Cacstatement extends Component {
 }
 
 getAccountStatement = () =>{
-  this.account.getuseraccountstatment(this.props.match.params.username,data=>{
+  this.setState({
+    load:true
+  })
+  this.account.getuseraccountstatment(this.props.match.params.username, data=>{
     let depositamount= data.data.data.depositTransaction;
     let withdrawamount = data.data.data.withdrawTransaction;
     let allTransaction = [...depositamount,...withdrawamount];
@@ -31,7 +36,8 @@ getAccountStatement = () =>{
     });
     this.setState({
       resdata:allTransaction,
-      newResData:allTransaction
+      newResData:allTransaction,
+      load:false
     })
   });
 }
@@ -134,7 +140,12 @@ render(){
         <div>
         <Navbar />
         <Sidebar />
-        <div className="forModal" />      
+        <div className="forModal" /> 
+      {
+        this.state.load ?
+        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
         <div className="container body">
           <div className="main_container" id="sticky">
             <div className="right_col" role="main">
@@ -217,6 +228,7 @@ render(){
             </div>
           </div>
         </div>
+      }  
         <Footer />
       </div>
     )

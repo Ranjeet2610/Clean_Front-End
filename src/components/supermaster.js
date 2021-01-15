@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Utilities from "./utilities";
@@ -10,6 +11,7 @@ export default class SuperMaster extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       tableHead: ["S.No.", "UserID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Partnership", "Partnership_Cacino", "Partnership_TeenPatti", "M.comm", "S.comm", "View More"],
       Cpwd: '',
       Npwd: '',
@@ -67,11 +69,15 @@ export default class SuperMaster extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      load:true
+    })
     this.users.getAllAdmin((data) => {
       this.setState({
         data: data.data,
         searchFilter: data.data,
         walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+        load:false
       });
       let totalBalance = 0;
       this.state.data.map((ele) => {
@@ -589,6 +595,11 @@ export default class SuperMaster extends Component {
         <Navbar />
         <Sidebar />
         <div className="forModal" />
+      {
+        this.state.load ?
+        <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -600,15 +611,14 @@ export default class SuperMaster extends Component {
             {
               ////////////////////////////////// NOTIFY MSG BOX //////////////////////////////////////////////////
             }
-
-            <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
+            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
               <div className="error-head" style={{ padding: "3px 0" }}>
                 <h2>SUCCESS</h2>
               </div>
               <div className="error-mess" style={{ padding: "5px 0" }}>
                 <h6>{this.state.notifyMsg}</h6>
               </div>
-            </div>
+            </div> */}
 
             <div className="right_col" role="main">
               <div className="col-md-12">
@@ -1145,6 +1155,7 @@ export default class SuperMaster extends Component {
             </div>
           </div>
         </div>
+      }
         <Footer />
       </div>
     );

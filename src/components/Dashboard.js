@@ -36,14 +36,19 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      load:true
+    })
     this.service.getdashboardData("2", (data) => {
       this.setState({
         tenisData: data,
+        load:false
       });
     });
     this.service.getdashboardData("1", (data) => {
       this.setState({
         soccerData: data,
+        load:false
       });
     });
 
@@ -58,6 +63,7 @@ class Dashboard extends Component {
           });
           this.setState({
             liveEvents: eveodds,
+            load:false
           });
         });
       });
@@ -78,15 +84,16 @@ class Dashboard extends Component {
   render() {
     return (
       <div>
+        {
+          this.state.load ?
+            <div className="bg_login" style={{opacity:'0.8', height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                <Loader type="Grid" color="#6c1945" height={100} width={100} />
+            </div> :
           <div>
           <Navbar />
           <Sidebar />
           <div className="forModal" />
-        {
-          this.state.load ?
-                    <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-                        <Loader type="Grid" color="#6c1945" height={100} width={100} />
-                    </div> :
+        
           <div className="container body">
             <div className="main_container" id="sticky">
               <div className="right_col" role="main">
@@ -292,8 +299,8 @@ class Dashboard extends Component {
               <Footer />
             </div>
           </div>
-        }
         </div>
+        }
       </div>
     );
   }

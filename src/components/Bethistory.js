@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
+import Pagination from './Pagination'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Service from '../Services/Service';
@@ -6,13 +8,15 @@ import Utilities from './utilities'
 import Footer from './footer'
 import {Link} from 'react-router-dom'
 
-
 export default class Bethistory extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
+      load:false,
       betHistoryTab:["All","Cricket","Tennis","Soccer","Teenpatti","Fancy"],
-      betHistoryTableHead:["S.No.","Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
+      betHistoryTableHead:["Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
       betHistory:[],
       from_date:'',
       to_date:'',
@@ -76,6 +80,9 @@ export default class Bethistory extends Component {
       from_date:this.state.currentDate,
       to_date:this.state.currentDate,
       searchTearm:""
+    }) 
+    this.setState({
+      load:true
     })
     this.getBetData();
   }
@@ -86,7 +93,8 @@ export default class Bethistory extends Component {
       var i = 0;
       this.setState({
         betHistory:data,
-        newResData:data
+        newResData:data,
+        load:false
       });             
     });
    }
@@ -95,7 +103,8 @@ export default class Bethistory extends Component {
       var i = 0;
       this.setState({
         betHistory:data,
-        newResData:data
+        newResData:data,
+        load:false
       });             
     }); 
    }
@@ -104,7 +113,8 @@ export default class Bethistory extends Component {
       var i = 0;
       this.setState({
         betHistory:data,
-        newResData:data
+        newResData:data,
+        load:false
       });             
     });
    }
@@ -113,7 +123,8 @@ export default class Bethistory extends Component {
       var i = 0;
       this.setState({
         betHistory:data,
-        newResData:data
+        newResData:data,
+        load:false
       });             
     });
    }
@@ -128,17 +139,36 @@ export default class Bethistory extends Component {
       from_date:this.state.currentDate,
       to_date:this.state.currentDate,
      }) 
+     this.setState({
+       load:true
+     })
      this.getBetData();
+  }
+
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
   }
 
   render(){
     let color= this.state.color;
     let device;
+
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentPosts = this.state.betHistory?.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
         <div>
           <Navbar />
           <Sidebar />
-          <div className="forModal" />      
+          <div className="forModal" />
+        {
+        this.state.load ?
+          <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+              <Loader type="Grid" color="#6c1945" height={100} width={100} />
+          </div> :
           <div className="container body">
             <div className="main_container" id="sticky">
               <div className="right_col" role="main">
@@ -225,7 +255,7 @@ export default class Bethistory extends Component {
                     </thead>  
                     <tbody>
                       {
-                        this.state.betHistory.map((item,index) => {  
+                        currentPosts.map((item,index) => {  
                           (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           if(item.device ==2){
                             device = (<i className="fa fa-mobile" aria-hidden="true"></i>); 
@@ -238,7 +268,7 @@ export default class Bethistory extends Component {
                            }
                           return(
                           <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
-                            <td className="text-center">{index+1}</td>
+                            {/* <td className="text-center">{index+1}</td> */}
                             <td className="text-center">{item.clientName}</td>
                             <td className="text-center">{JSON.parse(item.description).name}</td>
                             <td className="text-center">{item.selection}</td>
@@ -257,13 +287,21 @@ export default class Bethistory extends Component {
                           </tr>)
                           })
                       }
-                    </tbody>                              
+                    </tbody>    
+                    <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistory.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>                          
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        }
       <Footer />
       </div>
     )

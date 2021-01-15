@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 import {Link} from 'react-router-dom'
 import Navbar from './Navbar';
 import Users from '../Services/users';
@@ -9,6 +10,7 @@ export default class CloseUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       tableHead:["S.No.","User_ID","Website","Credit_Limit","Credit_given","Hyper","Super_Master","Balance","Partnership","M.comm","S.comm",""],
       tableHeadArray:["A","S","PL","I","P-R","P","D-W"],
       data: [],
@@ -18,9 +20,13 @@ export default class CloseUser extends Component {
   }
   componentDidMount() {
     if(this.userDetails.superAdmin){
+      this.setState({
+        load:true
+      })
     this.users.getCloseUser('getBlockAdmins',data=>{    
       this.setState({
-          data: data.data
+          data: data.data,
+          load:false
         })
       })
     }
@@ -28,9 +34,13 @@ export default class CloseUser extends Component {
       const obj = {
         adminName:this.userDetails.userName
       }
+      this.setState({
+        load:true
+      })
       this.users.getclosemasterforAdmin(obj,data=>{
         this.setState({
-          data: data.data
+          data: data.data,
+          load:false
         }) 
       })
     }
@@ -106,6 +116,11 @@ export default class CloseUser extends Component {
       <div>
         <Navbar />
         <div className="forModal" />
+        {
+          this.state.load ?
+          <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+              <Loader type="Grid" color="#6c1945" height={100} width={100} />
+          </div> :
         <div className="container body">
           <div className="main_container" id="sticky" style={{width:'100%'}}>
             <div className="ajax-call-hide">
@@ -293,6 +308,7 @@ export default class CloseUser extends Component {
             </div>
           </div>
         </div>
+        }
         <Footer/>
       </div>
     )
