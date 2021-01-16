@@ -86,7 +86,7 @@ class Dashboard extends Component {
       <div>
         {
           this.state.load ?
-            <div className="bg_login" style={{opacity:'0.8', height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+            <div style={{opacity:'0.8', height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
                 <Loader type="Grid" color="#6c1945" height={100} width={100} />
             </div> :
           <div>
