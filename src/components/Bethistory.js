@@ -67,12 +67,10 @@ export default class Bethistory extends Component {
     }
   }
 
-  handleChange = (event,type) => {
+  handleChange = (event) => {
     this.setState({
-      [event.target.name]:[event.target.value],
-      historyType:event.target.value
-    })   
-    
+      [event.target.name]:[event.target.value]
+    })  
   }
 
   handleClear = () =>{
@@ -90,17 +88,19 @@ export default class Bethistory extends Component {
   getBetData = () => {
   if(this.userDetails.superAdmin){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
-      var i = 0;
+      // var i = 0;
+      debugger
       this.setState({
         betHistory:data,
         newResData:data,
         load:false
-      });             
+      });     
+      console.log('fffffffffffff',this.state.betHistory);        
     });
    }
    else if(this.userDetails.Admin){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
-      var i = 0;
+      // var i = 0;
       this.setState({
         betHistory:data,
         newResData:data,
@@ -110,7 +110,7 @@ export default class Bethistory extends Component {
    }
    else if(this.userDetails.Master){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
-      var i = 0;
+      // var i = 0;
       this.setState({
         betHistory:data,
         newResData:data,
@@ -176,11 +176,11 @@ export default class Bethistory extends Component {
                   <div className="title_new_at">
                   <span>Bet History</span>
                   <button style={{float:'right',paddingLeft:'5px',paddingRight:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px'}} onClick={()=>{this.props.history.goBack()}}>Back</button>
-                    <select style={{color: 'black'}}>
-                      <option value={10} active="true">10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                      <option value={100}>100</option>
+                    <select style={{color: 'black'}} name="postsPerPage" onChange={this.handleChange}>
+                      <option>10</option>
+                      <option>25</option>
+                      <option>50</option>
+                      <option>100</option>
                     </select>
                   </div>
                 </div>
@@ -211,7 +211,7 @@ export default class Bethistory extends Component {
                       </select>
                     </div>
                     <div className="popup_col_2">
-                      <select className="form-control" onChange={(e)=>this.handleChange(e,'Type')}  name="historyType">
+                      <select className="form-control" onChange={this.handleChange}  name="historyType">
                         <option value="open">Open</option>
                         <option value="settled">Settled</option>
                       </select>
@@ -255,6 +255,7 @@ export default class Bethistory extends Component {
                     </thead>  
                     <tbody>
                       {
+                        currentPosts.length > 0 ?
                         currentPosts.map((item,index) => {  
                           (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           if(item.device ==2){
@@ -285,16 +286,23 @@ export default class Bethistory extends Component {
                             <td className="text-center">{device}</td>
                             <td className="text-center">{item.eventID}</td>
                           </tr>)
-                          })
+                          }):
+                          <tr>
+                            <td colSpan={16} className="text-center">No Records Found...</td>
+                          </tr>
                       }
                     </tbody>    
-                    <tfoot>
+                    {
+                      currentPosts.length > 0 ?
+                      <tfoot>
                       <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistory.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
                       </tr>  
-                    </tfoot>                          
+                    </tfoot>:
+                      null
+                     }                         
                   </table>
                 </div>
               </div>

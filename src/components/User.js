@@ -755,19 +755,24 @@ export default class User extends Component {
                                 </tr>
                               );
                             }) :
-                            null
+                            <tr>
+                              <td colSpan={11} className="text-center">No Records Found...</td>
+                            </tr>
                         }
-                        <tr>
-                          <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
-                        </tr>
                       </tbody>
-                      <tfoot>
-                      <tr>
-                        <td colSpan={16}>
-                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
-                        </td>  
-                      </tr>  
-                    </tfoot>   
+                      {  
+                        currentPosts.length > 0 ?
+                        <tfoot>
+                            <tr>
+                              <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
+                            </tr>
+                            <tr>
+                              <td colSpan={11}>
+                                  <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                              </td>  
+                            </tr>  
+                        </tfoot> : null  
+                      }
                     </table>
                   </div>
                 </div>
