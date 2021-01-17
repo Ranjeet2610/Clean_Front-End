@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -10,6 +11,8 @@ export default class User extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
       load:false,
       tableHead: ["S.No", "User_ID", "Website", "Master", "Winnings", "Credit_Limits", "Exposure", "Balance", "M.comm", "S.comm", "View More"],
       Cpwd: '',
@@ -513,7 +516,16 @@ export default class User extends Component {
     document.getElementById("viewinfo").classList.remove("in");
   }
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
   render() {
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />
@@ -544,19 +556,19 @@ export default class User extends Component {
               </div>
             </div> */}
 
+            <div className="right_col" role="main">
+
             {
               ////////////////////////////////////// USER HEADER /////////////////////////////////
             }
-
-            <div className="right_col" role="main">
               <div className="col-md-12">
                 <div className="title_new_at">
                   <span className="lable-user-name">Users Listing</span>
-                  <select className="user-select" style={{ color: "black" }}>
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
+                  <select className="user-select" name="postsPerPage" onChange={this.handleChange} style={{ color: "black" }}>
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
                   </select>
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <div className="usersech user-mobile" id="formSubmit" method="post" >
@@ -679,11 +691,11 @@ export default class User extends Component {
                       </thead>
                       <tbody>
                         {
-                          this.state.data.length > 0 ?
-                            this.state.data.map((item, index) => {
+                          currentPosts.length > 0 ?
+                          currentPosts.map((item, index) => {
                               return (
                                 <tr key={index} id="user_row_152262">
-                                  <td>{index + 1}
+                                  <td className="text-center">
                                     <input type="checkbox" name="selecteduser" onChange={this.handleChange} value={item.userName} className="select-users" />
                                   </td>
                                   <td className="text-center" style={{ paddingBottom: "0px" }}>
@@ -749,6 +761,13 @@ export default class User extends Component {
                           <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
                         </tr>
                       </tbody>
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>   
                     </table>
                   </div>
                 </div>

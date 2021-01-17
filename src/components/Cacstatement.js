@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -9,8 +10,10 @@ export default class Cacstatement extends Component {
   constructor(props){
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
       load:false,
-      tableHead:["S.No.","Date","Description","Credit","Debit","Balance"],
+      tableHead:["Date","Description","Credit","Debit","Balance"],
       filteredTab:["AllTransaction","FreeChips","Settlement","Profit&Loss","Statement"],
       resdata:'',
       from_date:"",
@@ -98,14 +101,23 @@ handleFilter = async () => {
   }
 }
 
+paginate = (pageNumber) => {
+  this.setState({
+    currentPage:pageNumber
+  })
+}
+
 render(){
+  const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+  const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);
   let statements; 
   let deposited; 
   let withdraw; 
   let trantype; 
   let dwuserby;
-  if(this.state.resdata.length>0){
-    statements = this.state.resdata.map((item,index) => {
+  if(currentPosts.length>0){
+    statements = currentPosts.map((item,index) => {
      if(item.hasOwnProperty('depositedBy')){
         deposited = item.amount;
         trantype = "Received From";
@@ -122,7 +134,7 @@ render(){
       }
       return (
         <tr key={index}>
-          <td className="text-center">{index+1}</td>
+          {/* <td className="text-center">{index+1}</td> */}
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
           <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
           <td className="text-center">{deposited} </td>
@@ -221,6 +233,13 @@ render(){
                       <tbody>
                         {statements}
                       </tbody>
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.resdata.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>
                     </table>
                   </div>
                 </div>

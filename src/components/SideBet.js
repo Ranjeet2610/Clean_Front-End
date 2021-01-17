@@ -11,7 +11,7 @@ export default class SideBet extends Component {
         currentPage:1,
         postsPerPage:10,
         load:false,
-        tableHead:["No.","Runner","Client","Odds","Stack","Bet Type","P&L","Time","ID","IP"],
+        tableHead:["Runner","Client","Odds","Stack","Bet Type","P&L","Time","ID","IP"],
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
         betData:'',
@@ -25,12 +25,16 @@ export default class SideBet extends Component {
         runnderData:'',
         getExpo:'',
         expoData:'',
+        historyType:'open',
+        newResData:[],
+        betHistroy:[],
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
       }
     this.service = new Service();
     this.users = new Users();
+    this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
   }
 
   handleChange=(e)=>{
@@ -218,6 +222,64 @@ export default class SideBet extends Component {
     }
   }
 
+  getBetData = () => {
+    if(this.userDetails.superAdmin){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
+        let betFill = data.filter(item => item.eventID===parseInt(this.props.eventId) )
+        // var i = 0;
+        this.setState({
+          // betHistory:data,
+          betHistroy:betFill,
+          newResData:data,
+          load:false
+        });
+        console.log("pppppppppppppppppp",data);
+        console.log("ddssssssssssssssssssss",betFill);
+      });
+     }
+     else if(this.userDetails.Admin){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
+        // var i = 0;
+        let betFill = data.filter(item => item.eventID===parseInt(this.props.eventId) )
+        this.setState({
+          // betHistory:data,
+          betHistroy:betFill,
+          newResData:data,
+          load:false
+        });             
+      }); 
+     }
+     else if(this.userDetails.Master){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
+        let betFill = data.filter(item => item.eventID===parseInt(this.props.eventId) )
+        // var i = 0;
+        this.setState({
+          // betHistory:data,
+          betHistroy:betFill,
+          newResData:data,
+          load:false
+        });             
+      });
+     }
+     else{
+      this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
+        this.setState({
+          betHistroy:data,
+          count:data.length,
+          load:false
+        });                    
+      });
+      // this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
+      //   var i = 0;
+      //   this.setState({
+      //     betHistory:data,
+      //     newResData:data,
+      //     load:false
+      //   });             
+      // });
+     }
+  }
+
   componentDidMount() {
     document.getElementById('tital_change').focus();
     this.interval = setInterval(() => {
@@ -225,12 +287,14 @@ export default class SideBet extends Component {
         betData:this.props.betData
       });
     },2000)
-    this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
-      this.setState({
-        betHistroy:data,
-        count:data.length
-      });                    
-    });
+    // this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
+    //   this.setState({
+    //     betHistroy:data,
+    //     count:data.length
+    //   });                    
+    // });
+    this.getBetData();
+
     const obj ={
       id:JSON.parse(localStorage.getItem('data')).id
     }
@@ -625,11 +689,11 @@ export default class SideBet extends Component {
                       </thead>
                       <tbody>
                       {
-                        this.state.betHistroy.length>0 &&
+                        currentPosts.length>0 &&
                           currentPosts.map((item,index)=>{
                             return(
                               <tr>
-                                <td>{index+1}</td>
+                                {/* <td>{index+1}</td> */}
                                 <td>{item.selection}</td>
                                 <td>{item.clientName}</td>
                                 <td>{item.odds}</td>
