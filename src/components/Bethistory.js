@@ -89,13 +89,11 @@ export default class Bethistory extends Component {
   if(this.userDetails.superAdmin){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
       // var i = 0;
-      debugger
       this.setState({
         betHistory:data,
         newResData:data,
         load:false
-      });     
-      console.log('fffffffffffff',this.state.betHistory);        
+      });            
     });
    }
    else if(this.userDetails.Admin){
