@@ -144,85 +144,85 @@ export default class MatchOdds extends Component {
       var Team3 = this.state.data[2].runnerName;
     }
     if(val!=0){
-    if(type=='Back'){
-      if(teamSelection==Team1){
-        this.setState({
-          TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betProfit),
-          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss)
-        });
-      }
-      if(teamSelection==Team2){
-        this.setState({
-          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betProfit),
-          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss)
-        });
-      }
-      if(getRunner==3){
-        if(teamSelection==Team3){
+      if(type=='Back'){
+        if(teamSelection==Team1){
           this.setState({
-            TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betProfit),
+            TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betProfit),
+            TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(val),
+            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(val)
+          });
+        }
+        if(teamSelection==Team2){
+          this.setState({
+            TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betProfit),
+            TonePL: parseFloat(this.state.DTonePL)-parseFloat(val),
+            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(val)
+          });
+        }
+        if(getRunner==3){
+          if(teamSelection==Team3){
+            this.setState({
+              TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betProfit),
+              TonePL: parseFloat(this.state.DTonePL)-parseFloat(val),
+              TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(val)
+            });
+          }
+        }
+      }else{
+        if(teamSelection==Team1){
+          this.setState({
             TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
-            TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss)
+            TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(val),
+            TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(val)
           });
         }
-      }
-    }else{
-      if(teamSelection==Team1){
-        this.setState({
-          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betProfit),
-          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betLoss)
-        });
-      }
-      if(teamSelection==Team2){
-        this.setState({
-          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betProfit),
-          TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betLoss)
-        });
-      }
-      if(getRunner==3){
-        if(teamSelection==Team3){
+        if(teamSelection==Team2){
           this.setState({
-            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betProfit),
-            TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betLoss),
-            TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betLoss)
+            TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss),
+            TonePL: parseFloat(this.state.DTonePL)+parseFloat(val),
+            TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(val)
           });
         }
+        if(getRunner==3){
+          if(teamSelection==Team3){
+            this.setState({
+              TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss),
+              TonePL: parseFloat(this.state.DTonePL)+parseFloat(val),
+              TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(val)
+            });
+          }
+        }
       }
-    }
-    if(this.state.TonePL>0){
-      this.setState({
-        ToneColor: "blue-odds",
-      });
-    }else{
-      this.setState({
-        ToneColor: "color_red",
-      });
-    }
-    if(this.state.TtwoPL>0){
-      this.setState({
-        TtwoColor: "blue-odds",
-      });
-    }else{
-      this.setState({
-        TtwoColor: "color_red",
-      });
-    }
-    if(getRunner==3){
-      if(this.state.TthreePL>0){
+      if(this.state.TonePL>=0){
         this.setState({
-          TthreeColor: "blue-odds",
+          ToneColor: "blue-odds",
         });
       }else{
         this.setState({
-          TthreeColor: "color_red",
+          ToneColor: "color_red",
         });
       }
+      if(this.state.TtwoPL>=0){
+        this.setState({
+          TtwoColor: "blue-odds",
+        });
+      }else{
+        this.setState({
+          TtwoColor: "color_red",
+        });
+      }
+      if(getRunner==3){
+        if(this.state.TthreePL>=0){
+          this.setState({
+            TthreeColor: "blue-odds",
+          });
+        }else{
+          this.setState({
+            TthreeColor: "color_red",
+          });
+        }
+      }
     }
-  }
   }, 500)
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
@@ -371,7 +371,7 @@ export default class MatchOdds extends Component {
         let T3TotalPL = 0;
         //eventId = this.props.match.params.id
         this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.match.params.id,'getUserOpenBetHistory',(data)=>{
-          console.log(data);
+          // console.log(data);
             data.map((item,index)=>{
               if(item.bettype=='Back'){
                 if(Teamone==item.selection){
@@ -414,7 +414,7 @@ export default class MatchOdds extends Component {
             //console.log(T1TotalPL);
             //console.log(T2TotalPL);
             //console.log(T3TotalPL);
-            if(T1TotalPL>0){
+            if(T1TotalPL>=0){
               this.setState({
                 TonePL: T1TotalPL,
                 DTonePL: T1TotalPL,
@@ -429,7 +429,7 @@ export default class MatchOdds extends Component {
                 DToneColor: "color_red",
               });
             }
-            if(T2TotalPL>0){
+            if(T2TotalPL>=0){
               this.setState({
                 TtwoPL: T2TotalPL,
                 DTtwoPL: T2TotalPL,
@@ -445,7 +445,7 @@ export default class MatchOdds extends Component {
               });
             }
             if(getRunner==3){
-              if(T3TotalPL>0){
+              if(T3TotalPL>=0){
                 this.setState({
                   TthreePL: T3TotalPL,
                   DTthreePL: T3TotalPL,
@@ -522,7 +522,7 @@ export default class MatchOdds extends Component {
   //   })
   // }
 
-  getProfitandLoss=async(profit,loss,teamSelection,betType,status)=>{
+ getProfitandLoss=async(profit,loss,teamSelection,betType,stack,status)=>{
     await this.setState({
       betProfit:profit,
       betLoss:loss,
@@ -541,53 +541,52 @@ export default class MatchOdds extends Component {
       if(teamSelection==Team1){
         this.setState({
           TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betProfit),
-          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss)
+          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(stack),
+          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(stack)
         });
       }
       if(teamSelection==Team2){
         this.setState({
           TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betProfit),
-          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss)
+          TonePL: parseFloat(this.state.DTonePL)-parseFloat(stack),
+          TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(stack)
         });
       }
       if(getRunner==3){
         if(teamSelection==Team3){
           this.setState({
             TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betProfit),
-            TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
-            TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss)
+            TonePL: parseFloat(this.state.DTonePL)-parseFloat(stack),
+            TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(stack)
           });
         }
       }
-    }
-    else{
+    }else{
       if(teamSelection==Team1){
         this.setState({
-          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betProfit),
-          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betLoss)
+          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
+          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(stack),
+          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(stack)
         });
       }
       if(teamSelection==Team2){
         this.setState({
-          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betProfit),
-          TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betLoss),
-          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betLoss)
+          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss),
+          TonePL: parseFloat(this.state.DTonePL)+parseFloat(stack),
+          TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(stack)
         });
       }
       if(getRunner==3){
         if(teamSelection==Team3){
           this.setState({
-            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betProfit),
-            TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betLoss),
-            TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betLoss)
+            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss),
+            TonePL: parseFloat(this.state.DTonePL)+parseFloat(stack),
+            TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(stack)
           });
         }
       }
     }
-    if(this.state.TonePL>0){
+    if(this.state.TonePL>=0){
       this.setState({
         ToneColor: "blue-odds",
       });
@@ -596,7 +595,7 @@ export default class MatchOdds extends Component {
         ToneColor: "color_red",
       });
     }
-    if(this.state.TtwoPL>0){
+    if(this.state.TtwoPL>=0){
       this.setState({
         TtwoColor: "blue-odds",
       });
@@ -606,7 +605,7 @@ export default class MatchOdds extends Component {
       });
     }
     if(getRunner==3){
-      if(this.state.TthreePL>0){
+      if(this.state.TthreePL>=0){
         this.setState({
           TthreeColor: "blue-odds",
         });
@@ -1165,8 +1164,8 @@ export default class MatchOdds extends Component {
                   // getProfitandLoss={(profit, loss, status) => {
                   //   this.getProfitandLoss(profit, loss, status);
                   // }}
-                  getProfitandLoss={(profit,loss,teamSelection,betType,status)=>{
-                    this.getProfitandLoss(profit,loss,teamSelection,betType,status);
+                  getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
+                    this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
                   }}
                   bookArr={(arr) => {
                     this.bookArr(arr)
