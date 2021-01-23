@@ -130,16 +130,16 @@ export default class SideBet extends Component {
     if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
       // this.props.handleBetPlaceBox("Choose Stack...",'red','e')
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
-      setTimeout(()=>{
-        window.location.reload();     
-      },5000);
+      // setTimeout(()=>{
+      //   window.location.reload();     
+      // },5000);
     }
     else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
       // this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      setTimeout(()=>{
-        window.location.reload();     
-      },5000);
+      // setTimeout(()=>{
+      //   window.location.reload();     
+      // },5000);
     }
     else{
       if(this.props.betData.betType !=undefined){
@@ -170,7 +170,7 @@ export default class SideBet extends Component {
             this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
             setTimeout(()=>{
               window.location.reload();     
-            },5000);
+            },3000);
           })
         })
       }
@@ -214,13 +214,14 @@ export default class SideBet extends Component {
                 this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                 setTimeout(()=>{
                   window.location.reload();     
-                },5000);
+                },3000);
               })
             }); 
           })
         }) 
       }
     }
+    this.closeWindow();
   }
 
   getBetData = () => {

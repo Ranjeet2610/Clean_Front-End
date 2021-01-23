@@ -72,13 +72,13 @@ export default class BetBox extends Component {
            
         e.preventDefault();
         if(this.stackInput.value < 99 || this.stackInput.value > 49999 ){
-          this.props.handleBetPlaceBox("Choose Stack...",'red','e')
+          this.props.handleBetPlaceBox("Choose Stack...",'red','error')
           setTimeout(()=>{
             window.location.reload();     
           },5000);
         }
         else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
-          this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
+          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           setTimeout(()=>{
             window.location.reload();     
           },5000);
@@ -108,7 +108,7 @@ export default class BetBox extends Component {
               }
               this.users.getMyprofile(obj1,data=>{
                 localStorage.setItem('data',JSON.stringify(data.data));
-                this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                 setTimeout(()=>{
                   window.location.reload();     
                 },5000);
@@ -151,16 +151,17 @@ export default class BetBox extends Component {
                     userid:JSON.parse(localStorage.getItem('data')).id
                   }
                   this.users.getUserExposure(obj3,expodata=>{
-                    this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
+                    this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                     setTimeout(()=>{
                       window.location.reload();     
-                    },5000);
+                    },3000);
                   })
                 }); 
               })
             }) 
           }
         }
+        this.closeWindow();
       }
     
     handleChange=(e)=>{
@@ -382,6 +383,8 @@ export default class BetBox extends Component {
             display = { display: 'block' };
         }
         return (
+          <>
+            {/* <NotificationContainer/> */}
             <div className="betBox border-box test" style={display}>
                 <div className="block_box">
                     <span id="msg_error" /><span id="errmsg" />
@@ -440,6 +443,7 @@ export default class BetBox extends Component {
                     </form>
                 </div>
             </div>
+          </>
         )
     }
 } 
