@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Pagination from './Pagination'
+import  fullSize from '../images/full-size.png'
 import Service from '../Services/Service';
 import Users from '../Services/users'
 import {Link} from 'react-router-dom'
@@ -11,7 +12,6 @@ export default class SideBet extends Component {
         currentPage:1,
         postsPerPage:10,
         load:false,
-        tableHead:["No.","Runner","Client","Odds","Stack","Bet Type","P&L","Time","ID","IP"],
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
         betData:'',
@@ -25,17 +25,22 @@ export default class SideBet extends Component {
         runnderData:'',
         getExpo:'',
         expoData:'',
+        historyType:'open',
+        newResData:[],
+        betHistroy:[],
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
       }
     this.service = new Service();
     this.users = new Users();
+    this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
   }
 
   handleChange=(e)=>{
     let teamSelection = this.props.betData.pData.runnerName;
     let teamBetType = this.state.betData.type;
+    let stack = e.target.value;
     e.preventDefault();
     let odds = this.state.betData.odds-1;
     if(this.state.betData.type === 'Back'){
@@ -104,7 +109,7 @@ export default class SideBet extends Component {
     }
      /*14Jan sachin */
      setTimeout(()=> {
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,"true");
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true");
     }, 500)
     /*14Jan sachin */
     if(this.props.betData.betType ==undefined)
@@ -125,16 +130,16 @@ export default class SideBet extends Component {
     if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
       // this.props.handleBetPlaceBox("Choose Stack...",'red','e')
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
-      setTimeout(()=>{
-        window.location.reload();     
-      },5000);
+      // setTimeout(()=>{
+      //   window.location.reload();     
+      // },5000);
     }
     else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
       // this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      setTimeout(()=>{
-        window.location.reload();     
-      },5000);
+      // setTimeout(()=>{
+      //   window.location.reload();     
+      // },5000);
     }
     else{
       if(this.props.betData.betType !=undefined){
@@ -165,7 +170,7 @@ export default class SideBet extends Component {
             this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
             setTimeout(()=>{
               window.location.reload();     
-            },5000);
+            },3000);
           })
         })
       }
@@ -209,13 +214,60 @@ export default class SideBet extends Component {
                 this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                 setTimeout(()=>{
                   window.location.reload();     
-                },5000);
+                },3000);
               })
             }); 
           })
         }) 
       }
     }
+    this.closeWindow();
+  }
+
+  getBetData = () => {
+    if(this.userDetails.Admin){
+        let userName = JSON.parse(localStorage.getItem('data')).userName
+        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+          let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0]===userName)
+          this.setState({
+            betHistroy:betFill,
+            count:betFill.length,
+            load:false
+          });
+        })
+      
+     }
+     else if(this.userDetails.superAdmin){
+        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+        this.setState({
+          betHistroy:Data.data.data,
+          count:Data.data.data.length,
+          load:false
+        });             
+      }); 
+     }
+     else if(this.userDetails.Master){
+      let userName = JSON.parse(localStorage.getItem('data')).userName
+        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+          let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0]===userName)
+        this.setState({
+          betHistroy:betFill,
+          count:betFill.length,
+          load:false
+        });  
+      });
+     }
+     else{
+      let userName = JSON.parse(localStorage.getItem('data')).userName
+      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+        let betFill = Data.data.data.filter(item => item.clientName===userName)
+      this.setState({
+        betHistroy:betFill,
+        count:betFill.length,
+        load:false
+      });  
+    });
+     }
   }
 
   componentDidMount() {
@@ -225,12 +277,14 @@ export default class SideBet extends Component {
         betData:this.props.betData
       });
     },2000)
-    this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
-      this.setState({
-        betHistroy:data,
-        count:data.length
-      });                    
-    });
+    // this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
+    //   this.setState({
+    //     betHistroy:data,
+    //     count:data.length
+    //   });                    
+    // });
+    this.getBetData();
+
     const obj ={
       id:JSON.parse(localStorage.getItem('data')).id
     }
@@ -256,16 +310,16 @@ export default class SideBet extends Component {
           profit:Math.round(val),
           loss:val?val:0.0
         })
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       }
       else{
         this.setState({
           profit:Math.round(val),
           loss:val?val:0.0
         })
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       }
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
     }
     else{
       let odds = ods-1;
@@ -274,7 +328,7 @@ export default class SideBet extends Component {
           profit:(odds*val).toFixed(2),
           loss:val?val:0.0
         },()=>{
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
@@ -308,7 +362,7 @@ export default class SideBet extends Component {
           profit:val,
           loss:(odds*val).toFixed(2)
         },()=>{
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.runnderData.map(item=>{
@@ -337,7 +391,7 @@ export default class SideBet extends Component {
           });
         }
       }
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,"true");
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       this.props.handleInput(val);
     }
   }
@@ -354,16 +408,26 @@ export default class SideBet extends Component {
       })
     }
     else{
-    this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
-      this.setState({
-        betHistroy:data,
-        count:data.length
-      });             
+    // this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
+    //   // this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (data) => {  
+    //     this.setState({
+    //       betHistroy:data,
+    //       count:data.length
+    //     });             
+    //   })
+    this.getBetData();
+    this.setState({
+      showCurrPosition:'none',
+      showAllBets:'block'
     })
     }
   }
 
   currentPosition=(e)=>{
+    this.setState({
+      showCurrPosition:'block',
+      showAllBets:'none'
+    })
     this.removeActiveClass();
     e.target.parentElement.classList.add('active')
   }
@@ -420,7 +484,7 @@ export default class SideBet extends Component {
     });
     let teamSelection = this.props.betData.pData.runnerName;
     let type = this.props.betData.betType;
-    this.props.getProfitandLoss(dval, dval,teamSelection,type,"true");
+    this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true");
   }
 
   handleSubmit=(event)=> {
@@ -596,8 +660,11 @@ export default class SideBet extends Component {
                   <span id="cnt_row3">({this.state.fcount})</span>
                 </a>
               </li>
+              <li className="nav-item active-position">
+                <a className="currentposition" onClick={(e)=>this.currentPosition(e)}>Current Position</a>
+              </li>
               <a className="btn full-btn" >
-                <img src="http://park9.bet/assets/images/full-size-btn.png" alt="..." />
+                <img src={fullSize} alt="..." />
               </a>
             </ul>
           </div>
@@ -614,22 +681,39 @@ export default class SideBet extends Component {
             <div className="modal-dialog-staff">
               <div className="modal-content">
                 <div className="modal-body"><span id="msg_error" /><span id="errmsg" />
-                  <div className="match_bets MachShowHide">
+                  <div className="match_bets MachShowHide" style={{display:this.state.showAllBets}}>
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
+        {/* tableHead:["Runner","Client","Odds","Stack","BetType","P&L","Time","ID","IP","SuperMaster","Master"], */}
                         <tr className="headings">
-                          {
-                            this.state.tableHead.map((item)=><td className="text-center">{item}</td>)
-                          }
+                            <td className="text-center">Runner</td>
+                            <td className="text-center">Client</td>
+                            <td className="text-center">Odds</td>
+                            <td className="text-center">Stack</td>
+                            <td className="text-center">BetType</td>
+                            <td className="text-center">P&L</td>
+                            <td className="text-center">Time</td>
+                            <td className="text-center">ID</td>
+                            <td className="text-center">IP</td>
+                            {
+                              this.userDetails.superAdmin &&
+                              <>
+                                <td className="text-center">SuperMaster</td>
+                                <td className="text-center">Master</td>
+                              </>
+                            }
+                            {
+                              this.userDetails.Admin &&
+                                <td className="text-center">Master</td>
+                            }
                         </tr>
                       </thead>
                       <tbody>
                       {
-                        this.state.betHistroy.length>0 &&
+                        currentPosts.length>0 &&
                           currentPosts.map((item,index)=>{
                             return(
                               <tr>
-                                <td>{index+1}</td>
                                 <td>{item.selection}</td>
                                 <td>{item.clientName}</td>
                                 <td>{item.odds}</td>
@@ -639,6 +723,17 @@ export default class SideBet extends Component {
                                 <td>{item.createdDate}</td>
                                 <td>{item.userid}</td>
                                 <td>{item.IP}</td>
+                                {
+                                  this.userDetails.superAdmin &&
+                                  <>
+                                    <td className="text-center">{item?.userInfo[0]?.superAdmin[0]}</td>
+                                    <td className="text-center">{item?.userInfo[0]?.admin[0]}</td>
+                                  </>
+                                }
+                                {
+                                  this.userDetails.Admin &&
+                                    <td className="text-center">{item?.userInfo[0]?.admin[0]}</td>
+                                }
                               </tr>
                             );
                           })
@@ -651,6 +746,46 @@ export default class SideBet extends Component {
                           </td>  
                         </tr>  
                       </tfoot>    
+                    </table>
+                  </div>
+                  <div style={{display:this.state.showCurrPosition}}>
+                    <table className="table table-striped jambo_table bulk_action">
+                      <thead>
+                        <tr className="headings">
+                            <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
+                            <th className="text-center" style={{width:'50px'}}><b>Team1</b></th>
+                            <th className="text-center" style={{width:'50px'}}><b>Team2</b></th >
+                        </tr>
+                      </thead>
+                      {/* <tbody>
+                      {
+                        currentPosts.length>0 &&
+                          currentPosts.map((item,index)=>{
+                            return(
+                              <tr>
+                                <td>{item.selection}</td>
+                                <td>{item.clientName}</td>
+                                <td>{item.odds}</td>
+                                <td>{item.stack}</td>
+                                <td>{item.bettype}</td>
+                                <td>{item.P_L}</td>
+                                <td>{item.createdDate}</td>
+                                <td>{item.userid}</td>
+                                <td>{item.IP}</td>
+                                <td>{item?.userInfo[0]?.superAdmin[0]}</td>
+                                <td>{item?.userInfo[0]?.admin[0]}</td>
+                              </tr>
+                            );
+                          })
+                      }
+                      </tbody>
+                      <tfoot> 
+                        <tr>
+                          <td colSpan={16}>
+                              <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                          </td>  
+                        </tr>  
+                    </tfoot>*/}    
                     </table>
                   </div>
                 </div>

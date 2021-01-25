@@ -5,7 +5,7 @@ export default class Users extends Component {
 login(data,cb){
     axios.post(Constants.APIURL+'login', data)
     .then((response) => {
-        console.log(response.status);
+        // console.log(response.status);
         if (response.data.success) {
             cb(response);            
         }
@@ -146,6 +146,32 @@ getCloseUser(URL,cb){
     }, this)
     .catch((error) => alert(error)) 
 }
+
+/////////////////////////////////////////////////
+getAllBettings(URL,cb){
+    axios.get(Constants.APIURL+ URL)
+    .then((response) => {
+        cb(response); 
+    }, this)
+    .catch((error) => console.log(error)); 
+}
+getUserInfo(URL,cb){
+    axios.get(Constants.APIURL+ URL)
+    .then((response) => {
+        cb(response); 
+    }, this)
+    .catch((error) => console.log(error)); 
+}
+getBettingBasedOnMaster(URL,cb){
+    axios.get(Constants.APIURL+ URL)
+    .then((response) => {
+        cb(response); 
+    }, this)
+    .catch((error) => console.log(error)); 
+}
+//////////////////////////////////////////////////
+
+
 getclosemasterforAdmin(data,cb){
     
     axios.post(Constants.APIURL+'getAdminClosedMasters', data)

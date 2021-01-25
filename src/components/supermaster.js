@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -11,6 +12,8 @@ export default class SuperMaster extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
       load:false,
       tableHead: ["S.No.", "UserID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Partnership", "Partnership_Cacino", "Partnership_TeenPatti", "M.comm", "S.comm", "View More"],
       Cpwd: '',
@@ -589,7 +592,18 @@ export default class SuperMaster extends Component {
     this.setState({ data: updateList });
   };
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
   render() {
+
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
       <div>
         <Navbar />
@@ -629,11 +643,11 @@ export default class SuperMaster extends Component {
                   }
 
                   <span className="lable-user-name">Supermaster&nbsp;</span>
-                  <select className="user-select" style={{ color: "black", margin: "auto" }} >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
+                  <select className="user-select" name="postsPerPage" onChange={this.handleChange} style={{ color: "black", margin: "auto" }} >
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
                   </select>&nbsp;
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit">
@@ -750,27 +764,29 @@ export default class SuperMaster extends Component {
                       </thead>
                       <tbody>
                         {
-                          this.state.data && this.state.data.length > 0 ?
-                            this.state.data.map((item, index) => {
+                         currentPosts && currentPosts.length > 0 ?
+                         currentPosts.map((item, index) => {
                               return (
                                 <tr id="user_row_152052">
-                                  <td>{index + 1}<input type="checkbox" name="mName" onChange={this.handleChange} value={item.userName} className="select-users" /></td>
-                                  <td className=" " style={{ paddingBottom: "0px" }}>
+                                  <td className="text-center">
+                                    <input type="checkbox" name="mName" onChange={this.handleChange} value={item.userName} className="select-users" />
+                                  </td>
+                                  <td className="text-center" style={{ paddingBottom: "0px" }}>
                                     <span className="m-bg">
                                       <Link to={"/master/" + item.userName} title="View Child">{item.userName}</Link>&nbsp;
                                       {item.status ? <i class="fa fa-user fa_custom fa-2x" title="locked" aria-hidden="true" style={{ color: "red" }} /> : null}
                                       {item.enableBetting ? <i class="fa fa-lock fa_custom fa-2x" title="Betting Locked" aria-hidden="true" style={{ color: "red" }} /> : null}
                                     </span>
                                   </td>
-                                  <td>BETFUN360</td>
-                                  <td>{item.freeChips}</td>
-                                  <td>{item.creditGiven}</td>
-                                  <td className=" ">{item.walletBalance}</td>
-                                  <td className=" ">{item.Commission}</td>
-                                  <td className=" ">0%</td>
-                                  <td className=" ">0%</td>
-                                  <td className=" ">0.00</td>
-                                  <td className=" ">0.00</td>
+                                  <td className="text-center">BETFUN360</td>
+                                  <td className="text-center">{item.freeChips}</td>
+                                  <td className="text-center">{item.creditGiven}</td>
+                                  <td className="text-center">{item.walletBalance}</td>
+                                  <td className="text-center">{item.Commission}</td>
+                                  <td className="text-center">0%</td>
+                                  <td className="text-center">0%</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
                                   <td className="last">
                                     <span className="dropdown">
                                       <Link className="dropdown-toggle btn btn-xs btn-success" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" >View More
@@ -814,14 +830,24 @@ export default class SuperMaster extends Component {
                                 </tr>
                               );
                             }) :
-                            null
+                            <tr>
+                              <td colSpan={12} className="text-center">No Records Found...</td>
+                            </tr>
                         }
                       </tbody>
-                      <tfoot>
-                        <tr>
-                          <td className="text-center" colSpan={12}>Total Balance: {this.state.totalBalance}</td>
-                        </tr>
-                      </tfoot>
+                      {
+                        currentPosts.length > 0 ?
+                        <tfoot>
+                          <tr>
+                            <td className="text-center" colSpan={12}>Total Balance: {this.state.totalBalance}</td>
+                          </tr>
+                          <tr>
+                            <td colSpan={12}>
+                                <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                            </td>  
+                          </tr> 
+                        </tfoot>:null
+                      }
                     </table>
                     <p id="paginateClick" className="pull-right pagination-row dataTables_paginate paging_simple_numbers" />
                   </div>

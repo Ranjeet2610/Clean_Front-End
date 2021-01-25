@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
 import  mainLogo from '../betfun-logo.png';
 import Users from '../Services/users';
-import Modal from 'react-bootstrap/Modal'
+// import Modal from 'react-bootstrap/Modal'
 import e from 'cors';
 
 

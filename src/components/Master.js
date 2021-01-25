@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Pagination from './Pagination'
 import Loader from 'react-loader-spinner';
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -11,6 +12,8 @@ export default class Master extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
       load:false,
       tableHead: ["S.No.", "User_ID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Partnership", "Partnership_Cacino", "Partnership_TeenPatti", "M.comm", "S.comm", "View More"],
       msgBox: 'none',
@@ -633,7 +636,18 @@ export default class Master extends Component {
     this.setState({ data: updateList });
   };
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
   render() {
+
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+
     return (
       <div>
         <Navbar />
@@ -673,11 +687,11 @@ export default class Master extends Component {
               <div className="col-md-12">
                 <div className="title_new_at">
                   <span className="lable-user-name">Master Listing</span>
-                  <select className="user-select" style={{ color: "black" }} >
-                    <option value={10}>10</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
+                  <select className="user-select" name="postsPerPage" onChange={this.handleChange} style={{ color: "black" }} >
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
                   </select>
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit" method="post" >
@@ -798,12 +812,12 @@ export default class Master extends Component {
                       </thead>
                       <tbody>
                         {
-                          this.state.data.length > 0 ?
-                            this.state.data.map((item, index) => {
+                          currentPosts.length > 0 ?
+                          currentPosts.map((item, index) => {
                               return (
                                 <tr id="user_row_152052">
-                                  <td>
-                                    {index + 1}<input type="checkbox" name="mName" onChange={this.handleChange} value={item.userName} className="select-users" />
+                                  <td className="text-center">
+                                    <input type="checkbox" name="mName" onChange={this.handleChange} value={item.userName} className="select-users" />
                                   </td>
                                   <td className="text-center" style={{ paddingBottom: "0px" }}>
                                     <span className="m-bg">
@@ -867,12 +881,25 @@ export default class Master extends Component {
                                   </td>
                                 </tr>
                               );
-                            }) : null
+                            }) : 
+                            <tr>
+                              <td colSpan={16} className="text-center">No Records Found...</td>
+                            </tr>
                         }
-                        <tr>
-                          <td colSpan={12} className="text-center">Total Balance:{this.state.totalBalance}</td>
-                        </tr>
                       </tbody>
+                      { 
+                        currentPosts.length > 0 ? 
+                        <tfoot>
+                          <tr>
+                            <td colSpan={12} className="text-center">Total Balance:{this.state.totalBalance}</td>
+                          </tr>
+                          <tr>
+                            <td colSpan={12}>
+                                <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                            </td>  
+                          </tr> 
+                        </tfoot>:null
+                      }
                     </table>
                     <p id="paginateClick" className="pull-right pagination-row dataTables_paginate paging_simple_numbers" />
                   </div>
