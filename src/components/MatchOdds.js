@@ -1059,19 +1059,19 @@ export default class MatchOdds extends Component {
                                                         <tbody>
                                                           <tr class="session_content">
                                                             <td>
-                                                              <span class="fancyhead5303" id="fancy_name5303">10 Runs or more</span>
+                                                              <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
                                                               <b class="fancyLia5303"></b>
                                                               <p class="position_btn"></p>
                                                             </td>
                                                             <td></td>
                                                             <td></td>
                                                             <td class="fancy_lay">
-                                                              <button class="lay-cell cell-btn" id="LayNO_5303">0</button>
-                                                              <button id="NoValume_5303" class="disab-btn">0</button>
+                                                              <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.LayPrice}</button>
+                                                              <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                             </td>
                                                             <td class="fancy_back">
-                                                              <button class="back-cell cell-btn" id="BackYes_5303">0</button>
-                                                              <button id="YesValume_5303" class="disab-btn">0</button>
+                                                              <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.BackPrice}</button>
+                                                              <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                             </td>
                                                             <td></td>
                                                             <td></td>
@@ -1090,7 +1090,7 @@ export default class MatchOdds extends Component {
                                         //////////////////////////// MODAL FOR BOOK //////////////////////////////////////////
                                       }
 
-                                      <div class="modal fade" id="exampleModalForBook" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                      <div class="modal fade" id="exampleModalForBook" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                           <div class="modal-content">
                                             <div class="modal-header">
