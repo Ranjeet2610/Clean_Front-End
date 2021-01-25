@@ -20,8 +20,9 @@ export default class Service extends Component {
         var todate = new Date(datatodays);
         var ed = todate.getTime();
           // Create new Date instance
-         // console.log(date);
-      var fdata = response.data.data.result.filter(d => {var time = new Date(d.event.openDate).getTime();
+          console.log(response);
+          // callback(fdata.slice(0,7));
+      var fdata = response.data.data.filter(d => {var time = new Date(d.event.openDate).getTime();
                                  return (sd < time && time < ed);
                                 }).sort((a,b)=>{
                                   var dateA = new Date(a.event.openDate), dateB = new Date(b.event.openDate);
@@ -56,7 +57,7 @@ getlistMarketOdds(mid,cb) {
 
   axios.post(Constants.APIURL+'listMarketOdds', { marketId: mid })
     .then((response) => {
-      //console.log(response.data.data[0].result);
+      console.log(response.data);
       cb(response.data.data[0].result);
     })
     .catch((error) => console.log(error));
