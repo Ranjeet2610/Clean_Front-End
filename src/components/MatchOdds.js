@@ -620,6 +620,7 @@ export default class MatchOdds extends Component {
   }
 
   render() {
+    console.log('ggggggggggg',this.state.marketOdds)
     let inplay;
     let runners = this.state.data;
     let expoProfit = 0;
@@ -1152,6 +1153,7 @@ export default class MatchOdds extends Component {
                   </div>
                 </div>
                 <Sidebet
+                  matchName={this.state.matchName}
                   stake={0}
                   betData={this.state.betData}
                   betProfit={this.state.betProfit}
