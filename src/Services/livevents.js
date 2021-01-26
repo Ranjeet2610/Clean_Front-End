@@ -50,6 +50,7 @@ export default class Livevents extends Component {
     axios.post(Constants.APIURL+'fancyMarketTypeData',{
         "eventId":eid
     }).then((response)=>{
+      
       let newData = response.data.data.filter(item => item.marketData.isVisible);
       let fdata = newData.map((item)=>{
         let runners = item.runners.filter(item=>item.isRunnersVisible==true);
@@ -61,7 +62,7 @@ export default class Livevents extends Component {
         if(item.runners.length>0){
           return  new Promise((resolve)=>{
             this.ListMarketOdds(item.marketData.marketId,data=>{
-              resolve(data.data.data[0].result)
+              resolve(data.data.data[0])
             });
            
           });
@@ -129,9 +130,11 @@ storeMarketType(data,cb){
 
 // 
  storeLiveEvents(data,cb){
+  console.log(data);
   axios.post(Constants.APIURL+'storeLiveEvents',
   data).then((response)=>{
-   console.log('stored',response)
+   console.log('stored',response);
+  
     this.storeMarketType( data=>{
         cb(data);   
     })

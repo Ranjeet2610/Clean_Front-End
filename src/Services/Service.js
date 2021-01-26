@@ -20,8 +20,12 @@ export default class Service extends Component {
         var todate = new Date(datatodays);
         var ed = todate.getTime();
           // Create new Date instance
+<<<<<<< HEAD
           console.log(response);
           // callback(fdata.slice(0,7));
+=======
+         // console.log(date);
+>>>>>>> 33f3adeccba28bc9b28c3175a330c8188820e2b2
       var fdata = response.data.data.filter(d => {var time = new Date(d.event.openDate).getTime();
                                  return (sd < time && time < ed);
                                 }).sort((a,b)=>{
@@ -57,8 +61,12 @@ getlistMarketOdds(mid,cb) {
 
   axios.post(Constants.APIURL+'listMarketOdds', { marketId: mid })
     .then((response) => {
+<<<<<<< HEAD
       console.log(response.data);
       cb(response.data.data[0].result);
+=======
+      cb(response.data.data);
+>>>>>>> 33f3adeccba28bc9b28c3175a330c8188820e2b2
     })
     .catch((error) => console.log(error));
 }
@@ -144,7 +152,6 @@ settledBethistoryForUser(userName,evid,cb){
     .catch((error) => console.log(error)); 
 }
 matchOddsfromevent(eid,cb){
-  
   axios.post(Constants.APIURL+'listEventsDataById', 
  {EventId:eid})
     .then((response) => {
