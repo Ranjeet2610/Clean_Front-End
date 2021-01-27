@@ -16,7 +16,7 @@ export default class Bethistory extends Component {
       postsPerPage:10,
       load:false,
       betHistoryTab:["All","Cricket","Tennis","Soccer","Teenpatti","Fancy"],
-      betHistoryTableHead:["Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
+      betHistoryTableHead:["S.no","Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
       betHistory:[],
       from_date:'',
       to_date:'',
@@ -156,7 +156,6 @@ export default class Bethistory extends Component {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
     const currentPosts = this.state.betHistory?.slice(indexOfFirstPost, indexOfLastPost);
-
     return (
         <div>
           <Navbar />
@@ -267,7 +266,7 @@ export default class Bethistory extends Component {
                            }
                           return(
                           <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
-                            {/* <td className="text-center">{index+1}</td> */}
+                            <td className="text-center">{(this.state.betHistory.length+1)-(indexOfFirstPost+index+1)}</td>
                             <td className="text-center">{item.clientName}</td>
                             <td className="text-center">{JSON.parse(item.description).name}</td>
                             <td className="text-center">{item.selection}</td>

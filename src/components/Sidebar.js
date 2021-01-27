@@ -21,16 +21,16 @@ componentDidMount(){
       cricketData: data
     })
   });
-  service.getdashboardData("2",data=>{
-    this.setState({
-      tenisData: data
-    })
-  });
-  service.getdashboardData("1",data=>{
-    this.setState({
-      soccerData: data
-    })
-  });
+  // service.getdashboardData("2",data=>{
+  //   this.setState({
+  //     tenisData: data
+  //   })
+  // });
+  // service.getdashboardData("1",data=>{
+  //   this.setState({
+  //     soccerData: data
+  //   })
+  // });
   let eveodds = [];
   service.getLiveEvents((data) => {
     data.data.Data.map((item) => {

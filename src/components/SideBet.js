@@ -14,6 +14,7 @@ export default class SideBet extends Component {
         load:false,
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
+        color:'lightblue',
         betData:'',
         profit:0.00,
         loss: 0.00,
@@ -116,6 +117,24 @@ export default class SideBet extends Component {
     this.props.handleInput(e.target.value);
   }
 
+  changeBackground = (e,type) =>{
+    if(type==='Back'){
+      e.target.parentElement.classList.add('blue')
+    }
+    else{
+      e.target.parentElement.classList.add('lightred')
+    }
+  }
+
+  changeBackColor = (e,type) => {
+    if(type==='Back'){
+      e.target.parentElement.classList.remove('blue')
+    }
+    else{
+      e.target.parentElement.classList.remove('lightred')
+    }
+  }
+
   placeBet=(e)=>{
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
@@ -128,18 +147,10 @@ export default class SideBet extends Component {
        
     e.preventDefault();
     if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
-      // this.props.handleBetPlaceBox("Choose Stack...",'red','e')
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
-      // setTimeout(()=>{
-      //   window.location.reload();     
-      // },5000);
     }
     else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
-      // this.props.handleBetPlaceBox("Don't have enough balance...",'red','e')
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      // setTimeout(()=>{
-      //   window.location.reload();     
-      // },5000);
     }
     else{
       if(this.props.betData.betType !=undefined){
@@ -166,11 +177,11 @@ export default class SideBet extends Component {
           }
           this.users.getMyprofile(obj1,data=>{
             localStorage.setItem('data',JSON.stringify(data.data));
-            // this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
             this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-            setTimeout(()=>{
-              window.location.reload();     
-            },3000);
+            // setTimeout(()=>{
+            //   window.location.reload();     
+            // },3000);
+            this.getBetData();
           })
         })
       }
@@ -212,9 +223,9 @@ export default class SideBet extends Component {
               this.users.getUserExposure(obj3,expodata=>{
                 // this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
                 this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                setTimeout(()=>{
-                  window.location.reload();     
-                },3000);
+                // setTimeout(()=>{
+                //   window.location.reload();     
+                // },3000);
               })
             }); 
           })
@@ -498,6 +509,7 @@ export default class SideBet extends Component {
   }
 
     render() {
+    let color = this.state.color
     let ods =0;
     let runnerName ='';
     let type =''; 
@@ -517,7 +529,7 @@ export default class SideBet extends Component {
 
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistroy?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
 
   return (
     <div className="col-md-4 col-xs-12">
@@ -684,8 +696,8 @@ export default class SideBet extends Component {
                   <div className="match_bets MachShowHide" style={{display:this.state.showAllBets}}>
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
-        {/* tableHead:["Runner","Client","Odds","Stack","BetType","P&L","Time","ID","IP","SuperMaster","Master"], */}
                         <tr className="headings">
+                            <td className="text-center">S.no</td>
                             <td className="text-center">Runner</td>
                             <td className="text-center">Client</td>
                             <td className="text-center">Odds</td>
@@ -712,8 +724,10 @@ export default class SideBet extends Component {
                       {
                         currentPosts.length>0 &&
                           currentPosts.map((item,index)=>{
+                            (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                             return(
-                              <tr>
+                              <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
+                                <td>{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
                                 <td>{item.selection}</td>
                                 <td>{item.clientName}</td>
                                 <td>{item.odds}</td>

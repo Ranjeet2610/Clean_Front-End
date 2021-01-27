@@ -769,6 +769,7 @@ export default class SuperMaster extends Component {
                               return (
                                 <tr id="user_row_152052">
                                   <td className="text-center">
+                                    {indexOfFirstPost+index+1}
                                     <input type="checkbox" name="mName" onChange={this.handleChange} value={item.userName} className="select-users" />
                                   </td>
                                   <td className="text-center" style={{ paddingBottom: "0px" }}>

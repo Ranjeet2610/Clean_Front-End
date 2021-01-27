@@ -39,18 +39,18 @@ class Dashboard extends Component {
     this.setState({
       load:true
     })
-    this.service.getdashboardData("2", (data) => {
-      this.setState({
-        tenisData: data,
-        load:false
-      });
-    });
-    this.service.getdashboardData("1", (data) => {
-      this.setState({
-        soccerData: data,
-        load:false
-      });
-    });
+    // this.service.getdashboardData("2", (data) => {
+    //   this.setState({
+    //     tenisData: data,
+    //     load:false
+    //   });
+    // });
+    // this.service.getdashboardData("1", (data) => {
+    //   this.setState({
+    //     soccerData: data,
+    //     load:false
+    //   });
+    // });
 
     let eveodds = [];
 
@@ -179,7 +179,7 @@ class Dashboard extends Component {
                           /////////////////////////////// TENNIS LIVE DATA //////////////////////////////////////////
                           }
 
-                          <div className="sports_box">
+                          {/* <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={tbicon} /></span>Tennis
                             </div>
@@ -222,13 +222,13 @@ class Dashboard extends Component {
                                   );
                                 })
                             }
-                          </div>
+                          </div> */}
 
                           {
                           /////////////////////////////// SOCCER LIVE DATA ///////////////////////////////////////////
                           }
 
-                          <div className="sports_box">
+                          {/* <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={fbicon}/></span>Soccer
                             </div>
@@ -271,7 +271,8 @@ class Dashboard extends Component {
                                   );
                                 })    
                             }
-                          </div>
+                          </div> */}
+                        
                         </div>
                       </div>
                     </div>

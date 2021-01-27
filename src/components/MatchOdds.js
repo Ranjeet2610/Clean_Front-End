@@ -359,8 +359,9 @@ export default class MatchOdds extends Component {
       // this.setState({
       //   data: data.pdata,
       // });
-      // setTimeout(()=> {
+      setInterval(()=> {
         let getRunner = data.pdata.length;
+        // console.log("DDDD",data.pdata);
         let Teamone = data.pdata[0].runnerName;
         let Teamtwo = data.pdata[1].runnerName;
         if(getRunner==3){
@@ -369,9 +370,7 @@ export default class MatchOdds extends Component {
         let T1TotalPL = 0;
         let T2TotalPL = 0;
         let T3TotalPL = 0;
-        //eventId = this.props.match.params.id
         this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.match.params.id,'getUserOpenBetHistory',(data)=>{
-          // console.log(data);
             data.map((item,index)=>{
               if(item.bettype=='Back'){
                 if(Teamone==item.selection){
@@ -463,7 +462,7 @@ export default class MatchOdds extends Component {
             }
         });
         /* end */
-      //  }, 3000)
+       }, 1000)
     });
   }
 
@@ -512,15 +511,6 @@ export default class MatchOdds extends Component {
         break;
     }
   }
-
-  // getProfitandLoss = async (profit, loss, status) => {
-  //   await this.setState({
-  //     betProfit: profit,
-  //     betLoss: loss,
-  //     zeroStatus: status,
-  //     color: "red"
-  //   })
-  // }
 
  getProfitandLoss=async(profit,loss,teamSelection,betType,stack,status)=>{
     await this.setState({
@@ -647,15 +637,6 @@ export default class MatchOdds extends Component {
         <div>
           <div class="container body">
           <div class="main_container" id="sticky">
-
-            {
-              ////////////////// NOTIFICATION BOX ////////////////////////////////
-          
-              //   <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.display_status, backgroundColor: this.state.bgColor/*"#d63031"*/ }}>
-              //   <div className="error-head" style={{ padding: "3px 0" }}> {this.state.notifyStatus === "s" ? <h2>SUCCESS</h2> : <h2>ERROR</h2>}</div>
-              //   <div className="error-mess" style={{ padding: "5px 0" }}><h6>{this.state.notifyMsg}</h6></div>
-              // </div>
-            }
             <div class="right_col" role="main">
               <div class="fullrow tile_count">
                 <div className="col-md-8">
@@ -663,6 +644,7 @@ export default class MatchOdds extends Component {
                   {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
+
                   <div className="modal-header mod-header">
                     <div className="block_box">
                       <span id="tital_change">
