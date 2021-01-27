@@ -12,6 +12,9 @@ export default class SideBet extends Component {
         currentPage:1,
         postsPerPage:10,
         load:false,
+        SoM:[],
+        showCurrPosition:'none',
+
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
         color:'lightblue',
@@ -29,6 +32,7 @@ export default class SideBet extends Component {
         historyType:'open',
         newResData:[],
         betHistroy:[],
+        curPoAcc:'',
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
@@ -36,6 +40,7 @@ export default class SideBet extends Component {
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
+    this.matchName = this.props.matchName.split(" v ")
   }
 
   handleChange=(e)=>{
@@ -178,9 +183,6 @@ export default class SideBet extends Component {
           this.users.getMyprofile(obj1,data=>{
             localStorage.setItem('data',JSON.stringify(data.data));
             this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-            // setTimeout(()=>{
-            //   window.location.reload();     
-            // },3000);
             this.getBetData();
           })
         })
@@ -221,11 +223,8 @@ export default class SideBet extends Component {
                 userid:JSON.parse(localStorage.getItem('data')).id
               }
               this.users.getUserExposure(obj3,expodata=>{
-                // this.props.handleBetPlaceBox("Bet Placed...!",'green','s')
                 this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                // setTimeout(()=>{
-                //   window.location.reload();     
-                // },3000);
+                this.getBetData();
               })
             }); 
           })
@@ -235,29 +234,140 @@ export default class SideBet extends Component {
     this.closeWindow();
   }
 
-  getBetData = () => {
-    if(this.userDetails.Admin){
-        let userName = JSON.parse(localStorage.getItem('data')).userName
-        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
-          let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0]===userName)
-          this.setState({
-            betHistroy:betFill,
-            count:betFill.length,
-            load:false
-          });
+  handlecurrentPositionAccess = async () => {
+    if(this.userDetails.superAdmin){
+      await this.setState({
+        curPoAcc:'superAdmin'
+      })
+    }
+    else if(this.userDetails.Admin){
+      await this.setState({
+        curPoAcc:'Admin'
+      })
+    }
+    else if(this.userDetails.Master){
+      await this.setState({
+        curPoAcc:'Master'
+      })
+    }
+  }
+
+  handleUserAccess = (item,userName) =>{
+    if(item === 'superAdmin'){
+      this.setState({
+        curPoAcc:'Admin'
+      })
+    }
+    else if(item === 'Admin'){
+      this.setState({
+        curPoAcc:'Master'
+      })
+    }
+    else if(item === 'Back'){
+      this.setState({
+        curPoAcc:'superAdmin'
+      })
+    }
+    this.handleCurrentPosition(this.state.betHistroy,userName); 
+  }
+
+  handleCurrentPosition = (data,userName) => {
+    if(this.state.curPoAcc === 'superAdmin'){
+      let arr = [];
+      let stn = '';
+      data.map(item => {
+        let itemName = item.userInfo[0].superAdmin[0]
+        if(itemName !== stn){
+          arr.push({
+            name:item.userInfo[0].superAdmin[0],
+            profit: item.P_L,
+            loss : item.liability
+          })
+          stn = itemName
+        }
+        else{
+          let indx = arr.findIndex(e => e.name === itemName);
+          arr[indx].profit += item.P_L;
+          arr[indx].loss += item.liability;
+        }
+      })
+      this.setState({
+        SoM:arr
+      })
+    }
+    else if(this.state.curPoAcc === 'Admin'){
+        let arr = [];
+        let stn = '';
+        data.map(item => {
+          let itemName = item.userInfo[0].admin[0]
+          if(itemName !== stn){
+            arr.push({
+              name:item.userInfo[0].admin[0],
+              profit: item.P_L,
+              loss : item.liability
+            })
+            stn = itemName
+          }
+          else{
+            let indx = arr.findIndex(e => e.name === itemName);
+            arr[indx].profit += item.P_L;
+            arr[indx].loss += item.liability;
+          }
         })
-      
-     }
-     else if(this.userDetails.superAdmin){
-        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
         this.setState({
-          betHistroy:Data.data.data,
-          count:Data.data.data.length,
-          load:false
-        });             
-      }); 
-     }
-     else if(this.userDetails.Master){
+          SoM:arr
+        })
+    }
+    else if(this.state.curPoAcc === 'Master'){
+      let arr = [];
+      let stn = '';
+      data.map(item => {
+        let itemName = item.userInfo[0].admin[0]
+        if(itemName !== stn){
+          arr.push({
+            name:item.userInfo[0].admin[0],
+            profit: item.P_L,
+            loss : item.liability
+          })
+          stn = itemName
+        }
+        else{
+          let indx = arr.findIndex(e => e.name === itemName);
+          arr[indx].profit += item.P_L;
+          arr[indx].loss += item.liability;
+        }
+      })
+      this.setState({
+        SoM:arr
+      })
+    }
+  }
+
+  getBetData = () => {
+    if(this.userDetails.superAdmin){
+      let userName = JSON.parse(localStorage.getItem('data')).userName
+      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+      this.setState({
+        betHistroy:Data.data.data,
+        count:Data.data.data.length,
+        load:false
+      });
+      this.handleCurrentPosition(this.state.betHistroy, userName);           
+    }); 
+   }
+   else if(this.userDetails.Admin){
+    let userName = JSON.parse(localStorage.getItem('data')).userName
+    this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+      let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0]===userName)
+      this.setState({
+        betHistroy:betFill,
+        count:betFill.length,
+        load:false
+      });
+      this.handleCurrentPosition(this.state.betHistroy,userName); 
+    })
+    }  
+    else if(this.userDetails.Master){
       let userName = JSON.parse(localStorage.getItem('data')).userName
         this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
           let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0]===userName)
@@ -265,37 +375,32 @@ export default class SideBet extends Component {
           betHistroy:betFill,
           count:betFill.length,
           load:false
-        });  
+        }); 
+        this.handleCurrentPosition(this.state.betHistroy,userName); 
       });
-     }
-     else{
+    }
+    else{
       let userName = JSON.parse(localStorage.getItem('data')).userName
       this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
         let betFill = Data.data.data.filter(item => item.clientName===userName)
-      this.setState({
-        betHistroy:betFill,
-        count:betFill.length,
-        load:false
-      });  
-    });
-     }
+        this.setState({
+          betHistroy:betFill,
+          count:betFill.length,
+          load:false
+        });  
+      });
+    } 
   }
 
   componentDidMount() {
+    this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
     this.interval = setInterval(() => {
       this.setState({
         betData:this.props.betData
       });
     },2000)
-    // this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
-    //   this.setState({
-    //     betHistroy:data,
-    //     count:data.length
-    //   });                    
-    // });
     this.getBetData();
-
     const obj ={
       id:JSON.parse(localStorage.getItem('data')).id
     }
@@ -313,6 +418,7 @@ export default class SideBet extends Component {
   }
 
   StaKeAmount=(val,ods,type)=>{
+    debugger
     let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
@@ -662,18 +768,19 @@ export default class SideBet extends Component {
           <div className="tab_bets">
             <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
               <li className="nav-item betdata active-all active">
-                <a className="allbet" onClick={(e)=>this.getDataByType(e,'All')}>
+                <a className="allbet" style={{cursor:'pointer'}} onClick={(e)=>this.getDataByType(e,'All')}>
                   <span className="bet-label">All Bet</span>
-                  <span id="cnt_row">({this.state.count})</span></a>
+                  <span id="cnt_row">({this.state.count})</span>
+                </a>
               </li>
               <li className="nav-item betdata">
-                <a className="unmatchbet" onClick={(e)=>this.getDataByType(e,'Fancy')}>
+                <a className="unmatchbet" style={{cursor:'pointer'}} onClick={(e)=>this.getDataByType(e,'Fancy')}>
                   <span className="bet-label">Fancy Bet</span>
                   <span id="cnt_row3">({this.state.fcount})</span>
                 </a>
               </li>
               <li className="nav-item active-position">
-                <a className="currentposition" onClick={(e)=>this.currentPosition(e)}>Current Position</a>
+                <a className="currentposition" style={{cursor:'pointer'}} onClick={(e)=>this.currentPosition(e)}>Current Position</a>
               </li>
               <a className="btn full-btn" >
                 <img src={fullSize} alt="..." />
@@ -704,6 +811,7 @@ export default class SideBet extends Component {
                             <td className="text-center">Stack</td>
                             <td className="text-center">BetType</td>
                             <td className="text-center">P&L</td>
+                            <td className="text-center">Liability</td>
                             <td className="text-center">Time</td>
                             <td className="text-center">ID</td>
                             <td className="text-center">IP</td>
@@ -734,6 +842,7 @@ export default class SideBet extends Component {
                                 <td>{item.stack}</td>
                                 <td>{item.bettype}</td>
                                 <td>{item.P_L}</td>
+                                <td>{item.liability}</td>
                                 <td>{item.createdDate}</td>
                                 <td>{item.userid}</td>
                                 <td>{item.IP}</td>
@@ -767,39 +876,46 @@ export default class SideBet extends Component {
                       <thead>
                         <tr className="headings">
                             <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
-                            <th className="text-center" style={{width:'50px'}}><b>Team1</b></th>
-                            <th className="text-center" style={{width:'50px'}}><b>Team2</b></th >
+                            <th className="text-center" style={{width:'50px'}}><b>{this.matchName[0]}</b></th>
+                            <th className="text-center" style={{width:'50px'}}><b>{this.matchName[1]}</b></th >
                         </tr>
                       </thead>
-                      {/* <tbody>
+                      <tbody>
                       {
-                        currentPosts.length>0 &&
-                          currentPosts.map((item,index)=>{
+                        this.state.SoM.length>0 &&
+                        this.state.SoM.map((item,index)=>{
                             return(
-                              <tr>
-                                <td>{item.selection}</td>
-                                <td>{item.clientName}</td>
-                                <td>{item.odds}</td>
-                                <td>{item.stack}</td>
-                                <td>{item.bettype}</td>
-                                <td>{item.P_L}</td>
-                                <td>{item.createdDate}</td>
-                                <td>{item.userid}</td>
-                                <td>{item.IP}</td>
-                                <td>{item?.userInfo[0]?.superAdmin[0]}</td>
-                                <td>{item?.userInfo[0]?.admin[0]}</td>
+                              <tr key={index}>
+                                <td className="text-center"><a style={{cursor:'pointer'}} onClick={() => this.handleUserAccess(this.state.curPoAcc,item.name)}>{item.name}</a></td>
+                                <td className="text-center">{item.profit}</td>
+                                <td className="text-center">{item.loss}</td>
                               </tr>
                             );
                           })
                       }
+                        <tr>
+                          <td className="text-center"><b>OWN</b></td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                        </tr>
+                        <tr>
+                          <td className="text-center"><b>PARENT</b></td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                        </tr>
+                        <tr>
+                          <td className="text-center"><b>TOTAL</b></td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                        </tr>
                       </tbody>
-                      <tfoot> 
+                      {/* <tfoot> 
                         <tr>
                           <td colSpan={16}>
                               <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                           </td>  
                         </tr>  
-                    </tfoot>*/}    
+                    </tfoot>     */}
                     </table>
                   </div>
                 </div>
