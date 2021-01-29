@@ -41,7 +41,7 @@ export default class Livevents extends Component {
 
       axios.post(Constants.APIURL+'fancyMarketTypeData',{
           "eventId":eid
-      }).then((response)=>{      
+      }).then((response)=>{
       cb({fancymarket:response.data.data});
        }).catch((error)=>console.log(error));
   }
@@ -50,7 +50,6 @@ export default class Livevents extends Component {
     axios.post(Constants.APIURL+'fancyMarketTypeData',{
         "eventId":eid
     }).then((response)=>{
-      
       let newData = response.data.data.filter(item => item.marketData.isVisible);
       let fdata = newData.map((item)=>{
         let runners = item.runners.filter(item=>item.isRunnersVisible==true);
@@ -58,7 +57,7 @@ export default class Livevents extends Component {
         return {marketData:mData,runners:runners}
       })
      // console.log(fdata)
-      let promises = fdata.map((item)=>{
+      /*let promises = fdata.map((item)=>{
         if(item.runners.length>0){
           return  new Promise((resolve)=>{
             this.ListMarketOdds(item.marketData.marketId,data=>{
@@ -67,17 +66,15 @@ export default class Livevents extends Component {
            
           });
         }
-  
      })
      Promise.all(promises)
      .then(results => {
-  //console.log(results);
-    cb({fodds:results,fancymarket:fdata});
+      cb({fodds:results,fancymarket:fdata});
      })
      .catch(e => {
        console.error(e);
-     })
-        
+     })*/
+     cb({fancymarket:fdata});
     }).catch((error)=>console.log(error));
 }
 
