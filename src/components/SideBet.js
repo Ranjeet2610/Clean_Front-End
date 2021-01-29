@@ -21,6 +21,7 @@ export default class SideBet extends Component {
         profit:0.00,
         loss: 0.00,
         betHistroy:'',
+        fbetHistroy:'',
         display:'none',
         IP:'',
         count:0,
@@ -32,6 +33,11 @@ export default class SideBet extends Component {
         newResData:[],
         betHistroy:[],
         curPoAcc:'',
+        DfPoAcc:'',
+        backPoAcc:'',
+        selUserName:'',
+        matchRunner:'',
+        openTab:'allBets',
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
@@ -223,108 +229,234 @@ export default class SideBet extends Component {
   handlecurrentPositionAccess = async () => {
     if(this.userDetails.superAdmin){
       await this.setState({
-        curPoAcc:'superAdmin'
+        curPoAcc:'Admin',
+        DfPoAcc:'Admin'
       })
     }
     else if(this.userDetails.Admin){
       await this.setState({
-        curPoAcc:'Admin'
+        curPoAcc:'Master',
+        DfPoAcc:'Master'
       })
     }
     else if(this.userDetails.Master){
       await this.setState({
+        curPoAcc:'User',
+        DfPoAcc:'User'
+      })
+    }
+}
+
+  BackhandleUserAccess = async (item,userName) =>{
+    await this.setState({
+      curPoAcc:item
+    })
+    await this.handleCurrentPosition(this.state.betHistroy,userName); 
+  }
+
+  handleUserAccess = async (item,userName) =>{
+    if(item === 'Admin'){
+      await this.setState({
         curPoAcc:'Master'
       })
     }
+    else if(item === 'Master'){
+      await this.setState({
+        curPoAcc:'User'
+      })
+    }
+    this.handleCurrentPosition(this.state.betHistroy,userName);
   }
 
-  handleUserAccess = (item,userName) =>{
-    if(item === 'superAdmin'){
-      this.setState({
-        curPoAcc:'Admin'
-      })
+  handleCurrentPosition = async (data,userName) => {
+    let getRunner = this.state.matchRunner.length;
+    let Teamone = this.state.matchRunner[0].runnerName;
+    let Teamtwo = this.state.matchRunner[1].runnerName;
+    if(getRunner==3){
+      var Teamthree = this.state.matchRunner[2].runnerName;
     }
-    else if(item === 'Admin'){
-      this.setState({
-        curPoAcc:'Master'
-      })
-    }
-    else if(item === 'Back'){
-      this.setState({
-        curPoAcc:'superAdmin'
-      })
-    }
-    this.handleCurrentPosition(this.state.betHistroy,userName); 
-  }
-
-  handleCurrentPosition = (data,userName) => {
-    if(this.state.curPoAcc === 'superAdmin'){
+    if(this.state.curPoAcc === 'Admin'){
       let arr = [];
-      let stn = '';
       data.map(item => {
         let itemName = item.userInfo[0].superAdmin[0]
-        if(itemName !== stn){
+        if(arr.every((item) => item.name !== itemName)){
           arr.push({
             name:item.userInfo[0].superAdmin[0],
-            profit: item.P_L,
-            loss : item.liability
+            T1TotalPL: 0,
+            T2TotalPL : 0,
+            T3TotalPL : 0,
+            bettype: item.bettype,
+            selection: item.selection
           })
-          stn = itemName
         }
-        else{
           let indx = arr.findIndex(e => e.name === itemName);
-          arr[indx].profit += item.P_L;
-          arr[indx].loss += item.liability;
-        }
+          if(item.bettype=='Back'){
+            if(Teamone==item.selection){
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+            }
+            if(Teamtwo==item.selection){
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+            }
+            if(getRunner==3){
+              if(Teamthree==item.selection){
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+              }
+            }  
+          }else{
+            if(Teamone==item.selection){
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+            }
+            if(Teamtwo==item.selection){
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+            }
+            if(getRunner==3){
+              if(Teamthree==item.selection){
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+              }
+            }
+          }
       })
       this.setState({
-        SoM:arr
+        SoM:arr,
+        selUserName:userName
       })
-    }
-    else if(this.state.curPoAcc === 'Admin'){
-        let arr = [];
-        let stn = '';
-        data.map(item => {
-          let itemName = item.userInfo[0].admin[0]
-          if(itemName !== stn){
-            arr.push({
-              name:item.userInfo[0].admin[0],
-              profit: item.P_L,
-              loss : item.liability
-            })
-            stn = itemName
-          }
-          else{
-            let indx = arr.findIndex(e => e.name === itemName);
-            arr[indx].profit += item.P_L;
-            arr[indx].loss += item.liability;
-          }
-        })
-        this.setState({
-          SoM:arr
-        })
     }
     else if(this.state.curPoAcc === 'Master'){
+        let arr = [];
+        let filterdata = data.filter(newdata=>{
+          return newdata.userInfo[0].superAdmin[0]===userName;
+        })
+          filterdata.map(item => {
+          let itemName = item.userInfo[0].admin[0]
+          if(arr.every((item) => item.name !== itemName)){
+            arr.push({
+              name:item.userInfo[0].admin[0],
+              T1TotalPL: 0,
+              T2TotalPL : 0,
+              T3TotalPL : 0,
+              bettype: item.bettype,
+              selection: item.selection
+            })
+          }
+            let indx = arr.findIndex(e => e.name === itemName);
+            if(item.bettype=='Back'){
+              if(Teamone==item.selection){
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+              }
+              if(Teamtwo==item.selection){
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+              }
+              if(getRunner==3){
+                if(Teamthree==item.selection){
+                  arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
+                  arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+                  arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+                }
+              }  
+            }else{
+              if(Teamone==item.selection){
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+              }
+              if(Teamtwo==item.selection){
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+              }
+              if(getRunner==3){
+                if(Teamthree==item.selection){
+                  arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
+                  arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+                  arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+                }
+              }
+            }
+        })
+        this.setState({
+          SoM:arr,
+          backPoAcc:'Admin',
+          selUserName:userName,
+        })
+      }
+    else if(this.state.curPoAcc === 'User'){
       let arr = [];
-      let stn = '';
-      data.map(item => {
-        let itemName = item.userInfo[0].admin[0]
-        if(itemName !== stn){
+      let strUM = userName;
+      let filterdata = data.filter(newdata=>{
+        return newdata.userInfo[0].admin[0]===userName;
+      })
+      filterdata.map(item => {
+        strUM = item.userInfo[0].superAdmin[0];
+        let itemName = item.clientName
+        if(arr.every((item) => item.name !== itemName)){
           arr.push({
-            name:item.userInfo[0].admin[0],
-            profit: item.P_L,
-            loss : item.liability
+            name:item.clientName,
+            T1TotalPL: 0,
+            T2TotalPL: 0,
+            T3TotalPL: 0,
+            bettype: item.bettype,
+            selection: item.selection
           })
-          stn = itemName
         }
-        else{
           let indx = arr.findIndex(e => e.name === itemName);
-          arr[indx].profit += item.P_L;
-          arr[indx].loss += item.liability;
-        }
+          if(item.bettype=='Back'){
+            if(Teamone==item.selection){
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+            }
+            if(Teamtwo==item.selection){
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
+            }
+            if(getRunner==3){
+              if(Teamthree==item.selection){
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
+              }
+            }  
+          }else{
+            if(Teamone==item.selection){
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+            }
+            if(Teamtwo==item.selection){
+              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
+              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
+            }
+            if(getRunner==3){
+              if(Teamthree==item.selection){
+                arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
+                arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
+                arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
+              }
+            }
+          }
       })
       this.setState({
-        SoM:arr
+        SoM:arr,
+        backPoAcc:'Master',
+        selUserName:strUM
       })
     }
   }
@@ -338,7 +470,11 @@ export default class SideBet extends Component {
         count:Data.data.data.length,
         load:false
       });
-      this.handleCurrentPosition(this.state.betHistroy, userName);           
+      if(this.state.selUserName!==""){
+        this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
+      }else{
+        this.handleCurrentPosition(this.state.betHistroy, userName);
+      }
     }); 
    }
    else if(this.userDetails.Admin){
@@ -350,7 +486,11 @@ export default class SideBet extends Component {
         count:betFill.length,
         load:false
       });
-      this.handleCurrentPosition(this.state.betHistroy,userName); 
+      if(this.state.selUserName!==""){
+        this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
+      }else{
+        this.handleCurrentPosition(this.state.betHistroy, userName);
+      }
     })
     }  
     else if(this.userDetails.Master){
@@ -361,8 +501,12 @@ export default class SideBet extends Component {
           betHistroy:betFill,
           count:betFill.length,
           load:false
-        }); 
-        this.handleCurrentPosition(this.state.betHistroy,userName); 
+        });
+        if(this.state.selUserName!==""){
+          this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
+        }else{
+          this.handleCurrentPosition(this.state.betHistroy, userName);
+        }
       });
     }
     else{
@@ -386,7 +530,14 @@ export default class SideBet extends Component {
         betData:this.props.betData
       });
     },2000)
-    this.getBetData();
+    //matchRunner
+    this.service.getListMarketType(this.props.eventId, (data) => {
+      this.setState({
+        matchRunner: data.pdata,
+      });
+      //console.log("CDM",this.state.matchRunner);
+      this.getBetData();
+    });
     const obj ={
       id:JSON.parse(localStorage.getItem('data')).id
     }
@@ -404,7 +555,6 @@ export default class SideBet extends Component {
   }
 
   StaKeAmount=(val,ods,type)=>{
-    debugger
     let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
@@ -505,8 +655,11 @@ export default class SideBet extends Component {
     if(type=='Fancy'){
       this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenfancyBetHistory',(data)=>{
         this.setState({
-          betHistroy:data,
-          fcount:data.length
+          fbetHistroy:data,
+          fcount:data.length,
+          showCurrPosition:'none',
+          showAllBets:'block',
+          openTab:'fancyBets'
         });             
       })
     }
@@ -518,10 +671,11 @@ export default class SideBet extends Component {
     //       count:data.length
     //     });             
     //   })
-    this.getBetData();
+    //this.getBetData();
     this.setState({
       showCurrPosition:'none',
-      showAllBets:'block'
+      showAllBets:'block',
+      openTab:'allBets'
     })
     }
   }
@@ -529,7 +683,8 @@ export default class SideBet extends Component {
   currentPosition=(e)=>{
     this.setState({
       showCurrPosition:'block',
-      showAllBets:'none'
+      showAllBets:'none',
+      openTab:'currentPosition'
     })
     this.removeActiveClass();
     e.target.parentElement.classList.add('active')
@@ -600,7 +755,7 @@ export default class SideBet extends Component {
     this.props.handleRemove("none");
   }
 
-    render() {
+  render() {
     let ods =0;
     let runnerName ='';
     let type =''; 
@@ -608,6 +763,12 @@ export default class SideBet extends Component {
     let betProfit= this.state.profit;
     let betLoss=this.state.loss;
     let display = {display:this.state.display};
+    let parent_team1 = 0;
+    let parent_team2 = 0;
+    let parent_team3 = 0;
+    let total_team1 = 0;
+    let total_team2 = 0;
+    let total_team3 = 0;
     if(this.props.betData){
       ods = this.props.betData.odds;
       type = this.props.betData.type;
@@ -617,12 +778,12 @@ export default class SideBet extends Component {
     if(this.props.setdisplay=='block'){
       display = {display:'block'};
     }
-
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
     const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
 
-  return (
+    return (
     <div className="col-md-4 col-xs-12">
       <div className="betSlipBox" style={{}}>
         <div className="betslip-head">
@@ -814,6 +975,36 @@ export default class SideBet extends Component {
                       </thead>
                       <tbody>
                       {
+                        this.state.openTab==='fancyBets' ?
+                        fcurrentPosts.length>0 &&
+                        fcurrentPosts.map((item,index)=>{
+                          return(
+                            <tr>
+                              <td>{item.selection}</td>
+                              <td>{item.clientName}</td>
+                              <td>{item.odds}</td>
+                              <td>{item.stack}</td>
+                              <td>{item.bettype}</td>
+                              <td>{item.P_L}</td>
+                              <td>{item.liability}</td>
+                              <td>{item.createdDate}</td>
+                              <td>{item.userid}</td>
+                              <td>{item.IP}</td>
+                              {
+                                this.userDetails.superAdmin &&
+                                <>
+                                  <td className="text-center">{item?.userInfo[0]?.superAdmin[0]}</td>
+                                  <td className="text-center">{item?.userInfo[0]?.admin[0]}</td>
+                                </>
+                              }
+                              {
+                                this.userDetails.Admin &&
+                                  <td className="text-center">{item?.userInfo[0]?.admin[0]}</td>
+                              }
+                            </tr>
+                          );
+                        })
+                        :
                         currentPosts.length>0 &&
                           currentPosts.map((item,index)=>{
                             return(
@@ -847,48 +1038,68 @@ export default class SideBet extends Component {
                       <tfoot>
                         <tr>
                           <td colSpan={16}>
-                              <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                              <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.openTab==='fancyBets' ? this.state.fbetHistroy.length : this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                           </td>  
                         </tr>  
                       </tfoot>    
                     </table>
                   </div>
+
                   <div style={{display:this.state.showCurrPosition}}>
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
                         <tr className="headings">
                             <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
-                            <th className="text-center" style={{width:'50px'}}><b>{this.matchName[0]}</b></th>
-                            <th className="text-center" style={{width:'50px'}}><b>{this.matchName[1]}</b></th >
+                            {this.props.runnderData.length>0 &&
+                              this.props.runnderData.map((item,index)=>{
+                                return (<th key={index} className="text-center" style={{width:'50px'}}><b>{item.runnerName}</b></th>)
+                              })
+                            }
                         </tr>
                       </thead>
                       <tbody>
                       {
                         this.state.SoM.length>0 &&
                         this.state.SoM.map((item,index)=>{
-                            return(
+                          parent_team1 = parseFloat(parent_team1) + parseFloat(item.T1TotalPL);
+                          parent_team2 = parseFloat(parent_team2) + parseFloat(item.T2TotalPL);
+                          total_team1 = parseFloat(total_team1) + parseFloat(item.T1TotalPL);
+                          total_team2 = parseFloat(total_team2) + parseFloat(item.T2TotalPL);
+                          if(this.props.runnderData.length===3){
+                            parent_team3 = parseFloat(parent_team3) + parseFloat(item.T3TotalPL);
+                            total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
+                          }
+                              return(
                               <tr key={index}>
-                                <td className="text-center"><a style={{cursor:'pointer'}} onClick={() => this.handleUserAccess(this.state.curPoAcc,item.name)}>{item.name}</a></td>
-                                <td className="text-center">{item.profit}</td>
-                                <td className="text-center">{item.loss}</td>
+                                <td className="text-center">
+                                  {this.state.curPoAcc==="User" ? item.name
+                                  : <a style={{cursor:'pointer'}} onClick={() => this.handleUserAccess(this.state.curPoAcc,item.name)}>{item.name}</a>
+                                  }
+                                </td>
+                                <td class={`text-center ${item.T1TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T1TotalPL}</td>
+                                <td class={`text-center ${item.T2TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T2TotalPL}</td>
+                                {this.props.runnderData.length===3 ? <td class={`text-center ${item.T3TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T3TotalPL}</td>:''}
                               </tr>
                             );
                           })
                       }
                         <tr>
                           <td className="text-center"><b>OWN</b></td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
+                          <td className="text-center inplay_txt">0.00</td>
+                          <td className="text-center inplay_txt">0.00</td>
+                          {this.props.runnderData.length===3 ? <td className="text-center inplay_txt">0.00</td>:''}
                         </tr>
                         <tr>
                           <td className="text-center"><b>PARENT</b></td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
+                          <td class={`text-center ${parent_team1>=0 ? "inplay_txt" : "color_red"}`}>{parent_team1}</td>
+                          <td class={`text-center ${parent_team2>=0 ? "inplay_txt" : "color_red"}`}>{parent_team2}</td>
+                          {this.props.runnderData.length===3 ? <td class={`text-center ${parent_team3>=0 ? "inplay_txt" : "color_red"}`}>{parent_team3}</td>:''}
                         </tr>
                         <tr>
                           <td className="text-center"><b>TOTAL</b></td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
+                          <td class={`text-center ${total_team1>=0 ? "inplay_txt" : "color_red"}`}>{total_team1}</td>
+                          <td class={`text-center ${total_team2>=0 ? "inplay_txt" : "color_red"}`}>{total_team2}</td>
+                          {this.props.runnderData.length===3 ? <td class={`text-center ${total_team3>=0 ? "inplay_txt" : "color_red"}`}>{total_team3}</td>:''}
                         </tr>
                       </tbody>
                       {/* <tfoot> 
@@ -899,6 +1110,7 @@ export default class SideBet extends Component {
                         </tr>  
                     </tfoot>     */}
                     </table>
+                    {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right', paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.selUserName)}>Back</button>:'' }
                   </div>
                 </div>
               </div>

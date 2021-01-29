@@ -312,8 +312,8 @@ export default class MatchOdds extends Component {
         });
       });
       livevents.getFancyMarket(this.props.match.params.id, (data) => {
+        console.log("getFM",data);
         this.setState({
-          fancyOdds: data.fodds,
           fancymarket: data.fancymarket,
         });
       });
@@ -620,7 +620,6 @@ export default class MatchOdds extends Component {
   }
 
   render() {
-    console.log('ggggggggggg',this.state.marketOdds)
     let inplay;
     let runners = this.state.data;
     let expoProfit = 0;
