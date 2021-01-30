@@ -14,7 +14,6 @@ export default class SideBet extends Component {
         load:false,
         SoM:[],
         showCurrPosition:'none',
-
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
         color:'lightblue',
@@ -44,6 +43,7 @@ export default class SideBet extends Component {
   }
 
   handleChange=(e)=>{
+    debugger
     let teamSelection = this.props.betData.pData.runnerName;
     let teamBetType = this.state.betData.type;
     let stack = e.target.value;
@@ -100,6 +100,7 @@ export default class SideBet extends Component {
         });
       }
       else{
+        // console.log("XXXXXXXXX",this.state.runnderData)
         this.state.expoData = this.state.runnderData.map(item=>{
           let updatedRunners ={};
           if(item.selectionId == this.props.betData.pData.selectionId){
@@ -115,6 +116,7 @@ export default class SideBet extends Component {
     }
      /*14Jan sachin */
      setTimeout(()=> {
+       this.props.betData.betType === undefined &&
       this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true");
     }, 500)
     /*14Jan sachin */
@@ -418,7 +420,6 @@ export default class SideBet extends Component {
   }
 
   StaKeAmount=(val,ods,type)=>{
-    debugger
     let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
@@ -427,6 +428,7 @@ export default class SideBet extends Component {
           profit:Math.round(val),
           loss:val?val:0.0
         })
+        this.props.betData.betType === undefined && 
         this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       }
       else{
@@ -434,8 +436,10 @@ export default class SideBet extends Component {
           profit:Math.round(val),
           loss:val?val:0.0
         })
+        this.props.betData.betType === undefined && 
         this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       }
+      this.props.betData.betType === undefined && 
         this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
     }
     else{
@@ -445,6 +449,7 @@ export default class SideBet extends Component {
           profit:(odds*val).toFixed(2),
           loss:val?val:0.0
         },()=>{
+          this.props.betData.betType === undefined && 
         this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
@@ -479,7 +484,8 @@ export default class SideBet extends Component {
           profit:val,
           loss:(odds*val).toFixed(2)
         },()=>{
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
+          this.props.betData.betType === undefined && 
+          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.runnderData.map(item=>{
@@ -508,6 +514,7 @@ export default class SideBet extends Component {
           });
         }
       }
+      this.props.betData.betType === undefined && 
       this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       this.props.handleInput(val);
     }

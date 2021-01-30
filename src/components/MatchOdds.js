@@ -105,22 +105,6 @@ export default class MatchOdds extends Component {
     }
   }
 
-  // StaKeAmount(ods, type) {
-  //   let val = document.getElementById("stakeValue").value;
-  //   let odds = ods - 1;
-  //   if (type === "Back") {
-  //     this.setState({
-  //       betProfit: Math.round(odds * val),
-  //       betLoss: val ? val : 0.0,
-  //     });
-  //   } else {
-  //     this.setState({
-  //       betProfit: val,
-  //       betLoss: Math.round(odds * val),
-  //     });
-  //   }
-  // }
-
   StaKeAmount(ods, type, teamSelection) {
     let val = document.getElementById("stakeValue").value;
     let odds = ods - 1;
@@ -228,6 +212,7 @@ export default class MatchOdds extends Component {
   }
 
   placeBet(type, odds, data, pdata, mid, index, width) {
+    // debugger
     let displayTest;
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
       if (width <= 991) {
@@ -254,47 +239,32 @@ export default class MatchOdds extends Component {
         toggleMatchIndex: index
       });
       this.StaKeAmount(odds, type, pdata.runnerName);
-      // this.StaKeAmount(odds, type);
-      // setTimeout(() => {
-      //   document.getElementById('stakeValue').value=0
-      //   this.setState({
-      //     display:'none',
-      //     betProfit:0,
-      //     betLoss:0,
-      //     color:"green"
-      //   })
-      // }, 6000);
     }
   }
 
-  betfancy(type, odds, data, pdata, selectoionData, mid, fancyType) {
+  betfancy = (type,oddsprice,oddssize,data,fancyType) => {
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
-      let fullData = Object.assign(pdata, {
-        runnerName: selectoionData.runnerName,
-        selectionId: selectoionData.selectionId,
-      });
       this.setState({
         betData: {
-          data: data,
-          pData: fullData,
+          data: {
+            price:oddsprice,
+            size:oddssize
+          },
+          pData:{
+            marketId:data.marketId,
+            runnerName:data.marketName,
+            selectionId:data.marketId
+          },
           type: type,
-          odds: odds,
-          mid: mid,
+          odds: oddsprice ,
+          mid: data.marketId,
           betType: "Fancy",
           fancyType: fancyType,
         },
         display: "block",
       });
     }
-    // setTimeout(() => {
-    //   document.getElementById('stakeValue').value=0
-    //   this.setState({
-    //     display:'none',
-    //     betProfit:0,
-    //     betLoss:0,
-    //     color:"green"
-    //   })
-    // }, 6000);
+    console.log("FANCY", this.state.betData)  
   }
 
   componentDidMount() {
@@ -311,9 +281,15 @@ export default class MatchOdds extends Component {
           data: data.pdata,
         });
       });
+      // livevents.getFancyMarket(this.props.match.params.id, (data) => {
+      //   this.setState({
+          // fancyOdds: data.fodds,
+      //     fancymarket: data.fancymarket,
+      //   });
+      // });
       livevents.getFancyMarket(this.props.match.params.id, (data) => {
+        // console.log("getFM",data);
         this.setState({
-          fancyOdds: data.fodds,
           fancymarket: data.fancymarket,
         });
       });
@@ -610,7 +586,6 @@ export default class MatchOdds extends Component {
   }
 
   render() {
-    console.log('ggggggggggg',this.state.marketOdds)
     let inplay;
     let runners = this.state.data;
     let expoProfit = 0;
@@ -636,10 +611,10 @@ export default class MatchOdds extends Component {
             <Loader type="Grid" color="#6c1945" height={100} width={100} />
         </div>:
         <div>
-          <div class="container body">
-          <div class="main_container" id="sticky">
-            <div class="right_col" role="main">
-              <div class="fullrow tile_count">
+          <div className="container body">
+          <div className="main_container" id="sticky">
+            <div className="right_col" role="main">
+              <div className="fullrow tile_count">
                 <div className="col-md-8">
 
                   {
@@ -903,11 +878,13 @@ export default class MatchOdds extends Component {
                           </div>
                         </div>
 
-                        {
-                          /////////////////////// HEADER OF FANCY ODDS //////////////////////////////////
-                        }
                         <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                           <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
+
+                            {
+                              /////////////////////// HEADER OF FANCY ODDS //////////////////////////////////
+                            }
+
                             <div className="modal-header mod-header" style={{ marginTop: '25px' }}>
                               <div className="block_box">
                                 <span id="tital_change">
@@ -946,121 +923,39 @@ export default class MatchOdds extends Component {
                                 this.state.fancymarket.map((parentitem, index) => {
                                   return (
                                     <div>
-                                      <div class="match_score_box">
-                                        <div class="score_area">
-                                          <span class="matchScore" id="matchScore_29905278"></span>
+                                      <div className="match_score_box">
+                                        <div className="score_area">
+                                          <span className="matchScore" id="matchScore_29905278"></span>
                                         </div>
                                       </div>
 
-                                      <div class="fancyAPI">
-                                        <div class="block_box f_m_4138 fancy_5303 f_m_5303" data-id="5303" >
-                                          <ul class="sport-high fancyListDiv">
+                                      <div className="fancyAPI">
+                                        <div className="block_box f_m_4138 fancy_5303 f_m_5303" data-id="5303" >
+                                          <ul className="sport-high fancyListDiv">
                                             <li>
-                                              <div class="ses-fan-box">
-                                                <table class={`table table-striped bulk_actions ${parentitem.marketData.isEnabled ? "fancyOddsDisabled" : ""}`} >
-                                                  {
-                                                    this.state.fancyOdds.length > 0 && this.state.fancyOdds[index] && this.state.fancyOdds[index].length > 0 ?
-                                                      (
-                                                        this.state.fancyOdds[index][0].runners.slice(0, 2).map((item, cindex) => {
-                                                          if (item.ex.availableToBack.length < 1) {
-                                                            item.ex.availableToBack.unshift({
-                                                              price: 0,
-                                                              size: 0,
-                                                            });
-                                                          }
-
-                                                          if (item.ex.availableToLay.length < 1) {
-                                                            item.ex.availableToLay.unshift({
-                                                              price: 0,
-                                                              size: 0,
-                                                            });
-                                                          }
-                                                          return (
-                                                            <tbody>
-                                                              <tr class="session_content">
-                                                                <td>
-                                                                  <span class="fancyhead5303" id="fancy_name5303" >
-                                                                    {
-                                                                      parentitem.marketData.marketName.toLowerCase().replace('line', 'session')
-                                                                    }
-                                                                  </span>
-                                                                  <div className="block_box_btn" style={{ marginRight: '50px' }}>
-                                                                    <button className="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModalForBook" style={{ color: 'white', border: 'none', outline: 'none', backgroundColor: '#6c1945' }}>
-                                                                      Book
-                                                                  </button>
-                                                                    <button className="btn btn-primary btn-xs" style={{ color: 'white', border: 'none', outline: 'none', backgroundColor: '#6c1945' }}>
-                                                                      Bets
-                                                                  </button>
-                                                                  </div>
-                                                                  <b class="fancyLia5303"></b>
-                                                                  <p class="position_btn"></p>
-                                                                </td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                {
-                                                                  item.ex.availableToBack.slice(0, 1).map((itemBack) => {
-                                                                    return (
-                                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back", Math.round(itemBack.price), itemBack, parentitem, {
-                                                                        runnerName: parentitem.runners[cindex].runnerName,
-                                                                        selectionId: parentitem.runners[cindex].selectionId,
-                                                                      }, parentitem.marketData.marketId, "NO")} >
-                                                                        <button class="lay-cell cell-btn" id="LayNO_5303" >
-                                                                          {Math.round(itemBack.price)}
-                                                                        </button>
-                                                                        <button id="NoValume_5303" class="disab-btn" >
-                                                                          {
-                                                                            Math.round(itemBack.price) > 0 ? 100 : itemBack.size
-                                                                          }
-                                                                        </button>
-                                                                      </td>
-                                                                    );
-                                                                  })
-                                                                }
-
-                                                                {
-                                                                  item.ex.availableToLay.slice(0, 1).map((itemLay) => {
-                                                                    return (
-                                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",
-                                                                        Math.round(itemLay.price), itemLay, parentitem, {
-                                                                        runnerName: parentitem.runners[cindex].runnerName,
-                                                                        selectionId: parentitem.runners[cindex].selectionId,
-                                                                      },
-                                                                        parentitem.marketData.marketId, "YES")}>
-                                                                        <button class="back-cell cell-btn" id="BackYes_5303" >{Math.round(itemLay.price)}</button>
-                                                                        <button id="YesValume_5303" class="disab-btn" >{Math.round(itemLay.price) > 0 ? 100 : itemLay.size}</button>
-                                                                      </td>
-                                                                    );
-                                                                  })}
-                                                                <td></td>
-                                                                <td></td>
-                                                              </tr>
-                                                            </tbody>
-                                                          );
-                                                        })
-                                                      ) : (
-                                                        <tbody>
-                                                          <tr class="session_content">
-                                                            <td>
-                                                              <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
-                                                              <b class="fancyLia5303"></b>
-                                                              <p class="position_btn"></p>
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td class="fancy_lay">
-                                                              <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.LayPrice}</button>
-                                                              <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
-                                                            </td>
-                                                            <td class="fancy_back">
-                                                              <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.BackPrice}</button>
-                                                              <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
-                                                            </td>
-                                                            <td></td>
-                                                            <td></td>
-                                                          </tr>
-                                                        </tbody>
-                                                      )
-                                                  }
+                                              <div className="ses-fan-box">
+                                                <table className={`table table-striped bulk_actions ${parentitem.marketData.isEnabled ? "fancyOddsDisabled" : ""}`} >
+                                                  <tbody>
+                                                    <tr class="session_content">
+                                                      <td>
+                                                        <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
+                                                        <b class="fancyLia5303"></b>
+                                                        <p class="position_btn"></p>
+                                                      </td>
+                                                      <td></td>
+                                                      <td></td>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO")}>
+                                                        <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
+                                                        <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
+                                                      </td>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES")}>
+                                                        <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
+                                                        <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
+                                                      </td>
+                                                      <td></td>
+                                                      <td></td>
+                                                    </tr>
+                                                  </tbody>
                                                 </table>
                                               </div>
                                             </li>

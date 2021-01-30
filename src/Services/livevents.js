@@ -45,40 +45,73 @@ export default class Livevents extends Component {
       cb({fancymarket:response.data.data});
        }).catch((error)=>console.log(error));
   }
-  async  getFancyMarket(eid,cb){
+//   async  getFancyMarket(eid,cb){
 
-    axios.post(Constants.APIURL+'fancyMarketTypeData',{
-        "eventId":eid
-    }).then((response)=>{
+//     axios.post(Constants.APIURL+'fancyMarketTypeData',{
+//         "eventId":eid
+//     }).then((response)=>{
       
-      let newData = response.data.data.filter(item => item.marketData.isVisible);
-      let fdata = newData.map((item)=>{
-        let runners = item.runners.filter(item=>item.isRunnersVisible==true);
-        let mData = item.marketData;
-        return {marketData:mData,runners:runners}
-      })
-     // console.log(fdata)
-      let promises = fdata.map((item)=>{
-        if(item.runners.length>0){
-          return  new Promise((resolve)=>{
-            this.ListMarketOdds(item.marketData.marketId,data=>{
-              resolve(data.data.data[0])
-            });
+//       let newData = response.data.data.filter(item => item.marketData.isVisible);
+//       let fdata = newData.map((item)=>{
+//         let runners = item.runners.filter(item=>item.isRunnersVisible==true);
+//         let mData = item.marketData;
+//         return {marketData:mData,runners:runners}
+//       })
+//      // console.log(fdata)
+//       let promises = fdata.map((item)=>{
+//         if(item.runners.length>0){
+//           return  new Promise((resolve)=>{
+//             this.ListMarketOdds(item.marketData.marketId,data=>{
+//               resolve(data.data.data[0])
+//             });
            
-          });
-        }
+//           });
+//         }
   
-     })
-     Promise.all(promises)
-     .then(results => {
-  //console.log(results);
-    cb({fodds:results,fancymarket:fdata});
-     })
-     .catch(e => {
-       console.error(e);
-     })
+//      })
+//      Promise.all(promises)
+//      .then(results => {
+//   //console.log(results);
+//     cb({fodds:results,fancymarket:fdata});
+//      })
+//      .catch(e => {
+//        console.error(e);
+//      })
         
-    }).catch((error)=>console.log(error));
+//     }).catch((error)=>console.log(error));
+// }
+
+async  getFancyMarket(eid,cb){
+
+  axios.post(Constants.APIURL+'fancyMarketTypeData',{
+      "eventId":eid
+  }).then((response)=>{
+    let newData = response.data.data.filter(item => item.marketData.isVisible);
+    let fdata = newData.map((item)=>{
+      let runners = item.runners.filter(item=>item.isRunnersVisible==true);
+      let mData = item.marketData;
+      return {marketData:mData,runners:runners}
+    })
+   // console.log(fdata)
+    /*let promises = fdata.map((item)=>{
+      if(item.runners.length>0){
+        return  new Promise((resolve)=>{
+          this.ListMarketOdds(item.marketData.marketId,data=>{
+            resolve(data.data.data[0])
+          });
+         
+        });
+      }
+   })
+   Promise.all(promises)
+   .then(results => {
+    cb({fodds:results,fancymarket:fdata});
+   })
+   .catch(e => {
+     console.error(e);
+   })*/
+   cb({fancymarket:fdata});
+  }).catch((error)=>console.log(error));
 }
 
     ListMarketOdds(mid,cb){
