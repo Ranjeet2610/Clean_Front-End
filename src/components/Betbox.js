@@ -7,8 +7,7 @@ import { Link } from 'react-router-dom'
 export default class BetBox extends Component {
 
     constructor(props) {
-        super(props)
-        //console.log(props);
+        super(props);
         this.state = {
             tableHead: ["No.", "Runner", "Client", "Odds", "Stack", "Bet Type", "P&L", "Time", "ID", "IP"],
             chipName: ["500", "2000", "5000", "25000", "50000", "100000"],
@@ -24,9 +23,6 @@ export default class BetBox extends Component {
             runnderData: '',
             getExpo: '',
             expoData: '',
-            //isMobile: window.matchMedia("only screen and (max-width: 480px)").matches,
-            //isTab: window.matchMedia("only screen and (max-width: 767px)").matches,
-            //isDesktop: window.matchMedia("only screen and (max-width: 1280px)").matches,
         }
         this.service = new Service();
         this.users = new Users();
@@ -48,8 +44,7 @@ export default class BetBox extends Component {
         const obj = {
             id: JSON.parse(localStorage.getItem('data')).id
         }
-        this.service.getchipInfo(obj, (data) => {
-            //console.log(data)                 
+        this.service.getchipInfo(obj, (data) => {                
         });
         fetch("https://api.ipify.org?format=json")
             .then(response => {
@@ -61,15 +56,6 @@ export default class BetBox extends Component {
             .catch(err => console.log(err))
     }
     placeBet=(e)=>{
-        // device 1 for desktop,2 for mobile,3 for tab
-        // let device;
-        // if(this.state.isMobile)
-        // device = 2;
-        // if(this.state.isDesktop)
-        // device = 1;
-        // if(this.state.isTab)
-        // device = 3;
-           
         e.preventDefault();
         if(this.stackInput.value < 99 || this.stackInput.value > 49999 ){
           this.props.handleBetPlaceBox("Choose Stack...",'red','error')
@@ -109,9 +95,9 @@ export default class BetBox extends Component {
               this.users.getMyprofile(obj1,data=>{
                 localStorage.setItem('data',JSON.stringify(data.data));
                 this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                setTimeout(()=>{
-                  window.location.reload();     
-                },5000);
+                // setTimeout(()=>{
+                //   window.location.reload();     
+                // },5000);
               })
             })
           }
@@ -152,9 +138,9 @@ export default class BetBox extends Component {
                   }
                   this.users.getUserExposure(obj3,expodata=>{
                     this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                    setTimeout(()=>{
-                      window.location.reload();     
-                    },3000);
+                    // setTimeout(()=>{
+                    //   window.location.reload();     
+                    // },3000);
                   })
                 }); 
               })
@@ -376,15 +362,13 @@ export default class BetBox extends Component {
         if (this.props.betData) {
             ods = this.props.betData.odds;
             type = this.props.betData.type;
-            runnerName = this.props.betData.pData.runnerName;
-            selectionId = this.props.betData.pData.selectionId;
+            runnerName = this.props.betData.data.marketName;
+            selectionId = this.props.betData.mid;
         }
         if (this.props.setdisplay === 'block') {
             display = { display: 'block' };
         }
         return (
-          <>
-            {/* <NotificationContainer/> */}
             <div className="betBox border-box test" style={display}>
                 <div className="block_box">
                     <span id="msg_error" /><span id="errmsg" />
@@ -443,7 +427,6 @@ export default class BetBox extends Component {
                     </form>
                 </div>
             </div>
-          </>
-        )
+          )
     }
 } 
