@@ -769,12 +769,8 @@ export default class SideBet extends Component {
     this.props.handleRemove("none");
   }
 
-<<<<<<< HEAD
     render() {
     let color = this.state.color
-=======
-  render() {
->>>>>>> 6ff223b88cdaaa53477774c40f6f6a9240249fc6
     let ods =0;
     let runnerName ='';
     let type =''; 
@@ -799,12 +795,8 @@ export default class SideBet extends Component {
     }
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-<<<<<<< HEAD
-    const currentPosts = this.state.betHistroy?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
-=======
     const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
     const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
->>>>>>> 6ff223b88cdaaa53477774c40f6f6a9240249fc6
 
     return (
     <div className="col-md-4 col-xs-12">
