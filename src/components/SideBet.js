@@ -4,6 +4,7 @@ import  fullSize from '../images/full-size.png'
 import Service from '../Services/Service';
 import Users from '../Services/users'
 import {Link} from 'react-router-dom'
+import e from 'cors';
 export default class SideBet extends Component {
 
   constructor(props) {
@@ -27,7 +28,7 @@ export default class SideBet extends Component {
         count:0,
         fcount:0,
         runnderData:'',
-        getExpo:'',
+        getExpo:[],
         expoData:'',
         historyType:'open',
         newResData:[],
@@ -38,6 +39,9 @@ export default class SideBet extends Component {
         selUserName:'',
         matchRunner:'',
         openTab:'allBets',
+        getselOdds:'',
+        getselfancyOdds:'',
+        getselfancySize:'',
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
@@ -49,84 +53,148 @@ export default class SideBet extends Component {
   }
 
   handleChange=(e)=>{
-    debugger
     let teamSelection = this.props.betData.pData.runnerName;
     let teamBetType = this.state.betData.type;
     let stack = e.target.value;
     e.preventDefault();
-    let odds = this.state.betData.odds-1;
-    if(this.state.betData.type === 'Back'){
-      this.setState({
-        profit:(odds*e.target.value).toFixed(2),
-        loss:e.target.value?e.target.value:0.0
-      });
-      if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
-        this.state.expoData = this.state.getExpo.map(item=>{
-          let updatedRunners ={};
-          if(item.runnerId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure =item.exposure + parseFloat((odds*e.target.value).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = item.exposure +(- parseFloat(e.target.value))
-          }
-          updatedRunners.runnerId = item.runnerId;
-          return updatedRunners;
+    if(this.props.betData.betType==="Fancy"){
+      let fancysize = this.props.betData.data.size;
+      if(this.state.betData.type === 'Back'){
+       this.setState({
+        loss:((fancysize/100)*stack).toFixed(2),
+        profit:stack?stack:0.0
+       })
+       if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+         this.state.expoData = this.state.getExpo.map(item=>{
+           let updatedRunners ={};
+           if(item.runnerId == this.props.betData.pData.selectionId){
+             updatedRunners.exposure =item.exposure - parseFloat(((fancysize/100)*stack).toFixed(2))
+           }
+           else{
+             updatedRunners.exposure = item.exposure +(parseFloat(stack))
+           }
+           updatedRunners.runnerId = item.runnerId;
+           return updatedRunners;
+         })
+       }
+       else{
+         this.state.expoData = this.state.runnderData.map(item=>{
+           let updatedRunners ={};
+           if(item.selectionId == this.props.betData.pData.selectionId){
+             updatedRunners.exposure = - parseFloat(((fancysize/100)*stack).toFixed(2))
+           }
+           else{
+             updatedRunners.exposure = parseFloat(stack)
+           }
+         updatedRunners.runnerId = item.selectionId;
+         return updatedRunners;
+         });
+       }
+     }
+     else{
+       this.setState({
+        loss:stack,
+         profit:((fancysize/100)*stack).toFixed(2)
+       })
+       if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+         this.state.expoData = this.state.runnderData.map(item=>{
+           let updatedRunners ={};
+           if(item.runnerId == this.props.betData.pData.selectionId){
+             updatedRunners.exposure =item.exposure + (parseFloat(((fancysize/100)*stack).toFixed(2)))
+           }
+           else{
+             updatedRunners.exposure = item.exposure - parseFloat(stack)
+           }        
+           updatedRunners.runnerId = item.runnerId;
+           return updatedRunners;
+         });
+       }
+       else{
+         this.state.expoData = this.state.runnderData.map(item=>{
+           let updatedRunners ={};
+           if(item.selectionId == this.props.betData.pData.selectionId){
+             updatedRunners.exposure = parseFloat(((fancysize/100)*stack).toFixed(2))
+           }
+           else{
+             updatedRunners.exposure = - parseFloat(stack)
+           }
+           updatedRunners.runnerId = item.selectionId;
+           return updatedRunners;
+         });
+       }
+     }
+   }else{
+       let odds = this.state.betData.odds-1;
+      if(this.state.betData.type === 'Back'){
+        this.setState({
+          profit:(odds*e.target.value).toFixed(2),
+          loss:e.target.value?e.target.value:0.0
         });
+        if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+          this.state.expoData = this.state.getExpo.map(item=>{
+            let updatedRunners ={};
+            if(item.runnerId == this.props.betData.pData.selectionId){
+              updatedRunners.exposure =item.exposure + parseFloat((odds*e.target.value).toFixed(2))
+            }
+            else{
+              updatedRunners.exposure = item.exposure +(- parseFloat(e.target.value))
+            }
+            updatedRunners.runnerId = item.runnerId;
+            return updatedRunners;
+          });
+        }
+        else{
+          this.state.expoData = this.state.runnderData.map(item=>{
+            let updatedRunners ={};
+            if(item.selectionId == this.props.betData.pData.selectionId){
+              updatedRunners.exposure = parseFloat((odds*e.target.value).toFixed(2))
+            }
+            else{
+              updatedRunners.exposure = - parseFloat(e.target.value)
+            }
+          updatedRunners.runnerId = item.selectionId;
+          return updatedRunners;
+          });
+        }
       }
       else{
-        this.state.expoData = this.state.runnderData.map(item=>{
-          let updatedRunners ={};
-          if(item.selectionId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure = parseFloat((odds*e.target.value).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = - parseFloat(e.target.value)
-          }
-        updatedRunners.runnerId = item.selectionId;
-        return updatedRunners;
+        this.setState({
+          profit:e.target.value,
+          loss:(odds*e.target.value).toFixed(2)
         });
-      }
-    }
-    else{
-      this.setState({
-        profit:e.target.value,
-        loss:(odds*e.target.value).toFixed(2)
-      });
-      if(this.state.runnderData.length>0){
-        this.state.expoData = this.state.getExpo.map(item=>{
-          let updatedRunners ={};
-          if(item.runnerId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure =item.exposure + (- parseFloat((odds*e.target.value).toFixed(2)))
-          }
-          else{
-            updatedRunners.exposure = item.exposure + parseFloat(e.target.value)
-          } 
-          updatedRunners.runnerId = item.runnerId;
+        if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+          this.state.expoData = this.state.getExpo.map(item=>{
+            let updatedRunners ={};
+            if(item.runnerId == this.props.betData.pData.selectionId){
+              updatedRunners.exposure =item.exposure + (- parseFloat((odds*e.target.value).toFixed(2)))
+            }
+            else{
+              updatedRunners.exposure = item.exposure + parseFloat(e.target.value)
+            } 
+            updatedRunners.runnerId = item.runnerId;
+            return updatedRunners;
+          });
+        }
+        else{
+          // console.log("XXXXXXXXX",this.state.runnderData)
+          this.state.expoData = this.state.runnderData.map(item=>{
+            let updatedRunners ={};
+            if(item.selectionId == this.props.betData.pData.selectionId){
+              updatedRunners.exposure = - parseFloat((odds*e.target.value).toFixed(2))
+            }
+            else{
+              updatedRunners.exposure = parseFloat(e.target.value)
+            }
+          updatedRunners.runnerId = item.selectionId;
           return updatedRunners;
-        });
+          });
+        }
       }
-      else{
-        // console.log("XXXXXXXXX",this.state.runnderData)
-        this.state.expoData = this.state.runnderData.map(item=>{
-          let updatedRunners ={};
-          if(item.selectionId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure = - parseFloat((odds*e.target.value).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = parseFloat(e.target.value)
-          }
-        updatedRunners.runnerId = item.selectionId;
-        return updatedRunners;
-        });
-      }
-    }
-     /*14Jan sachin */
      setTimeout(()=> {
-       this.props.betData.betType === undefined &&
       this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true");
-    }, 500)
-    /*14Jan sachin */
-    if(this.props.betData.betType ==undefined)
+     }, 500)
+    }
+    if(this.props.betData.betType ===undefined)
     this.props.handleInput(e.target.value);
   }
 
@@ -148,7 +216,7 @@ export default class SideBet extends Component {
     }
   }
 
-  placeBet=(e)=>{
+  placeBet=async(e)=>{
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -166,77 +234,109 @@ export default class SideBet extends Component {
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
     }
     else{
-      if(this.props.betData.betType !=undefined){
-        const obj = {
-          userName:JSON.parse(localStorage.getItem('data')).userName,
-          description:localStorage.getItem('matchname'),
-          selection:this.runnerNameInput.value,
-          selectionID:this.selectionIdInput.value,
-          odds:this.odsInput.value,
-          stack:this.stackInput.value,
-          eventID:this.props.eventId,
-          status:"open",
-          marketID:this.props.betData.mid,
-          profit:this.state.profit,
-          loss:this.state.loss,
-          IP:this.state.IP,
-          device:device,
-          marketType: this.props.betData.betType,
-          bettype:this.isbackInput.value
-        }
-        this.service.fancyplaceBet(obj,data=>{ 
-          const obj1 = {
-            userName:JSON.parse(localStorage.getItem('data')).userName
-          }
-          this.users.getMyprofile(obj1,data=>{
-            localStorage.setItem('data',JSON.stringify(data.data));
-            this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-            this.getBetData();
-          })
-        })
+      if(this.props.betData.betType !=undefined && this.state.getselfancySize < this.props.betData.data.size){
+        this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
+      }
+      else if(this.state.getselOdds < this.odsInput.value){
+        this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
       }
       else{
-        const obj ={
-          userName:JSON.parse(localStorage.getItem('data')).userName,
-          description:localStorage.getItem('matchname'),
-          selection:this.runnerNameInput.value,
-          selectionID:this.selectionIdInput.value,
-          odds:this.odsInput.value,
-          stack:this.stackInput.value,
-          eventID:this.props.eventId,
-          status:"open",
-          marketID:this.props.betData.mid,
-          profit:this.state.profit,
-          loss:this.state.loss,
-          IP:this.state.IP,
-          device:device,
-          marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-          bettype:this.isbackInput.value
-        }
-        this.service.placeBet(obj,data=>{ 
-          const obj1 = {
-            userName:JSON.parse(localStorage.getItem('data')).userName
+        await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+        if(this.props.betData.betType !=undefined){
+          await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value);
+            const obj = {
+            userName:JSON.parse(localStorage.getItem('data')).userName,
+            description:localStorage.getItem('matchname'),
+            selection:this.runnerNameInput.value,
+            selectionID:this.selectionIdInput.value,
+            odds:this.state.getselfancyOdds,
+            stack:this.stackInput.value,
+            eventID:this.props.eventId,
+            status:"open",
+            marketID:this.props.betData.mid,
+            profit:this.state.profit,
+            loss:this.state.loss,
+            IP:this.state.IP,
+            device:device,
+            marketType: this.props.betData.betType,
+            bettype:this.isbackInput.value
           }
-          this.users.getMyprofile(obj1,data=>{
-            localStorage.setItem('data',JSON.stringify(data.data));
-            localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
-            const obj2 = {
-              userid:JSON.parse(localStorage.getItem('data')).id,
-              eventID:this.props.eventId,
-              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-              runnersData :this.state.expoData
+          //console.log(obj);
+          this.service.fancyplaceBet(obj,data=>{ 
+            const obj1 = {
+              userName:JSON.parse(localStorage.getItem('data')).userName
             }
-            this.service.updateExpo(obj2,ddata=>{
-              const obj3 = {
-                userid:JSON.parse(localStorage.getItem('data')).id
+            this.users.getMyprofile(obj1,data=>{
+              localStorage.setItem('data',JSON.stringify(data.data));
+              this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+              this.getBetData();
+            })
+            this.users.getMyprofile(obj1,data=>{
+              localStorage.setItem('data',JSON.stringify(data.data));
+              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+              const obj2 = {
+                userid:JSON.parse(localStorage.getItem('data')).id,
+                eventID:this.props.eventId,
+                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                runnersData :this.state.expoData
               }
-              this.users.getUserExposure(obj3,expodata=>{
-                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                this.getBetData();
-              })
-            }); 
+              this.service.updateExpo(obj2,ddata=>{
+                const obj3 = {
+                  userid:JSON.parse(localStorage.getItem('data')).id
+                }
+                this.users.getUserExposure(obj3,expodata=>{
+                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                  this.getBetData();
+                })
+              });
+            })
           })
-        }) 
+        }
+        else{
+          await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value);
+          const obj ={
+            userName:JSON.parse(localStorage.getItem('data')).userName,
+            description:localStorage.getItem('matchname'),
+            selection:this.runnerNameInput.value,
+            selectionID:this.selectionIdInput.value,
+            odds:this.state.getselOdds,
+            stack:this.stackInput.value,
+            eventID:this.props.eventId,
+            status:"open",
+            marketID:this.props.betData.mid,
+            profit:this.state.profit,
+            loss:this.state.loss,
+            IP:this.state.IP,
+            device:device,
+            marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+            bettype:this.isbackInput.value
+          }
+          //console.log(obj);
+          this.service.placeBet(obj,data=>{ 
+            const obj1 = {
+              userName:JSON.parse(localStorage.getItem('data')).userName
+            }
+            this.users.getMyprofile(obj1,data=>{
+              localStorage.setItem('data',JSON.stringify(data.data));
+              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+              const obj2 = {
+                userid:JSON.parse(localStorage.getItem('data')).id,
+                eventID:this.props.eventId,
+                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                runnersData :this.state.expoData
+              }
+              this.service.updateExpo(obj2,ddata=>{
+                const obj3 = {
+                  userid:JSON.parse(localStorage.getItem('data')).id
+                }
+                this.users.getUserExposure(obj3,expodata=>{
+                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                  this.getBetData();
+                })
+              });
+            })
+          })
+        }
       }
     }
     this.closeWindow();
@@ -570,30 +670,75 @@ export default class SideBet extends Component {
     .catch(err => console.log(err)) 
   }
 
-  StaKeAmount=(val,ods,type)=>{
+  StaKeAmount=(val,ods,fancysize,type)=>{
     let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
-      if(type=='Back'){
-        this.setState({
-          profit:Math.round(val),
-          loss:val?val:0.0
+     if(type === 'Back'){
+      this.setState({
+        loss:((fancysize/100)*val).toFixed(2),
+        profit:val?val:0.0
+      })
+      if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+        this.state.expoData = this.state.getExpo.map(item=>{
+          let updatedRunners ={};
+          if(item.runnerId == this.props.betData.pData.selectionId){
+            updatedRunners.exposure =item.exposure - parseFloat(((fancysize/100)*val).toFixed(2))
+          }
+          else{
+            updatedRunners.exposure = item.exposure +(parseFloat(val))
+          }
+          updatedRunners.runnerId = item.runnerId;
+          return updatedRunners;
         })
-        this.props.betData.betType === undefined && 
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       }
       else{
-        this.setState({
-          profit:Math.round(val),
-          loss:val?val:0.0
-        })
-        this.props.betData.betType === undefined && 
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
+        this.state.expoData = this.state.runnderData.map(item=>{
+          let updatedRunners ={};
+          if(item.selectionId == this.props.betData.pData.selectionId){
+            updatedRunners.exposure = -parseFloat(((fancysize/100)*val).toFixed(2))
+          }
+          else{
+            updatedRunners.exposure = parseFloat(val)
+          }
+        updatedRunners.runnerId = item.selectionId;
+        return updatedRunners;
+        });
       }
-      this.props.betData.betType === undefined && 
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
     }
     else{
+      this.setState({
+        loss:val,
+        profit:((fancysize/100)*val).toFixed(2)
+      })
+      if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
+        this.state.expoData = this.state.runnderData.map(item=>{
+          let updatedRunners ={};
+          if(item.runnerId == this.props.betData.pData.selectionId){
+            updatedRunners.exposure =item.exposure + (parseFloat(((fancysize/100)*val).toFixed(2)))
+          }
+          else{
+            updatedRunners.exposure = item.exposure - parseFloat(val)
+          }        
+          updatedRunners.runnerId = item.runnerId;
+          return updatedRunners;
+        });
+      }
+      else{
+        this.state.expoData = this.state.runnderData.map(item=>{
+          let updatedRunners ={};
+          if(item.selectionId == this.props.betData.pData.selectionId){
+            updatedRunners.exposure = parseFloat(((fancysize/100)*val).toFixed(2))
+          }
+          else{
+            updatedRunners.exposure = - parseFloat(val)
+          }
+          updatedRunners.runnerId = item.selectionId;
+          return updatedRunners;
+        });
+      }
+    }
+  }else{
       let odds = ods-1;
       if(type === 'Back'){
         this.setState({
@@ -738,10 +883,10 @@ export default class SideBet extends Component {
      })
     }
     if(nextProps.betLoss!==this.props.betLoss){
-      this.setState({
-        loss:nextProps.betLoss
-        })
-      }
+    this.setState({
+      loss:nextProps.betLoss
+      })
+    }
     if(nextProps.runnderData !== this.props.runnderData){
     this.setState({
       runnderData:nextProps.runnderData
@@ -752,7 +897,22 @@ export default class SideBet extends Component {
       getExpo:nextProps.expoData
       })
     }
-  }
+    if(nextProps.getselOdds !== this.props.selOdds){
+      this.setState({
+        getselOdds:nextProps.selOdds
+      })
+    }
+    if(nextProps.getselfancyOdds !== this.props.selfancyOdds){
+      this.setState({
+        getselfancyOdds:nextProps.selfancyOdds
+      })
+    }
+    if(nextProps.getselfancySize !== this.props.selfancySize){
+      this.setState({
+        getselfancySize:nextProps.selfancySize
+      })
+    }
+}
   
   ClearAllSelection=()=>{
     document.getElementById('stakeValue').value=0;
@@ -777,9 +937,10 @@ export default class SideBet extends Component {
     this.props.handleRemove("none");
   }
 
-    render() {
+  render() {
     let color = this.state.color
     let ods =0;
+    let fancysize =0;
     let runnerName ='';
     let type =''; 
     let selectionId ='';
@@ -793,6 +954,9 @@ export default class SideBet extends Component {
     let total_team2 = 0;
     let total_team3 = 0;
     if(this.props.betData){
+      if(this.props.betData.betType==="Fancy"){
+        fancysize = this.props.betData.data.size;
+      }
       ods = this.props.betData.odds;
       type = this.props.betData.type;
       runnerName = this.props.betData.pData.runnerName;
@@ -916,7 +1080,7 @@ export default class SideBet extends Component {
                   {
                     this.state.chipStake.map((item)=>{
                       return (
-                      <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={()=>this.StaKeAmount(item,ods,type)}>{item}</button>
+                      <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={()=>this.StaKeAmount(item,ods,fancysize,type)}>{item}</button>
                       )
                     })
                   }

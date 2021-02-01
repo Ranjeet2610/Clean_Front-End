@@ -1,4 +1,5 @@
 import BetBox from "./Betbox";
+import BetBoxFancy from "./Betboxfancy";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -68,6 +69,7 @@ export default class MatchOdds extends Component {
       // betProfit: "",
       // betLoss: "",
       display: ["none", "none", "none"],
+      fdisplay: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"],
       isenable: true,
       fancyOdds: "",
       fancymarket: "",
@@ -84,6 +86,13 @@ export default class MatchOdds extends Component {
       DTonePL: 0,
       DTtwoPL: 0,
       DTthreePL: 0,
+      selOdds: 0,
+      selfancyOdds: 0, 
+      selfancySize: 0,
+      selbetType:'',
+      selTeamSelection:'',
+      selIndex:'',
+      selfancymarketId:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       timer: "",
       redirectToReferrer: false,
@@ -104,8 +113,15 @@ export default class MatchOdds extends Component {
       loss = Math.round(odds * val);
     }
   }
-
-  StaKeAmount(ods, type, teamSelection) {
+  getselOdds(index, ods, type, teamSelection){
+    this.setState({
+      selOdds:ods,
+      selbetType:type,
+      selTeamSelection:teamSelection,
+      selIndex:index
+    });
+  }
+  StaKeAmount(index, ods, type, teamSelection) {
     let val = document.getElementById("stakeValue").value;
     let odds = ods - 1;
     if (type === "Back") {
@@ -119,6 +135,7 @@ export default class MatchOdds extends Component {
         betLoss: Math.round(odds * val),
       });
     }
+    this.getselOdds(index, ods, type, teamSelection);
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     setTimeout(()=> {
     let getRunner = this.state.data.length;
@@ -238,33 +255,74 @@ export default class MatchOdds extends Component {
         display: displayTest,
         toggleMatchIndex: index
       });
-      this.StaKeAmount(odds, type, pdata.runnerName);
+      this.StaKeAmount(index, odds, type, pdata.runnerName);
     }
   }
+  
+  getselfancyOdds(ods, oddssize, type, fancymarketId,index){
+    this.setState({
+      selfancyOdds:ods,
+      selfancySize:oddssize,
+      selbetType:type,
+      selfancymarketId:fancymarketId,
+      selIndex:index
+    });
+  }
 
-  betfancy = (type,oddsprice,oddssize,data,fancyType) => {
-    if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
+  fancyStaKeAmount(odds,oddsize,type,fancymarketId,index) {
+    let val = document.getElementById("stakeValue").value;
+    if (type === "Back") {
       this.setState({
-        betData: {
-          data: {
-            price:oddsprice,
-            size:oddssize
-          },
-          pData:{
-            marketId:data.marketId,
-            runnerName:data.marketName,
-            selectionId:data.marketId
-          },
-          type: type,
-          odds: oddsprice ,
-          mid: data.marketId,
-          betType: "Fancy",
-          fancyType: fancyType,
-        },
-        display: "block",
+        betProfit: val ? val : 0.0,
+        betLoss: Math.round((oddsize/100) * val),
+      });
+    } else {
+      this.setState({
+        betProfit: Math.round((oddsize/100) * val),
+        betLoss: val,
       });
     }
-    console.log("FANCY", this.state.betData)  
+    this.getselfancyOdds(odds, oddsize, type, fancymarketId,index);
+  }
+  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width) => {
+    if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
+      if(oddssize!=='SUSPENDED' && oddssize!=='Running'){
+        let displayTest;
+        if (width <= 991) {
+          displayTest = [...this.state.fdisplay];
+          displayTest.forEach((item, i) => {
+            if (i === index) {
+              displayTest[index] = "block";
+            } else {
+              displayTest[i] = "none";
+            }
+          });
+        } else {
+          displayTest = "block";
+        }
+        this.setState({
+          betData: {
+            data: {
+              price:oddsprice,
+              size:oddssize
+            },
+            pData:{
+              marketId:data.marketId,
+              runnerName:data.marketName,
+              selectionId:data.marketId
+            },
+            type: type,
+            odds: oddsprice,
+            mid: data.marketId,
+            betType: "Fancy",
+            fancyType: fancyType,
+          },
+          display: displayTest,
+        });
+        this.fancyStaKeAmount(oddsprice,oddssize,type,data.marketId,index);
+      }
+    }
+    //console.log("FANCY", this.state.betData)  
   }
 
   componentDidMount() {
@@ -280,6 +338,17 @@ export default class MatchOdds extends Component {
           isenable: data.isEnabled,
           data: data.pdata,
         });
+        //console.log("marketOdds",this.state.marketOdds);
+        if(this.state.selbetType !== "" && this.state.selOdds!==""){
+          let getUodds = "";
+          if(this.state.selbetType==="Back"){
+            getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
+          }else{
+            getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
+          }
+          //console.log("updated odds",getUodds);
+          this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
+        }
       });
       // livevents.getFancyMarket(this.props.match.params.id, (data) => {
       //   this.setState({
@@ -292,6 +361,21 @@ export default class MatchOdds extends Component {
         this.setState({
           fancymarket: data.fancymarket,
         });
+       // console.log("fancymarket",this.state.fancymarket);
+        if(this.state.selbetType !== "" && this.state.selOdds!==""){
+          let getUodds = "";
+          let getUsize = "";
+          if(this.state.selbetType==="Back"){
+            getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+            getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+          }else{
+            getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+            getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+          }
+          //console.log("updated odds",getUodds);
+          //console.log("updated odds",getUsize);
+          this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
+        }
       });
     }, 1000);
     
@@ -939,16 +1023,23 @@ export default class MatchOdds extends Component {
                                                     <tr class="session_content">
                                                       <td>
                                                         <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
+                                                        <div className="block_box_btn" style={{marginRight:'50px'}}>
+                                                          <button className="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModalForBook" style={{color:'white',border:'none',outline:'none',backgroundColor:'#6c1945'}}>
+                                                            Book
+                                                          </button>
+                                                        </div>
                                                         <b class="fancyLia5303"></b>
                                                         <p class="position_btn"></p>
                                                       </td>
                                                       <td></td>
                                                       <td></td>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO")}>
+                                                      <div class={`${ parentitem.marketData.BackSize==='SUSPENDED' && parentitem.marketData.LaySize==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SASPEND</div>
+                                                      <div class={`${ parentitem.marketData.BackSize==='Running' && parentitem.marketData.LaySize==='Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO", index, window.innerWidth)}>
                                                         <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
                                                         <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES")}>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES", index, window.innerWidth)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                       </td>
@@ -962,6 +1053,30 @@ export default class MatchOdds extends Component {
                                           </ul>
                                         </div>
                                       </div>
+                                      <div className="mobileBetBox">
+                                      <BetBoxFancy stake={0}
+                                        index={index}
+                                        betData={this.state.betData}
+                                        betProfit={this.state.betProfit}
+                                        handleRemove={(style, num) => {
+                                          this.handleRemove(style, num, index);
+                                        }}
+                                        handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
+                                          this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
+                                        }}
+                                        getProfitandLoss={(profit, loss, status) => {
+                                          this.getProfitandLoss(profit, loss, status);
+                                        }}
+                                        bookArr={(arr) => {
+                                          this.bookArr(arr)
+                                        }}
+                                        betLoss={this.state.betLoss}
+                                        setdisplay={this.state.display[index]}
+                                        eventId={this.props.match.params.id}
+                                        handleInput={(e) => this.handleInputValue(e)}
+                                        runnderData={this.state.data}
+                                        expoData={this.state.exporunnerdata} betData={this.state.betData} />
+                                    </div>
 
                                       {
                                         //////////////////////////// MODAL FOR BOOK //////////////////////////////////////////
@@ -1055,7 +1170,10 @@ export default class MatchOdds extends Component {
                   handleInput={(e) => this.handleInputValue(e)}
                   runnderData={this.state.data}
                   expoData={this.state.exporunnerdata}
-                />
+                  selOdds={this.state.selOdds}
+                  selfancyOdds={this.state.selfancyOdds} 
+                  selfancySize={this.state.selfancySize}
+                            />
                 <Footer />
               </div>
             </div>

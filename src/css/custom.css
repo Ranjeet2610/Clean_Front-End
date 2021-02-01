@@ -1164,10 +1164,10 @@ body{padding-bottom:0px;}
 .mobile_heading th:nth-child(3){display:none;}
 .mobile_heading th:nth-child(6){display:none;}
 .mobile_heading th:nth-child(7){display:none;}
-.session_content td:nth-child(2){display:none;}
-.session_content td:nth-child(3){display:none;}
-.session_content td:nth-child(6){display:none;}
-.session_content td:nth-child(7){display:none;}
+.session_content td:nth-child(2){display:block;}
+.session_content td:nth-child(3){display:block;}
+.session_content td:nth-child(6){display:block;}
+.session_content td:nth-child(7){display:block;}
 .fancy_th_width th:first-child {width:55%;}
 .session_content td:first-child{width:60%;float:left;position:relative;}
 .mobile_heading th:first-child{width:60%;}
@@ -1366,4 +1366,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .desktopBetBox{
     display: block;
   }
+}
+
+.fancyOddsSBR {
+  position: absolute;
+  z-index: 0;
+  background: #95335c;
+  width: 20%;
+  text-align: center;
+  bottom: 0px;
+  padding: 13px 0px;
+  color: white;
+  font-weight: bold;
+}
+.fancyOddsSBRnone{
+  display: none;
+}
+
+@media only screen and (max-width: 600px) and (min-width: 320px) {
+  .fancyOddsSBR {
+    position: absolute;
+    background: #95335c;
+    width: 40%;
+    text-align: center;
+    bottom: 0px;
+    padding: 13px 0px;
+    color: white;
+    font-weight: bold;
+    right: 0px;
+    z-index: 0;
+}
 }

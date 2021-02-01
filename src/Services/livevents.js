@@ -86,9 +86,9 @@ async  getFancyMarket(eid,cb){
   axios.post(Constants.APIURL+'fancyMarketTypeData',{
       "eventId":eid
   }).then((response)=>{
-    let newData = response.data.data.filter(item => item.marketData.isVisible);
+    let newData = response.data.data; //.filter(item => item.marketData.isVisible);
     let fdata = newData.map((item)=>{
-      let runners = item.runners.filter(item=>item.isRunnersVisible==true);
+      let runners = item.runners; //.filter(item=>item.isRunnersVisible==true);
       let mData = item.marketData;
       return {marketData:mData,runners:runners}
     })
