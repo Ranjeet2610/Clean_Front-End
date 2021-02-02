@@ -64,64 +64,12 @@ export default class SideBet extends Component {
         loss:((fancysize/100)*stack).toFixed(2),
         profit:stack?stack:0.0
        })
-       if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
-         this.state.expoData = this.state.getExpo.map(item=>{
-           let updatedRunners ={};
-           if(item.runnerId == this.props.betData.pData.selectionId){
-             updatedRunners.exposure =item.exposure - parseFloat(((fancysize/100)*stack).toFixed(2))
-           }
-           else{
-             updatedRunners.exposure = item.exposure +(parseFloat(stack))
-           }
-           updatedRunners.runnerId = item.runnerId;
-           return updatedRunners;
-         })
-       }
-       else{
-         this.state.expoData = this.state.runnderData.map(item=>{
-           let updatedRunners ={};
-           if(item.selectionId == this.props.betData.pData.selectionId){
-             updatedRunners.exposure = - parseFloat(((fancysize/100)*stack).toFixed(2))
-           }
-           else{
-             updatedRunners.exposure = parseFloat(stack)
-           }
-         updatedRunners.runnerId = item.selectionId;
-         return updatedRunners;
-         });
-       }
      }
      else{
        this.setState({
         loss:stack,
          profit:((fancysize/100)*stack).toFixed(2)
        })
-       if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
-         this.state.expoData = this.state.runnderData.map(item=>{
-           let updatedRunners ={};
-           if(item.runnerId == this.props.betData.pData.selectionId){
-             updatedRunners.exposure =item.exposure + (parseFloat(((fancysize/100)*stack).toFixed(2)))
-           }
-           else{
-             updatedRunners.exposure = item.exposure - parseFloat(stack)
-           }        
-           updatedRunners.runnerId = item.runnerId;
-           return updatedRunners;
-         });
-       }
-       else{
-         this.state.expoData = this.state.runnderData.map(item=>{
-           let updatedRunners ={};
-           if(item.selectionId == this.props.betData.pData.selectionId){
-             updatedRunners.exposure = parseFloat(((fancysize/100)*stack).toFixed(2))
-           }
-           else{
-             updatedRunners.exposure = - parseFloat(stack)
-           }
-           updatedRunners.runnerId = item.selectionId;
-           return updatedRunners;
-         });
-       }
      }
    }else{
        let odds = this.state.betData.odds-1;
@@ -234,112 +182,99 @@ export default class SideBet extends Component {
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
     }
     else{
-      if(this.props.betData.betType !=undefined && this.state.getselfancySize < this.props.betData.data.size){
-        this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
-      }
-      else if(this.state.getselOdds < this.odsInput.value){
-        this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
+      await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+      if(this.props.betData.betType !=undefined){
+        let fancysizeval;
+        if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
+          fancysizeval = 0;
+        }else{
+          fancysizeval = this.state.getselfancySize;
+        }
+        if(fancysizeval < this.props.betData.data.size){
+          this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
+        }else{
+          await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value);
+          const obj = {
+          userName:JSON.parse(localStorage.getItem('data')).userName,
+          description:localStorage.getItem('matchname'),
+          selection:this.runnerNameInput.value,
+          selectionID:this.selectionIdInput.value,
+          odds:this.state.getselfancyOdds,
+          stack:this.stackInput.value,
+          eventID:this.props.eventId,
+          status:"open",
+          marketID:this.props.betData.mid,
+          profit:this.state.profit,
+          loss:this.state.loss,
+          IP:this.state.IP,
+          device:device,
+          marketType: this.props.betData.betType,
+          bettype:this.isbackInput.value
+         }
+         //console.log(obj);
+         this.service.fancyplaceBet(obj,data=>{ 
+          const obj1 = {
+            userName:JSON.parse(localStorage.getItem('data')).userName
+          }
+          this.users.getMyprofile(obj1,data=>{
+            localStorage.setItem('data',JSON.stringify(data.data));
+            this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+            this.getBetData();
+          })
+         })
+        }
       }
       else{
-        await new Promise((resolve, reject) => setTimeout(resolve, 3000));
-        if(this.props.betData.betType !=undefined){
-          await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value);
-            const obj = {
-            userName:JSON.parse(localStorage.getItem('data')).userName,
-            description:localStorage.getItem('matchname'),
-            selection:this.runnerNameInput.value,
-            selectionID:this.selectionIdInput.value,
-            odds:this.state.getselfancyOdds,
-            stack:this.stackInput.value,
-            eventID:this.props.eventId,
-            status:"open",
-            marketID:this.props.betData.mid,
-            profit:this.state.profit,
-            loss:this.state.loss,
-            IP:this.state.IP,
-            device:device,
-            marketType: this.props.betData.betType,
-            bettype:this.isbackInput.value
-          }
-          //console.log(obj);
-          this.service.fancyplaceBet(obj,data=>{ 
-            const obj1 = {
-              userName:JSON.parse(localStorage.getItem('data')).userName
-            }
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-              this.getBetData();
-            })
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
-              const obj2 = {
-                userid:JSON.parse(localStorage.getItem('data')).id,
-                eventID:this.props.eventId,
-                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-                runnersData :this.state.expoData
-              }
-              this.service.updateExpo(obj2,ddata=>{
-                const obj3 = {
-                  userid:JSON.parse(localStorage.getItem('data')).id
-                }
-                this.users.getUserExposure(obj3,expodata=>{
-                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                  this.getBetData();
-                })
-              });
-            })
-          })
-        }
-        else{
+        if(this.state.getselOdds < this.odsInput.value){
+          this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
+        }else{
           await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value);
           const obj ={
-            userName:JSON.parse(localStorage.getItem('data')).userName,
-            description:localStorage.getItem('matchname'),
-            selection:this.runnerNameInput.value,
-            selectionID:this.selectionIdInput.value,
-            odds:this.state.getselOdds,
-            stack:this.stackInput.value,
-            eventID:this.props.eventId,
-            status:"open",
-            marketID:this.props.betData.mid,
-            profit:this.state.profit,
-            loss:this.state.loss,
-            IP:this.state.IP,
-            device:device,
-            marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-            bettype:this.isbackInput.value
+          userName:JSON.parse(localStorage.getItem('data')).userName,
+          description:localStorage.getItem('matchname'),
+          selection:this.runnerNameInput.value,
+          selectionID:this.selectionIdInput.value,
+          odds:this.state.getselOdds,
+          stack:this.stackInput.value,
+          eventID:this.props.eventId,
+          status:"open",
+          marketID:this.props.betData.mid,
+          profit:this.state.profit,
+          loss:this.state.loss,
+          IP:this.state.IP,
+          device:device,
+          marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+          bettype:this.isbackInput.value
+         }
+         //console.log(obj);
+         this.service.placeBet(obj,data=>{ 
+          const obj1 = {
+            userName:JSON.parse(localStorage.getItem('data')).userName
           }
-          //console.log(obj);
-          this.service.placeBet(obj,data=>{ 
-            const obj1 = {
-              userName:JSON.parse(localStorage.getItem('data')).userName
+          this.users.getMyprofile(obj1,data=>{
+            localStorage.setItem('data',JSON.stringify(data.data));
+            localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+            const obj2 = {
+              userid:JSON.parse(localStorage.getItem('data')).id,
+              eventID:this.props.eventId,
+              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+              runnersData :this.state.expoData
             }
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
-              const obj2 = {
-                userid:JSON.parse(localStorage.getItem('data')).id,
-                eventID:this.props.eventId,
-                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-                runnersData :this.state.expoData
+            this.service.updateExpo(obj2,ddata=>{
+              const obj3 = {
+                userid:JSON.parse(localStorage.getItem('data')).id
               }
-              this.service.updateExpo(obj2,ddata=>{
-                const obj3 = {
-                  userid:JSON.parse(localStorage.getItem('data')).id
-                }
-                this.users.getUserExposure(obj3,expodata=>{
-                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                  this.getBetData();
-                })
-              });
-            })
-          })
+              this.users.getUserExposure(obj3,expodata=>{
+                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                this.getBetData();
+              })
+            });
+           })
+         })
         }
       }
-    }
-    this.closeWindow();
+  }
+  this.closeWindow();
   }
 
   handlecurrentPositionAccess = async () => {
@@ -679,64 +614,12 @@ export default class SideBet extends Component {
         loss:((fancysize/100)*val).toFixed(2),
         profit:val?val:0.0
       })
-      if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
-        this.state.expoData = this.state.getExpo.map(item=>{
-          let updatedRunners ={};
-          if(item.runnerId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure =item.exposure - parseFloat(((fancysize/100)*val).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = item.exposure +(parseFloat(val))
-          }
-          updatedRunners.runnerId = item.runnerId;
-          return updatedRunners;
-        })
-      }
-      else{
-        this.state.expoData = this.state.runnderData.map(item=>{
-          let updatedRunners ={};
-          if(item.selectionId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure = -parseFloat(((fancysize/100)*val).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = parseFloat(val)
-          }
-        updatedRunners.runnerId = item.selectionId;
-        return updatedRunners;
-        });
-      }
     }
     else{
       this.setState({
         loss:val,
         profit:((fancysize/100)*val).toFixed(2)
       })
-      if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
-        this.state.expoData = this.state.runnderData.map(item=>{
-          let updatedRunners ={};
-          if(item.runnerId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure =item.exposure + (parseFloat(((fancysize/100)*val).toFixed(2)))
-          }
-          else{
-            updatedRunners.exposure = item.exposure - parseFloat(val)
-          }        
-          updatedRunners.runnerId = item.runnerId;
-          return updatedRunners;
-        });
-      }
-      else{
-        this.state.expoData = this.state.runnderData.map(item=>{
-          let updatedRunners ={};
-          if(item.selectionId == this.props.betData.pData.selectionId){
-            updatedRunners.exposure = parseFloat(((fancysize/100)*val).toFixed(2))
-          }
-          else{
-            updatedRunners.exposure = - parseFloat(val)
-          }
-          updatedRunners.runnerId = item.selectionId;
-          return updatedRunners;
-        });
-      }
     }
   }else{
       let odds = ods-1;
@@ -1112,9 +995,11 @@ export default class SideBet extends Component {
                   <span id="cnt_row3">({this.state.fcount})</span>
                 </a>
               </li>
-              <li className="nav-item active-position">
-                <a className="currentposition" style={{cursor:'pointer'}} onClick={(e)=>this.currentPosition(e)}>Current Position</a>
+              {this.state.DfPoAcc==="" ? ''
+              : <li className="nav-item active-position">
+              <a className="currentposition" style={{cursor:'pointer'}} onClick={(e)=>this.currentPosition(e)}>Current Position</a>
               </li>
+              }
               <a className="btn full-btn" >
                 <img src={fullSize} alt="..." />
               </a>
@@ -1168,6 +1053,7 @@ export default class SideBet extends Component {
                         fcurrentPosts.map((item,index)=>{
                           return(
                             <tr>
+                              <td>{(this.state.fbetHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
                               <td>{item.selection}</td>
                               <td>{item.clientName}</td>
                               <td>{item.odds}</td>

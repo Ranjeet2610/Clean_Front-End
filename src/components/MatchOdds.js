@@ -1,5 +1,4 @@
 import BetBox from "./Betbox";
-import BetBoxFancy from "./Betboxfancy";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -68,8 +67,7 @@ export default class MatchOdds extends Component {
       betData: "",
       // betProfit: "",
       // betLoss: "",
-      display: ["none", "none", "none"],
-      fdisplay: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"],
+      display: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"],
       isenable: true,
       fancyOdds: "",
       fancymarket: "",
@@ -284,15 +282,15 @@ export default class MatchOdds extends Component {
     }
     this.getselfancyOdds(odds, oddsize, type, fancymarketId,index);
   }
-  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width) => {
+  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width, indx) => {
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
       if(oddssize!=='SUSPENDED' && oddssize!=='Running'){
         let displayTest;
         if (width <= 991) {
-          displayTest = [...this.state.fdisplay];
+          displayTest = [...this.state.display];
           displayTest.forEach((item, i) => {
-            if (i === index) {
-              displayTest[index] = "block";
+            if (i === indx) {
+              displayTest[indx] = "block";
             } else {
               displayTest[i] = "none";
             }
@@ -891,32 +889,37 @@ export default class MatchOdds extends Component {
                                       <tr>
                                         <td colSpan="7">
                                           <div className="mobileBetBox">
-                                            <BetBox stake={0}
-                                              index={index}
-                                              betData={this.state.betData}
-                                              betProfit={this.state.betProfit}
-                                              handleRemove={(style, num) => {
-                                                this.handleRemove(style, num, index);
-                                              }}
-                                              handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
-                                                this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
-                                              }}
-                                              getProfitandLoss={(profit, loss, status) => {
-                                                this.getProfitandLoss(profit, loss, status);
-                                              }}
-                                              bookArr={(arr) => {
-                                                this.bookArr(arr)
-                                              }}
-                                              betLoss={this.state.betLoss}
-                                              setdisplay={this.state.display[index]}
-                                              eventId={this.props.match.params.id}
-                                              handleInput={(e) => this.handleInputValue(e)}
-                                              runnderData={this.state.data}
-                                              expoData={this.state.exporunnerdata} betData={this.state.betData} />
+                                            <BetBox
+                                            matchName={this.state.matchName}
+                                            index={index}
+                                            stake={0}
+                                            betData={this.state.betData}
+                                            betProfit={this.state.betProfit}
+                                            handleRemove={(style, num) => {
+                                              this.handleRemove(style, num, index);
+                                            }}
+                                            handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
+                                              this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
+                                            }}
+                                            getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
+                                              this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
+                                            }}
+                                            bookArr={(arr) => {
+                                              this.bookArr(arr)
+                                            }}
+                                            betLoss={this.state.betLoss}
+                                            setdisplay={this.state.display[index]}
+                                            eventId={this.props.match.params.id}
+                                            handleInput={(e) => this.handleInputValue(e)}
+                                            runnderData={this.state.data}
+                                            expoData={this.state.exporunnerdata}
+                                            selOdds={this.state.selOdds}
+                                            selfancyOdds={this.state.selfancyOdds} 
+                                            selfancySize={this.state.selfancySize}
+                                            />
                                           </div>
                                         </td>
                                       </tr>
-
                                     </>
                                   )
                                 })
@@ -1033,13 +1036,13 @@ export default class MatchOdds extends Component {
                                                       </td>
                                                       <td></td>
                                                       <td></td>
-                                                      <div class={`${ parentitem.marketData.BackSize==='SUSPENDED' && parentitem.marketData.LaySize==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SASPEND</div>
+                                                      <div class={`${ parentitem.marketData.BackSize==='SUSPENDED' && parentitem.marketData.LaySize==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
                                                       <div class={`${ parentitem.marketData.BackSize==='Running' && parentitem.marketData.LaySize==='Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO", index, window.innerWidth)}>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO", index, window.innerWidth, index+3)}>
                                                         <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
                                                         <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES", index, window.innerWidth)}>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES", index, window.innerWidth, index+3)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                       </td>
@@ -1054,28 +1057,34 @@ export default class MatchOdds extends Component {
                                         </div>
                                       </div>
                                       <div className="mobileBetBox">
-                                      <BetBoxFancy stake={0}
-                                        index={index}
+                                      <BetBox
+                                        matchName={this.state.matchName}
+                                        stake={0}
+                                        index={index+3}
                                         betData={this.state.betData}
                                         betProfit={this.state.betProfit}
                                         handleRemove={(style, num) => {
-                                          this.handleRemove(style, num, index);
+                                          this.handleRemove(style, num, index+3);
                                         }}
                                         handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                           this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
                                         }}
-                                        getProfitandLoss={(profit, loss, status) => {
-                                          this.getProfitandLoss(profit, loss, status);
+                                        getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
+                                          this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
                                         }}
                                         bookArr={(arr) => {
                                           this.bookArr(arr)
                                         }}
                                         betLoss={this.state.betLoss}
-                                        setdisplay={this.state.display[index]}
+                                        setdisplay={this.state.display[index+3]}
                                         eventId={this.props.match.params.id}
                                         handleInput={(e) => this.handleInputValue(e)}
                                         runnderData={this.state.data}
-                                        expoData={this.state.exporunnerdata} betData={this.state.betData} />
+                                        expoData={this.state.exporunnerdata}
+                                        selOdds={this.state.selOdds}
+                                        selfancyOdds={this.state.selfancyOdds} 
+                                        selfancySize={this.state.selfancySize}
+                                        />
                                     </div>
 
                                       {
