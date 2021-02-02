@@ -1026,7 +1026,7 @@ export default class MatchOdds extends Component {
                                                     <tr class="session_content">
                                                       <td>
                                                         <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
-                                                        <div className="block_box_btn" style={{marginRight:'50px'}}>
+                                                        <div className="block_box_btn1" style={{marginRight:'50px'}}>
                                                           <button className="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModalForBook" style={{color:'white',border:'none',outline:'none',backgroundColor:'#6c1945'}}>
                                                             Book
                                                           </button>
