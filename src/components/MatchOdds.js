@@ -699,7 +699,7 @@ export default class MatchOdds extends Component {
               <div className="fullrow tile_count">
                 <div className="col-md-8">
 
-                  {
+                  {/* {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
 
@@ -730,7 +730,7 @@ export default class MatchOdds extends Component {
                     <div style={{ borderTopRightRadius: '5px', paddingTop: '30px', paddingLeft: '77px', borderBottomRightRadius: '5px', marginRight: '20px', width: '330px', height: '90px', marginTop: '15px', backgroundColor: '#0a3a06', opacity: '0.5' }}>
                       <span style={{ color: "white", fontSize: '15px' }}>Target:180</span>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div id="MatchOddInfo">
                     <div className="fullrow matchBoxMain  matchBox_29905278 matchBoxs_1171389306">
