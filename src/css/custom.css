@@ -1391,7 +1391,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 40%;
     text-align: center;
     bottom: 0px;
-    padding: 13px 0px;
+    padding: 15px 0px;
     color: white;
     font-weight: bold;
     right: 0px;
