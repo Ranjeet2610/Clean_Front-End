@@ -1060,11 +1060,11 @@ export default class MatchOdds extends Component {
                                       <BetBox
                                         matchName={this.state.matchName}
                                         stake={0}
-                                        index={index+3}
+                                        index={index+this.state.data.length}
                                         betData={this.state.betData}
                                         betProfit={this.state.betProfit}
                                         handleRemove={(style, num) => {
-                                          this.handleRemove(style, num, index+3);
+                                          this.handleRemove(style, num, index+this.state.data.length);
                                         }}
                                         handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                           this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
@@ -1076,7 +1076,7 @@ export default class MatchOdds extends Component {
                                           this.bookArr(arr)
                                         }}
                                         betLoss={this.state.betLoss}
-                                        setdisplay={this.state.display[index+3]}
+                                        setdisplay={this.state.display[index+this.state.data.length]}
                                         eventId={this.props.match.params.id}
                                         handleInput={(e) => this.handleInputValue(e)}
                                         runnderData={this.state.data}

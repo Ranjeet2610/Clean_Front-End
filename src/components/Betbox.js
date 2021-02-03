@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Service from '../Services/Service';
+import Loader from 'react-loader-spinner'
 import fullsize from '../images/full-size.png';
 import Users from '../Services/users'
 import { Link } from 'react-router-dom'
@@ -88,6 +89,7 @@ export default class BetBox extends Component {
       device = 3;
          
       e.preventDefault();
+      debugger
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
@@ -95,6 +97,8 @@ export default class BetBox extends Component {
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
       }
       else{
+        document.getElementById("loader").style.display='block'
+        document.getElementById("sidebetbox").style.display='none'
         await new Promise((resolve, reject) => setTimeout(resolve, 3000));
         if(this.props.betData.betType !=undefined){
           let fancysizeval;
@@ -188,6 +192,7 @@ export default class BetBox extends Component {
         }
     }
     this.closeWindow();
+    document.getElementById("loader").style.display='none';
     }
     
     handleChange=(e)=>{
@@ -454,7 +459,13 @@ export default class BetBox extends Component {
             display = { display: 'block' };
         }
         return (
-            <div className="betBox border-box test" style={display}>
+            <>
+            <div id="loader" style={{display:'none'}}>
+            <div style={{opacity:"1", height:'175px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                  <Loader type="Grid" color="#6c1945" height={50} width={50} />
+                </div>
+            </div>
+            <div className="betBox border-box test" id="sidebetbox" style={display}>
                 <div className="block_box">
                     <span id="msg_error" /><span id="errmsg" />
                     <form id="placeBetSilp" onSubmit={this.placeBet}>
@@ -512,6 +523,7 @@ export default class BetBox extends Component {
                     </form>
                 </div>
             </div>
+          </>
           )
     }
 } 

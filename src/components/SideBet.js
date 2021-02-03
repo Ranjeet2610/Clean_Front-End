@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Pagination from './Pagination'
+import Loader from 'react-loader-spinner'
 import  fullSize from '../images/full-size.png'
 import Service from '../Services/Service';
 import Users from '../Services/users'
@@ -182,6 +183,8 @@ export default class SideBet extends Component {
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
     }
     else{
+      document.getElementById("loader").style.display='block'
+      document.getElementById("sidebetbox").style.display='none'
       await new Promise((resolve, reject) => setTimeout(resolve, 3000));
       if(this.props.betData.betType !=undefined){
         let fancysizeval;
@@ -275,6 +278,7 @@ export default class SideBet extends Component {
       }
   }
   this.closeWindow();
+    document.getElementById("loader").style.display='none';
   }
 
   handlecurrentPositionAccess = async () => {
@@ -703,7 +707,7 @@ export default class SideBet extends Component {
     this.removeActiveClass();
     e.target.parentElement.parentElement.classList.add('active')
     if(type=='Fancy'){
-      this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenfancyBetHistory',(data)=>{
+      this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenfancyBetHistoryfront',(data)=>{
         this.setState({
           fbetHistroy:data,
           fcount:data.length,
@@ -918,7 +922,12 @@ export default class SideBet extends Component {
 }
 
         <div>
-          <div className="betBox border-box" style={display}>
+            <div id="loader" style={{display:'none'}}>
+              <div style={{opacity:"1", height:'200px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                  <Loader type="Grid" color="#6c1945" height={50} width={50} />
+              </div>
+            </div>
+          <div id="sidebetbox" className="betBox border-box" style={display}>
             <div className="block_box">
               <span id="msg_error" /><span id="errmsg" />
               <form id="placeBetSilp" onSubmit={this.placeBet}>
