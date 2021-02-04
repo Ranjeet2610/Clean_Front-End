@@ -54,7 +54,7 @@ export default class SideBet extends Component {
     this.matchName = this.props.matchName.split(" v ")
     if(this.state.isMobile){ setInterval(() => {
       this.getBetData();
-    }, 5000)}
+    }, 3000)}
   }
 
   handleChange=(e)=>{
