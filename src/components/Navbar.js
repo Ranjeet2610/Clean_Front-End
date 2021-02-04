@@ -10,6 +10,8 @@ class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      betTime:3,
+      game:'',
       old_password:'',
       newpassword :'',
       Renewpassword:'',
@@ -246,6 +248,20 @@ view_add_news(){
   document.getElementById('addNewsModal').style.display = 'block';
 }
 
+addBetPlaceingTime = () => {
+  document.getElementById('addBetTimeModal').classList.add("in");
+  document.getElementById('addBetTimeModal').style.display = 'block';
+}
+
+closeAddBetPlaceingTime=()=>{
+  document.getElementById('addBetTimeModal').style.display = 'none';
+  document.getElementById('addBetTimeModal').classList.remove("in");
+}
+
+handleAddBetTime = () => {
+  alert(this.state.betTime+" sec")
+}
+
 componentDidMount(){
   if( JSON.parse(localStorage.getItem('data')).superAdmin){
     if(localStorage.getItem('data') !=undefined){
@@ -357,6 +373,9 @@ showchildMenu=(e)=>{
         </li>
         <li> 
           <Link to="#" onClick={()=>this.view_add_news()}>Add News</Link>
+        </li>
+        <li> 
+          <Link to="#" onClick={()=>this.addBetPlaceingTime()}>Add BetTime</Link>
         </li>
       </ul>
     </li>
@@ -599,7 +618,7 @@ showchildMenu=(e)=>{
         <div className=" " id="changeUserPassword" role="main">
           <div className="modal-dialog">
             <div className="modal-content">   	
-              <div className="modal-header">
+              <div className="modal-header" style={{background:'#6c1945'}}>
                 <button type="button" className="close" onClick={this.closePasswordpopup} data-dismiss="modal">×</button>
                 <h4 className="modal-title">Change Password</h4>
               </div>
@@ -660,7 +679,7 @@ showchildMenu=(e)=>{
       <div className="modal fade" id="addFundsModal">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
-            <div className="modal-header">
+            <div className="modal-header" style={{background:'#6c1945'}}>
               <button type="button" className="close" onClick={this.closeAddFunds}>
                 <span aria-hidden="true">×</span>
               </button>
@@ -700,14 +719,58 @@ showchildMenu=(e)=>{
           </div>
         </div>
 
+      {
+        ///////////////////////////////// MODAL FOR ADD BET TIME //////////////////////////
+      }
+
+      <div className="modal fade" id="addBetTimeModal">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header" style={{background:'#6c1945'}}>
+              <button type="button" className="close" onClick={this.closeAddBetPlaceingTime}>
+                <span aria-hidden="true">×</span>
+              </button>
+              <h5 className="modal-title" id="addFundsLabel">Add Bet Placing Time</h5>
+              </div>
+              <div className="modal-body">
+                <div className="row">
+                  <div className="col-md-12 col-sm-12 col-xs-12">
+                    <form  className="form-horizontal form-label-left" method="post" acceptCharset="utf-8">
+                      <div className="item form-group">
+                        <label className="control-label col-md-3 col-sm-3 col-xs-12">Select Game</label>
+                        <div className="add-funds-dialog-current-amount">
+                          <select name="game" className="form-control col-md-7 col-xs-12" onChange={this.handleChange} style={{width:'64%'}}>
+                            <option>Cricket</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="item form-group">
+                        <label className="control-label col-md-3 col-sm-3 col-xs-12" htmlFor="amount">Duration:<span className="required">*</span></label>
+                        <div className="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" name="betTime" value={this.state.betTime} className="form-control col-md-7 col-xs-12" onChange={this.handleChange} placeholder="In Sec..."  required="required" autoComplete="off"/>
+                        </div>
+                      </div>
+                      <div className="form-group">
+                        <div className="col-md-6 col-md-offset-3">
+                          <button type="button" style={{marginTop:"5px", marginLeft:"5px"}} className="btn btn-success" onClick={this.handleAddBetTime}>Fix It</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
 {
   //////////////////// MODAL FOR ADDING NEWS /////////////////////////////////////
 }
 
-        <div className="modal fade" id="addNewsModal">
-          <div className="modal-dialog" role="document">
+        <div className="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addNewsModal">
+          <div className="modal-dialog modal-lg">
             <div className="modal-content">
-              <div className="modal-header">
+              <div className="modal-header" style={{background:'#6c1945'}}>
                 <button type="button" className="close" onClick={this.closeAddNews}>
                   <span aria-hidden="true">×</span>
                 </button>
@@ -715,21 +778,35 @@ showchildMenu=(e)=>{
               </div>
               <div className="modal-body">
                 <div className="row">
-                  <div className="col-md-12 col-sm-12 col-xs-12">
+                  <div className="col-md-12 col-sm-12 col-xs-12 table-responsive">
                     <form  className="form-horizontal form-label-left">
                       <div className="form-group">
-                        <button type="button" className="btn btn-defaut" onClick={this.saveNews} style={{backgroundColor:'#6c1945',color:'white',margin:'2rem'}}>Add New</button>
-                        <button type="button" className="btn btn-defaut" style={{backgroundColor:'#6c1945',color:'white',margin:'2rem'}}>Delete</button>
+                        <button type="button" className="btn btn-defaut" onClick={this.saveNews} style={{backgroundColor:'#6c1945',color:'white',margin:'1rem'}}>Add New</button>
+                        <button type="button" className="btn btn-defaut" style={{backgroundColor:'#6c1945',color:'white',margin:'1rem'}}>Delete</button>
                         <span style={{float:'right',marginRight:'3rem', marginTop:'3rem',color:'black',fontSize:'15px'}}>Total Records : {this.state.NewsList.length}</span>
                       </div>                          
                       <div className="item form-group">
-                        <div className="col-md-6 col-sm-6 col-xs-12">
-                          <input type="text" style={{width:'200%'}} name="addNews" value={this.state.addNews} className="form-control col-md-7 col-xs-12" onChange={this.handleChange} placeholder="News" label=""  required="required" autoComplete="off"/>
+                        <div className="col-md-6 col-sm-6 col-xs-12 col-lg-12">
+                          <input type="text" style={{width:'100%'}} name="addNews" value={this.state.addNews} className="form-control col-md-7 col-xs-12" onChange={this.handleChange} placeholder="News" label=""  required="required" autoComplete="off"/>
                         </div>
                       </div>
                       <div>
                       </div>
                     </form>
+                    <table className="table table-bordered table-hover">
+                      <thead>
+                        <tr>
+                          <th className="text-center"><input type="checkbox" /></th>
+                          <th className="text-center">Edit</th>
+                          <th className="text-center">ID</th>
+                          <th className="text-center">Tittle</th>
+                          <th className="text-center">Active</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

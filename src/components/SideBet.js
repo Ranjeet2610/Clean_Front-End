@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
+import Utilities from './utilities'
 import  fullSize from '../images/full-size.png'
 import Service from '../Services/Service';
 import Users from '../Services/users'
@@ -1070,7 +1071,7 @@ export default class SideBet extends Component {
                               <td>{item.bettype}</td>
                               <td>{item.P_L}</td>
                               <td>{item.liability}</td>
-                              <td>{item.createdDate}</td>
+                              <td>{Utilities.datetime(item.createdDate)}</td>
                               <td>{item.userid}</td>
                               <td>{item.IP}</td>
                               {
@@ -1093,17 +1094,17 @@ export default class SideBet extends Component {
                             (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                             return(
                               <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
-                                <td>{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
-                                <td>{item.selection}</td>
-                                <td>{item.clientName}</td>
-                                <td>{item.odds}</td>
-                                <td>{item.stack}</td>
-                                <td>{item.bettype}</td>
-                                <td>{item.P_L}</td>
-                                <td>{item.liability}</td>
-                                <td>{item.createdDate}</td>
-                                <td>{item.userid}</td>
-                                <td>{item.IP}</td>
+                                <td className="text-center">{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
+                                <td className="text-center">{item.selection}</td>
+                                <td className="text-center">{item.clientName}</td>
+                                <td className="text-center">{item.odds}</td>
+                                <td className="text-center">{item.stack}</td>
+                                <td className="text-center">{item.bettype}</td>
+                                <td className="text-center">{item.P_L}</td>
+                                <td className="text-center">{item.liability}</td>
+                                <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
+                                <td className="text-center">{item.userid}</td>
+                                <td className="text-center">{item.IP}</td>
                                 {
                                   this.userDetails.superAdmin &&
                                   <>
