@@ -806,8 +806,6 @@ export default class MatchOdds extends Component {
                                       avilBlack = sordataBack.map((itemback) => {
                                         return (
                                           <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, item, this.state.marketOdds, index, window.innerWidth)} >
-                                            {console.log("YYYYYYYYY",this.state.marketOdds)}
-                                            {console.log("VVVVVVVVV",this.state.data)}
                                             <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                             <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                           </td>

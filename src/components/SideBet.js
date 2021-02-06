@@ -23,8 +23,8 @@ export default class SideBet extends Component {
         betData:'',
         profit:0.00,
         loss: 0.00,
-        betHistroy:'',
-        fbetHistroy:'',
+        betHistroy:[],
+        fbetHistroy:[],
         display:'none',
         IP:'',
         count:0,
@@ -51,7 +51,7 @@ export default class SideBet extends Component {
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
-    this.matchName = this.props.matchName.split(" v ")
+    // this.matchName = this.props.matchName.split(" v ")
   }
 
   handleChange=(e)=>{
@@ -521,7 +521,10 @@ export default class SideBet extends Component {
     if(this.userDetails.superAdmin){
       let userName = JSON.parse(localStorage.getItem('data')).userName
       this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+        let fancyData = Data.data.data.filter(e => e.marketType === "Fancy")
       this.setState({
+        fbetHistroy:fancyData,
+        fcount:fancyData.length,
         betHistroy:Data.data.data,
         count:Data.data.data.length,
         load:false
@@ -537,7 +540,10 @@ export default class SideBet extends Component {
     let userName = JSON.parse(localStorage.getItem('data')).userName
     this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
       let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0]===userName)
+      let fancyData = betFill.filter(e => e.marketType === "Fancy")
       this.setState({
+        fbetHistroy:fancyData,
+        fcount:fancyData.length,
         betHistroy:betFill,
         count:betFill.length,
         load:false
@@ -551,9 +557,12 @@ export default class SideBet extends Component {
     }  
     else if(this.userDetails.Master){
       let userName = JSON.parse(localStorage.getItem('data')).userName
-        this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
-          let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0]===userName)
+      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
+        let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0]===userName)
+        let fancyData =betFill.filter(e => e.marketType === "Fancy")
         this.setState({
+          fbetHistroy:fancyData,
+          fcount:fancyData.length,
           betHistroy:betFill,
           count:betFill.length,
           load:false
@@ -569,7 +578,10 @@ export default class SideBet extends Component {
       let userName = JSON.parse(localStorage.getItem('data')).userName
       this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (Data) => {
         let betFill = Data.data.data.filter(item => item.clientName===userName)
+        let fancyData = betFill.filter(e => e.marketType === "Fancy")
         this.setState({
+          fbetHistroy:fancyData,
+          fcount:fancyData.length,
           betHistroy:betFill,
           count:betFill.length,
           load:false
@@ -707,26 +719,14 @@ export default class SideBet extends Component {
   getDataByType=(e,type)=>{
     this.removeActiveClass();
     e.target.parentElement.parentElement.classList.add('active')
-    if(type=='Fancy'){
-      this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenfancyBetHistoryfront',(data)=>{
-        this.setState({
-          fbetHistroy:data,
-          fcount:data.length,
-          showCurrPosition:'none',
-          showAllBets:'block',
-          openTab:'fancyBets'
-        });             
-      })
+    if(type==='Fancy'){
+      this.setState({
+        showCurrPosition:'none',
+        showAllBets:'block',
+        openTab:'fancyBets'
+      });
     }
     else{
-    // this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName,this.props.eventId,'getUserOpenBetHistory',(data)=>{
-    //   // this.users.getAllBettings(`/getAllBetting?event_id=${this.props.eventId}`, (data) => {  
-    //     this.setState({
-    //       betHistroy:data,
-    //       count:data.length
-    //     });             
-    //   })
-    //this.getBetData();
     this.setState({
       showCurrPosition:'none',
       showAllBets:'block',
@@ -855,8 +855,8 @@ export default class SideBet extends Component {
     }
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
-    const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const fcurrentPosts = this.state.fbetHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
 
     return (
     <div className="col-md-4 col-xs-12">
@@ -994,20 +994,20 @@ export default class SideBet extends Component {
           <div className="tab_bets">
             <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
               <li className="nav-item betdata active-all active">
-                <a className="allbet" style={{cursor:'pointer'}} onClick={(e)=>this.getDataByType(e,'All')}>
+                <a className="allbet" style={{cursor:'pointer', fontSize:'12px'}} onClick={(e)=>this.getDataByType(e,'All')}>
                   <span className="bet-label">All Bet</span>
                   <span id="cnt_row">({this.state.count})</span>
                 </a>
               </li>
               <li className="nav-item betdata">
-                <a className="unmatchbet" style={{cursor:'pointer'}} onClick={(e)=>this.getDataByType(e,'Fancy')}>
+                <a className="unmatchbet" style={{cursor:'pointer', fontSize:'12px'}} onClick={(e)=>this.getDataByType(e,'Fancy')}>
                   <span className="bet-label">Fancy Bet</span>
                   <span id="cnt_row3">({this.state.fcount})</span>
                 </a>
               </li>
               {this.state.DfPoAcc==="" ? ''
               : <li className="nav-item active-position">
-              <a className="currentposition" style={{cursor:'pointer'}} onClick={(e)=>this.currentPosition(e)}>Current Position</a>
+              <a className="currentposition" style={{cursor:'pointer', fontSize:'12px'}} onClick={(e)=>this.currentPosition(e)}>Current Position</a>
               </li>
               }
               <a className="btn full-btn" >
@@ -1059,21 +1059,22 @@ export default class SideBet extends Component {
                       <tbody>
                       {
                         this.state.openTab==='fancyBets' ?
-                        fcurrentPosts.length>0 &&
+                        // fcurrentPosts.length>0 &&
                         fcurrentPosts.map((item,index)=>{
+                          (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           return(
-                            <tr>
-                              <td>{(this.state.fbetHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
-                              <td>{item.selection}</td>
-                              <td>{item.clientName}</td>
-                              <td>{item.odds}</td>
-                              <td>{item.stack}</td>
-                              <td>{item.bettype}</td>
-                              <td>{item.P_L}</td>
-                              <td>{item.liability}</td>
-                              <td>{Utilities.datetime(item.createdDate)}</td>
-                              <td>{item.userid}</td>
-                              <td>{item.IP}</td>
+                            <tr style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
+                              <td className="text-center">{(this.state.fbetHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
+                              <td className="text-center">{item.selection}</td>
+                              <td className="text-center">{item.clientName}</td>
+                              <td className="text-center">{item.odds}</td>
+                              <td className="text-center">{item.stack}</td>
+                              <td className="text-center">{item.bettype}</td>
+                              <td className="text-center">{item.P_L}</td>
+                              <td className="text-center">{item.liability}</td>
+                              <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
+                              <td className="text-center">{item.userid}</td>
+                              <td className="text-center">{item.IP}</td>
                               {
                                 this.userDetails.superAdmin &&
                                 <>
@@ -1131,8 +1132,13 @@ export default class SideBet extends Component {
                     </table>
                   </div>
 
+{
+  //////////////////////////// TABLE FOR CURRENT POSITION /////////////////////////////////
+}
+
                   <div style={{display:this.state.showCurrPosition}}>
-                    <table className="table table-striped jambo_table bulk_action">
+                  {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right',margin:'5px',fontSize:'15px', paddingRight:'10px',paddingLeft:'10px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.selUserName)}>Back</button>:'' }
+                    <table className="table table-striped jambo_table bulk_action" style={{marginBottom:'5rem'}}>
                       <thead>
                         <tr className="headings">
                             <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
@@ -1188,15 +1194,8 @@ export default class SideBet extends Component {
                           {this.props.runnderData.length===3 ? <td class={`text-center ${total_team3>=0 ? "inplay_txt" : "color_red"}`}>{total_team3}</td>:''}
                         </tr>
                       </tbody>
-                      {/* <tfoot> 
-                        <tr>
-                          <td colSpan={16}>
-                              <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
-                          </td>  
-                        </tr>  
-                    </tfoot>     */}
                     </table>
-                    {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right', paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.selUserName)}>Back</button>:'' }
+                    {/* {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right',marginBottom:'5rem',fontSize:'15px', paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.selUserName)}>Back</button>:'' } */}
                   </div>
                 </div>
               </div>

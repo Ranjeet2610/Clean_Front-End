@@ -37,7 +37,7 @@ export default class Bethistory extends Component {
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
       let betHistoryFilter = this.state.newResData.filter(e => new Date(fD) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(tD) )
-      this.setState({
+      await this.setState({
           betHistory:betHistoryFilter
         })
       }
@@ -69,8 +69,8 @@ export default class Bethistory extends Component {
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.from_date,
-      to_date:this.state.to_date,
+      from_date:this.state.currentDate,
+      to_date:this.state.currentDate,
       searchTearm:""
     }) 
     this.setState({
@@ -127,6 +127,7 @@ componentDidMount() {
   let currT = Utilities.datetime(new Date()).slice(11,16)
   let curr = currD+"T"+currT
  this.setState({
+  currentDate:curr,
     from_date:curr,
     to_date:curr,
    }) 
