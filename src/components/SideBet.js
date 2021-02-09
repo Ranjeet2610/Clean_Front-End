@@ -52,14 +52,11 @@ export default class SideBet extends Component {
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
-<<<<<<< HEAD
     this.matchName = this.props.matchName.split(" v ")
     if(this.state.isMobile){ setInterval(() => {
       this.getBetData();
     }, 3000)}
-=======
     // this.matchName = this.props.matchName.split(" v ")
->>>>>>> origin/BOSS
   }
 
   handleChange=(e)=>{
@@ -901,15 +898,9 @@ export default class SideBet extends Component {
     }
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-<<<<<<< HEAD
-    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
-    const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
-   
-=======
     const currentPosts = this.state.betHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     const fcurrentPosts = this.state.fbetHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
 
->>>>>>> origin/BOSS
     return (
     <div className="col-md-4 col-xs-12">
       <div className="betSlipBox" style={{}}>
