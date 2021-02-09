@@ -38,19 +38,17 @@ getUserExposure(payload,cb){
         let arr = [];let expo =0
         if(response.data.length>0){
             response.data.map((item)=>{
-         item.runnersData.map(item=>{
+            item.runnersData.map(item=>{
              if(item.exposure<0)
              expo += item.exposure;
             arr.push(item)
           });
-         
         })
     }
-   // console.log(expo);
-        cb(expo); 
-
+    // console.log(expo);
+    cb(expo);
     }, this)
-    .catch((error) => console.log(error))
+.catch((error) => console.log(error))
 }
 getmasterforSupermaster(username,cb){
     let curruser;
