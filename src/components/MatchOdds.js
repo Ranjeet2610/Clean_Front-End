@@ -222,7 +222,7 @@ export default class MatchOdds extends Component {
         }
       }
     }
-  }, 500)
+  }, 100)
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
 
@@ -271,13 +271,13 @@ export default class MatchOdds extends Component {
     let val = document.getElementById("stakeValue").value;
     if (type === "Back") {
       this.setState({
-        betProfit: val ? val : 0.0,
-        betLoss: Math.round((oddsize/100) * val),
+        betProfit: Math.round((oddsize/100) * val),
+        betLoss: val ? val : 0.0,
       });
     } else {
       this.setState({
-        betProfit: Math.round((oddsize/100) * val),
-        betLoss: val,
+        betProfit: val ? val : 0.0,
+        betLoss: Math.round((oddsize/100) * val),
       });
     }
     this.getselfancyOdds(odds, oddsize, type, fancymarketId,index);
@@ -337,6 +337,7 @@ export default class MatchOdds extends Component {
           data: data.pdata,
         });
         //console.log("marketOdds",this.state.marketOdds);
+        //console.log("Runner",this.state.data);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -417,7 +418,6 @@ export default class MatchOdds extends Component {
       // this.setState({
       //   data: data.pdata,
       // });
-      setInterval(()=> {
         let getRunner = data.pdata.length;
         // console.log("DDDD",data.pdata);
         let Teamone = data.pdata[0].runnerName;
@@ -520,7 +520,6 @@ export default class MatchOdds extends Component {
             }
         });
         /* end */
-       }, 1000)
     });
   }
 
@@ -570,7 +569,7 @@ export default class MatchOdds extends Component {
     }
   }
 
- getProfitandLoss=async(profit,loss,teamSelection,betType,stack,status)=>{
+ getProfitandLoss=async(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
     await this.setState({
       betProfit:profit,
       betLoss:loss,
@@ -588,14 +587,14 @@ export default class MatchOdds extends Component {
     if(betType=='Back'){
       if(teamSelection==Team1){
         this.setState({
-          TonePL: parseFloat(this.state.DTonePL)+parseFloat(this.state.betProfit),
+          TonePL: parseFloat(this.state.DTonePL)+parseFloat(profit),
           TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(stack),
           TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(stack)
         });
       }
       if(teamSelection==Team2){
         this.setState({
-          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(this.state.betProfit),
+          TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(profit),
           TonePL: parseFloat(this.state.DTonePL)-parseFloat(stack),
           TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(stack)
         });
@@ -603,7 +602,7 @@ export default class MatchOdds extends Component {
       if(getRunner==3){
         if(teamSelection==Team3){
           this.setState({
-            TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(this.state.betProfit),
+            TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(profit),
             TonePL: parseFloat(this.state.DTonePL)-parseFloat(stack),
             TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(stack)
           });
@@ -612,14 +611,14 @@ export default class MatchOdds extends Component {
     }else{
       if(teamSelection==Team1){
         this.setState({
-          TonePL: parseFloat(this.state.DTonePL)-parseFloat(this.state.betLoss),
+          TonePL: parseFloat(this.state.DTonePL)-parseFloat(loss),
           TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(stack),
           TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(stack)
         });
       }
       if(teamSelection==Team2){
         this.setState({
-          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(this.state.betLoss),
+          TtwoPL: parseFloat(this.state.DTtwoPL)-parseFloat(loss),
           TonePL: parseFloat(this.state.DTonePL)+parseFloat(stack),
           TthreePL: parseFloat(this.state.DTthreePL)+parseFloat(stack)
         });
@@ -627,14 +626,20 @@ export default class MatchOdds extends Component {
       if(getRunner==3){
         if(teamSelection==Team3){
           this.setState({
-            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(this.state.betLoss),
+            TthreePL: parseFloat(this.state.DTthreePL)-parseFloat(loss),
             TonePL: parseFloat(this.state.DTonePL)+parseFloat(stack),
             TtwoPL: parseFloat(this.state.DTtwoPL)+parseFloat(stack)
           });
         }
       }
     }
-    if(this.state.TonePL>=0){
+    if(facFrom==="placeBet"){
+      this.setState({
+        DTonePL:this.state.TonePL,
+        DTtwoPL:this.state.TtwoPL
+      });
+    }
+   if(this.state.TonePL>=0){
       this.setState({
         ToneColor: "blue-odds",
       });
@@ -653,6 +658,11 @@ export default class MatchOdds extends Component {
       });
     }
     if(getRunner==3){
+      if(facFrom==="placeBet"){
+        this.setState({
+          DTthreePL:this.state.TthreePL
+        });
+      }
       if(this.state.TthreePL>=0){
         this.setState({
           TthreeColor: "blue-odds",
@@ -663,13 +673,14 @@ export default class MatchOdds extends Component {
         });
       }
     }
-  }, 500)
+  }, 100)
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
 
   render() {
     let inplay;
     let runners = this.state.data;
+    let filterrunners;
     let expoProfit = 0;
     let avilBlack;
     let availLay;
@@ -792,9 +803,13 @@ export default class MatchOdds extends Component {
                                   if (this.state.exporunnerdata.length > 0) {
                                     expoProfit = this.state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
                                   }
-
                                   if (this.state.marketOdds !== undefined) {
                                     if (this.state.marketOdds.length > 0) {
+                                      filterrunners = this.state.data.filter(newdata=>{
+                                        return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId;
+                                      })
+                                    }
+                                      if (this.state.marketOdds.length > 0) {
                                       let sordataBack = this.state.marketOdds[0].runners[index].ex.availableToBack.sort(function (a, b) {
                                         return a.price - b.price;
                                       })
@@ -849,29 +864,30 @@ export default class MatchOdds extends Component {
                                       })
                                     }
                                   }
+                                 // if(item.selectionId==this.state.marketOdds[0].runners[index].selectionId){}
                                   return (
                                     <>
                                       <tr id="user_row0" className="back_lay_color runner-row-32047099">
                                         <td>
-                                          <p className="runner_text" id="runnderName0">{item.runnerName}</p>
-                                          <p className="blue-odds" id={"profit" + item.selectionId}></p>
-                                          <span className="runner_amount" style={{ color: "black" }} id={"loss" + item.selectionId} >
+                                          <p className="runner_text" id="runnderName0">{filterrunners[0].runnerName}</p>
+                                          <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}></p>
+                                          <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0].selectionId} >
                                             0{/* {expoProfit} */}
                                           </span>
 
                                           {/* {
                                             this.state.zeroStatus === "false" ?
-                                              <p className="blue-odds" id={"profit" + item.selectionId}>0</p> :
+                                              <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>0</p> :
                                               this.state.toggleMatchIndex === index ?
-                                                <p className="blue-odds" id={"profit" + item.selectionId}>
+                                                <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>
                                                   {this.state.betProfit}
                                                 </p> :
-                                                <p className="blue-odds" id={"profit" + item.selectionId} style={{ color: this.state.color }}>
+                                                <p className="blue-odds" id={"profit" + filterrunners[0].selectionId} style={{ color: this.state.color }}>
                                                   {this.state.betLoss}
                                                 </p>
                                           } */}
                                           {
-                                            <p className="blue-odds" id={"profit" + item.selectionId}>
+                                            <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>
                                               {this.state.data.length==3 ? index==0 ? <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>
                                               : index==1 ? <span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>
                                               : <span class={"runner_amount "+this.state.TthreeColor}>{this.state.TthreePL}</span>
@@ -901,8 +917,8 @@ export default class MatchOdds extends Component {
                                             handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                               this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
                                             }}
-                                            getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
-                                              this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
+                                            getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
+                                              this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                                             }}
                                             bookArr={(arr) => {
                                               this.bookArr(arr)
@@ -1038,13 +1054,13 @@ export default class MatchOdds extends Component {
                                                       <td></td>
                                                       <div class={`${ parentitem.marketData.BackSize==='SUSPENDED' && parentitem.marketData.LaySize==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
                                                       <div class={`${ parentitem.marketData.BackSize==='Running' && parentitem.marketData.LaySize==='Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"NO", index, window.innerWidth, index+3)}>
-                                                        <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
-                                                        <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
-                                                      </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "YES", index, window.innerWidth, index+3)}>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+3)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
+                                                      </td>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+3)}>
+                                                        <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
+                                                        <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>
                                                       <td></td>
                                                       <td></td>
@@ -1060,23 +1076,23 @@ export default class MatchOdds extends Component {
                                       <BetBox
                                         matchName={this.state.matchName}
                                         stake={0}
-                                        index={index+3}
+                                        index={index+this.state.data.length}
                                         betData={this.state.betData}
                                         betProfit={this.state.betProfit}
                                         handleRemove={(style, num) => {
-                                          this.handleRemove(style, num, index+3);
+                                          this.handleRemove(style, num, index+this.state.data.length);
                                         }}
                                         handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                           this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
                                         }}
-                                        getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
-                                          this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
+                                        getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
+                                          this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                                         }}
                                         bookArr={(arr) => {
                                           this.bookArr(arr)
                                         }}
                                         betLoss={this.state.betLoss}
-                                        setdisplay={this.state.display[index+3]}
+                                        setdisplay={this.state.display[index+this.state.data.length]}
                                         eventId={this.props.match.params.id}
                                         handleInput={(e) => this.handleInputValue(e)}
                                         runnderData={this.state.data}
@@ -1167,8 +1183,8 @@ export default class MatchOdds extends Component {
                   // getProfitandLoss={(profit, loss, status) => {
                   //   this.getProfitandLoss(profit, loss, status);
                   // }}
-                  getProfitandLoss={(profit,loss,teamSelection,betType,stack,status)=>{
-                    this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status);
+                  getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
+                    this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                   }}
                   bookArr={(arr) => {
                     this.bookArr(arr)

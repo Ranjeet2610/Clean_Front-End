@@ -166,7 +166,9 @@ export default class Liveevents extends Component {
             //     <h6>{this.state.notifyMsg}</h6>
             //   </div>
             // </div>
-            }
+          }
+          {/* |&nbsp;
+          <Link to={'/eventfancyodds/' + item.eventId}>Fancy Odds</Link> */}
 
 {
   /////////////////////////////////// TITLE LIVEEVENTS //////////////////////////////////////////////
@@ -218,8 +220,7 @@ export default class Liveevents extends Component {
                                   </td>
                                   <td className="text-center red">
                                     <Link role="button" name={item.eventName} id={item.eventId} onClick={(e) => this.addInitialOdds(e)} data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false">Add Initial Odds</Link> |&nbsp; 
-                                    <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link> |&nbsp;
-                                    <Link to={'/eventfancyodds/' + item.eventId}>Fancy Odds</Link>
+                                    <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link> 
                                   </td>
                                 </tr>
                               )
