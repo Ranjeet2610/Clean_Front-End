@@ -79,10 +79,7 @@ export default class BetBox extends Component {
       device = 3;
          
       e.preventDefault();
-<<<<<<< HEAD
       //debugger
-=======
->>>>>>> origin/BOSS
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
