@@ -965,6 +965,7 @@ footer .item a{text-decoration:none;}
 footer .item a.active{background:#6c1945;height:40px;width:40px;}
 footer .item a.active img{width:70%;line-height:82px;display:block;margin-top:4px;}
 footer .item a span{color:#fff;font-size:12px;}
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {background: transparent;bottom: 0;color: transparent; cursor: pointer;height: auto;left: 0;position: absolute;right: 0;top: 0;width: auto;}
 .btn-back{background:#ffc228;padding:0px 10px;border-radius:11px;float:right;margin-top:-3px;display:none;}
 .aj-back{display:block;}
 .matches-all .tab-pane.fade{display:none;}
@@ -1334,18 +1335,6 @@ input[type="range"]{margin-top:14px!important;}
   width: 100%;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-  background: transparent;
-  bottom: 0;
-  color: transparent;
-  cursor: pointer;
-  height: auto;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: auto;
-}
 .add-funds-dialog-current-amount {
   display: flex;
   padding:5px;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {Link} from 'react-router-dom'
 import Navbar from "./Navbar";
+import Utilities from './utilities'
 import Account from "../Services/account";
 import Footer from "./footer";
 
@@ -57,13 +58,12 @@ export default class Clientpl extends Component {
         }
       );
     }
-    let curr = new Date();
-    curr.setDate(curr.getDate());
-    let date = curr.toISOString().substr(0,10);
+    let currD = new Date().toISOString().substr(0,10);
+    let currT = Utilities.datetime(new Date()).slice(11,16)
+    let curr = currD+"T"+currT
     this.setState({
-      currentDate:date,
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
+      from_date:curr,
+      to_date:curr,
     }) 
   }
 
@@ -129,10 +129,10 @@ export default class Clientpl extends Component {
                     <input type="hidden" name="compute" defaultValue="fe6602731bf3d65605f0d8f6552a1c9f" />
                     <input type="hidden" name="user_id" id="user_id" defaultValue={145315} />
                     <div className="popup_col_2">
-                      <input type="date" onChange={this.handleChange} name="from_date" defaultValue={this.state.currentDate} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="From date" autoComplete="off" />
+                      <input type="datetime-local" onChange={this.handleChange} name="from_date" value={this.state.from_date} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="From date" autoComplete="off" />
                     </div>
                     <div className="popup_col_2">
-                      <input type="date" onChange={this.handleChange} name="to_date" defaultValue={this.state.currentDate} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
+                      <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="block_2 buttonacount">
                       <button type="button" id="submit_form_button" className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >

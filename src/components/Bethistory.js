@@ -33,17 +33,11 @@ export default class Bethistory extends Component {
   }
 
   handleFilter = async () => {
-    let fD = await new Date(this.state.from_date).getTime()
-    let tD = await new Date(this.state.to_date).getTime();
-    if(fD <= tD){
-      let dateFilter = this.state.newResData.map(ele => {
-          return ele
-      })
-      let betHistoryFilter =dateFilter.filter(e => {
-        let dataDate = new Date(e.createdAt).getTime()
-          return dataDate>=fD && dataDate<=tD
-        })
-        await this.setState({
+    let fD = await new Date(this.state.from_date);
+    let tD = await new Date(this.state.to_date);
+    if(fD <= tD){
+      let betHistoryFilter = this.state.newResData.filter(e => new Date(fD) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(tD) )
+      await this.setState({
           betHistory:betHistoryFilter
         })
       }
@@ -128,20 +122,20 @@ export default class Bethistory extends Component {
    }
 }
 
-  componentDidMount() {   
-    let curr = new Date();
-    curr.setDate(curr.getDate());
-    let date = curr.toISOString().substr(0,10);
+componentDidMount() {   
+  let currD = new Date().toISOString().substr(0,10);
+  let currT = Utilities.datetime(new Date()).slice(11,16)
+  let curr = currD+"T"+currT
+ this.setState({
+  currentDate:curr,
+    from_date:curr,
+    to_date:curr,
+   }) 
    this.setState({
-      currentDate:date,
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
-     }) 
-     this.setState({
-       load:true
-     })
-     this.getBetData();
-  }
+     load:true
+   })
+   this.getBetData();
+}
 
   paginate = (pageNumber) => {
     this.setState({
@@ -155,7 +149,7 @@ export default class Bethistory extends Component {
 
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistory?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistory?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     return (
         <div>
           <Navbar />
@@ -195,10 +189,10 @@ export default class Bethistory extends Component {
                     <input type="hidden" name="sportId" id="sportId" defaultValue={5} />
                     <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
                     <div className="popup_col_2">
-                      <input type="date" onChange={(e)=>this.handleChange(e,'')} name="from_date" defaultValue={this.state.currentDate} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
+                      <input type="datetime-local" onChange={(e)=>this.handleChange(e,'')} name="from_date" value={this.state.from_date} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
                     </div>
                     <div className="popup_col_2">
-                      <input type="date" onChange={(e)=>this.handleChange(e,'')} name="to_date" defaultValue={this.state.currentDate} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="To date" autoComplete="off" />
+                      <input type="datetime-local" onChange={(e)=>this.handleChange(e,'')} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="popup_col_2">
                       <select className="form-control" name="betStatus">
