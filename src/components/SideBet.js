@@ -301,7 +301,7 @@ export default class SideBet extends Component {
          })
         }
       }
-  }
+    }
   this.closeWindow();
   }
 
@@ -610,8 +610,13 @@ export default class SideBet extends Component {
           load:false
         });  
       });
-    } 
-  }
+    }
+    setTimeout(() => {
+      //this.state.fbetHistroy?.reverse()
+      //console.log("fancydata:",this.state.fbetHistroy.slice().reverse())
+      this.props.getFancyBook(this.state.fbetHistroy)
+    }, 5000);
+}
 
   componentDidMount() {
     this.handlecurrentPositionAccess();

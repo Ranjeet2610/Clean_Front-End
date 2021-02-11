@@ -120,11 +120,12 @@ export default class ProfitLoss extends Component {
   componentDidMount() {
     this.getprofitlossData();
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
+      from_date:Scurr,
+      to_date:Ecurr,
     }) 
   }
 
