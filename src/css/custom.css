@@ -1387,3 +1387,10 @@ input[type="range"]{margin-top:14px!important;}
     z-index: 0;
 }
 }
+
+.submitButton{
+  margin-left:1rem ;
+  color:white ;
+  outline:none ;
+  border-radius:3px ;
+}

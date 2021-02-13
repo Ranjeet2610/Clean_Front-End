@@ -336,18 +336,35 @@ userSportsInfo(data,cb){
     })
   }
 
-  addNews(data,cb){
-    axios.get(Constants.APIURL+'news').then((res) => {
-        cb(res,'get');
-        let body = {
-            newsID:res.data.data.length+1,
-            newsTitle:data,
-            active:true
-        }
-        axios.post(Constants.APIURL+'news',body).then((res) => {
-            cb(res,'post');
+    getNews(cb){
+        axios.get(Constants.APIURL+'news').then((res) => {
+            cb(res);
         })
-    })
-  }
+    }
+    // addNews = (data,cb) => {
+    //     let body = {
+    //         newsID:res.data.data.length+1,
+    //         newsTitle:data,
+    //         active:true
+    //     }
+    //     axios.post(Constants.APIURL+'news',body).then((res) => {
+    //         cb(res);
+    //     })
+    // }
+    deleteNews = (data,cb) => {
+        axios.delete(Constants.APIURL+'/news/:'+data).then((res) => {
+            cb(res)
+        })
+    }
+    // updateNews = (cb) => {
+    //     axios.update(Constants.APIURL+'/news/:id',body).then((res) => {
+    //         cb(res)
+    //     })
+    // }
 
+    matchSettlement = (data,cb) => {
+        axios.post(Constants.APIURL+'matchOddsBetSettlement',data).then((res)=>{
+            cb(res);
+        })
+    }
 }

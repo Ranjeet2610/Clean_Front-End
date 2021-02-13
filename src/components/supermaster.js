@@ -72,22 +72,28 @@ export default class SuperMaster extends Component {
   }
 
   componentDidMount() {
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === false){
+      this.props.history.push('/dashboard')
+    }
+    else{
     this.setState({
       load:true
     })
-    this.users.getAllAdmin((data) => {
-      this.setState({
-        data: data.data,
-        searchFilter: data.data,
-        walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-        load:false
+      this.users.getAllAdmin((data) => {
+        this.setState({
+          data: data.data,
+          searchFilter: data.data,
+          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+          load:false
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => {
+          totalBalance += ele.walletBalance;
+        });
+        this.setState({ totalBalance });
       });
-      let totalBalance = 0;
-      this.state.data.map((ele) => {
-        totalBalance += ele.walletBalance;
-      });
-      this.setState({ totalBalance });
-    });
+    }
   }
 
   update_free_chips = () => {

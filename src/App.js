@@ -28,6 +28,10 @@ import EventMatchOdds from './components/EventMatchOdds';
 import ManageFancyOdds from './components/ManageFancyOdds';
 import ChipSummary from './components/chipSummery';
 import ManageFancyRunners from './components/ManageFancyRunners';
+import News from './components/news';
+import Settlement from './components/Settlement';
+import FancySettlement from './components/fancySettlement';
+import MatchSettlement from './components/matchSettlement';
 import  './config/axiosConfig'
 const App = () => {
   return (
@@ -67,6 +71,10 @@ const App = () => {
           <Route exact path="/eventmatchodds/:id" component={EventMatchOdds} />
            <Route exact path="/eventfancyodds/:id" component={ManageFancyOdds} /> 
            <Route exact path="/managefrunners/:id" component={ManageFancyRunners} /> 
+           <Route exact path="/news" component={News} /> 
+           <Route exact path="/Settlement" component={Settlement} /> 
+           <Route exact path="/fancySettlement/:id" component={FancySettlement} /> 
+           <Route exact path="/matchSettlement/:id" component={MatchSettlement} /> 
            </Switch> 
        </section>
          

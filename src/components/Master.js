@@ -71,42 +71,48 @@ export default class Master extends Component {
   }
 
   componentDidMount() {
-    if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
-      this.setState({
-        load:true
-      })
-      const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
-      this.users.getmasterforSupermaster(obj, (data) => {
-        this.setState({
-          data: data.data,
-          searchFilter: data.data,
-          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-          load:false
-        });
-        let totalBalance = 0;
-        this.state.data.map((ele) => {
-          totalBalance += ele.walletBalance;
-        });
-        this.setState({ totalBalance });
-      })
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
+      this.props.history.push('/dashboard')
     }
-    else {
-      this.setState({
-        load:true
-      })
-      this.users.getMastersforAdmin((data) => {
+    else{
+      if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
         this.setState({
-          data: data.data,
-          searchFilter: data.data,
-          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-          load:false
+          load:true
+        })
+        const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
+        this.users.getmasterforSupermaster(obj, (data) => {
+          this.setState({
+            data: data.data,
+            searchFilter: data.data,
+            walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+            load:false
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => {
+            totalBalance += ele.walletBalance;
+          });
+          this.setState({ totalBalance });
+        })
+      }
+      else {
+        this.setState({
+          load:true
+        })
+        this.users.getMastersforAdmin((data) => {
+          this.setState({
+            data: data.data,
+            searchFilter: data.data,
+            walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+            load:false
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => {
+            totalBalance += ele.walletBalance;
+          });
+          this.setState({ totalBalance });
         });
-        let totalBalance = 0;
-        this.state.data.map((ele) => {
-          totalBalance += ele.walletBalance;
-        });
-        this.setState({ totalBalance });
-      });
+      }
     }
   }
 

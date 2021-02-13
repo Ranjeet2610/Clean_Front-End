@@ -348,6 +348,9 @@ showchildMenu=(e)=>{
           <Link to="/liveevents">Live Events </Link> 
         </li>
         <li>
+          <Link to="/Settlement">Settlement</Link> 
+        </li>
+        <li>
           <Link to="/clientpl">Client P L</Link> 
         </li>
         <li>
@@ -372,7 +375,7 @@ showchildMenu=(e)=>{
           <Link to="#" onClick={()=>this.view_add_funds()}>Add Funds</Link>
         </li>
         <li> 
-          <Link to="#" onClick={()=>this.view_add_news()}>Add News</Link>
+          <Link to="/news">Add News</Link>
         </li>
         <li> 
           <Link to="#" onClick={()=>this.addBetPlaceingTime()}>Add BetTime</Link>
