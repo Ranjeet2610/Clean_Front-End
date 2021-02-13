@@ -351,8 +351,8 @@ userSportsInfo(data,cb){
     //         cb(res);
     //     })
     // }
-    deleteNews = (data,cb) => {
-        axios.delete(Constants.APIURL+'/news/:'+data).then((res) => {
+    deleteNews = (id,cb) => {
+        axios.delete(Constants.APIURL+'/news/'+id).then((res) => {
             cb(res)
         })
     }

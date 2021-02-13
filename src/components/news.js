@@ -49,6 +49,7 @@ export default class news extends Component{
       }
 
       handleDelete = (id) => {
+          debugger
         this.users.deleteNews(id,(data)=>{
             console.log("DELETE",data);
         })
@@ -56,7 +57,7 @@ export default class news extends Component{
 
     render(){
         return(
-            <div style={{backgroundColor:'#fffbde'}}>
+            <div>
                 <Navbar/>
                 <div style={this.state.newsBox}>
                     <div style={this.state.newsHead}>

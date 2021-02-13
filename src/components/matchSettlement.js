@@ -38,13 +38,15 @@ export default class EventMatchOdds extends Component {
   }
 
   handleSettlement = (selectionId,marketId) => {
+    if(selectionId !== ""){
       const obj = {
         selectionId : selectionId,
         marketId: marketId
       }
-    this.users.matchSettlement(obj,(data)=>{
-        console.log("DDDDDDDDD",data);
-    })
+      this.users.matchSettlement(obj,(data)=>{
+        // console.log("DDDDDDDDD",data);
+      })
+    }
   }
 
   handleMatchSettle = (event) => {
@@ -54,7 +56,6 @@ export default class EventMatchOdds extends Component {
   }
 
   render(){
-      let selection ;
     return (
         <div>
           <Navbar />
@@ -112,7 +113,7 @@ export default class EventMatchOdds extends Component {
                             <td className="text-center">
                                 <form>
                                     <select name="runnerID" onChange={this.handleMatchSettle} style={{borderColor:'gray',borderRadius:'3px'}}> 
-                                    <option>Select Winner</option>
+                                    <option value="">Select Winner</option>
                                         {
                                             this.state.runnersdata.length > 0 &&
                                             this.state.runnersdata.map((item,index) => {

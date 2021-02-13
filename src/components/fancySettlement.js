@@ -107,7 +107,7 @@ export default class ManageFancyOdds extends Component {
                                     <td className="text-center">{item.status}</td>
                                     <td className="red text-center">
                                         <input type="text" size="5" name="result" onChange={this.handleOnChange}/>
-                                        <input type="button" onClick={(id)=>this.handleFancySettlement(id)} value="Settle" style={{backgroundColor:'#6c1945',color:'white',outline:'none',marginLeft:'1rem'}}/>
+                                        <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId)} value="Settle" style={{backgroundColor:'#6c1945',color:'white',outline:'none',marginLeft:'1rem'}}/>
                                     </td>
                                 </tr>
                               )
