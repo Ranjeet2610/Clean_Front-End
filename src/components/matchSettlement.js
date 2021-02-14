@@ -42,7 +42,8 @@ export default class EventMatchOdds extends Component {
     if(selectionId !== ""){
       const obj = {
         selectionId : selectionId,
-        marketId: marketId
+        marketId: marketId,
+        eventId:this.props.match.params.id
       }
       this.users.matchSettlement(obj,(data)=>{
         // console.log("DDDDDDDDD",data);
@@ -60,6 +61,7 @@ export default class EventMatchOdds extends Component {
   }
 
   render(){
+    console.log("MMMMMMM",this.props.location.state);
     return (
         <div>
           <Navbar />
@@ -115,8 +117,11 @@ export default class EventMatchOdds extends Component {
                               <input type="checkbox"  checked={this.state.marketata.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e)}  style={{height: '20px',width: '20px'}}/>
                             </td> 					    */}
                             <td className="text-center">
+                                {
+                                  this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i> : null
+                                }
                                 <form>
-                                    <select name="runnerID" onChange={this.handleMatchSettle} disabled={this.state.disabled} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
+                                    <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled"} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
                                     <option value="">Select Winner</option>
                                         {
                                             this.state.runnersdata.length > 0 &&
@@ -127,7 +132,7 @@ export default class EventMatchOdds extends Component {
                                             )
                                         }
                                     </select>
-                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId)} className="SettleButton" disabled={this.state.disabled} style={this.state.disabled ? {backgroundColor:'green'} : {backgroundColor:'#95335c'}}/>
+                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                 </form>
                             </td>
                           </tr>

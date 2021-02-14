@@ -9,8 +9,7 @@ export default class ManageFancyOdds extends Component {
     super(props);
     this.state = {
         result:'',
-        disabled:false,
-        tableHead:["S.No.","Market_Id","Market_Name","Status","Settlement"],
+        tableHead:["S.No.","Market_Id","Market_Name","Status","Settlement_Status","Settlement"],
         marketata:[],
         runnersdata:''
     };
@@ -52,19 +51,16 @@ export default class ManageFancyOdds extends Component {
       })
   }
 
-  handleFancySettlement = (id,index) => {
+  handleFancySettlement = (id) => {
     if(this.state.result!==""){
       const obj = {
           selectionId : id,
           result: this.state.result
       }
       this.events.fancyBetSettle(obj,(data)=>{
+        // fancyBetSettleNotification:
       })
     }
-    this.setState({
-      disabled:true,
-      disabledIndex:index
-    })
   }
 
   render(){
@@ -88,7 +84,7 @@ export default class ManageFancyOdds extends Component {
                   <div className="custom-scroll appendAjaxTbl" id="filterdata">
                     <table className="table table-bordered table-dark table_new_design" id="datatablesss">
                       <thead>
-                        <tr className="headings" style={{backgroundColor:'#6c1945',color:'white'}}>
+                        <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                           {
                             this.state.tableHead.map((item,index)=><th className="text-center" key={index}>{item}</th>)
                           }
@@ -104,17 +100,23 @@ export default class ManageFancyOdds extends Component {
                                     <td className="text-center">{item.marketId}</td>
                                     <td className="text-center">{item.marketName}</td>
                                     <td className="text-center">{item.status}</td>
+                                    {
+                                      item.settlementStatus ? 
+                                      <td className="text-center " style={{fontSize:'15px',fontWeight:'500',color:'red'}}><i>Settled!</i></td>:
+                                      <td className="text-center " style={{fontSize:'15px',fontWeight:'500',color:'green'}}><i>Open</i></td>
+                                    }
                                     <td className="red text-center">
                                         {
-                                          this.state.disabledIndex===index ?
+                                          // this.state.disabledIndex===index ?
                                           <>
-                                            <input type="text" size="5" name="result" disabled={this.state.disabled} onChange={this.handleOnChange}/>
-                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId,index)} value="Settle" disabled={this.state.disabled} className="SettleButton" style={this.state.disabled ? {backgroundColor:'green'} : {backgroundColor:'#95335c'}}/>
-                                          </>:
-                                          <>
-                                            <input type="text" size="5" name="result" onChange={this.handleOnChange}/>
-                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId,index)} value="Settle" className="SettleButton" style={{backgroundColor:'#95335c'}}/>
+                                            <input type="text" size="5" name="result" value={item.settledValue} disabled={item.settlementStatus ? true : false} onChange={this.handleOnChange}/>
+                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId)} value="Settle" disabled={item.settlementStatus ? true : false} className="SettleButton" style={item.settlementStatus ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                           </>
+                                          // :
+                                          // <>
+                                          //   <input type="text" size="5" name="result" onChange={this.handleOnChange}/>
+                                          //   <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId,index)} value="Settle" className="SettleButton" style={{backgroundColor:'#95335c'}}/>
+                                          // </>
                                         }
                                     </td>
                                 </tr>

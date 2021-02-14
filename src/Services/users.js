@@ -367,4 +367,14 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    getAllUserBasedOnSuperMaster = (username,cb) => {
+        axios.get(Constants.APIURL+'getuserbasedOnAdmin?userName='+username).then((res)=>{
+            cb(res);
+        })
+    }
+    getUserInfo = (username, cb) => {
+        axios.get(Constants.APIURL+'getUserInfo?userName='+username).then((res)=>{
+            cb(res);
+        })
+    }
 }

@@ -92,7 +92,33 @@ export default class User extends Component {
       this.props.history.push('/dashboard')
     }
     else{
-      if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
+      if(infoDetails.Admin){
+        this.setState({
+          load:true
+        })
+        this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
+          console.log("VVVV",data.data.data);
+          this.setState({
+            data: data.data.data,
+            searchFilter: data.data,
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => totalBalance += ele.walletBalance);
+          this.setState({
+            totalBalance,
+          load:false
+          });
+        });
+        const obj = {
+          userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+        }
+        this.users.getMyprofile(obj, (data) => {
+          this.setState({
+            masterDetails: data.data,
+          })
+        });
+      }
+      else if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
         this.setState({
           load:true
         })

@@ -198,14 +198,18 @@ export default class Liveevents extends Component {
                                   <td className="text-center">{item.eventId}</td>
                                   <td className="text-center green">{item.eventName}</td>
                                   <td className="text-center red">{item.OpenDate}</td>
-                                  <td className="text-center green">
-                                    <input type="checkbox" name={item.eventId} checked={this.state.checkedItems.get(item.eventId)} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
-                                  </td>
-                                  <td className="text-center red">
-                                    <Link to={'/matchSettlement/' + item.eventId}><i>Match&nbsp;Settlement</i></Link>
-                                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                                    <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
-                                  </td>
+                                  {
+                                    item.settlementStatus ? 
+                                    <td className="text-center text-danger" style={{fontSize:'15px',fontWeight:'400'}}><i>Settled</i></td>:
+                                    <td className="text-center text-success" style={{fontSize:'15px',fontWeight:'400'}}><i>Open</i></td>
+                                  }
+                                  {
+                                    <td className="text-center red">
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
+                                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                                      <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
+                                    </td>
+                                  }
                                 </tr>
                               )
                             }):

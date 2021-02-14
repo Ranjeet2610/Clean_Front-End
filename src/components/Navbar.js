@@ -287,6 +287,15 @@ componentDidMount(){
         balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
       })
     })
+    // setInterval(()=>{
+    //   this.users.getUserInfo(user.userName, (data)=>{
+    //     console.log("XXXXXXXX",data.data.data);
+    //     this.setState({
+    //       balance:data.data.data.walletBalance,
+    //       exposure:data.data.data.exposure,
+    //     })
+    //   })
+    // },2000)
   }
 }
 
