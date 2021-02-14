@@ -19,6 +19,9 @@ export default class CloseUser extends Component {
     this.userDetails = JSON.parse(localStorage.getItem('data'))!==undefined?JSON.parse(localStorage.getItem('data')):'';
   }
   componentDidMount() {
+    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
     if(this.userDetails.superAdmin){
       this.setState({
         load:true

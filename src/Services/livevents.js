@@ -190,4 +190,14 @@ visiableFancyRunners(data,cb){
     })
     .catch((error) => console.log(error));
 }
+getFancySettlementData = (eventId,cb) =>  {
+  axios.get(Constants.APIURL+'getBettedFancyOdds?eventId='+eventId+'&type='+"Fancy").then((res)=>{
+    cb(res);
+  })
+}
+fancyBetSettle = (data,cb) => {
+  axios.post(Constants.APIURL+"fancyOddsBetSettlement",data).then((res)=>{
+    cb(res);
+  })
+}
 }

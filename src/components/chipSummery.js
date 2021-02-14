@@ -33,6 +33,10 @@ export default class ChipSummary extends Component {
   }
 
   componentDidMount() {
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
     if(this.userDetails.superAdmin) {
       this.users.getAllAdmin((data) => {
         this.setState({

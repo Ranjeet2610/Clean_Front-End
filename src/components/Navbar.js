@@ -287,6 +287,15 @@ componentDidMount(){
         balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
       })
     })
+    // setInterval(()=>{
+    //   this.users.getUserInfo(user.userName, (data)=>{
+    //     console.log("XXXXXXXX",data.data.data);
+    //     this.setState({
+    //       balance:data.data.data.walletBalance,
+    //       exposure:data.data.data.exposure,
+    //     })
+    //   })
+    // },2000)
   }
 }
 
@@ -348,6 +357,9 @@ showchildMenu=(e)=>{
           <Link to="/liveevents">Live Events </Link> 
         </li>
         <li>
+          <Link to="/Settlement">Settlement</Link> 
+        </li>
+        <li>
           <Link to="/clientpl">Client P L</Link> 
         </li>
         <li>
@@ -372,7 +384,7 @@ showchildMenu=(e)=>{
           <Link to="#" onClick={()=>this.view_add_funds()}>Add Funds</Link>
         </li>
         <li> 
-          <Link to="#" onClick={()=>this.view_add_news()}>Add News</Link>
+          <Link to="/news">Add News</Link>
         </li>
         <li> 
           <Link to="#" onClick={()=>this.addBetPlaceingTime()}>Add BetTime</Link>

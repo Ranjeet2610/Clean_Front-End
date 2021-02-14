@@ -55,6 +55,9 @@ export default class Liveevents extends Component {
   }
 
   async componentDidMount() {
+    if(JSON.parse(localStorage.getItem('data')).superAdmin === false){
+      this.props.history.push('/dashboard')
+    }
     await this.setState({
       load: true
     })
@@ -167,8 +170,6 @@ export default class Liveevents extends Component {
             //   </div>
             // </div>
           }
-          {/* |&nbsp;
-          <Link to={'/eventfancyodds/' + item.eventId}>Fancy Odds</Link> */}
 
 {
   /////////////////////////////////// TITLE LIVEEVENTS //////////////////////////////////////////////
@@ -208,9 +209,9 @@ export default class Liveevents extends Component {
                       <tbody>
                         {
                           this.state.resdata.length > 0 ?
-                            this.state.resdata.map((item,index) => {
-                              return (
-                                <tr key={index}>
+                          this.state.resdata.map((item,index) => {
+                            return (
+                              <tr key={index}>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.eventId}</td>
                                   <td className="text-center green">{item.eventName}</td>
@@ -220,7 +221,8 @@ export default class Liveevents extends Component {
                                   </td>
                                   <td className="text-center red">
                                     <Link role="button" name={item.eventName} id={item.eventId} onClick={(e) => this.addInitialOdds(e)} data-toggle="modal" data-target="#exampleModal" data-backdrop="static" data-keyboard="false">Add Initial Odds</Link> |&nbsp; 
-                                    <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link> 
+                                    <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link>|&nbsp;
+                                    <Link to={'/eventfancyodds/' + item.eventId}>Fancy Odds</Link>
                                   </td>
                                 </tr>
                               )

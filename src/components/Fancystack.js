@@ -24,6 +24,10 @@ class FancyStack extends Component{
   }
 
   componentDidMount(){
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
     let currD = new Date().toISOString().substr(0,10);
     let currT = Utilities.datetime(new Date()).slice(11,16)
     let curr = currD+"T"+currT

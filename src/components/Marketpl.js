@@ -27,6 +27,9 @@ export default class Marketpl extends Component {
   }
 
   componentDidMount(){
+    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
     if(this.userDetails.superAdmin){
       const obj = {
         userName:this.props.match.params.username?this.props.match.params.username:JSON.parse(localStorage.getItem('data')).userName
