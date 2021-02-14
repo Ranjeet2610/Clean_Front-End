@@ -9,6 +9,7 @@ export default class ManageFancyOdds extends Component {
     super(props);
     this.state = {
         result:'',
+        disabled:false,
         tableHead:["S.No.","Market_Id","Market_Name","Status","Settlement"],
         marketata:[],
         runnersdata:''
@@ -21,13 +22,7 @@ export default class ManageFancyOdds extends Component {
       this.setState({
         marketata:data.data.data
       });
-    console.log("FFFFFFF",data.data.data);
     });
-    // this.events.getFancyMarketType(this.props.match.params.id,data=>{ 
-    //   this.setState({
-    //     marketata:data.fancymarket
-    //   });
-    // });
   }
 
 //   handleChange = (event,marketId,type) => {
@@ -57,14 +52,18 @@ export default class ManageFancyOdds extends Component {
       })
   }
 
-  handleFancySettlement = (id) => {
-      debugger
-    const obj = {
-        selectionId : id,
-        result: this.state.result
+  handleFancySettlement = (id,index) => {
+    if(this.state.result!==""){
+      const obj = {
+          selectionId : id,
+          result: this.state.result
+      }
+      this.events.fancyBetSettle(obj,(data)=>{
+      })
     }
-    this.events.fancyBetSettle(obj,(data)=>{
-        console.log("++++++++++++++++",data);
+    this.setState({
+      disabled:true,
+      disabledIndex:index
     })
   }
 
@@ -106,8 +105,17 @@ export default class ManageFancyOdds extends Component {
                                     <td className="text-center">{item.marketName}</td>
                                     <td className="text-center">{item.status}</td>
                                     <td className="red text-center">
-                                        <input type="text" size="5" name="result" onChange={this.handleOnChange}/>
-                                        <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId)} value="Settle" style={{backgroundColor:'#6c1945',color:'white',outline:'none',marginLeft:'1rem'}}/>
+                                        {
+                                          this.state.disabledIndex===index ?
+                                          <>
+                                            <input type="text" size="5" name="result" disabled={this.state.disabled} onChange={this.handleOnChange}/>
+                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId,index)} value="Settle" disabled={this.state.disabled} className="SettleButton" style={this.state.disabled ? {backgroundColor:'green'} : {backgroundColor:'#95335c'}}/>
+                                          </>:
+                                          <>
+                                            <input type="text" size="5" name="result" onChange={this.handleOnChange}/>
+                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId,index)} value="Settle" className="SettleButton" style={{backgroundColor:'#95335c'}}/>
+                                          </>
+                                        }
                                     </td>
                                 </tr>
                               )

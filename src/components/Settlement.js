@@ -202,9 +202,9 @@ export default class Liveevents extends Component {
                                     <input type="checkbox" name={item.eventId} checked={this.state.checkedItems.get(item.eventId)} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
                                   </td>
                                   <td className="text-center red">
-                                    <Link to={'/matchSettlement/' + item.eventId}><i>Match Settlement</i></Link>
+                                    <Link to={'/matchSettlement/' + item.eventId}><i>Match&nbsp;Settlement</i></Link>
                                     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                                    <Link to={'/fancySettlement/' + item.eventId}><i>Fancy Settlement</i></Link>
+                                    <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
                                   </td>
                                 </tr>
                               )

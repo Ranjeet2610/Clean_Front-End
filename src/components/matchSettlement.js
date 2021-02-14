@@ -10,6 +10,7 @@ export default class EventMatchOdds extends Component {
     super(props);
     this.state = {
         runnerID:'',
+        disabled:false,
       tableHead:["S.No.","Market_Id","Market_Name","Runner_Name","Settlement"],
       marketata:'',
       runnersdata:[]
@@ -47,6 +48,9 @@ export default class EventMatchOdds extends Component {
         // console.log("DDDDDDDDD",data);
       })
     }
+    this.setState({
+      disabled:true
+    })
   }
 
   handleMatchSettle = (event) => {
@@ -65,7 +69,7 @@ export default class EventMatchOdds extends Component {
               <div className="right_col" role="main">
                 <div className="row">
                   <div className="col-md-12">
-                    <div className="title_new_at">Match Odds    
+                    <div className="title_new_at">Match Settlement   
                       <div className="pull-right">
                         <button className="btn_common" onClick={() => this.props.history.goBack()}>Back</button>
                       </div>
@@ -112,7 +116,7 @@ export default class EventMatchOdds extends Component {
                             </td> 					    */}
                             <td className="text-center">
                                 <form>
-                                    <select name="runnerID" onChange={this.handleMatchSettle} style={{borderColor:'gray',borderRadius:'3px'}}> 
+                                    <select name="runnerID" onChange={this.handleMatchSettle} disabled={this.state.disabled} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
                                     <option value="">Select Winner</option>
                                         {
                                             this.state.runnersdata.length > 0 &&
@@ -123,7 +127,7 @@ export default class EventMatchOdds extends Component {
                                             )
                                         }
                                     </select>
-                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId)} style={{backgroundColor:'#95335c',borderRadius:'3px',marginLeft:'1rem',padding:'3px 5px 3px 5px',color:'white',outline:'none'}}/>
+                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId)} className="SettleButton" disabled={this.state.disabled} style={this.state.disabled ? {backgroundColor:'green'} : {backgroundColor:'#95335c'}}/>
                                 </form>
                             </td>
                           </tr>

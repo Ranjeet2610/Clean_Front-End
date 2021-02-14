@@ -50,6 +50,7 @@ export default class news extends Component{
 
       handleDelete = (id) => {
           debugger
+        //   let d = id.replace(/^"|"$/g, "");
         this.users.deleteNews(id,(data)=>{
             console.log("DELETE",data);
         })
@@ -87,7 +88,7 @@ export default class news extends Component{
                                     this.state.NewsList.map((element) =>
                                     <tr>
                                         <td className="text-center" style={{width:'10%'}}>
-                                            <input type="button" value="Delete" onClick={()=>this.handleDelete(element._id)} style={{backgroundColor:'#95335c', outline:'none',color:'white', borderRadius:'3px'}} />
+                                            <input type="button" value="Delete" onClick={(_id)=>this.handleDelete(element._id)} style={{backgroundColor:'#95335c', outline:'none',color:'white', borderRadius:'3px'}} />
                                         </td>
                                         <td className="text-center" style={{width:'15%'}}>{element.newsID}</td>
                                         <td className="text-center">{element.newsTitle}</td>

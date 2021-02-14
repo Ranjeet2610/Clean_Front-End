@@ -1388,9 +1388,17 @@ input[type="range"]{margin-top:14px!important;}
 }
 }
 
-.submitButton{
+/* .submitButton{
   margin-left:1rem ;
   color:white ;
   outline:none ;
   border-radius:3px ;
+} */
+.SettleButton{
+  /* width:'100px'; */
+  border-radius:3px;
+  margin-top:5px;
+  padding:1px 15px 1px 15px;
+  color:white;
+  outline:none;
 }
