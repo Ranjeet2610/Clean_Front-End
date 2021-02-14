@@ -965,8 +965,8 @@ export default class SideBet extends Component {
 
         <div>
             <div id="loader" style={stylebox}>
-              <div style={{opacity:"1", height:'200px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-                  <Loader type="Grid" color="#6c1945" height={50} width={50} />
+              <div style={{opacity:"1", height:'200px',width:'100%',background:'#fff9cc',border:'2px solid #c99d1e', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                  <Loader type="Grid" color="#c99d1e" height={50} width={50} />
               </div>
             </div>
           <div id="sidebetbox" className="betBox border-box" style={display}>
