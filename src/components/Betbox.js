@@ -45,12 +45,13 @@ export default class BetBox extends Component {
                 betData: this.props.betData
             });
         }, 2000)
+        /*
         this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName, this.props.eventId, 'getUserOpenBetHistory', (data) => {
           this.setState({
               betHistroy: data,
               count: data.length
           });
-      });
+       });*/
       const obj = {
           id: JSON.parse(localStorage.getItem('data')).id
       }

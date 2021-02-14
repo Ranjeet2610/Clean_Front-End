@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
+import Utilities from './utilities'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Account from '../Services/account';
@@ -46,15 +47,14 @@ getAccountStatement = () =>{
 }
 
 componentDidMount() {
-  this.getAccountStatement();
-  let curr = new Date();
-  curr.setDate(curr.getDate());
-  let date = curr.toISOString().substr(0,10);
+  let currD = new Date().toISOString().substr(0,10);
+  let currT = Utilities.datetime(new Date()).slice(11,16)
+  let curr = currD+"T"+currT
   this.setState({
-    currentDate:date,
-    from_date:this.state.currentDate,
-    to_date:this.state.currentDate,
+    from_date:curr,
+    to_date:curr,
   })
+  this.getAccountStatement();
 }
 
 convertDatePickerTimeToMySQLTime(str) {
@@ -79,25 +79,21 @@ handleChange = (event) =>{
 
 handleClear = () =>{
   this.setState({
-    from_date:this.state.currentDate,
-    to_date:this.state.currentDate,
+    from_date:this.state.from_date,
+    to_date:this.state.to_date,
   })
   this.getAccountStatement();
 }
 
 handleFilter = async () => {
-  if(this.state.from_date && this.state.to_date){
-  let fD = await new Date(this.state.from_date).getTime()
-  let tD = await new Date(this.state.to_date).getTime();
-  if(fD <= tD){
-    let dateFilter = this.state.newResData.filter(ele => {
-      let dataDate = new Date(ele.createdAt).getTime()
-        return dataDate>=fD && dataDate<=tD
-      })
-      this.setState({
-        resdata:dateFilter
-      })
-    }
+  let fD = await new Date(this.state.from_date);
+  let tD = await new Date(this.state.to_date);
+  if(fD <= tD){
+      let dateFilter = this.state.newResData.filter(e => new Date(fD) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(tD) )
+    console.log("DDDDDDDDDD",this.state.newResData);
+    this.setState({
+      resdata:dateFilter
+    })
   }
 }
 
@@ -197,10 +193,10 @@ render(){
                         }
                       </div>
                       <div className="block_2">            
-                        <input type="date" onChange={this.handleChange} name="from_date" id="fdate" defaultValue={this.state.currentDate} className="form-control" placeholder="From Date" autoComplete="off" />
+                        <input type="datetime-local" onChange={this.handleChange} name="from_date" id="fdate" value={this.state.from_date} className="form-control" placeholder="From Date" autoComplete="off" />
                       </div>
                       <div className="block_2">            
-                        <input type="date" onChange={this.handleChange} name="to_date" id="tdate" defaultValue={this.state.currentDate} className="form-control" placeholder="To Date" autoComplete="off" />
+                        <input type="datetime-local" onChange={this.handleChange} name="to_date" id="tdate" value={this.state.to_date} className="form-control" placeholder="To Date" autoComplete="off" />
                       </div>
 
                       {

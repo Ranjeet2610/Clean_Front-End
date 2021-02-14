@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import Utilities from './utilities'
 import Sidebar from "./Sidebar";
 import Account from "../Services/account";
 import Footer from './footer'
@@ -11,9 +12,9 @@ export default class ProfitLoss extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      profitAndLossTableHead:["S.No.","Event Name","Market","P_L","Commission","Created On","Action"],
-      showBetHistoryTableHead:["S.No.","User Name","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","STATUS","Bet Code"],
-      allGames:["Cricket","Soccer","Tennis","Live teenpatti","Live Casino","Fancy"],
+      profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
+      showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
+      allGames:["Cricket","Soccer","Tennis","Live Teenpatti","Live Casino","Fancy"],
       data: '',
       ispl: false,
       showbetData: '',
@@ -71,8 +72,8 @@ export default class ProfitLoss extends Component {
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
+      from_date:this.state.from_date,
+      to_date:this.state.to_date,
     })
     this.getprofitlossData();
   }
@@ -118,14 +119,14 @@ export default class ProfitLoss extends Component {
 
   componentDidMount() {
     this.getprofitlossData();
-    let curr = new Date();
-    curr.setDate(curr.getDate());
-    let date = curr.toISOString().substr(0,10);
-   this.setState({
-      currentDate:date,
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
-     }) 
+    let currD = new Date().toISOString().substr(0,10);
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
+    this.setState({
+      from_date:Scurr,
+      to_date:Ecurr,
+    }) 
   }
 
   goBack = () => {
@@ -198,7 +199,7 @@ export default class ProfitLoss extends Component {
                                   <td className="text-center">{item.bettype} </td>
                                   <td className="text-center">{item.odds}</td>
                                   <td className="text-center">{item.stack}</td>
-                                  <td className="text-center">{item.createdDate}</td>
+                                  <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
                                   <td className="text-center">{item.P_L}</td>
                                   <td className="text-center">{item.profit}</td>
                                   <td className="text-center">{item.liability}</td>
@@ -251,10 +252,10 @@ export default class ProfitLoss extends Component {
                         </select>
                       </div>
                       <div className="col-md-2 col-xs-6">
-                        <input type="date" onChange={this.handleChange} name="from_date" defaultValue={this.state.currentDate} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
+                        <input type="datetime-local" onChange={this.handleChange} name="from_date" value={this.state.from_date} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
                       </div>
                       <div className="col-md-2 col-xs-6">
-                        <input type="date" onChange={this.handleChange} name="to_date" defaultValue={this.state.currentDate} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="To date" autoComplete="off" />
+                        <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="To date" autoComplete="off" />
                       </div>
 
 {
@@ -309,7 +310,7 @@ export default class ProfitLoss extends Component {
                                   <td className>{item.data[0].marketType}</td>
                                   <td className>{item.ProfitLoss}</td>
                                   <td className>0.0</td>
-                                  <td className>{item.data[0].createdDate} </td>
+                                  <td className>{Utilities.datetime(item.data[0].createdDate)} </td>
                                   <td className>
                                     <Link style={{ cursor: "pointer" }} onClick={() => this.showBet(item.data)} >
                                       Show Bet

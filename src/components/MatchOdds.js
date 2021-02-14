@@ -47,7 +47,6 @@ export default class MatchOdds extends Component {
         }
       ],
       tableTd: ["0", "0", "0", "0", "0", "0"],
-      bookArr: [],
       zeroStatus: "false",
       betProfit: 0,
       betLoss: 0,
@@ -91,6 +90,8 @@ export default class MatchOdds extends Component {
       selTeamSelection:'',
       selIndex:'',
       selfancymarketId:'',
+      fbetHistroyProp: '',
+      filterbookdata:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       timer: "",
       redirectToReferrer: false,
@@ -225,7 +226,25 @@ export default class MatchOdds extends Component {
   }, 100)
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
-
+  getFancyBook = async (fbetHistroy) => {
+    await this.setState({
+      fbetHistroyProp: fbetHistroy
+    })
+    //console.log('fbetHistroy',this.state.fbetHistroyProp)
+  }
+  showfilterbook(marketName,marketId){
+    let filterbook = [];
+    if(this.state.fbetHistroyProp.length > 0){
+      filterbook = this.state.fbetHistroyProp.filter(newdata=>{
+        return newdata.marketID===marketId;
+      }).reverse().slice(0, 1);
+    }
+    this.setState({
+      filterbookdata: filterbook
+    })
+    //console.log('filterbookdata',this.state.filterbookdata)
+  }
+   
   placeBet(type, odds, data, pdata, mid, index, width) {
     // debugger
     let displayTest;
@@ -338,6 +357,7 @@ export default class MatchOdds extends Component {
         });
         //console.log("marketOdds",this.state.marketOdds);
         //console.log("Runner",this.state.data);
+        //console.log("match date:",JSON.parse(localStorage.getItem("matchname")).date);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -360,7 +380,7 @@ export default class MatchOdds extends Component {
         this.setState({
           fancymarket: data.fancymarket,
         });
-       // console.log("fancymarket",this.state.fancymarket);
+       //console.log("fancymarket",this.state.fancymarket);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           let getUsize = "";
@@ -680,8 +700,11 @@ export default class MatchOdds extends Component {
   render() {
     let inplay;
     let runners = this.state.data;
-    let filterrunners;
+    let filterrunners = [];
+    let bookitems = [];
+    let bookodds;
     let expoProfit = 0;
+    let j=0;
     let avilBlack;
     let availLay;
     if (new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime() > new Date().getTime()) {
@@ -702,18 +725,18 @@ export default class MatchOdds extends Component {
           this.state.load ? 
           <div style={{opacity:"1", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
             <Loader type="Grid" color="#6c1945" height={100} width={100} />
-        </div>:
-        <div>
+         </div>:
+         <div>
           <div className="container body">
           <div className="main_container" id="sticky">
             <div className="right_col" role="main">
               <div className="fullrow tile_count">
                 <div className="col-md-8">
 
-                  {/* {
+                  {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
-
+                  
                   <div className="modal-header mod-header">
                     <div className="block_box">
                       <span id="tital_change">
@@ -724,12 +747,15 @@ export default class MatchOdds extends Component {
                       </span>
                     </div>
                   </div>
-
+                 
                   {
                     /////////////////////// SCORE BOARD ///////////////////////////////////////
                   }
-
-                  <div style={{ height: '140px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                  <div style={{ height: '228px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                  <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.props.match.params.id}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                  </div>
+                  
+                  {/* <div style={{ height: '140px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
                     <div style={{ borderTopLeftRadius: '5px', paddingTop: '30px', paddingLeft: '35px', borderBottomLeftRadius: '5px', marginLeft: '20px', width: '330px', height: '90px', marginTop: '15px', backgroundColor: '#0a3a06', opacity: '0.5' }}>
                       <span style={{ color: "white", fontSize: '15px' }}>Delhi Capitals</span>
                     </div>
@@ -920,9 +946,6 @@ export default class MatchOdds extends Component {
                                             getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
                                               this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                                             }}
-                                            bookArr={(arr) => {
-                                              this.bookArr(arr)
-                                            }}
                                             betLoss={this.state.betLoss}
                                             setdisplay={this.state.display[index]}
                                             eventId={this.props.match.params.id}
@@ -1043,7 +1066,7 @@ export default class MatchOdds extends Component {
                                                       <td>
                                                         <span class="fancyhead5303" id="fancy_name5303">{parentitem.marketData.marketName}</span>
                                                         <div className="block_box_btn1" style={{marginRight:'50px'}}>
-                                                          <button className="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModalForBook" style={{color:'white',border:'none',outline:'none',backgroundColor:'#6c1945'}}>
+                                                          <button className="btn btn-primary btn-xs" onClick={() => this.showfilterbook(parentitem.marketData.marketName,parentitem.marketData.marketId)} data-toggle="modal" data-target="#exampleModalForBook" style={{color:'white',border:'none',outline:'none',backgroundColor:'#6c1945'}}>
                                                             Book
                                                           </button>
                                                         </div>
@@ -1052,13 +1075,13 @@ export default class MatchOdds extends Component {
                                                       </td>
                                                       <td></td>
                                                       <td></td>
-                                                      <div class={`${ parentitem.marketData.BackSize==='SUSPENDED' && parentitem.marketData.LaySize==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
-                                                      <div class={`${ parentitem.marketData.BackSize==='Running' && parentitem.marketData.LaySize==='Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+3)}>
+                                                      <div class={`${ parentitem.marketData.status==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
+                                                      <div class={`${ parentitem.marketData.status==='Ball Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+this.state.data.length)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                       </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+3)}>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+this.state.data.length)}>
                                                         <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
                                                         <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>
@@ -1088,9 +1111,6 @@ export default class MatchOdds extends Component {
                                         getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
                                           this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                                         }}
-                                        bookArr={(arr) => {
-                                          this.bookArr(arr)
-                                        }}
                                         betLoss={this.state.betLoss}
                                         setdisplay={this.state.display[index+this.state.data.length]}
                                         eventId={this.props.match.params.id}
@@ -1101,64 +1121,7 @@ export default class MatchOdds extends Component {
                                         selfancyOdds={this.state.selfancyOdds} 
                                         selfancySize={this.state.selfancySize}
                                         />
-                                    </div>
-
-                                      {
-                                        //////////////////////////// MODAL FOR BOOK //////////////////////////////////////////
-                                      }
-
-                                      <div class="modal fade" id="exampleModalForBook" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                          <div class="modal-content">
-                                            <div class="modal-header">
-                                              <h5 class="modal-title" id="exampleModalLabel">Fancy Position</h5>
-                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                              </button>
-                                            </div>
-                                            <div class="modal-body">
-                                              {
-                                                this.state.oddsProp ? this.state.bookArr.map((element, index) => {
-                                                  if (this.state.fancyType === 'NO') {
-                                                    return (
-                                                      <div style={{ paddingRight: '25px', paddingLeft: '25px', margin: '10px' }}>
-                                                        <span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{element}</span>
-                                                        {
-                                                          element >= this.state.oddsProp ?
-                                                            <span style={{ fontSize: '15px', fontWeight: 'bold', color: "red", float: 'right' }}>
-                                                              <i className="fas fa-minus" style={{ fontSize: '10px' }} />{this.state.stackProp}
-                                                            </span> :
-                                                            <span style={{ fontSize: '15px', fontWeight: 'bold', color: "green", float: 'right' }}>
-                                                              <i className="fas fa-plus" style={{ fontSize: '10px' }} />{this.state.stackProp}
-                                                            </span>
-                                                        }
-                                                      </div>
-                                                    )
-                                                  }
-                                                  else {
-                                                    return (
-                                                      <div style={{ paddingRight: '25px', paddingLeft: '25px', margin: '10px' }}>
-                                                        <span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{element}</span>
-                                                        {
-                                                          element < this.state.oddsProp ?
-                                                            <span style={{ fontSize: '15px', fontWeight: 'bold', color: "red", float: 'right' }}>
-                                                              <i className="fas fa-minus" style={{ fontSize: '10px' }} />
-                                                              {this.state.stackProp}
-                                                            </span> :
-                                                            <span style={{ fontSize: '15px', fontWeight: 'bold', color: "green", float: 'right' }}>
-                                                              <i className="fas fa-plus" style={{ fontSize: '10px' }} />{this.state.stackProp}
-                                                            </span>
-                                                        }
-                                                      </div>
-                                                    )
-                                                  }
-                                                })
-                                                  : <div style={{ paddingRight: '25px', paddingLeft: '5px', margin: '10px' }}>No Record Found...</div>
-                                              }
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
+                                     </div>
                                     </div>
                                   );
                                 }) : null
@@ -1169,6 +1132,82 @@ export default class MatchOdds extends Component {
                     </div>
                   </div>
                 </div>
+                {
+                  //////////////////////////// MODAL FOR BOOK //////////////////////////////////////////
+                }
+                {
+                  this.state.fancymarket.length > 0 ?
+                  <div class="modal fade" id="exampleModalForBook" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Fancy Position</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          {
+                            this.state.filterbookdata.length >= 1 ? 
+                            this.state.filterbookdata.map((item, index) => {
+                              bookitems = [];
+                              if (item.bettype === 'Lay') {
+                                bookodds = (item.odds-10);
+                                for (let i=0; i <= 20; i++) {
+                                  if(bookodds>=0){
+                                  bookitems.push(i >= 10 ?
+                                    <div><span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{bookodds+j}</span>
+                                    <span style={{ fontSize: '15px', fontWeight: 'bold', color: "red", float: 'right' }}>
+                                      -{item.stack}
+                                    </span><hr style={{ marginTop: '5px',marginBottom: '5px' }}></hr></div> :
+                                    <div><span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{bookodds+j}</span>
+                                    <span style={{ fontSize: '15px', fontWeight: 'bold', color: "green", float: 'right' }}>
+                                      {item.stack}
+                                    </span><hr style={{ marginTop: '5px',marginBottom: '5px' }}></hr></div>)
+                                    j++
+                                    }else{bookodds++}
+                                }
+                                return (
+                                  <div style={{ paddingRight: '25px', paddingLeft: '25px', margin: '10px'}}>
+                                    <span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>Score</span>
+                                    <span className="" style={{ fontSize: '15px', fontWeight: 'bold', float: 'right' }}>Amount</span>
+                                    {bookitems}
+                                  </div>
+                                )
+                              }
+                              else {
+                                bookodds = (item.odds-10);
+                                for (let i=0; i <= 20; i++) {
+                                  if(bookodds>=0){
+                                  bookitems.push(i >= 10 ?
+                                    <div><span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{bookodds+j}</span>
+                                      <span style={{ fontSize: '15px', fontWeight: 'bold', color: "green", float: 'right' }}>
+                                      {item.stack}
+                                    </span><hr style={{ marginTop: '5px',marginBottom: '5px' }}></hr></div> :
+                                    <div><span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>{bookodds+j}</span>
+                                    <span style={{ fontSize: '15px', fontWeight: 'bold', color: "red", float: 'right' }}>
+                                      -{item.stack}
+                                    </span><hr style={{ marginTop: '5px',marginBottom: '5px' }}></hr></div>)
+                                    j++
+                                  }else{bookodds++}
+                                }
+                                return (
+                                  <div style={{ paddingRight: '25px', paddingLeft: '25px', margin: '10px'}}>
+                                    <span className="" style={{ fontSize: '15px', fontWeight: 'bold' }}>Score</span>
+                                    <span className="" style={{ fontSize: '15px', fontWeight: 'bold', float: 'right' }}>Amount</span>
+                                    {bookitems}
+                                  </div>
+                                )
+                              }
+                            })
+                              : <div style={{ paddingRight: '25px', paddingLeft: '5px', margin: '10px' }}>No Record Found...</div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  :null
+                  }
                 <Sidebet
                   matchName={this.state.matchName}
                   stake={0}
@@ -1186,8 +1225,8 @@ export default class MatchOdds extends Component {
                   getProfitandLoss={(profit,loss,teamSelection,betType,stack,status,facFrom)=>{
                     this.getProfitandLoss(profit,loss,teamSelection,betType,stack,status,facFrom);
                   }}
-                  bookArr={(arr) => {
-                    this.bookArr(arr)
+                  getFancyBook={(fbetHistroy) => {
+                    this.getFancyBook(fbetHistroy)
                   }}
                   betLoss={this.state.betLoss}
                   setdisplay={this.state.display}
