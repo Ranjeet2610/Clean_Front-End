@@ -17,6 +17,7 @@ class Navbar extends Component {
       Renewpassword:'',
       addFunds:0,
       balance:0,
+      exposure:'0',
       show:false,
       addNews:'',
       userName:'',
@@ -280,22 +281,22 @@ componentDidMount(){
       userName: JSON.parse(localStorage.getItem('data')).userName,
       password: JSON.parse(localStorage.getItem('data')).passwordString
     };
-    this.users.login(user,data=>{
-      // localStorage.setItem('data', JSON.stringify(data.data.data));
-      this.setState({
-        // balance:data.data.data.walletBalance
-        balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
-      })
-    })
-    // setInterval(()=>{
-    //   this.users.getUserInfo(user.userName, (data)=>{
-    //     console.log("XXXXXXXX",data.data.data);
-    //     this.setState({
-    //       balance:data.data.data.walletBalance,
-    //       exposure:data.data.data.exposure,
-    //     })
+    // this.users.login(user,data=>{
+    //   // localStorage.setItem('data', JSON.stringify(data.data.data));
+    //   this.setState({
+    //     // balance:data.data.data.walletBalance
+    //     balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
     //   })
-    // },2000)
+    // })
+    setInterval(()=>{
+      this.users.getUserInfo(user.userName, (data)=>{
+        console.log("XXXXXXXX",data.data.data);
+        this.setState({
+          balance:data.data.data.walletBalance,
+          exposure:data.data.data.exposure,
+        })
+      })
+    },2000)
   }
 }
 
@@ -592,7 +593,7 @@ showchildMenu=(e)=>{
               <ul>
                 <li className="belance-top">
                   <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance}</span></Link>
-                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{exposure}</span></Link>
+                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{this.state.exposure}</span></Link>
                   
                   <Link to="#" className="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <i className="fa fa-user-circle-o" />&nbsp;
@@ -779,7 +780,7 @@ showchildMenu=(e)=>{
   //////////////////// MODAL FOR ADDING NEWS /////////////////////////////////////
 }
 
-        <div className="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addNewsModal">
+        <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addNewsModal">
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header" style={{background:'#6c1945'}}>
