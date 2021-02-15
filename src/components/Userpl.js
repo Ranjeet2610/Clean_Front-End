@@ -56,11 +56,14 @@ export default class Userpl extends Component {
       });
     }
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
     }) 
   }
 
@@ -72,8 +75,8 @@ export default class Userpl extends Component {
 
   handleClear = () => {
     this.setState({
-      from_date: this.state.currentDate,
-      to_date: this.state.currentDate,
+      from_date: this.state.currentStart,
+      to_date: this.state.currentend,
     });
   };
 
@@ -172,13 +175,13 @@ export default class Userpl extends Component {
                           this.state.data.map((item,index) => {
                             return (
                               <tr>
-                                <td className>{index+1}</td>
-                                <td className>{item.userName}</td>
-                                <td className>{item.ProfitLoss}</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>{item.fancyProfitLoss}</td>
+                                <td className="text-center">{index+1}</td>
+                                <td className="text-center">{item.userName}</td>
+                                <td className="text-center">{item.ProfitLoss}</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">{item.fancyProfitLoss}</td>
                               </tr>
                             )
                           }):
@@ -186,13 +189,13 @@ export default class Userpl extends Component {
                           this.state.masterData.map((item,index) => {
                             return (
                               <tr>
-                                <td className>{index+1}</td>
-                                <td className>{item.userName} ( <b>M:</b>{item.master} )</td>
-                                <td className>{item.ProfitLoss}</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>{item.fancyProfitLoss}</td>
+                                <td className="text-center">{index+1}</td>
+                                <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
+                                <td className="text-center">{item.ProfitLoss}</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">{item.fancyProfitLoss}</td>
                               </tr>
                             );
                           }):
@@ -200,13 +203,13 @@ export default class Userpl extends Component {
                           this.state.adminData.map((item,index) => {
                             return (
                               <tr>
-                                <td className>{index}</td>
-                                <td className>{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                <td className>{item.ProfitLoss}</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>0.00</td>
-                                <td className>{item.fancyProfitLoss}</td>
+                                <td className="text-center">{index}</td>
+                                <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
+                                <td className="text-center">{item.ProfitLoss}</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">0.00</td>
+                                <td className="text-center">{item.fancyProfitLoss}</td>
                               </tr>
                             )
                             }):

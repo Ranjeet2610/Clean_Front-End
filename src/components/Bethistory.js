@@ -36,7 +36,7 @@ export default class Bethistory extends Component {
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
-      let betHistoryFilter = this.state.newResData.filter(e => new Date(fD) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(tD) )
+      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
       await this.setState({
           betHistory:betHistoryFilter
         })
@@ -69,8 +69,8 @@ export default class Bethistory extends Component {
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
+      from_date:this.state.currentStart,
+      to_date:this.state.currentend,
       searchTearm:""
     }) 
     this.setState({
@@ -124,16 +124,16 @@ export default class Bethistory extends Component {
 
 componentDidMount() {   
   let currD = new Date().toISOString().substr(0,10);
-  let currT = Utilities.datetime(new Date()).slice(11,16)
-  let curr = currD+"T"+currT
- this.setState({
-  currentDate:curr,
-    from_date:curr,
-    to_date:curr,
-   }) 
-   this.setState({
-     load:true
-   })
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
+    this.setState({
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
+      load:true
+    }) 
    this.getBetData();
 }
 

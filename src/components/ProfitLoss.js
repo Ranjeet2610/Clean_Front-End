@@ -124,6 +124,8 @@ export default class ProfitLoss extends Component {
     let Scurr = currD+"T00:00:01"
     let Ecurr = currD+"T23:59:59"
     this.setState({
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
       from_date:Scurr,
       to_date:Ecurr,
     }) 

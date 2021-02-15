@@ -59,11 +59,14 @@ export default class Clientpl extends Component {
       );
     }
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
     }) 
   }
 
@@ -98,8 +101,8 @@ export default class Clientpl extends Component {
 
   handleClear = () => {
     this.setState({
-      from_date: this.state.currentDate,
-      to_date: this.state.currentDate,
+      from_date: this.state.currentStart,
+      to_date: this.state.currentend,
     });
   };
 
@@ -138,7 +141,7 @@ export default class Clientpl extends Component {
                       <button type="button" id="submit_form_button" className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >
                         <i className="fa fa-filter" /> Filter
                       </button>
-                      <button type="reset" className="red_button" onClick={this.handleClear} >
+                      <button type="button" className="red_button" onClick={this.handleClear} >
                         <i className="fa fa-eraser" /> Clear
                       </button>
                     </div>
