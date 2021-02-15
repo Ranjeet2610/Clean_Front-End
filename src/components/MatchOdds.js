@@ -92,6 +92,8 @@ export default class MatchOdds extends Component {
       selfancymarketId:'',
       fbetHistroyProp: '',
       filterbookdata:'',
+      IP:'',
+      scoreId:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       timer: "",
       redirectToReferrer: false,
@@ -270,7 +272,8 @@ export default class MatchOdds extends Component {
           mid: mid[0].marketId,
         },
         display: displayTest,
-        toggleMatchIndex: index
+        toggleMatchIndex: index,
+        IP:this.state.IP
       });
       this.StaKeAmount(index, odds, type, pdata.runnerName);
     }
@@ -335,6 +338,7 @@ export default class MatchOdds extends Component {
             fancyType: fancyType,
           },
           display: displayTest,
+          IP:this.state.IP
         });
         this.fancyStaKeAmount(oddsprice,oddssize,type,data.marketId,index);
       }
@@ -541,6 +545,25 @@ export default class MatchOdds extends Component {
         });
         /* end */
     });
+    fetch("https://api.ipify.org?format=json")
+    .then(response => {
+      return response.json();
+     }, "jsonp")
+    .then(res => {
+    //console.log(res);
+     this.setState({IP:res.ip});
+    })
+    .catch(err => console.log(err))
+    /*********************************/
+    fetch("http://173.249.21.26/SkyImporter/MatchImporter.svc/GetScoreId?eventid="+this.props.match.params.id)
+    .then(response => {
+      return response.json();
+     }, "jsonp")
+    .then(res => {
+    //console.log(res);
+     this.setState({scoreId:res.scoreId});
+    })
+    .catch(err => console.log(err)) 
   }
 
   componentWillUnmount() {
@@ -736,7 +759,6 @@ export default class MatchOdds extends Component {
                   {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
-                  
                   <div className="modal-header mod-header">
                     <div className="block_box">
                       <span id="tital_change">
@@ -747,15 +769,14 @@ export default class MatchOdds extends Component {
                       </span>
                     </div>
                   </div>
-                 
                   {
                     /////////////////////// SCORE BOARD ///////////////////////////////////////
                   }
                   <div style={{ height: '228px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
-                  <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.props.match.params.id}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                  <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
                   </div>
                   
-                  {/* <div style={{ height: '140px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                   {/*<div style={{ height: '140px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
                     <div style={{ borderTopLeftRadius: '5px', paddingTop: '30px', paddingLeft: '35px', borderBottomLeftRadius: '5px', marginLeft: '20px', width: '330px', height: '90px', marginTop: '15px', backgroundColor: '#0a3a06', opacity: '0.5' }}>
                       <span style={{ color: "white", fontSize: '15px' }}>Delhi Capitals</span>
                     </div>
@@ -955,6 +976,7 @@ export default class MatchOdds extends Component {
                                             selOdds={this.state.selOdds}
                                             selfancyOdds={this.state.selfancyOdds} 
                                             selfancySize={this.state.selfancySize}
+                                            IP = {this.state.IP}
                                             />
                                           </div>
                                         </td>
@@ -1120,6 +1142,7 @@ export default class MatchOdds extends Component {
                                         selOdds={this.state.selOdds}
                                         selfancyOdds={this.state.selfancyOdds} 
                                         selfancySize={this.state.selfancySize}
+                                        IP = {this.state.IP}
                                         />
                                      </div>
                                     </div>
@@ -1237,6 +1260,7 @@ export default class MatchOdds extends Component {
                   selOdds={this.state.selOdds}
                   selfancyOdds={this.state.selfancyOdds} 
                   selfancySize={this.state.selfancySize}
+                  IP = {this.state.IP}
                             />
                 <Footer />
               </div>
