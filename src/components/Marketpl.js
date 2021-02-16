@@ -19,6 +19,7 @@ export default class Marketpl extends Component {
       showbetData:'',
       from_date:'',
       to_date:'',
+      newResData:[],
       currentDate:''
     }
     this.account = new Account();
@@ -36,7 +37,8 @@ export default class Marketpl extends Component {
       }
       this.account.superAdminProfitAndLoss(obj,data=>{
         this.setState({
-          adminData: data.data
+          adminData: data.data,
+          newResData:data.data
         });
       });
     }
@@ -46,7 +48,8 @@ export default class Marketpl extends Component {
       }
       this.account.adminProfitAndLoss(obj,data=>{
         this.setState({
-          masterData: data.data
+          masterData: data.data,
+          newResData:data.data
           });
       }); 
     }
@@ -57,17 +60,50 @@ export default class Marketpl extends Component {
       this.account.masterProfitAndLoss(obj,data=>{
         this.setState({
           data: data.data,
+          newResData:data.data,
           ispl: false
         })
       }); 
     }
+  }
+
+  componentDidMount(){
+    this.getMarketplData();
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
     }) 
+  }
+
+  handleFilter = async () => {
+    let fD = await new Date(this.state.from_date);
+    let tD = await new Date(this.state.to_date);
+    if(fD <= tD){
+      if(this.userDetails.superAdmin){
+        let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+        this.setState({
+          adminData:dateFilter
+        })
+      }
+      else if(this.userDetails.Admin){
+        let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+        this.setState({
+          masterData:dateFilter
+        })
+      }
+      else{
+        let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+        this.setState({
+          data:dateFilter
+        })
+      }
+    }
   }
 
   handleChange = (event) =>{
@@ -78,9 +114,10 @@ export default class Marketpl extends Component {
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
-    })
+      from_date: this.state.currentStart,
+      to_date: this.state.currentend,
+    });
+    this.getMarketplData();
   }
        
   render() {
@@ -115,7 +152,7 @@ export default class Marketpl extends Component {
                       <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="block_2 buttonacount">
-                      <button type="button" id="submit_form_button" className="blue_button" style={{marginRight:'5px'}}>
+                      <button type="button" id="submit_form_button" onClick={this.handleFilter} className="blue_button" style={{marginRight:'5px'}}>
                         <i className="fa fa-filter" /> Filter
                       </button>
                       <button type="reset" onClick={this.handleClear} className="red_button">
@@ -148,15 +185,15 @@ export default class Marketpl extends Component {
                             this.state.data.map((item)=>{
                               return (  
                                 <tr>
-                                  <td className>{item.data[0].createdAt}</td>
-                                  <td className>Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                  <td className>{-item.ProfitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>{item.ProfitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
+                                  <td className="text-center">{item.data[0].createdAt}</td>
+                                  <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
+                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
                                 </tr>
                               );
                             }):
@@ -164,16 +201,15 @@ export default class Marketpl extends Component {
                             this.state.masterData.map((item)=>{
                               return (  
                                 <tr>
-                                  <td className>{item.data[0].createdAt}</td>
-                                  <td className>Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                  <td className>{-item.ProfitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>{item.ProfitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
+                                  <td className="text-center">{item.data[0].createdAt}</td>
+                                  <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
+                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
                                 </tr>
                               );
                             }):
@@ -181,16 +217,15 @@ export default class Marketpl extends Component {
                             this.state.adminData.map((item)=>{
                                 return (  
                                   <tr>
-                                    <td className>{item.data[0].createdAt}</td>
-                                    <td className>Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                    <td className>{-item.ProfitLoss}</td>
-                                    <td className>0.00</td>
-                                    <td className>{item.ProfitLoss}</td>
-                                    <td className>0.00</td>
-                                    <td className>0.00</td>
-                                    <td className>0.00</td>
-                                    <td className>0.00</td>
-                                    <td className>0.00</td>
+                                    <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()}</td>
+                                    <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
+                                    <td className="text-center">{-item.ProfitLoss}</td>
+                                    <td className="text-center">0.00</td>
+                                    <td className="text-center">{item.ProfitLoss}</td>
+                                    <td className="text-center">0.00</td>
+                                    <td className="text-center">0.00</td>
+                                    <td className="text-center">0.00</td>
+                                    <td className="text-center">0.00</td>
                                   </tr>
                                 );
                               }):

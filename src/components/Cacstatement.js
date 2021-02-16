@@ -19,7 +19,8 @@ export default class Cacstatement extends Component {
       resdata:'',
       from_date:"",
       to_date:"",
-      currentDate:'',
+      currentStart:'',
+      currentend:'',
       newResData:[]
     };
     this.account= new Account();
@@ -48,12 +49,15 @@ getAccountStatement = () =>{
 
 componentDidMount() {
   let currD = new Date().toISOString().substr(0,10);
-  let currT = Utilities.datetime(new Date()).slice(11,16)
-  let curr = currD+"T"+currT
-  this.setState({
-    from_date:curr,
-    to_date:curr,
-  })
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
+    this.setState({
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
+    }) 
   this.getAccountStatement();
 }
 
@@ -79,8 +83,8 @@ handleChange = (event) =>{
 
 handleClear = () =>{
   this.setState({
-    from_date:this.state.from_date,
-    to_date:this.state.to_date,
+    from_date:this.state.currentStart,
+    to_date:this.state.currentend,
   })
   this.getAccountStatement();
 }
@@ -89,7 +93,7 @@ handleFilter = async () => {
   let fD = await new Date(this.state.from_date);
   let tD = await new Date(this.state.to_date);
   if(fD <= tD){
-      let dateFilter = this.state.newResData.filter(e => new Date(fD) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(tD))
+      let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
     this.setState({
       resdata:dateFilter
     })

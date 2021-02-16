@@ -61,12 +61,15 @@ export default class Clientpl extends Component {
       }); 
     }
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
-    })  
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
+    }) 
   }
 
   masterData = (data) => {
@@ -100,8 +103,8 @@ export default class Clientpl extends Component {
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
+      from_date:this.state.currentStart,
+      to_date:this.state.currentend,
     })
   }
 
@@ -170,16 +173,16 @@ export default class Clientpl extends Component {
                             this.state.data.map((item,index)=>{
                               return ( 
                                 <tr>
-                                  <td className>{index+1}</td>
-                                  <td className>{item.userName}</td>
-                                  <td className style={{cursor:'pointer',color:'green'}}>{item.ProfitLoss}({item.ProfitLoss})</td>
-                                  <td className>0.00(0)</td>
-                                  <td className>0.00(0)</td>
-                                  <td className>0.00(0)</td>
-                                  <td className>{item.ProfitLoss}({item.ProfitLoss})</td>
-                                  <td className>0.00(0)</td>
-                                  <td className>0.00(0)</td>
-                                  <td className>0.00(0)</td>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName}</td>
+                                  <td className="text-center" style={{cursor:'pointer',color:'green'}}>{item.ProfitLoss}({item.ProfitLoss})</td>
+                                  <td className="text-center">0.00(0)</td>
+                                  <td className="text-center">0.00(0)</td>
+                                  <td className="text-center">0.00(0)</td>
+                                  <td className="text-center">{item.ProfitLoss}({item.ProfitLoss})</td>
+                                  <td className="text-center">0.00(0)</td>
+                                  <td className="text-center">0.00(0)</td>
+                                  <td className="text-center">0.00(0)</td>
                                 </tr>
                               )
                             }):
@@ -187,20 +190,20 @@ export default class Clientpl extends Component {
                             this.state.masterData.map((item,index)=>{
                               return (  
                                 <tr>
-                                  <td className>{index}</td>
-                                  <td className>
+                                  <td className="text-center">{index}</td>
+                                  <td className="text-center">
                                     <Link style={{cursor:'pointer'}} onClick={()=>this.masterData(item.master)}>
                                       {item.master}
                                     </Link>
                                   </td>
-                                  <td className>0.00({item.profitLoss})</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>{item.profitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
+                                  <td className="text-center">0.00({item.profitLoss})</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{item.profitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
                                 </tr>
                               )
                             }):
@@ -208,16 +211,16 @@ export default class Clientpl extends Component {
                             this.state.adminData.map((item)=>{
                               return (  
                                 <tr>
-                                  <td className><a style={{cursor:'pointer'}} onClick={()=>this.adminData(item.admin)}>{item.admin}</a></td>
-                                  <td className>{-item.profitLoss}</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>0.00</td>
-                                  <td className>{item.profitLoss}</td>
+                                  <td className="text-center"><a style={{cursor:'pointer'}} onClick={()=>this.adminData(item.admin)}>{item.admin}</a></td>
+                                  <td className="text-center">{-item.profitLoss}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{item.profitLoss}</td>
                                 </tr>
                               )
                             }):

@@ -18,8 +18,8 @@ class FancyStack extends Component{
 
   handleClear = () =>{
     this.setState({
-      from_date:this.state.currentDate,
-      to_date:this.state.currentDate,
+      from_date:this.state.currentStart,
+      to_date:this.state.currentend,
     })
   }
 
@@ -29,11 +29,14 @@ class FancyStack extends Component{
       this.props.history.push('/dashboard')
     }
     let currD = new Date().toISOString().substr(0,10);
-    let currT = Utilities.datetime(new Date()).slice(11,16)
-    let curr = currD+"T"+currT
+    //let currT = Utilities.datetime(new Date()).slice(11,16)
+    let Scurr = currD+"T00:00:01"
+    let Ecurr = currD+"T23:59:59"
     this.setState({
-      from_date:curr,
-      to_date:curr,
+      currentStart:currD+"T00:00:01",
+      currentend:currD+"T23:59:59",
+      from_date:Scurr,
+      to_date:Ecurr,
     }) 
   }
 

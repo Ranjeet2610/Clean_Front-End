@@ -44,6 +44,7 @@ export default class SideBet extends Component {
         getselOdds:'',
         getselfancyOdds:'',
         getselfancySize:'',
+        showLoader:false,
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
@@ -51,6 +52,10 @@ export default class SideBet extends Component {
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
+    this.matchName = this.props.matchName.split(" v ")
+    if(this.state.isMobile){ setInterval(() => {
+      this.getBetData();
+    }, 3000)}
     // this.matchName = this.props.matchName.split(" v ")
   }
 
@@ -63,19 +68,19 @@ export default class SideBet extends Component {
       let fancysize = this.props.betData.data.size;
       if(this.state.betData.type === 'Back'){
        this.setState({
-        loss:((fancysize/100)*stack).toFixed(2),
-        profit:stack?stack:0.0
+        profit:((fancysize/100)*stack).toFixed(2),
+        loss:stack?stack:0.0
        })
      }
      else{
        this.setState({
-        loss:stack,
-         profit:((fancysize/100)*stack).toFixed(2)
+        profit:stack?stack:0.0,
+        loss:((fancysize/100)*stack).toFixed(2)
        })
      }
    }else{
        let odds = this.state.betData.odds-1;
-      if(this.state.betData.type === 'Back'){
+       if(this.state.betData.type === 'Back'){
         this.setState({
           profit:(odds*e.target.value).toFixed(2),
           loss:e.target.value?e.target.value:0.0
@@ -141,11 +146,10 @@ export default class SideBet extends Component {
         }
       }
      setTimeout(()=> {
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true");
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true","handleChange");
      }, 500)
+     this.props.handleInput(e.target.value);
     }
-    if(this.props.betData.betType ===undefined)
-    this.props.handleInput(e.target.value);
   }
 
   changeBackground = (e,type) =>{
@@ -175,7 +179,6 @@ export default class SideBet extends Component {
     device = 1;
     if(this.state.isTab)
     device = 3;
-       
     e.preventDefault();
     if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
@@ -184,8 +187,9 @@ export default class SideBet extends Component {
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
     }
     else{
-      document.getElementById("loader").style.display='block'
-      document.getElementById("sidebetbox").style.display='none'
+      this.setState({
+        showLoader:true
+      });
       await new Promise((resolve, reject) => setTimeout(resolve, 3000));
       if(this.props.betData.betType !=undefined){
         let fancysizeval;
@@ -197,7 +201,7 @@ export default class SideBet extends Component {
         if(fancysizeval < this.props.betData.data.size){
           this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
         }else{
-          await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value);
+          await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,"placeBet");
           const obj = {
           userName:JSON.parse(localStorage.getItem('data')).userName,
           description:localStorage.getItem('matchname'),
@@ -220,11 +224,31 @@ export default class SideBet extends Component {
           const obj1 = {
             userName:JSON.parse(localStorage.getItem('data')).userName
           }
+          /*
           this.users.getMyprofile(obj1,data=>{
             localStorage.setItem('data',JSON.stringify(data.data));
             this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
             this.getBetData();
-          })
+          })*/
+          this.users.getMyprofile(obj1,data=>{
+            localStorage.setItem('data',JSON.stringify(data.data));
+            localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+            const obj2 = {
+              userid:JSON.parse(localStorage.getItem('data')).id,
+              eventID:this.props.eventId,
+              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+              runnersData :this.state.expoData
+            }
+            this.service.updateExpo(obj2,ddata=>{
+              const obj3 = {
+                userid:JSON.parse(localStorage.getItem('data')).id
+              }
+              this.users.getUserExposure(obj3,expodata=>{
+                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                this.getBetData();
+              })
+            });
+           })
          })
         }
       }
@@ -232,7 +256,7 @@ export default class SideBet extends Component {
         if(this.state.getselOdds < this.odsInput.value){
           this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
         }else{
-          await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value);
+          await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value,"placeBet");
           const obj ={
           userName:JSON.parse(localStorage.getItem('data')).userName,
           description:localStorage.getItem('matchname'),
@@ -277,9 +301,8 @@ export default class SideBet extends Component {
          })
         }
       }
-  }
+    }
   this.closeWindow();
-    document.getElementById("loader").style.display='none';
   }
 
   handlecurrentPositionAccess = async () => {
@@ -587,8 +610,13 @@ export default class SideBet extends Component {
           load:false
         });  
       });
-    } 
-  }
+    }
+    setTimeout(() => {
+      //this.state.fbetHistroy?.reverse()
+      //console.log("fancydata:",this.state.fbetHistroy.slice().reverse())
+      this.props.getFancyBook(this.state.fbetHistroy)
+    }, 5000);
+}
 
   componentDidMount() {
     this.handlecurrentPositionAccess();
@@ -622,20 +650,20 @@ export default class SideBet extends Component {
     .catch(err => console.log(err)) 
   }
 
-  StaKeAmount=(val,ods,fancysize,type)=>{
+  StaKeAmount=(val,ods,fancysize,type,facFrom)=>{
     let teamSelection = this.props.betData.pData.runnerName;
     document.getElementById('stakeValue').value = val
     if(this.props.betData.betType !== undefined){
      if(type === 'Back'){
       this.setState({
-        loss:((fancysize/100)*val).toFixed(2),
-        profit:val?val:0.0
+        profit:((fancysize/100)*val).toFixed(2),
+        loss:val?val:0.0
       })
     }
     else{
       this.setState({
-        loss:val,
-        profit:((fancysize/100)*val).toFixed(2)
+        profit:val?val:0.0,
+        loss:((fancysize/100)*val).toFixed(2)
       })
     }
   }else{
@@ -645,8 +673,8 @@ export default class SideBet extends Component {
           profit:(odds*val).toFixed(2),
           loss:val?val:0.0
         },()=>{
-          this.props.betData.betType === undefined && 
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
+        this.props.betData.betType === undefined && 
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
@@ -681,7 +709,7 @@ export default class SideBet extends Component {
           loss:(odds*val).toFixed(2)
         },()=>{
           this.props.betData.betType === undefined && 
-          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
+          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.runnderData.map(item=>{
@@ -710,8 +738,6 @@ export default class SideBet extends Component {
           });
         }
       }
-      this.props.betData.betType === undefined && 
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true");
       this.props.handleInput(val);
     }
   }
@@ -765,42 +791,56 @@ export default class SideBet extends Component {
   //this is called to before render method
 
   componentWillReceiveProps(nextProps){ 
-    if(nextProps.betProfit!==this.props.betProfit){
-    this.setState({
-      profit:nextProps.betProfit
-     })
-    }
-    if(nextProps.betLoss!==this.props.betLoss){
-    this.setState({
-      loss:nextProps.betLoss
-      })
-    }
-    if(nextProps.runnderData !== this.props.runnderData){
-    this.setState({
-      runnderData:nextProps.runnderData
-      })
-    }
-    if(nextProps.getExpo !== this.props.expoData){
-    this.setState({
-      getExpo:nextProps.expoData
-      })
-    }
-    if(nextProps.getselOdds !== this.props.selOdds){
+    if(nextProps.betProfit){
+      if(nextProps.betProfit!==this.props.betProfit){
       this.setState({
-        getselOdds:nextProps.selOdds
+        profit:nextProps.betProfit
       })
+      }
     }
-    if(nextProps.getselfancyOdds !== this.props.selfancyOdds){
+    if(nextProps.betLoss){
+      if(nextProps.betLoss!==this.props.betLoss){
       this.setState({
-        getselfancyOdds:nextProps.selfancyOdds
-      })
+        loss:nextProps.betLoss
+        })
+      }
     }
-    if(nextProps.getselfancySize !== this.props.selfancySize){
+    if(nextProps.runnderData){
+      if(nextProps.runnderData !== this.props.runnderData){
       this.setState({
-        getselfancySize:nextProps.selfancySize
-      })
+        runnderData:nextProps.runnderData
+        })
+      }
     }
-}
+    if(nextProps.expoData){
+      if(nextProps.getExpo !== this.props.expoData){
+      this.setState({
+        getExpo:nextProps.expoData
+        })
+      }
+    }
+    if(nextProps.selOdds){
+      if(nextProps.getselOdds !== this.props.selOdds){
+        this.setState({
+          getselOdds:nextProps.selOdds
+        })
+      }
+    }
+    if(nextProps.selfancyOdds){
+      if(nextProps.getselfancyOdds !== this.props.selfancyOdds){
+        this.setState({
+          getselfancyOdds:nextProps.selfancyOdds
+        })
+      }
+    }
+    if(nextProps.selfancySize){
+      if(nextProps.getselfancySize !== this.props.selfancySize){
+        this.setState({
+          getselfancySize:nextProps.selfancySize
+        })
+      }
+    }
+  }
   
   ClearAllSelection=()=>{
     document.getElementById('stakeValue').value=0;
@@ -812,7 +852,7 @@ export default class SideBet extends Component {
     });
     let teamSelection = this.props.betData.pData.runnerName;
     let type = this.props.betData.betType;
-    this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true");
+    this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection");
   }
 
   handleSubmit=(event)=> {
@@ -821,8 +861,11 @@ export default class SideBet extends Component {
   }
 
   closeWindow = () =>{
-    document.getElementById('stakeValue').value=0
+    document.getElementById('stakeValue').value=0;
     this.props.handleRemove("none");
+    this.setState({
+      showLoader:false
+    });
   }
 
   render() {
@@ -852,6 +895,11 @@ export default class SideBet extends Component {
     }
     if(this.props.setdisplay=='block'){
       display = {display:'block'};
+    }
+    // Loader render
+    const stylebox = this.state.showLoader ? {display: 'block'} : {display: 'none'};
+    if(this.state.showLoader===true){
+      display = {display:'none'};
     }
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
@@ -923,9 +971,9 @@ export default class SideBet extends Component {
 }
 
         <div>
-            <div id="loader" style={{display:'none'}}>
-              <div style={{opacity:"1", height:'200px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-                  <Loader type="Grid" color="#6c1945" height={50} width={50} />
+            <div id="loader" style={stylebox}>
+              <div style={{opacity:"1", height:'200px',width:'100%',background:'#fff9cc',border:'2px solid #c99d1e', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                  <Loader type="Grid" color="#c99d1e" height={50} width={50} />
               </div>
             </div>
           <div id="sidebetbox" className="betBox border-box" style={display}>
@@ -973,7 +1021,7 @@ export default class SideBet extends Component {
                   {
                     this.state.chipStake.map((item)=>{
                       return (
-                      <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={()=>this.StaKeAmount(item,ods,fancysize,type)}>{item}</button>
+                      <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={()=>this.StaKeAmount(item,ods,fancysize,type,"StaKeAmount")}>{item}</button>
                       )
                     })
                   }
