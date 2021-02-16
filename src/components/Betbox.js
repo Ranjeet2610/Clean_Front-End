@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import Service from '../Services/Service';
+import Service from '../Services/Service'
 import Loader from 'react-loader-spinner'
-import fullsize from '../images/full-size.png';
 import Users from '../Services/users'
-import { Link } from 'react-router-dom'
 
 export default class BetBox extends Component {
 
@@ -37,37 +35,13 @@ export default class BetBox extends Component {
       this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
       this.matchName = this.props.matchName.split(" v ")
     }
-  
+    
     componentDidMount() {
-        document.getElementById('tital_change').focus();
-        this.interval = setInterval(() => {
-            this.setState({
-                betData: this.props.betData
-            });
-        }, 2000)
-        /*
-        this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName, this.props.eventId, 'getUserOpenBetHistory', (data) => {
-          this.setState({
-              betHistroy: data,
-              count: data.length
-          });
-       });*/
-      const obj = {
-          id: JSON.parse(localStorage.getItem('data')).id
-      }
-      this.service.getchipInfo(obj, (data) => {                
+      document.getElementById('tital_change').focus();
+      this.setState({
+          betData: this.props.betData,
+          IP:this.props.IP
       });
-      fetch("https://api.ipify.org?format=json")
-          .then(response => {
-              return response.json();
-          }, "jsonp")
-          .then(res => {
-              this.setState({ IP: res.ip });
-          })
-          .catch(err => console.log(err))
-    }
-    componentWillUnmount() {
-      clearInterval(this.interval);
     }
     placeBet=async(e)=>{
       // device 1 for desktop,2 for mobile,3 for tab
@@ -115,7 +89,7 @@ export default class BetBox extends Component {
             marketID:this.props.betData.mid,
             profit:this.state.profit,
             loss:this.state.loss,
-            IP:this.state.IP,
+            IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType,
             bettype:this.isbackInput.value
@@ -168,7 +142,7 @@ export default class BetBox extends Component {
             marketID:this.props.betData.mid,
             profit:this.state.profit,
             loss:this.state.loss,
-            IP:this.state.IP,
+            IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
             bettype:this.isbackInput.value
@@ -298,7 +272,7 @@ export default class BetBox extends Component {
 
     StaKeAmount=(val,ods,fancysize,type,index,facFrom)=>{
       let teamSelection = this.props.betData.pData.runnerName;
-      document.getElementsByClassName("stake-input")[index].value = val
+      document.getElementById('stakeValue').value = val
       if(this.props.betData.betType !== undefined){
         if(type === 'Back'){
           this.setState({
@@ -426,7 +400,7 @@ export default class BetBox extends Component {
       }
     }
     ClearAllSelection=()=>{
-      document.getElementsByClassName("stake-input")[this.props.index].value = 0;
+      document.getElementById('stakeValue').value=0
       let dval = 0.0;
       this.setState({
         profit:dval,
@@ -438,8 +412,7 @@ export default class BetBox extends Component {
       this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection");
     }
     closeWindow = () =>{
-        document.getElementsByClassName("stake-input")[this.props.index].value = 0
-        //document.getElementById('stakeValue').value=0
+        document.getElementById('stakeValue').value=0
         this.props.handleRemove("none");
         this.setState({
           showLoader:false
@@ -474,11 +447,19 @@ export default class BetBox extends Component {
         return (
             <>
             <div id="loader" style={stylebox}>
+<<<<<<< HEAD
             <div style={{opacity:"1", height:'175px',background:'#fff9cc',width:'100%',border:'2px solid #c99d1e', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
                   <Loader type="Grid" color="#c99d1e" height={50} width={50} />
                 </div>
+=======
+              <div style={{opacity:"1", height:'175px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                <Loader type="Grid" color="#6c1945" height={50} width={50} />
+              </div>
+>>>>>>> ff1f595e6750fc99aa4387f894c762e522c5cdea
             </div>
-            <div className="betBox border-box test" id="sidebetbox" style={display}>
+            {
+             this.props.setdisplay === 'block' ? 
+              <div className="betBox border-box test" id="sidebetbox" style={display}>
                 <div className="block_box">
                     <span id="msg_error" /><span id="errmsg" />
                     <form id="placeBetSilp" onSubmit={this.placeBet}>
@@ -507,7 +488,7 @@ export default class BetBox extends Component {
                             <div className="item form-group" id=" ">
                                 <span className="stake_label">Stake</span>
                                 <div className="stack_input_field numbers-row">
-                                    <input type="number" pattern="[0-9]*" step={1} name="stack" ref={(input) => { this.stackInput = input }} onChange={this.handleChange} defaultValue={0} min="0" className="calProfitLoss stake-input form-control CommanBtn" />
+                                    <input type="number" pattern="[0-9]*" step={1} name="stack" id="stakeValue" ref={(input) => { this.stackInput = input }} onChange={this.handleChange} defaultValue={0} min="0" className="calProfitLoss stake-input form-control CommanBtn" />
                                     <input type="hidden" name="selectionId" id="selectionId" ref={(input) => { this.selectionIdInput = input }} value={selectionId} defaultValue className="form-control" />
                                     <input type="hidden" name="runnerName" id="runnerName" ref={(input) => { this.runnerNameInput = input }} value={runnerName} defaultValue className="form-control" />
                                     <input type="hidden" name="matchId" id="matchId" ref={(input) => { this.matchIdInput = input }} defaultValue className="form-control" />
@@ -535,7 +516,9 @@ export default class BetBox extends Component {
                         </div>
                     </form>
                 </div>
-            </div>
+              </div>
+             : null
+            }
           </>
           )
     }

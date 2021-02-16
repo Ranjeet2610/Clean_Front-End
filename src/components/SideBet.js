@@ -214,7 +214,7 @@ export default class SideBet extends Component {
           marketID:this.props.betData.mid,
           profit:this.state.profit,
           loss:this.state.loss,
-          IP:this.state.IP,
+          IP:this.props.IP,
           device:device,
           marketType: this.props.betData.betType,
           bettype:this.isbackInput.value
@@ -269,7 +269,7 @@ export default class SideBet extends Component {
           marketID:this.props.betData.mid,
           profit:this.state.profit,
           loss:this.state.loss,
-          IP:this.state.IP,
+          IP:this.props.IP,
           device:device,
           marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
           bettype:this.isbackInput.value
@@ -621,11 +621,10 @@ export default class SideBet extends Component {
   componentDidMount() {
     this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
-    this.interval = setInterval(() => {
-      this.setState({
-        betData:this.props.betData
-      });
-    },2000)
+    this.setState({
+      betData:this.props.betData,
+      IP:this.props.IP
+    });
     //matchRunner
     this.service.getListMarketType(this.props.eventId, (data) => {
       this.setState({
@@ -638,16 +637,8 @@ export default class SideBet extends Component {
       id:JSON.parse(localStorage.getItem('data')).id
     }
     this.service.getchipInfo(obj,(data)=>{
-      //console.log(data)                 
+      //console.log(data)
     });
-    fetch("https://api.ipify.org?format=json")
-    .then(response => {
-      return response.json();
-     }, "jsonp")
-    .then(res => {
-     this.setState({IP:res.ip});
-    })
-    .catch(err => console.log(err)) 
   }
 
   StaKeAmount=(val,ods,fancysize,type,facFrom)=>{
