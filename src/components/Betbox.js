@@ -447,9 +447,9 @@ export default class BetBox extends Component {
         return (
             <>
             <div id="loader" style={stylebox}>
-            <div style={{opacity:"1", height:'175px',background:'#fff9cc',width:'100%',border:'2px solid #c99d1e', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-                  <Loader type="Grid" color="#c99d1e" height={50} width={50} />
-                </div>
+              <div style={{opacity:"1", height:'175px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                <Loader type="Grid" color="#6c1945" height={50} width={50} />
+              </div>
             </div>
             {
              this.props.setdisplay === 'block' ? 
