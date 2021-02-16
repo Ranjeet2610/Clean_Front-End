@@ -143,7 +143,7 @@ componentDidMount() {
     })
   }
 
-  handleClearByDropdown = async(e) => {
+  handleFilterByDropdown = async(e) => {
     let dataArray = [...this.state.newResData]
     let searchUser = e.target.value.toLowerCase();
     const updateList = dataArray.filter(ele => ele.status===searchUser)
@@ -218,7 +218,7 @@ componentDidMount() {
                       </select>
                     </div>
                     <div className="popup_col_2">
-                      <select className="form-control" onChange={this.handleClearByDropdown}  name="historyType">
+                      <select className="form-control" onChange={this.handleFilterByDropdown}  name="historyType">
                         <option value="">Open/Settle</option>
                         <option value="open">Open</option>
                         <option value="settled">Settled</option>
@@ -255,9 +255,9 @@ componentDidMount() {
                 <div className="custom-scroll appendAjaxTbl">
                    <table className="table table-striped jambo_table bulk_action" id="datatables">
                     <thead>
-                      <tr className="headings">
+                      <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                         {
-                          this.state.betHistoryTableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
+                          this.state.betHistoryTableHead.map((item,index)=><th key={index} className="text-center"><b>{item}</b></th>)
                         }
                       </tr>
                     </thead>  

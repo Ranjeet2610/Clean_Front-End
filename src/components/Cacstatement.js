@@ -223,7 +223,7 @@ render(){
                   <div className="custom-scroll appendAjaxTbl" id="filterdata">
                     <table className="table table-bordered table-dark table_new_design" id="datatablesss">
                       <thead>
-                        <tr>
+                        <tr style={{backgroundColor:'#95335c',color:'white'}}>
                           {
                             this.state.tableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
                           }

@@ -33,90 +33,90 @@ export default class ProfitLoss extends Component {
     })
   }
 
-  handleFilter =  (e) => {
-    let fD =  this.state.from_date
-    let tD =  this.state.to_date
+  handleFilter = async (e) => {
+    let fD = await new Date(this.state.from_date);
+    let tD = await new Date(this.state.to_date);
     if (fD <= tD) {
+      // if (this.userDetails.superAdmin) {
+      //   this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+      //     this.setState({
+      //       data: data.data
+      //     });
+      //   });
+      // }
+      // else if (this.userDetails.Admin) {
+      //   this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+      //     this.setState({
+      //       data: data.data
+      //     });
+      //   });
+      // }
+      // else if (this.userDetails.Master) {
+      //   this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+      //     this.setState({
+      //       data: data.data
+      //     });
+      //   });
+      // }
+      // else {
+      //   this.account.getprofitloss({ date1: fD, date2: tD, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+      //     this.setState({
+      //       data: data.data
+      //     });
+  
+      //   });
+      // }
+    }
+  };
+
+  handleClear = () =>{
+    this.setState({
+      from_date:this.state.currentStart,
+      to_date:this.state.currentend,
+    })
+    this.getprofitlossData();
+  }
+
+    getprofitlossData = () =>{
+      var date1 = new Date();
+      var res1 = date1.toISOString().substring(0, 10);
+      var date2 = new Date();
+      var res2 = date2.toISOString().substring(0, 10);
+
+      this.userDetails = JSON.parse(localStorage.getItem('data'));
       if (this.userDetails.superAdmin) {
-        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.superAdminProfitAndLoss({date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
             data: data.data
           });
         });
       }
       else if (this.userDetails.Admin) {
-        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.adminProfitAndLoss({ date1: res1, date2: res2,adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
             data: data.data
           });
         });
       }
       else if (this.userDetails.Master) {
-        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.masterProfitAndLoss({ date1: res1, date2: res2,masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
             data: data.data
           });
         });
       }
       else {
-        this.account.getprofitloss({ date1: fD, date2: tD, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
           this.setState({
             data: data.data
           });
-  
         });
       }
     }
-
-  };
-
-  handleClear = () =>{
-    this.setState({
-      from_date:this.state.from_date,
-      to_date:this.state.to_date,
-    })
-    this.getprofitlossData();
-  }
-
-  getprofitlossData = () =>{
-    var date1 = new Date();
-    var res1 = date1.toISOString().substring(0, 10);
-    var date2 = new Date();
-    var res2 = date2.toISOString().substring(0, 10);
-
-    this.userDetails = JSON.parse(localStorage.getItem('data'));
-    if (this.userDetails.superAdmin) {
-      this.account.superAdminProfitAndLoss({date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else if (this.userDetails.Admin) {
-      this.account.adminProfitAndLoss({ date1: res1, date2: res2,adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else if (this.userDetails.Master) {
-      this.account.masterProfitAndLoss({ date1: res1, date2: res2,masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else {
-      this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-  }
-
-  componentDidMount() {
-    this.getprofitlossData();
+    
+    componentDidMount() {
+      this.getprofitlossData();
+      console.log("QQQQQ",this.state.data);
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
@@ -175,7 +175,7 @@ export default class ProfitLoss extends Component {
 
                       <table className="table table-striped jambo_table bulk_action dataTable no-footer" id="datatable" role="grid" aria-describedby="datatable_info" >
                         <thead>
-                          <tr className="headings" role="row">
+                          <tr className="headings" role="row" style={{backgroundColor:'#95335c',color:'white'}}>
                             {
                               this.state.showBetHistoryTableHead.map((item)=>{
                                 return(
@@ -241,7 +241,7 @@ export default class ProfitLoss extends Component {
 }
 
                     <form id="formSubmit" className="form-horizontal form-label-left input_mask" >
-                      <div className="col-md-3 col-xs-6">
+                      {/* <div className="col-md-3 col-xs-6">
                         <input type="hidden" name="user_id" defaultValue={145315} />
                         <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
                         <select className="form-control" name="sportid">
@@ -250,7 +250,7 @@ export default class ProfitLoss extends Component {
                             this.state.allGames.map((item,index)=><option key={index} value={index+1}>{item}</option>)
                           }
                         </select>
-                      </div>
+                      </div> */}
                       <div className="col-md-2 col-xs-6">
                         <input type="datetime-local" onChange={this.handleChange} name="from_date" value={this.state.from_date} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
                       </div>
@@ -292,9 +292,9 @@ export default class ProfitLoss extends Component {
 
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
-                        <tr className="headings">
+                        <tr className="headings" style={{backgroundColor:"#95335c",color:'white'}}>
                           {
-                            this.state.profitAndLossTableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
+                            this.state.profitAndLossTableHead.map((item,index)=><th key={index} className="text-center"><b>{item}</b></th>)
                           }
                         </tr>
                       </thead>
@@ -305,13 +305,13 @@ export default class ProfitLoss extends Component {
                               totalPL += item.ProfitLoss;
                               return (
                                 <tr>
-                                  <td className>{index+1}</td>
-                                  <td className>{item.data[0].description}</td>
-                                  <td className>{item.data[0].marketType}</td>
-                                  <td className>{item.ProfitLoss}</td>
-                                  <td className>0.0</td>
-                                  <td className>{Utilities.datetime(item.data[0].createdDate)} </td>
-                                  <td className>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.data[0].description}</td>
+                                  <td className="text-center">{item.data[0].marketType}</td>
+                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.0</td>
+                                  <td className="text-center">{Utilities.datetime(item.data[0].createdDate)} </td>
+                                  <td className="text-center">
                                     <Link style={{ cursor: "pointer" }} onClick={() => this.showBet(item.data)} >
                                       Show Bet
                                     </Link>
@@ -332,7 +332,7 @@ export default class ProfitLoss extends Component {
 
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
-                        <tr>
+                        <tr style={{backgroundColor:"#95335c",color:'white'}}>
                           <th>(Total P &amp; L ) {totalPL}</th>
                           <th>(Total Commition) 0</th>
                         </tr>

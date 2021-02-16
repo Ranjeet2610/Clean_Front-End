@@ -9,7 +9,7 @@ export default class ManageFancyOdds extends Component {
     super(props);
     this.state = {
         result:'',
-        tableHead:["S.No.","Market_Id","Market_Name","Status","Settlement_Status","Settlement"],
+        tableHead:["S.No.","Market_Id","Market_Name","Status","Settlement"],
         marketata:[],
         runnersdata:''
     };
@@ -17,6 +17,15 @@ export default class ManageFancyOdds extends Component {
 }
 
   componentDidMount() {
+    // this.events.getFancySettlementData(this.props.match.params.id,data=>{ 
+    //   this.setState({
+    //     marketata:data.data.data
+    //   });
+    // });
+    this.getFancySettlementData();
+  }
+
+  getFancySettlementData = () => {
     this.events.getFancySettlementData(this.props.match.params.id,data=>{ 
       this.setState({
         marketata:data.data.data
@@ -59,6 +68,7 @@ export default class ManageFancyOdds extends Component {
       }
       this.events.fancyBetSettle(obj,(data)=>{
         // fancyBetSettleNotification:
+        this.getFancySettlementData();
       })
     }
   }
@@ -99,7 +109,6 @@ export default class ManageFancyOdds extends Component {
                                     <td className="text-center">{index+1}</td>
                                     <td className="text-center">{item.marketId}</td>
                                     <td className="text-center">{item.marketName}</td>
-                                    <td className="text-center">{item.status}</td>
                                     {
                                       item.settlementStatus ? 
                                       <td className="text-center " style={{fontSize:'15px',fontWeight:'500',color:'red'}}><i>Settled!</i></td>:

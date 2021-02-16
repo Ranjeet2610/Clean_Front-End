@@ -16,7 +16,7 @@ export default class Account extends Component {
           .catch((error) => console.log(error));    
     }
     getprofitloss(data,cb){
-        
+      console.log("CCCCCCCCc",data);
         // call for cricket
         axios.post(Constants.APIURL+'getUserSectionProfitAndLoss',data)
           .then((response) => {

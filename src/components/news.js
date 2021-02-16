@@ -29,30 +29,35 @@ export default class news extends Component{
                 NewsList:data.data.data
             })
         })
+        this.handleAddNews();
     }
 
-    handleSubmit = (e) => {
-        // e.preventDefault();
-        // if(methodType==='post'){
-        //     console.log("waala",data.data.data);
-        // } 
-        // else if(methodType==='delete'){
-        //     this.setState({
-        //         NewsList:data.data.data
-        //     })
-        // } 
-        // else{
-        //     this.setState({
-        //         NewsList:data.data.data
-        //     })
-        // }
-      }
+    handleAddNews = () => {
+        if(this.state.newsTitle!==""){
+            this.users.addNews(this.state.newsTitle,(data)=>{
+                this.setState({
+                    NewsList:data.data.data
+                })
+                this.users.getNews((data) => {
+                    this.setState({
+                        NewsList:data.data.data
+                    })
+                })
+            })
+        }
+    }
 
-      handleDelete = (id) => {
+    handleDelete = (id) => {
         this.users.deleteNews(id,(data)=>{
-            // console.log("DELETE",data);
+            console.log("DELETE",data);
         })
-      }
+    }
+
+    handleChange = (event) => {
+        this.setState({
+            [event.target.name]:event.target.value
+        })
+    }
 
     render(){
         return(
@@ -65,8 +70,8 @@ export default class news extends Component{
                     <div>
                         <form style={{margin:'3rem', display:"flex"}} >
                             <input type='text' name="newsId" className="form-control" style={{width:"25%",marginRight:'1rem'}} placeholder="News ID"/>
-                            <input type='text' name="newsTitle" className="form-control" style={{marginRight:'1rem'}}  placeholder="News Title"/>
-                            <input type="button" value="Add News" onClick={(e)=>this.handleSubmit(e)} style={{backgroundColor:'#95335c', outline:'none',color:'white', borderRadius:'5px'}} />
+                            <input type='text' name="newsTitle" onChange={this.handleChange} className="form-control" style={{marginRight:'1rem'}}  placeholder="News Title"/>
+                            <input type="button" value="Add News" onClick={this.handleAddNews} style={{backgroundColor:'#95335c', outline:'none',color:'white', borderRadius:'5px'}} />
                         </form>
                     </div><hr/>
                     <div style={{float:'right', margin:'0 3rem 3rem 0',fontSize:'15px'}}>Total Records : {this.state.NewsList.length}</div>
@@ -90,7 +95,7 @@ export default class news extends Component{
                                         </td>
                                         <td className="text-center" style={{width:'15%'}}>{element.newsID}</td>
                                         <td className="text-center">{element.newsTitle}</td>
-                                        <td className="text-center" style={{width:'10%'}}>{element.active ? 'true' : 'false'}</td>
+                                        <td className="text-center" style={{width:'10%'}}><input type="radio" name="active" /></td>
                                     </tr>
                                 ):null}   
                             </tbody>

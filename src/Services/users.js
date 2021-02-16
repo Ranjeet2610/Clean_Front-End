@@ -339,16 +339,16 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
-    // addNews = (data,cb) => {
-    //     let body = {
-    //         newsID:res.data.data.length+1,
-    //         newsTitle:data,
-    //         active:true
-    //     }
-    //     axios.post(Constants.APIURL+'news',body).then((res) => {
-    //         cb(res);
-    //     })
-    // }
+    addNews = (data,cb) => {
+        let body = {
+            newsID:1,//res.data.data.length+1,
+            newsTitle:data,
+            active:false
+        }
+        axios.post(Constants.APIURL+'news',body).then((res) => {
+            cb(res);
+        })
+    }
     deleteNews = (id,cb) => {
         axios.delete(Constants.APIURL+'news/'+id).then((res) => {
             cb(res);

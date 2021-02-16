@@ -73,7 +73,7 @@ export default class Acinfo extends Component {
 
                     <table className="table table-striped jambo_table bulk_action" id=" " >
                       <thead>
-                        <tr className="headings">
+                        <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                           {
                             this.state.tableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
                           }

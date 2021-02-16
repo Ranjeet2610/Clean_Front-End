@@ -161,7 +161,7 @@ export default class Clientpl extends Component {
                   <div className="custom-scroll data-background appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action full-table-clint" id="datatable" >
                       <thead>
-                        <tr className="headings">
+                        <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                           <th className="text-center">Username</th>
                           {this.state.ispl ? <th className="text-center">admin</th> : null}
                           {

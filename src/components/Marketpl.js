@@ -27,7 +27,7 @@ export default class Marketpl extends Component {
 
   }
 
-  componentDidMount(){
+  getMarketplData = () =>   {
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
     }
@@ -172,7 +172,7 @@ export default class Marketpl extends Component {
                   <div className="custom-scroll data-background appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action" id="Marketdatatable">
                       <thead>				
-                        <tr>
+                        <tr style={{backgroundColor:'#95335c',color:'white'}}>
                         {
                           this.state.tableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
                         }

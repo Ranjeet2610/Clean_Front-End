@@ -144,7 +144,7 @@ export default class Userpl extends Component {
                       </button>
                     </div>
                   </div>
-                  <div className="popup_col_12">
+                  {/* <div className="popup_col_12">
                     <div id="betsalltab" className="tab_bets">
                       <div className="nav nav-pills match-lists">
                         <li><Link to="#" dat-attr="m">Last Month</Link></li>
@@ -154,7 +154,7 @@ export default class Userpl extends Component {
                         <input type="hidden" id="inputFilterDate" name="Filterdate" defaultValue="t" />
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </form>
 
                 <div id="divLoading"/>
@@ -166,7 +166,7 @@ export default class Userpl extends Component {
                 <div className="custom-scroll data-background appendAjaxTbl">
                   <table className="table table-striped jambo_table bulk_action full-table-clint">
                     <thead>
-                      <tr className="headings">
+                      <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                         {
                           this.state.tableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
                         }
