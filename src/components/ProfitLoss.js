@@ -107,12 +107,10 @@ export default class ProfitLoss extends Component {
       });
     }
     else {
-      this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        console.log(this.state.data)
+      this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
         this.setState({
           data: data.data
         });
-
       });
     }
   }

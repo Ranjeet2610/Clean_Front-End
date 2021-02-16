@@ -179,7 +179,7 @@ render(){
                         //////////////////////// FILTERED TAB CHECKBOX  /////////////////////////////////////////
                       }
 
-                      <div className="col-md-12 custom-check">
+                      {/* <div className="col-md-12 custom-check">
                         <input type="hidden" name="user_id" id="user_id" defaultValue={145315} />
                         <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="CacStatement" />
                         {
@@ -190,7 +190,7 @@ render(){
                           </div>
                           )
                         }
-                      </div>
+                      </div> */}
                       <div className="block_2">            
                         <input type="datetime-local" onChange={this.handleChange} name="from_date" id="fdate" value={this.state.from_date} className="form-control" placeholder="From Date" autoComplete="off" />
                       </div>

@@ -143,6 +143,22 @@ componentDidMount() {
     })
   }
 
+  handleClearByDropdown = async(e) => {
+    let dataArray = [...this.state.newResData]
+    let searchUser = e.target.value.toLowerCase();
+    const updateList = dataArray.filter(ele => ele.status===searchUser)
+    if(searchUser!==""){
+        await this.setState({
+          betHistory:updateList
+        })
+    }
+    else{
+        await this.setState({
+          betHistory:this.state.newResData
+        })
+    }
+}
+
   render(){
     let color= this.state.color;
     let device;
@@ -202,7 +218,8 @@ componentDidMount() {
                       </select>
                     </div>
                     <div className="popup_col_2">
-                      <select className="form-control" onChange={this.handleChange}  name="historyType">
+                      <select className="form-control" onChange={this.handleClearByDropdown}  name="historyType">
+                        <option value="">Open/Settle</option>
                         <option value="open">Open</option>
                         <option value="settled">Settled</option>
                       </select>
@@ -219,7 +236,7 @@ componentDidMount() {
   ////////////////////////// TABS ////////////////////////////////////////////
 }
               
-              <div className="col-md-12 col-sm-12 col-xs-12">
+              {/* <div className="col-md-12 col-sm-12 col-xs-12">
                 <div className="tab_bets get-mchlist">
                  <ul id="betsalltab" className="nav nav-pills match-lists">
                      {
@@ -227,7 +244,7 @@ componentDidMount() {
                      }
                   </ul>
                 </div>
-              </div>
+              </div> */}
               <div className="col-md-12 col-sm-12 col-xs-12">
               <div id="divLoading"/>
 
