@@ -95,6 +95,7 @@ export default class MatchOdds extends Component {
       IP:'',
       scoreId:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
+      sportType: JSON.parse(localStorage.getItem("matchname")).sportType !== undefined ? JSON.parse(localStorage.getItem("matchname")).sportType : " v ",
       timer: "",
       redirectToReferrer: false,
     };
@@ -1026,6 +1027,8 @@ export default class MatchOdds extends Component {
                           </div>
                         </div>
 
+                      {
+                        this.state.sportType === 4 ?
                         <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                           <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 
@@ -1150,7 +1153,8 @@ export default class MatchOdds extends Component {
                                 }) : null
                             }
                           </div>
-                        </div>
+                        </div>:null
+                      }
                       </div>
                     </div>
                   </div>

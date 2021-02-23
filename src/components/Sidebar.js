@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import Service from '../Services/Service';
+import LivEvents from '../Services/livevents'
 
 export default class sidebar extends Component {
   constructor(props) {
@@ -11,40 +12,24 @@ export default class sidebar extends Component {
         soccerData: '',
         liveEvents:[]
     };
-   
+    this.service = new Service();
 }
 
 componentDidMount(){
-  var service = new Service();
-  service.getdashboardData("4",data=>{
-    this.setState({
-      cricketData: data
-    })
-  });
-  // service.getdashboardData("2",data=>{
-  //   this.setState({
-  //     tenisData: data
-  //   })
-  // });
-  // service.getdashboardData("1",data=>{
-  //   this.setState({
-  //     soccerData: data
-  //   })
-  // });
-  let eveodds = [];
-  service.getLiveEvents((data) => {
-    data.data.Data.map((item) => {
-      service.getEventInitialOdds(item.eventId, (data) => {
-        eveodds.push({
-          events: item,
-          odds: data.data,
-        });
-        this.setState({
-          liveEvents: eveodds,
-        });
-      });
-    });
-  });
+  this.setState({
+    load:true
+  })
+this.service.getLiveEvents(data=>{
+  const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
+  const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
+  const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
+  this.setState({
+    soccerData:dataFFilter,
+    tenisData:dataTFilter, 
+    cricketData:dataCFilter,
+    load: false
+  })
+});
 }
 
 openCricket(eid,name,date){
@@ -52,12 +37,16 @@ openCricket(eid,name,date){
   localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
-openTenis(eid){
-  window.location.href ='matchodds/'+eid
+openTenis(eid,name,date){
+  // window.location.href ='matchodds/'+eid
+  window.location.href = window.location.protocol+"//"+window.location.host+'/matchodds/'+eid;
+  localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
-openSoccer(eid){
-  window.location.href ='matchodds/'+eid
+openSoccer(eid,name,date){
+  // window.location.href ='matchodds/'+eid
+  window.location.href = window.location.protocol+"//"+window.location.host+'/matchodds/'+eid;
+  localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
   render() {
@@ -99,8 +88,8 @@ openSoccer(eid){
                             if(item.odds){
                               return ( 
                               <li key={index}>
-                                <Link to="#" title="Events" onClick={() =>this.openCricket(item.events.eventId, item.events.eventName,item.events.OpenDate)}>
-                                  <i className="fa fa-angle-double-right" /> {item.events.eventName}
+                                <Link to="#" title="Events" onClick={() =>this.openCricket(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" /> {item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>
@@ -132,8 +121,8 @@ openSoccer(eid){
                           this.state.tenisData.map((item,index)=>{
                             return ( 
                               <li key={index}>
-                                <Link to="#" title="Match OODS" onClick={()=>this.openTenis(item.event.id)}>
-                                  <i className="fa fa-angle-double-right" />{item.event.name}
+                                <Link to="#" title="Match OODS" onClick={()=>this.openTenis(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" />{item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>
@@ -164,8 +153,8 @@ openSoccer(eid){
                           this.state.soccerData.map((item,index)=>{
                             return ( 
                               <li key={index}>
-                                <Link to="#" title="Match OODS" onClick={()=>this.openSoccer(item.event.id)}>
-                                  <i className="fa fa-angle-double-right" />  {item.event.name}
+                                <Link to="#" title="Match OODS" onClick={()=>this.openSoccer(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" />  {item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>

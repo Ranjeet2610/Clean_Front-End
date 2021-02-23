@@ -7,6 +7,7 @@ import Service from '../Services/Service';
 import Users from '../Services/users'
 import {Link} from 'react-router-dom'
 import e from 'cors';
+import Livevents from '../Services/livevents'
 export default class SideBet extends Component {
 
   constructor(props) {
@@ -51,12 +52,12 @@ export default class SideBet extends Component {
       }
     this.service = new Service();
     this.users = new Users();
+    this.event = new Livevents();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
     this.matchName = this.props.matchName.split(" v ")
     if(this.state.isMobile){ setInterval(() => {
       this.getBetData();
     }, 3000)}
-    // this.matchName = this.props.matchName.split(" v ")
   }
 
   handleChange=(e)=>{
@@ -152,6 +153,14 @@ export default class SideBet extends Component {
     }
   }
 
+  getBetTime = () =>{
+    this.event.getbetplacetime(1,data=>{
+      this.setState({
+        timeDuration:data.data.data.timeDuration
+      })
+    })
+  }
+
   changeBackground = (e,type) =>{
     if(type==='Back'){
       e.target.parentElement.classList.add('blue')
@@ -171,6 +180,7 @@ export default class SideBet extends Component {
   }
 
   placeBet=async(e)=>{
+    this.getBetTime();
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -190,7 +200,7 @@ export default class SideBet extends Component {
       this.setState({
         showLoader:true
       });
-      await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+      await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
       if(this.props.betData.betType !=undefined){
         let fancysizeval;
         if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
@@ -619,6 +629,7 @@ export default class SideBet extends Component {
 }
 
   componentDidMount() {
+    this.getBetTime();
     this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
     this.setState({

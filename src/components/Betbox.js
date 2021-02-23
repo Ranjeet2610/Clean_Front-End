@@ -8,6 +8,7 @@ export default class BetBox extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        timeDuration:'',
           chipName:["500","2000","5000","25000","50000","100000"],
           chipStake:["500","2000","5000","25000","50000"],
           color:'lightblue',
@@ -43,7 +44,15 @@ export default class BetBox extends Component {
           IP:this.props.IP
       });
     }
+    getBetTime = () =>{
+      this.event.getbetplacetime(1,data=>{
+        this.setState({
+          timeDuration:data.data.data.timeDuration
+        })
+      })
+    }
     placeBet=async(e)=>{
+      this.getBetTime();
       // device 1 for desktop,2 for mobile,3 for tab
       let device;
       if(this.state.isMobile)
@@ -65,7 +74,7 @@ export default class BetBox extends Component {
         this.setState({
           showLoader:true
         });
-        await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+        await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
         if(this.props.betData.betType !=undefined){
           let fancysizeval;
           if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){

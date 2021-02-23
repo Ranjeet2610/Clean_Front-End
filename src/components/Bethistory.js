@@ -219,7 +219,7 @@ componentDidMount() {
                     </div>
                     <div className="popup_col_2">
                       <select className="form-control" onChange={this.handleFilterByDropdown}  name="historyType">
-                        <option value="">Open/Settle</option>
+                        <option value="">Select All</option>
                         <option value="open">Open</option>
                         <option value="settled">Settled</option>
                       </select>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import  mainLogo from '../betfun-logo.png';
 import Users from '../Services/users';
 // import Modal from 'react-bootstrap/Modal'
@@ -10,8 +11,9 @@ class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      betTime:3,
+      betTime:0,
       game:'',
+      news:'',
       old_password:'',
       newpassword :'',
       Renewpassword:'',
@@ -35,18 +37,6 @@ class Navbar extends Component {
    else{
     this.menduDisplay = 'none'
    }
-}
-
-handleShow = () => {
-  this.setState({
-    show:true
-  })
-}
-
-handleClose = () => {
-  this.setState({
-    show:false
-  })
 }
 
 handleChange = (event)=>{
@@ -190,21 +180,21 @@ const obj = {
   });
 }
 
-saveNews = (e)=>{
-  e.preventDefault();
-  this.users.addNews(this.state.addNews,(data,methodType) => {
-    if(methodType==='get'){
-    this.setState({
-      NewsList:data.data.data
-    })
-  } 
-    else
-      {
-        console.log("waala",data.data.data);
-      }
-    // this.closeAddNews();
-  })
-}
+// saveNews = (e)=>{
+//   e.preventDefault();
+//   this.users.addNews(this.state.addNews,(data,methodType) => {
+//     if(methodType==='get'){
+//     this.setState({
+//       NewsList:data.data.data
+//     })
+//   } 
+//     else
+//       {
+//         console.log("waala",data.data.data);
+//       }
+//     // this.closeAddNews();
+//   })
+// }
 
 openNav=()=>{
     document.getElementById("lefttSidenav").style.width = "250px";
@@ -260,10 +250,23 @@ closeAddBetPlaceingTime=()=>{
 }
 
 handleAddBetTime = () => {
-  alert(this.state.betTime+" sec")
+  const obj = {
+      gameId:this.state.game,
+      timeDuration:this.state.betTime
+  }
+  if(this.state.game !== 0 || this.state.betTime !== "")
+  this.users.addbetplacetime(obj,data=>{
+    // console.log(data.message);
+    switch ('success') {
+      case 'success':
+        NotificationManager.success('Time Set Successfully !',"Success");
+        break;
+    }
+  })
 }
 
-componentDidMount(){
+async componentDidMount(){
+  await this.getNews();
   if( JSON.parse(localStorage.getItem('data')).superAdmin){
     if(localStorage.getItem('data') !=undefined){
       this.userDetails = JSON.parse(localStorage.getItem('data'));    
@@ -281,13 +284,6 @@ componentDidMount(){
       userName: JSON.parse(localStorage.getItem('data')).userName,
       password: JSON.parse(localStorage.getItem('data')).passwordString
     };
-    // this.users.login(user,data=>{
-    //   // localStorage.setItem('data', JSON.stringify(data.data.data));
-    //   this.setState({
-    //     // balance:data.data.data.walletBalance
-    //     balance:(JSON.parse(localStorage.getItem("data"))).walletBalance
-    //   })
-    // })
     setInterval(()=>{
       this.users.getUserInfo(user.userName, (data)=>{
         this.setState({
@@ -297,6 +293,32 @@ componentDidMount(){
       })
     },2000)
   }
+}
+
+// componentDidUpdate(prevProps,prevState){
+//   if(prevProps.news !== this.state.news){
+//     this.setState({
+//       news:prevProps.news
+//     })
+//   }
+//   console.log("XXXXXXXXXXXX",prevProps);
+//   console.log("CCCCCCCc",this.state.news);
+// }
+
+getNews = () => {
+  this.users.getActiveNews(data=>{
+      if(data.data.data.length>=1){
+        // debugger
+          this.setState({
+              news:data.data.data[0].newsTitle
+          })
+      }
+      else{
+          this.setState({
+              news:''
+          })
+      }
+  })
 }
 
 showchildMenu=(e)=>{
@@ -353,9 +375,9 @@ showchildMenu=(e)=>{
         <li>
           <Link to="/chipsummary">Chip Summary </Link> 
         </li>
-        <li>
+        {/* <li>
           <Link to="/liveevents">Live Events </Link> 
-        </li>
+        </li> */}
         <li>
           <Link to="/Settlement">Settlement</Link> 
         </li>
@@ -553,6 +575,9 @@ showchildMenu=(e)=>{
   }
     
   return  (
+    <>
+    <NotificationContainer/>
+    <span onClick={this.getNews} id="news"></span>
     <div className="header-section">
       <div className="top_nav">
         <div className="righttogal righttogalhide">
@@ -619,7 +644,7 @@ showchildMenu=(e)=>{
 }
           
       <div className="marquee">
-        <marquee><i className="fa fa-bell-o" />  Dear user, agar koi bhi user 1 min me bar bar khai-lagai(cheating) karta paya gya to uska soda valid nhi mana jayega...  <i className="fa fa-bell-o" /></marquee>
+        <marquee><i className="fa fa-bell-o" /><i>&nbsp;{this.state.news}&nbsp;</i><i className="fa fa-bell-o" /></marquee>
       </div>
 
 {
@@ -752,7 +777,10 @@ showchildMenu=(e)=>{
                         <label className="control-label col-md-3 col-sm-3 col-xs-12">Select Game</label>
                         <div className="add-funds-dialog-current-amount">
                           <select name="game" className="form-control col-md-7 col-xs-12" onChange={this.handleChange} style={{width:'64%'}}>
-                            <option>Cricket</option>
+                            <option value="0">For All</option>
+                            <option value="1">Cricket</option>
+                            {/* <option value="2">Tennis</option>
+                            <option value="3">Soccer</option> */}
                           </select>
                         </div>
                       </div>
@@ -826,6 +854,7 @@ showchildMenu=(e)=>{
           </div>
         </div>         
     </div>
+  </>
   )}
 }
 export default Navbar;

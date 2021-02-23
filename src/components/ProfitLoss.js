@@ -33,40 +33,15 @@ export default class ProfitLoss extends Component {
     })
   }
 
-  handleFilter = async (e) => {
+  handleFilter = async () => {
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
-    if (fD <= tD) {
-      // if (this.userDetails.superAdmin) {
-      //   this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-      //     this.setState({
-      //       data: data.data
-      //     });
-      //   });
-      // }
-      // else if (this.userDetails.Admin) {
-      //   this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-      //     this.setState({
-      //       data: data.data
-      //     });
-      //   });
-      // }
-      // else if (this.userDetails.Master) {
-      //   this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-      //     this.setState({
-      //       data: data.data
-      //     });
-      //   });
-      // }
-      // else {
-      //   this.account.getprofitloss({ date1: fD, date2: tD, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-      //     this.setState({
-      //       data: data.data
-      //     });
-  
-      //   });
-      // }
-    }
+    if(fD <= tD){
+      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+      await this.setState({
+          data:betHistoryFilter
+        })
+      }
   };
 
   handleClear = () =>{
@@ -78,45 +53,43 @@ export default class ProfitLoss extends Component {
   }
 
     getprofitlossData = () =>{
-      var date1 = new Date();
-      var res1 = date1.toISOString().substring(0, 10);
-      var date2 = new Date();
-      var res2 = date2.toISOString().substring(0, 10);
-
       this.userDetails = JSON.parse(localStorage.getItem('data'));
       if (this.userDetails.superAdmin) {
-        this.account.superAdminProfitAndLoss({date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else if (this.userDetails.Admin) {
-        this.account.adminProfitAndLoss({ date1: res1, date2: res2,adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else if (this.userDetails.Master) {
-        this.account.masterProfitAndLoss({ date1: res1, date2: res2,masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else {
-        this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
     }
     
-    componentDidMount() {
-      this.getprofitlossData();
-      console.log("QQQQQ",this.state.data);
+    async componentDidMount() {
+    await this.getprofitlossData();
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
@@ -162,7 +135,7 @@ export default class ProfitLoss extends Component {
 
                       <div className="title_new_at">
                         Show Bet History
-                        <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={()=>{this.props.history.goBack()}}>
+                        <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={this.goBack}>
                           Back
                         </button>
                       </div>
@@ -199,7 +172,7 @@ export default class ProfitLoss extends Component {
                                   <td className="text-center">{item.bettype} </td>
                                   <td className="text-center">{item.odds}</td>
                                   <td className="text-center">{item.stack}</td>
-                                  <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
+                                  <td className="text-center">{new Date(item.createdDate).toLocaleString()}</td>
                                   <td className="text-center">{item.P_L}</td>
                                   <td className="text-center">{item.profit}</td>
                                   <td className="text-center">{item.liability}</td>
@@ -229,7 +202,7 @@ export default class ProfitLoss extends Component {
                       <option value={50}>50</option>
                       <option value={100}>100</option>
                     </select>
-                    <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={this.goBack}>Back</button>
+                    <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={()=>this.props.history.goBack()}>Back</button>
                   </div>
                 </div>
                 <div className="col-md-12">
@@ -310,7 +283,7 @@ export default class ProfitLoss extends Component {
                                   <td className="text-center">{item.data[0].marketType}</td>
                                   <td className="text-center">{item.ProfitLoss}</td>
                                   <td className="text-center">0.0</td>
-                                  <td className="text-center">{Utilities.datetime(item.data[0].createdDate)} </td>
+                                  <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()} </td>
                                   <td className="text-center">
                                     <Link style={{ cursor: "pointer" }} onClick={() => this.showBet(item.data)} >
                                       Show Bet

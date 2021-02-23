@@ -14,7 +14,7 @@ export default class Cacstatement extends Component {
       currentPage:1,
       postsPerPage:10,
       load:false,
-      tableHead:["Date","Description","Credit","Debit","Balance"],
+      tableHead:["S.No","Date","Description","Credit","Debit","Balance"],
       filteredTab:["AllTransaction","FreeChips","Settlement","Profit&Loss","Statement"],
       resdata:'',
       from_date:"",
@@ -94,7 +94,7 @@ handleFilter = async () => {
   let tD = await new Date(this.state.to_date);
   if(fD <= tD){
       let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-    this.setState({
+    await this.setState({
       resdata:dateFilter
     })
   }
@@ -107,6 +107,7 @@ paginate = (pageNumber) => {
 }
 
 render(){
+  console.log(this.state.newResData);
   const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
   const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
   const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);
@@ -133,7 +134,7 @@ render(){
       }
       return (
         <tr key={index}>
-          {/* <td className="text-center">{index+1}</td> */}
+          <td className="text-center">{(this.state.resdata.length+1)-(indexOfFirstPost+index+1)}</td>
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
           <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
           <td className="text-center">{deposited} </td>
