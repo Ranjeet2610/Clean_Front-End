@@ -14,7 +14,7 @@ export default class ProfitLoss extends Component {
     this.state = {
       profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
       showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
-      allGames:["Cricket","Soccer","Tennis","Live Teenpatti","Live Casino","Fancy"],
+      // allGames:["Cricket","Soccer","Tennis"/*,"Live Teenpatti","Live Casino","Fancy"*/],
       data: '',
       ispl: false,
       showbetData: '',
@@ -113,6 +113,21 @@ export default class ProfitLoss extends Component {
       showbetData: data,
       ispl: true,
     })
+  }
+
+  handleGameFilter = (event) => {
+    let sportId = event.target.value
+    if(sportId!==""){
+      let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === sportId )
+        this.setState({
+          data:betHistoryFilter
+        })
+      }
+    else{
+      this.setState({
+        data: this.state.newResData
+      })
+    }
   }
 
   render() {
@@ -214,16 +229,16 @@ export default class ProfitLoss extends Component {
 }
 
                     <form id="formSubmit" className="form-horizontal form-label-left input_mask" >
-                      {/* <div className="col-md-3 col-xs-6">
+                      <div className="col-md-3 col-xs-6">
                         <input type="hidden" name="user_id" defaultValue={145315} />
                         <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
-                        <select className="form-control" name="sportid">
-                          <option value={0} active="true">All</option>
-                          {
-                            this.state.allGames.map((item,index)=><option key={index} value={index+1}>{item}</option>)
-                          }
+                        <select className="form-control" name="sportid" onChange={this.handleGameFilter}>
+                          <option value="">All</option>
+                          <option value="4">Cricket</option>
+                          <option value="2">Tennis</option>
+                          <option value="1">Soccer</option>
                         </select>
-                      </div> */}
+                      </div>
                       <div className="col-md-2 col-xs-6">
                         <input type="datetime-local" onChange={this.handleChange} name="from_date" value={this.state.from_date} id="from-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="From date" autoComplete="off" />
                       </div>

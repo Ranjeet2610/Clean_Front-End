@@ -74,7 +74,6 @@ export default class EventMatchOdds extends Component {
   }
 
   render(){
-    console.log("MMMMMMM",this.props.location.state);
     return (
         <div>
           <Navbar />

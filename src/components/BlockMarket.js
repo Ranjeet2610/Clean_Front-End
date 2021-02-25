@@ -35,8 +35,9 @@ export default class BlockMarket extends React.Component {
   handleBlockMarket = (eventType) => {
     const obj = {eventType}
     this.users.sportEnableDisable(obj,data=>{
-      // console.log("DATA",eventType);
+      this.getallsports();
     })
+    document.getElementById("sidebarRefresh").onclick();
   }
   render(){
     return (
@@ -51,7 +52,7 @@ export default class BlockMarket extends React.Component {
                   <span className="lable-user-name">
                     Sport Listing
                   </span>
-                  <button className="btn btn-xs btn-primary" onclick="goBack()">Back</button>
+                  <button className="btn btn-xs btn-primary" style={{float:'right'}} onClick={()=>this.props.history.goBack()}>Back</button>
                 </div>
               </div>
               <div className="col-md-12">
@@ -80,7 +81,7 @@ export default class BlockMarket extends React.Component {
                             <td><Link to={{pathname:'/sportsevent', state:{eventType:ele.eventType,name:ele.name}}}>{ele.name}</Link></td>
                             <td>
                               <label className="toggle-label">
-                                <input type="checkbox" onClick={()=>this.handleBlockMarket(ele.eventType)} className="ng-pristine ng-valid ng-touched" />
+                                <input type="checkbox" checked={ele.status ? true : false} onClick={()=>this.handleBlockMarket(ele.eventType)} className="ng-pristine ng-valid ng-touched" />
                                 <span className="back">
                                   <span className="toggle" />
                                   <span className="label off">OFF</span> 

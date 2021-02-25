@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Service from '../Services/Service'
 import Loader from 'react-loader-spinner'
 import Users from '../Services/users'
+import Livevents from '../Services/livevents'
 
 export default class BetBox extends Component {
 
@@ -27,12 +28,14 @@ export default class BetBox extends Component {
           getselfancyOdds:'',
           getselfancySize:'',
           showLoader:false,
+          sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
           isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
           isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
           isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
         }
       this.service = new Service();
       this.users = new Users();
+      this.event = new Livevents();
       this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
       this.matchName = this.props.matchName.split(" v ")
     }
@@ -61,9 +64,9 @@ export default class BetBox extends Component {
       device = 1;
       if(this.state.isTab)
       device = 3;
-         
+      
       e.preventDefault();
-      //debugger
+      
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
@@ -101,7 +104,8 @@ export default class BetBox extends Component {
             IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType,
-            bettype:this.isbackInput.value
+            bettype:this.isbackInput.value,
+            eventType:this.state.sportType
            }
            //console.log(obj);
            this.service.fancyplaceBet(obj,data=>{ 
@@ -154,7 +158,8 @@ export default class BetBox extends Component {
             IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-            bettype:this.isbackInput.value
+            bettype:this.isbackInput.value,
+            eventType:this.state.sportType
            }
            //console.log(obj);
            this.service.placeBet(obj,data=>{ 

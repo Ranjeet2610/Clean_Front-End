@@ -10,6 +10,7 @@ import livegame from "../images/livegame.jpg"
 import Sidebar from "./Sidebar";
 import Footer from "./footer";
 import Service from "../Services/Service";
+import Users from '../Services/users';
 import LivEvents from '../Services/livevents'
 
 class Dashboard extends Component {
@@ -29,9 +30,13 @@ class Dashboard extends Component {
       redirectToReferrer: false,
       odds: "",
       InitialOdds: {},
+      soccerStatus:[],
+      tennisStatus:[],
+      cricketStatus:[],
     };
     this.service = new Service();
     this.livevents = new LivEvents();
+    this.users =new Users();
     this.odds = "";
   }
 
@@ -39,6 +44,7 @@ class Dashboard extends Component {
     this.setState({
         load:true
       })
+    this.getallsports();
     this.service.getLiveEvents(data=>{
       const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
       const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
@@ -49,12 +55,32 @@ class Dashboard extends Component {
         cricketData:dataCFilter,
         load: false
       })
-      console.log(data.data.Data);
     });
   }
 
+  getallsports = () => {
+    this.setState({
+      load: true
+    })
+    this.users.getallsports(data=>{
+      this.setState({ 
+        data:data.data.data 
+      })
+      this.setState({
+        load: false
+      })
+      let sStatus = this.state.data.filter((e)=>e.eventType===1)
+      let tStatus = this.state.data.filter((e)=>e.eventType===2)
+      let cStatus = this.state.data.filter((e)=>e.eventType===4)
+      this.setState({
+        soccerStatus:sStatus[0].status,
+        tennisStatus:tStatus[0].status,
+        cricketStatus:cStatus[0].status,
+      })
+    })
+  }
+
   matchOddspage = (txt, name,date,sportType) => {
-    // debugger
     this.setState({
       load:false
     })
@@ -109,6 +135,8 @@ class Dashboard extends Component {
                           ////////////////////////////// CRICKET LIVE DATA /////////////////////////////////////////
                           }
 
+                          {
+                          this.state.cricketStatus &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport">
@@ -158,11 +186,14 @@ class Dashboard extends Component {
                                 })
                             }
                           </div>
+                          }
 
                           {
                           /////////////////////////////// TENNIS LIVE DATA //////////////////////////////////////////
                           }
 
+                          {
+                            this.state.tennisStatus &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={tbicon} /></span>Tennis
@@ -207,11 +238,14 @@ class Dashboard extends Component {
                                 })
                             }
                           </div>
-
+                          }
+                          
                           {
                           /////////////////////////////// SOCCER LIVE DATA ///////////////////////////////////////////
                           }
 
+                          {
+                            this.state.soccerStatus &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={fbicon}/></span>Soccer
@@ -256,7 +290,8 @@ class Dashboard extends Component {
                                 })    
                             }
                           </div>
-                        
+                          }
+
                         </div>
                       </div>
                     </div>

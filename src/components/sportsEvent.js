@@ -44,7 +44,6 @@ export default class Liveevents extends Component {
         resdata: dataFilter,
         load: false
         })
-        // console.log(data.data.data);
     });
     }
 
@@ -64,8 +63,6 @@ export default class Liveevents extends Component {
         const item = e.target.value;
         const isChecked = e.target.checked;
         this.events.UpdateEventFlag(item,(data)=>{
-          console.log(data.data.Data);
-          console.log(isChecked);
             this.reloadData();
         })
     }

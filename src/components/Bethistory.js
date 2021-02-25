@@ -15,7 +15,7 @@ export default class Bethistory extends Component {
       currentPage:1,
       postsPerPage:10,
       load:false,
-      betHistoryTab:["All","Cricket","Tennis","Soccer","Teenpatti","Fancy"],
+      betHistoryTab:["All","Cricket","Tennis","Soccer"],
       betHistoryTableHead:["S.no","Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
       betHistory:[],
       from_date:'',
@@ -159,6 +159,20 @@ componentDidMount() {
     }
 }
 
+handleTabFilter = (eventType) => {
+  if(eventType!==""){
+    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
+      this.setState({
+        betHistory:betHistoryFilter
+        })
+      }
+  else{
+    this.setState({
+      betHistory: this.state.newResData
+    })
+  }
+}
+
   render(){
     let color= this.state.color;
     let device;
@@ -236,15 +250,16 @@ componentDidMount() {
   ////////////////////////// TABS ////////////////////////////////////////////
 }
               
-              {/* <div className="col-md-12 col-sm-12 col-xs-12">
+              <div className="col-md-12 col-sm-12 col-xs-12">
                 <div className="tab_bets get-mchlist">
                  <ul id="betsalltab" className="nav nav-pills match-lists">
-                     {
-                       this.state.betHistoryTab.map((item,index)=><li key={index}><Link to="#">{item}</Link></li>)
-                     }
+                     <li><Link to="#" onClick={()=>this.handleTabFilter('')}>All</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(2)}>Tennis</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(1)}>Soccer</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(4)}>Cricket</Link></li>
                   </ul>
                 </div>
-              </div> */}
+              </div>
               <div className="col-md-12 col-sm-12 col-xs-12">
               <div id="divLoading"/>
 
