@@ -94,11 +94,7 @@ handleFilter = async () => {
   let tD = await new Date(this.state.to_date);
   if(fD <= tD){
       let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-<<<<<<< HEAD
-    this.setState({
-=======
     await this.setState({
->>>>>>> origin/BOSS
       resdata:dateFilter
     })
   }
