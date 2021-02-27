@@ -14,7 +14,7 @@ export default class ProfitLoss extends Component {
     this.state = {
       profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
       showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
-      allGames:["Cricket","Soccer","Tennis","Live Teenpatti","Live Casino","Fancy"],
+      // allGames:["Cricket","Soccer","Tennis"/*,"Live Teenpatti","Live Casino","Fancy"*/],
       data: '',
       ispl: false,
       showbetData: '',
@@ -33,92 +33,63 @@ export default class ProfitLoss extends Component {
     })
   }
 
-  handleFilter =  (e) => {
-    let fD =  this.state.from_date
-    let tD =  this.state.to_date
-    if (fD <= tD) {
+  handleFilter = async () => {
+    let fD = await new Date(this.state.from_date);
+    let tD = await new Date(this.state.to_date);
+    if(fD <= tD){
+      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+      await this.setState({
+          data:betHistoryFilter
+        })
+      }
+  };
+
+  handleClear = () =>{
+    this.setState({
+      from_date:this.state.currentStart,
+      to_date:this.state.currentend,
+    })
+    this.getprofitlossData();
+  }
+
+    getprofitlossData = () =>{
+      this.userDetails = JSON.parse(localStorage.getItem('data'));
       if (this.userDetails.superAdmin) {
         this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else if (this.userDetails.Admin) {
         this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else if (this.userDetails.Master) {
         this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
         });
       }
       else {
-        this.account.getprofitloss({ date1: fD, date2: tD, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
           this.setState({
-            data: data.data
+            data: data.data,
+            newResData: data.data
           });
-  
         });
       }
     }
-
-  };
-
-  handleClear = () =>{
-    this.setState({
-      from_date:this.state.from_date,
-      to_date:this.state.to_date,
-    })
-    this.getprofitlossData();
-  }
-
-  getprofitlossData = () =>{
-    var date1 = new Date();
-    var res1 = date1.toISOString().substring(0, 10);
-    var date2 = new Date();
-    var res2 = date2.toISOString().substring(0, 10);
-
-    this.userDetails = JSON.parse(localStorage.getItem('data'));
-    if (this.userDetails.superAdmin) {
-      this.account.superAdminProfitAndLoss({date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else if (this.userDetails.Admin) {
-      this.account.adminProfitAndLoss({ date1: res1, date2: res2,adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else if (this.userDetails.Master) {
-      this.account.masterProfitAndLoss({ date1: res1, date2: res2,masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        this.setState({
-          data: data.data
-        });
-      });
-    }
-    else {
-      this.account.getprofitloss({ date1: res1, date2: res2, userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
-        console.log(this.state.data)
-        this.setState({
-          data: data.data
-        });
-
-      });
-    }
-  }
-
-  componentDidMount() {
-    this.getprofitlossData();
+    
+    async componentDidMount() {
+    await this.getprofitlossData();
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
@@ -144,6 +115,21 @@ export default class ProfitLoss extends Component {
     })
   }
 
+  handleGameFilter = (event) => {
+    let sportId = event.target.value
+    if(sportId!==""){
+      let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === sportId )
+        this.setState({
+          data:betHistoryFilter
+        })
+      }
+    else{
+      this.setState({
+        data: this.state.newResData
+      })
+    }
+  }
+
   render() {
     let totalPL = 0;
     return (
@@ -164,7 +150,7 @@ export default class ProfitLoss extends Component {
 
                       <div className="title_new_at">
                         Show Bet History
-                        <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={()=>{this.props.history.goBack()}}>
+                        <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={this.goBack}>
                           Back
                         </button>
                       </div>
@@ -177,7 +163,7 @@ export default class ProfitLoss extends Component {
 
                       <table className="table table-striped jambo_table bulk_action dataTable no-footer" id="datatable" role="grid" aria-describedby="datatable_info" >
                         <thead>
-                          <tr className="headings" role="row">
+                          <tr className="headings" role="row" style={{backgroundColor:'#95335c',color:'white'}}>
                             {
                               this.state.showBetHistoryTableHead.map((item)=>{
                                 return(
@@ -201,7 +187,7 @@ export default class ProfitLoss extends Component {
                                   <td className="text-center">{item.bettype} </td>
                                   <td className="text-center">{item.odds}</td>
                                   <td className="text-center">{item.stack}</td>
-                                  <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
+                                  <td className="text-center">{new Date(item.createdDate).toLocaleString()}</td>
                                   <td className="text-center">{item.P_L}</td>
                                   <td className="text-center">{item.profit}</td>
                                   <td className="text-center">{item.liability}</td>
@@ -231,7 +217,7 @@ export default class ProfitLoss extends Component {
                       <option value={50}>50</option>
                       <option value={100}>100</option>
                     </select>
-                    <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={this.goBack}>Back</button>
+                    <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={()=>this.props.history.goBack()}>Back</button>
                   </div>
                 </div>
                 <div className="col-md-12">
@@ -246,11 +232,11 @@ export default class ProfitLoss extends Component {
                       <div className="col-md-3 col-xs-6">
                         <input type="hidden" name="user_id" defaultValue={145315} />
                         <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
-                        <select className="form-control" name="sportid">
-                          <option value={0} active="true">All</option>
-                          {
-                            this.state.allGames.map((item,index)=><option key={index} value={index+1}>{item}</option>)
-                          }
+                        <select className="form-control" name="sportid" onChange={this.handleGameFilter}>
+                          <option value="">All</option>
+                          <option value="4">Cricket</option>
+                          <option value="2">Tennis</option>
+                          <option value="1">Soccer</option>
                         </select>
                       </div>
                       <div className="col-md-2 col-xs-6">
@@ -294,9 +280,9 @@ export default class ProfitLoss extends Component {
 
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
-                        <tr className="headings">
+                        <tr className="headings" style={{backgroundColor:"#95335c",color:'white'}}>
                           {
-                            this.state.profitAndLossTableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
+                            this.state.profitAndLossTableHead.map((item,index)=><th key={index} className="text-center"><b>{item}</b></th>)
                           }
                         </tr>
                       </thead>
@@ -307,13 +293,13 @@ export default class ProfitLoss extends Component {
                               totalPL += item.ProfitLoss;
                               return (
                                 <tr>
-                                  <td className>{index+1}</td>
-                                  <td className>{item.data[0].description}</td>
-                                  <td className>{item.data[0].marketType}</td>
-                                  <td className>{item.ProfitLoss}</td>
-                                  <td className>0.0</td>
-                                  <td className>{Utilities.datetime(item.data[0].createdDate)} </td>
-                                  <td className>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.data[0].description}</td>
+                                  <td className="text-center">{item.data[0].marketType}</td>
+                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.0</td>
+                                  <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()} </td>
+                                  <td className="text-center">
                                     <Link style={{ cursor: "pointer" }} onClick={() => this.showBet(item.data)} >
                                       Show Bet
                                     </Link>
@@ -334,7 +320,7 @@ export default class ProfitLoss extends Component {
 
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
-                        <tr>
+                        <tr style={{backgroundColor:"#95335c",color:'white'}}>
                           <th>(Total P &amp; L ) {totalPL}</th>
                           <th>(Total Commition) 0</th>
                         </tr>

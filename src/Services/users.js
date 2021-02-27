@@ -339,27 +339,36 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
-    // addNews = (data,cb) => {
-    //     let body = {
-    //         newsID:res.data.data.length+1,
-    //         newsTitle:data,
-    //         active:true
-    //     }
-    //     axios.post(Constants.APIURL+'news',body).then((res) => {
-    //         cb(res);
-    //     })
-    // }
-    deleteNews = (id,cb) => {
-        axios.delete(Constants.APIURL+'news/'+id).then((res) => {
+    addNews = (data,cb) => {
+        let body = {
+            newsID:1,//res.data.data.length+1,
+            newsTitle:data,
+            active:false
+        }
+        axios.post(Constants.APIURL+'news',body).then((res) => {
             cb(res);
-            // console.log("DDDDDDDDDDD",res);
         })
     }
-    // updateNews = (cb) => {
-    //     axios.update(Constants.APIURL+'/news/:id',body).then((res) => {
-    //         cb(res)
-    //     })
-    // }
+    deleteNews = (id,cb) => {
+        axios.delete(Constants.APIURL+'deleteNews',id).then((res) => {
+            cb(res);
+        })
+    }
+    updateNews = (body,cb) => {
+        axios.put(Constants.APIURL+'updatenews',body).then((res) => {
+            cb(res)
+        })
+    }
+    getActiveNews = (cb) => {
+        axios.get(Constants.APIURL+'getactiveNews').then((res)=>{
+            cb(res);
+        })
+    }
+    activeInactiveNews = (id,data,cb) => {
+        axios.put(Constants.APIURL+'activeInactiveNews?id='+id,data).then((res)=>{
+            cb(res);
+        })
+    }
 
     matchSettlement = (data,cb) => {
         axios.post(Constants.APIURL+'matchOddsBetSettlement',data).then((res)=>{
@@ -373,6 +382,21 @@ userSportsInfo(data,cb){
     }
     getUserInfo = (username, cb) => {
         axios.get(Constants.APIURL+'getUserInfo?userName='+username).then((res)=>{
+            cb(res);
+        })
+    }
+    addbetplacetime = (body, cb) => {
+        axios.post(Constants.APIURL+'addbetplacetime',body).then((res)=>{
+            cb(res);
+        })
+    }
+    getallsports = (cb) => {
+        axios.get(Constants.APIURL+'getallsports').then((res)=>{
+          cb(res);
+        })
+      }
+    sportEnableDisable  = (body,cb) => {
+        axios.put(Constants.APIURL+'sportEnableDisable',body).then((res)=>{
             cb(res);
         })
     }

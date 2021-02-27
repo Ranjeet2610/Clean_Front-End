@@ -95,6 +95,7 @@ export default class MatchOdds extends Component {
       IP:'',
       scoreId:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
+      sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
       timer: "",
       redirectToReferrer: false,
     };
@@ -759,36 +760,26 @@ export default class MatchOdds extends Component {
                   {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
-                  <div className="modal-header mod-header">
-                    <div className="block_box">
-                      <span id="tital_change">
-                        <span id="fav29905278">
-                          <i className="fa fa-star-o" aria-hidden="true" />&nbsp;{this.state.matchName}
-                        </span>
-                        <input type="hidden" defaultValue="Match Name" id="sportName_29905278" />
-                      </span>
-                    </div>
-                  </div>
                   {
-                    /////////////////////// SCORE BOARD ///////////////////////////////////////
+                    this.state.sportType === 4 ?
+                    <>
+                    <div className="modal-header mod-header">
+                      <div className="block_box">
+                        <span id="tital_change">
+                          <span id="fav29905278">
+                            <i className="fa fa-star-o" aria-hidden="true" />&nbsp;{this.state.matchName}
+                          </span>
+                          <input type="hidden" defaultValue="Match Name" id="sportName_29905278" />
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div style={{ height: '228px', width: '100%', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                    <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                    </div>
+                    </>
+                    :null
                   }
-                  <div style={{ height: '228px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
-                  <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
-                  </div>
-                  
-                   {/*<div style={{ height: '140px', width: '100%', backgroundColor: 'darkgreen', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
-                    <div style={{ borderTopLeftRadius: '5px', paddingTop: '30px', paddingLeft: '35px', borderBottomLeftRadius: '5px', marginLeft: '20px', width: '330px', height: '90px', marginTop: '15px', backgroundColor: '#0a3a06', opacity: '0.5' }}>
-                      <span style={{ color: "white", fontSize: '15px' }}>Delhi Capitals</span>
-                    </div>
-                    <div style={{ width: '330px', paddingTop: '30px', paddingLeft: '35px', height: '120px', borderRadius: '10px', backgroundColor: '#6c191ba8', opacity: '1' }}>
-                      <span style={{ color: "white", fontSize: '15px' }}>Cur RR: 5.5</span><br />
-                      <span style={{ color: "white", fontSize: '15px' }}>Req RR: 10.6</span><br />
-                      <span style={{ color: "white", fontSize: '15px' }}>Over:</span>
-                    </div>
-                    <div style={{ borderTopRightRadius: '5px', paddingTop: '30px', paddingLeft: '77px', borderBottomRightRadius: '5px', marginRight: '20px', width: '330px', height: '90px', marginTop: '15px', backgroundColor: '#0a3a06', opacity: '0.5' }}>
-                      <span style={{ color: "white", fontSize: '15px' }}>Target:180</span>
-                    </div>
-                  </div> */}
 
                   <div id="MatchOddInfo">
                     <div className="fullrow matchBoxMain  matchBox_29905278 matchBoxs_1171389306">
@@ -922,17 +913,6 @@ export default class MatchOdds extends Component {
                                             0{/* {expoProfit} */}
                                           </span>
 
-                                          {/* {
-                                            this.state.zeroStatus === "false" ?
-                                              <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>0</p> :
-                                              this.state.toggleMatchIndex === index ?
-                                                <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>
-                                                  {this.state.betProfit}
-                                                </p> :
-                                                <p className="blue-odds" id={"profit" + filterrunners[0].selectionId} style={{ color: this.state.color }}>
-                                                  {this.state.betLoss}
-                                                </p>
-                                          } */}
                                           {
                                             <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>
                                               {this.state.data.length==3 ? index==0 ? <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>
@@ -1026,6 +1006,8 @@ export default class MatchOdds extends Component {
                           </div>
                         </div>
 
+                      {
+                        this.state.sportType === 4 ?
                         <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                           <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 
@@ -1150,7 +1132,8 @@ export default class MatchOdds extends Component {
                                 }) : null
                             }
                           </div>
-                        </div>
+                        </div>:null
+                      }
                       </div>
                     </div>
                   </div>

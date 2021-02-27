@@ -2,12 +2,14 @@ import React, { Component } from 'react'
 import Service from '../Services/Service'
 import Loader from 'react-loader-spinner'
 import Users from '../Services/users'
+import Livevents from '../Services/livevents'
 
 export default class BetBox extends Component {
 
     constructor(props) {
       super(props);
       this.state = {
+        timeDuration:'',
           chipName:["500","2000","5000","25000","50000","100000"],
           chipStake:["500","2000","5000","25000","50000"],
           color:'lightblue',
@@ -26,12 +28,14 @@ export default class BetBox extends Component {
           getselfancyOdds:'',
           getselfancySize:'',
           showLoader:false,
+          sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
           isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
           isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
           isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
         }
       this.service = new Service();
       this.users = new Users();
+      this.event = new Livevents();
       this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
       this.matchName = this.props.matchName.split(" v ")
     }
@@ -43,7 +47,15 @@ export default class BetBox extends Component {
           IP:this.props.IP
       });
     }
+    getBetTime = () =>{
+      this.event.getbetplacetime(1,data=>{
+        this.setState({
+          timeDuration:data.data.data.timeDuration
+        })
+      })
+    }
     placeBet=async(e)=>{
+      this.getBetTime();
       // device 1 for desktop,2 for mobile,3 for tab
       let device;
       if(this.state.isMobile)
@@ -52,9 +64,9 @@ export default class BetBox extends Component {
       device = 1;
       if(this.state.isTab)
       device = 3;
-         
+      
       e.preventDefault();
-      //debugger
+      
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
@@ -65,7 +77,7 @@ export default class BetBox extends Component {
         this.setState({
           showLoader:true
         });
-        await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+        await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
         if(this.props.betData.betType !=undefined){
           let fancysizeval;
           if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
@@ -92,7 +104,8 @@ export default class BetBox extends Component {
             IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType,
-            bettype:this.isbackInput.value
+            bettype:this.isbackInput.value,
+            eventType:this.state.sportType
            }
            //console.log(obj);
            this.service.fancyplaceBet(obj,data=>{ 
@@ -145,7 +158,8 @@ export default class BetBox extends Component {
             IP:this.props.IP,
             device:device,
             marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-            bettype:this.isbackInput.value
+            bettype:this.isbackInput.value,
+            eventType:this.state.sportType
            }
            //console.log(obj);
            this.service.placeBet(obj,data=>{ 
@@ -447,9 +461,15 @@ export default class BetBox extends Component {
         return (
             <>
             <div id="loader" style={stylebox}>
+<<<<<<< HEAD
               <div style={{opacity:"1", height:'175px',width:'100%',border:'2px solid black', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
                 <Loader type="Grid" color="#6c1945" height={50} width={50} />
               </div>
+=======
+            <div style={{opacity:"1", height:'175px',background:'#fff9cc',width:'100%',border:'2px solid #c99d1e', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                  <Loader type="Grid" color="#c99d1e" height={50} width={50} />
+                </div>
+>>>>>>> origin/BOSS
             </div>
             {
              this.props.setdisplay === 'block' ? 

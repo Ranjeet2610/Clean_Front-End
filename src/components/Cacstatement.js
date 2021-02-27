@@ -14,7 +14,7 @@ export default class Cacstatement extends Component {
       currentPage:1,
       postsPerPage:10,
       load:false,
-      tableHead:["Date","Description","Credit","Debit","Balance"],
+      tableHead:["S.No","Date","Description","Credit","Debit","Balance"],
       filteredTab:["AllTransaction","FreeChips","Settlement","Profit&Loss","Statement"],
       resdata:'',
       from_date:"",
@@ -94,7 +94,11 @@ handleFilter = async () => {
   let tD = await new Date(this.state.to_date);
   if(fD <= tD){
       let dateFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+<<<<<<< HEAD
     this.setState({
+=======
+    await this.setState({
+>>>>>>> origin/BOSS
       resdata:dateFilter
     })
   }
@@ -107,6 +111,7 @@ paginate = (pageNumber) => {
 }
 
 render(){
+  console.log(this.state.newResData);
   const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
   const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
   const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);
@@ -133,7 +138,7 @@ render(){
       }
       return (
         <tr key={index}>
-          {/* <td className="text-center">{index+1}</td> */}
+          <td className="text-center">{(this.state.resdata.length+1)-(indexOfFirstPost+index+1)}</td>
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
           <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
           <td className="text-center">{deposited} </td>
@@ -183,7 +188,7 @@ render(){
                         //////////////////////// FILTERED TAB CHECKBOX  /////////////////////////////////////////
                       }
 
-                      <div className="col-md-12 custom-check">
+                      {/* <div className="col-md-12 custom-check">
                         <input type="hidden" name="user_id" id="user_id" defaultValue={145315} />
                         <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="CacStatement" />
                         {
@@ -194,7 +199,7 @@ render(){
                           </div>
                           )
                         }
-                      </div>
+                      </div> */}
                       <div className="block_2">            
                         <input type="datetime-local" onChange={this.handleChange} name="from_date" id="fdate" value={this.state.from_date} className="form-control" placeholder="From Date" autoComplete="off" />
                       </div>
@@ -223,7 +228,7 @@ render(){
                   <div className="custom-scroll appendAjaxTbl" id="filterdata">
                     <table className="table table-bordered table-dark table_new_design" id="datatablesss">
                       <thead>
-                        <tr>
+                        <tr style={{backgroundColor:'#95335c',color:'white'}}>
                           {
                             this.state.tableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
                           }

@@ -10,6 +10,7 @@ import livegame from "../images/livegame.jpg"
 import Sidebar from "./Sidebar";
 import Footer from "./footer";
 import Service from "../Services/Service";
+import Users from '../Services/users';
 import LivEvents from '../Services/livevents'
 
 class Dashboard extends Component {
@@ -23,59 +24,68 @@ class Dashboard extends Component {
       userName: "",
       password: "",
       master: "",
-      tenisData: "",
-      soccerData: "",
+      tenisData: [],
+      soccerData: [],
+      cricketData: [],
       redirectToReferrer: false,
       odds: "",
-      liveEvents: "",
       InitialOdds: {},
+      soccerStatus:[],
+      tennisStatus:[],
+      cricketStatus:[],
     };
     this.service = new Service();
     this.livevents = new LivEvents();
+    this.users =new Users();
     this.odds = "";
   }
 
   componentDidMount() {
     this.setState({
-      load:true
+        load:true
+      })
+    this.getallsports();
+    this.service.getLiveEvents(data=>{
+      const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
+      const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
+      const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
+      this.setState({
+        soccerData:dataFFilter,
+        tenisData:dataTFilter, 
+        cricketData:dataCFilter,
+        load: false
+      })
+    });
+  }
+
+  getallsports = () => {
+    this.setState({
+      load: true
     })
-    // this.service.getdashboardData("2", (data) => {
-    //   this.setState({
-    //     tenisData: data,
-    //     load:false
-    //   });
-    // });
-    // this.service.getdashboardData("1", (data) => {
-    //   this.setState({
-    //     soccerData: data,
-    //     load:false
-    //   });
-    // });
-
-    let eveodds = [];
-
-    this.service.getLiveEvents((data) => {
-      data.data.Data.map((item) => {
-        this.service.getEventInitialOdds(item.eventId, (data) => {
-          eveodds.push({
-            events: item,
-            odds: data.data,
-          });
-          this.setState({
-            liveEvents: eveodds,
-            load:false
-          });
-        });
-      });
+    this.users.getallsports(data=>{
+      this.setState({ 
+        data:data.data.data 
+      })
+      this.setState({
+        load: false
+      })
+      let sStatus = this.state.data.filter((e)=>e.eventType===1)
+      let tStatus = this.state.data.filter((e)=>e.eventType===2)
+      let cStatus = this.state.data.filter((e)=>e.eventType===4)
+      this.setState({
+        soccerStatus:sStatus[0].status,
+        tennisStatus:tStatus[0].status,
+        cricketStatus:cStatus[0].status,
+      })
     })
   }
 
-  next(txt, name,date) {
+  matchOddspage = (txt, name,date,sportType) => {
     this.setState({
       load:false
     })
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
-    localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
+    localStorage.setItem("matchname", JSON.stringify({name:name,date:date,sport:sportType}));
     this.setState({
       load:true
   })
@@ -125,6 +135,8 @@ class Dashboard extends Component {
                           ////////////////////////////// CRICKET LIVE DATA /////////////////////////////////////////
                           }
 
+                          {
+                          this.state.cricketStatus &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport">
@@ -133,22 +145,22 @@ class Dashboard extends Component {
                               Cricket
                             </div>
                             {
-                              this.state.liveEvents.length <= 0 ? null :
-                                this.state.liveEvents.map((item,index) => {
+                              this.state.cricketData.length <= 0 ? null :
+                                this.state.cricketData.map((item,index) => {
                                   let inplay ;let eventDate;
-                                  if(new Date(item.events.OpenDate).getTime()>new Date().getTime()){
+                                  if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
                                   }
-                                  eventDate = Utilities.displayDateTime(item.events.OpenDate);
+                                  eventDate = Utilities.displayDateTime(item.OpenDate);
                                   return (
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          <Link to="#" onClick={() => this.next(item.events.eventId, item.events.eventName,item.events.OpenDate) }>
-                                            {item.events.eventName}
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName,item.OpenDate,item.eventType) }>
+                                            {item.eventName}
                                           </Link>
                                           <time>
                                             <i className="fa fa-clock-o" />&nbsp;{eventDate}
@@ -161,12 +173,12 @@ class Dashboard extends Component {
                                           <span className="inplay_txt"> {inplay}</span>
                                         </div>
                                         <div className="match_odds_front">
-                                          <span className="back-cell">{item.odds.odds1}</span>
-                                          <span className="lay-cell">{item.odds.odds2}</span>
-                                          <span className="back-cell">{item.odds.odds3}</span>
-                                          <span className="lay-cell">{item.odds.odds4}</span>
-                                          <span className="back-cell">{item.odds.odds5}</span>
-                                          <span className="lay-cell">{item.odds.odds6}</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
                                         </div>
                                       </div>
                                     </div>
@@ -174,12 +186,15 @@ class Dashboard extends Component {
                                 })
                             }
                           </div>
+                          }
 
                           {
                           /////////////////////////////// TENNIS LIVE DATA //////////////////////////////////////////
                           }
 
-                          {/* <div className="sports_box">
+                          {
+                            this.state.tennisStatus &&
+                          <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={tbicon} /></span>Tennis
                             </div>
@@ -187,18 +202,18 @@ class Dashboard extends Component {
                               this.state.tenisData.length <= 0 ? null :
                                 this.state.tenisData.map((item,index) => {
                                   let inplay ;let eventDate;
-                                  if(new Date(item.event.openDate).getTime()>new Date().getTime()){
+                                  if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
                                   }
-                                  eventDate = Utilities.displayDateTime(item.event.openDate);
+                                  eventDate = Utilities.displayDateTime(item.OpenDate);
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.next(item.event.id, item.event.name)}>
-                                          {item.event.name}
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                          {item.eventName}
                                         </Link>
                                         <time>
                                           <i className="fa fa-clock-o" />&nbsp;{eventDate}
@@ -211,24 +226,27 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                        <span className="back-cell">{this.marketCount}</span>
-                                        <span className="lay-cell">250</span>
-                                        <span className="back-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                        <span className="lay-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                        <span className="back-cell">0</span>
-                                        <span className="lay-cell">1.01</span>
-                                      </div>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                        </div>
                                     </div>
                                   );
                                 })
                             }
-                          </div> */}
-
+                          </div>
+                          }
+                          
                           {
                           /////////////////////////////// SOCCER LIVE DATA ///////////////////////////////////////////
                           }
 
-                          {/* <div className="sports_box">
+                          {
+                            this.state.soccerStatus &&
+                          <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={fbicon}/></span>Soccer
                             </div>
@@ -236,18 +254,18 @@ class Dashboard extends Component {
                               this.state.soccerData.length <= 0 ? null :
                                 this.state.soccerData.map((item,index) => {
                                   let inplay ;let eventDate;
-                                  if(new Date(item.event.openDate).getTime()>new Date().getTime()){
+                                  if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
                                   }
-                                  eventDate = Utilities.displayDateTime(item.event.openDate);
+                                  eventDate = Utilities.displayDateTime(item.OpenDate);
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.next(item.event.id, item.event.name)}>
-                                          {item.event.name}
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                          {item.eventName}
                                         </Link>
                                         <time>
                                           <i className="fa fa-clock-o" />&nbsp;{eventDate}
@@ -260,19 +278,20 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                        <span className="back-cell">{this.marketCount}</span>
-                                        <span className="lay-cell">250</span>
-                                        <span className="back-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                        <span className="lay-cell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                        <span className="back-cell">0</span>
-                                        <span className="lay-cell">1.01</span>
-                                      </div>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">0</span>
+                                          <span className="lay-cell">0</span>
+                                        </div>
                                     </div>
                                   );
                                 })    
                             }
-                          </div> */}
-                        
+                          </div>
+                          }
+
                         </div>
                       </div>
                     </div>

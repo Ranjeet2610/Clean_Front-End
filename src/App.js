@@ -32,6 +32,7 @@ import News from './components/news';
 import Settlement from './components/Settlement';
 import FancySettlement from './components/fancySettlement';
 import MatchSettlement from './components/matchSettlement';
+import SportsEvent from './components/sportsEvent';
 import  './config/axiosConfig'
 const App = () => {
   return (
@@ -75,6 +76,7 @@ const App = () => {
            <Route exact path="/Settlement" component={Settlement} /> 
            <Route exact path="/fancySettlement/:id" component={FancySettlement} /> 
            <Route exact path="/matchSettlement/:id" component={MatchSettlement} /> 
+           <Route exact path="/sportsevent" component={SportsEvent} /> 
            </Switch> 
        </section>
          

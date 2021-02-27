@@ -1,49 +1,60 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import Service from '../Services/Service';
+import LivEvents from '../Services/livevents'
+import Users from '../Services/users';
 
 export default class sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      data:[],
         cricketData: '',
         tenisData: '',
         soccerData: '',
+        soccerStatus:[] ,
+        tennisStatus:[],
+        cricketStatus:[],
         liveEvents:[]
     };
-   
+    this.service = new Service();
+    this.users =new Users();
+}
+
+getallsports = () => {
+  this.setState({
+    load: true
+  })
+  this.users.getallsports(data=>{
+    if(data.data.data){
+    let sStatus = data.data.data.filter((e)=>e.eventType===1)
+    let tStatus = data.data.data.filter((e)=>e.eventType===2)
+    let cStatus = data.data.data.filter((e)=>e.eventType===4)
+    this.setState({
+      soccerStatus:sStatus[0].status,
+      tennisStatus:tStatus[0].status,
+      cricketStatus:cStatus[0].status,
+      load: false
+    })
+  }
+  })
 }
 
 componentDidMount(){
-  var service = new Service();
-  service.getdashboardData("4",data=>{
+  this.setState({
+    load:true
+  })
+  this.getallsports();
+  this.service.getLiveEvents(data=>{
+    const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
+    const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
+    const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
     this.setState({
-      cricketData: data
+      soccerData:dataFFilter,
+      tenisData:dataTFilter, 
+      cricketData:dataCFilter,
+      load: false
     })
-  });
-  // service.getdashboardData("2",data=>{
-  //   this.setState({
-  //     tenisData: data
-  //   })
-  // });
-  // service.getdashboardData("1",data=>{
-  //   this.setState({
-  //     soccerData: data
-  //   })
-  // });
-  let eveodds = [];
-  service.getLiveEvents((data) => {
-    data.data.Data.map((item) => {
-      service.getEventInitialOdds(item.eventId, (data) => {
-        eveodds.push({
-          events: item,
-          odds: data.data,
-        });
-        this.setState({
-          liveEvents: eveodds,
-        });
-      });
-    });
   });
 }
 
@@ -52,12 +63,16 @@ openCricket(eid,name,date){
   localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
-openTenis(eid){
-  window.location.href ='matchodds/'+eid
+openTenis(eid,name,date){
+  // window.location.href ='matchodds/'+eid
+  window.location.href = window.location.protocol+"//"+window.location.host+'/matchodds/'+eid;
+  localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
-openSoccer(eid){
-  window.location.href ='matchodds/'+eid
+openSoccer(eid,name,date){
+  // window.location.href ='matchodds/'+eid
+  window.location.href = window.location.protocol+"//"+window.location.host+'/matchodds/'+eid;
+  localStorage.setItem("matchname", JSON.stringify({name:name,date:date}));
 }
 
   render() {
@@ -66,7 +81,7 @@ openSoccer(eid){
     } 
     return (
         <div className="left-side-menu">
-
+          <span id="sidebarRefresh" onClick={this.getallsports}></span>
 {
   //////////////////////////// FOR INPLAY ///////////////////////////////////////////
 }
@@ -84,6 +99,8 @@ openSoccer(eid){
   //////////////////////////// FOR CRICKET ///////////////////////////////////////////
 }
 
+{
+  this.state.cricketStatus &&
               <div className="panel panel-default">
                 <div className="panel-heading">
                   <h4 className="panel-title">
@@ -94,30 +111,31 @@ openSoccer(eid){
                   <div className="panel-body">
                     <ul id="cricket_child_menu">
                       {
-                        this.state.liveEvents.length>0 ?
-                          this.state.liveEvents.map((item,index)=>{
-                            if(item.odds){
-                              return ( 
-                              <li key={index}>
-                                <Link to="#" title="Events" onClick={() =>this.openCricket(item.events.eventId, item.events.eventName,item.events.OpenDate)}>
-                                  <i className="fa fa-angle-double-right" /> {item.events.eventName}
+                        this.state.cricketData.length>0 ?
+                          this.state.cricketData.map((item)=>
+                            // if(item.odds){
+                              // return ( 
+                              <li key={item._id}>
+                                <Link to="#" title="Events" onClick={() =>this.openCricket(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" /> {item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>
-                              );
-                            }
-                          }):
+                              // );
+                            // }
+                          ):
                         <li className="text-center">No Match...</li>
                       }
                     </ul>
                   </div>
                 </div>
               </div>
-              
+  }           
 {
   ///////////////////////////// FOR TENNIS ////////////////////////////////////////////
 }
-    
+    {
+      this.state.tennisStatus &&
               <div className="panel panel-default">
                 <div className="panel-heading">
                   <h4 className="panel-title">
@@ -132,8 +150,8 @@ openSoccer(eid){
                           this.state.tenisData.map((item,index)=>{
                             return ( 
                               <li key={index}>
-                                <Link to="#" title="Match OODS" onClick={()=>this.openTenis(item.event.id)}>
-                                  <i className="fa fa-angle-double-right" />{item.event.name}
+                                <Link to="#" title="Match OODS" onClick={()=>this.openTenis(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" />{item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>
@@ -145,11 +163,12 @@ openSoccer(eid){
                   </div>
                 </div>
               </div>
-
+  }
 {
   //////////////////////////// FOR SOCCER ////////////////////////////////////////////
 }
-
+{
+  this.state.soccerStatus &&
               <div className="panel panel-default">
                 <div className="panel-heading">
                   <h4 className="panel-title">
@@ -164,8 +183,8 @@ openSoccer(eid){
                           this.state.soccerData.map((item,index)=>{
                             return ( 
                               <li key={index}>
-                                <Link to="#" title="Match OODS" onClick={()=>this.openSoccer(item.event.id)}>
-                                  <i className="fa fa-angle-double-right" />  {item.event.name}
+                                <Link to="#" title="Match OODS" onClick={()=>this.openSoccer(item.eventId, item.eventName,item.OpenDate)}>
+                                  <i className="fa fa-angle-double-right" />  {item.eventName}
                                 </Link>
                                 <ul id="list_of29894585" />
                               </li>
@@ -177,7 +196,8 @@ openSoccer(eid){
                   </div>
                 </div>
               </div>
-            </div>		
+  }
+  </div>		
           </div>
     )
 }

@@ -1,12 +1,49 @@
 import React from 'react'
+import Loader from 'react-loader-spinner'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import Users from '../Services/users';
+import {Link} from 'react-router-dom'
+export default class BlockMarket extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data:[],      
+    }
+    this.users =new Users();
+  }
 
-const BlockMarket = () => {
+  getallsports = async() => {
+    await this.setState({
+      load: true
+    })
+    await this.users.getallsports(data=>{
+      this.setState({ 
+        data:data.data.data 
+      })
+      this.setState({
+        load: false
+      })
+      // console.log(data.data.data);
+    })
+  }
+
+  componentDidMount = () => {
+    this.getallsports();
+  }
+
+  handleBlockMarket = (eventType) => {
+    const obj = {eventType}
+    this.users.sportEnableDisable(obj,data=>{
+      this.getallsports();
+    })
+    document.getElementById("sidebarRefresh").onclick();
+  }
+  render(){
     return (
         <div>
           <Navbar />
-    <Sidebar />
+          <Sidebar />
         <div className="forModal" />      <div className="container body">
           <div className="main_container" id="sticky">
             <div className="right_col" role="main">
@@ -15,7 +52,7 @@ const BlockMarket = () => {
                   <span className="lable-user-name">
                     Sport Listing
                   </span>
-                  <button className="btn btn-xs btn-primary" onclick="goBack()">Back</button>
+                  <button className="btn btn-xs btn-primary" style={{float:'right'}} onClick={()=>this.props.history.goBack()}>Back</button>
                 </div>
               </div>
               <div className="col-md-12">
@@ -29,111 +66,37 @@ const BlockMarket = () => {
                         <th scope="col">Action</th> 		 
                       </tr>
                     </thead>
+                    {
+                      this.state.load ?
+                        <div style={{height:'100vh',width:'408%', justifyContent:'center', display:'flex',marginTop:'5rem'}}>
+                            <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                        </div> :
                     <tbody>	
-                      {/*Criecket */}			
-                      <tr>
-                        <td scope="row">1</td>
-                        <td><a href="#"><img src="http://park9.bet/assets/images/cricket-icon.png" alt="..." /> Cricket</a></td>
-                        <td>
-                          {/*img src="http://park9.bet/assets/images/pause_icon.png" style="margin-top:0px;"
-							 onclick="saveSeries(4, '145315', '0', '0', '0', '2', '0');" / */}	
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(4, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">2</td>
-                        <td>   <a href="#"><img src="http://park9.bet/assets/images/tenish-icon.png" alt="..." /> Tennis</a></td>
-                        <td>
-                          {/*img src="" style="margin-top:0px;"
-							 onclick="saveSeries(2, '', '0', '0', '0', '', '');" / */}	
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(2, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">3</td>
-                        <td><a href="#"><img src="http://park9.bet/assets/images/soccer-icon.png" alt="..." />  Soccer</a></td>
-                        <td> 
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(1, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">4</td>
-                        <td><a href="#"><img src="http://park9.bet/assets/images/soccer-icon.png" alt="..." />  Teenpatti</a></td>
-                        <td> 
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(9, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">4</td>
-                        <td>Live Teenpatti</td>
-                        <td> 
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(11, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">4</td>
-                        <td>Live Casino</td>
-                        <td> 
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(12, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr>
-                      <tr>
-                        <td scope="row">4</td>
-                        <td>Live Game</td>
-                        <td> 
-                          <label className="toggle-label">
-                            <input type="checkbox" onclick="blockMarket(13, '145315', '0', '0', '0', '2', '0');" className="ng-pristine ng-valid ng-touched" />
-                            <span className="back">
-                              <span className="toggle" />
-                              <span className="label off">OFF</span> 
-                              <span className="label on">ON</span>											
-                            </span>
-                          </label> 
-                        </td>	 
-                      </tr> 	     
+                      {
+                        this.state.data.length > 0 ?
+                        this.state.data.map((ele,ind)=>{
+                          return(
+                          <tr>
+                            <td scope="row">{ind+1}</td>
+                            <td><Link to={{pathname:'/sportsevent', state:{eventType:ele.eventType,name:ele.name}}}>{ele.name}</Link></td>
+                            <td>
+                              <label className="toggle-label">
+                                <input type="checkbox" checked={ele.status ? true : false} onClick={()=>this.handleBlockMarket(ele.eventType)} className="ng-pristine ng-valid ng-touched" />
+                                <span className="back">
+                                  <span className="toggle" />
+                                  <span className="label off">OFF</span> 
+                                  <span className="label on">ON</span>											
+                                </span>
+                              </label> 
+                            </td>	 
+                          </tr>
+                          )
+                        }):null
+                      }
+		
+                  
                     </tbody>		
+                    }
                   </table>	     
                 </div>
               </div>
@@ -141,5 +104,4 @@ const BlockMarket = () => {
           </div></div></div>
     )
 }
-
-export default BlockMarket;
+}

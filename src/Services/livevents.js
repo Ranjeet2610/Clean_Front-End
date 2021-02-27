@@ -200,4 +200,11 @@ fancyBetSettle = (data,cb) => {
     cb(res);
   })
 }
+
+getbetplacetime = (gameId,cb) => {
+  axios.get(Constants.APIURL+'getbetplacetime?gameId='+gameId).then((res)=>{
+    cb(res);
+  })
+}
+
 }

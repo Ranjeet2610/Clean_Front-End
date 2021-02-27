@@ -179,10 +179,10 @@ export default class Liveevents extends Component {
   ///////////////////////////////// TABLE OF LIVE EVENTS ///////////////////////////////////////
 }
 
-                  <div className="custom-scroll appendAjaxTbl" id="filterdata">
+                  <div className="custom-scroll appendAjaxTbl" id="filterdata" style={{backgroundColor:'#95335c',color:'white',marginTop:'2rem'}}>
                     <table className="table table-bordered table-dark table_new_design" id="datatablesss">
                       <thead>
-                        <tr className="headings">
+                        <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                           {
                             this.state.tableHead.map((item,index)=><th className="text-center" key={index}>{item}</th>)
                           }

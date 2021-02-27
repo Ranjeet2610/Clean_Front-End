@@ -7,6 +7,7 @@ import Service from '../Services/Service';
 import Users from '../Services/users'
 import {Link} from 'react-router-dom'
 import e from 'cors';
+import Livevents from '../Services/livevents'
 export default class SideBet extends Component {
 
   constructor(props) {
@@ -45,18 +46,19 @@ export default class SideBet extends Component {
         getselfancyOdds:'',
         getselfancySize:'',
         showLoader:false,
+        sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
       }
     this.service = new Service();
     this.users = new Users();
+    this.event = new Livevents();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
     this.matchName = this.props.matchName.split(" v ")
     if(this.state.isMobile){ setInterval(() => {
       this.getBetData();
     }, 3000)}
-    // this.matchName = this.props.matchName.split(" v ")
   }
 
   handleChange=(e)=>{
@@ -152,6 +154,14 @@ export default class SideBet extends Component {
     }
   }
 
+  getBetTime = () =>{
+    this.event.getbetplacetime(1,data=>{
+      this.setState({
+        timeDuration:data.data.data.timeDuration
+      })
+    })
+  }
+
   changeBackground = (e,type) =>{
     if(type==='Back'){
       e.target.parentElement.classList.add('blue')
@@ -171,6 +181,7 @@ export default class SideBet extends Component {
   }
 
   placeBet=async(e)=>{
+    this.getBetTime();
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -190,7 +201,7 @@ export default class SideBet extends Component {
       this.setState({
         showLoader:true
       });
-      await new Promise((resolve, reject) => setTimeout(resolve, 3000));
+      await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
       if(this.props.betData.betType !=undefined){
         let fancysizeval;
         if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
@@ -217,7 +228,8 @@ export default class SideBet extends Component {
           IP:this.props.IP,
           device:device,
           marketType: this.props.betData.betType,
-          bettype:this.isbackInput.value
+          bettype:this.isbackInput.value,
+          eventType:this.state.sportType
          }
          //console.log(obj);
          this.service.fancyplaceBet(obj,data=>{ 
@@ -272,7 +284,8 @@ export default class SideBet extends Component {
           IP:this.props.IP,
           device:device,
           marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-          bettype:this.isbackInput.value
+          bettype:this.isbackInput.value,
+          eventType:this.state.sportType
          }
          //console.log(obj);
          this.service.placeBet(obj,data=>{ 
@@ -619,6 +632,7 @@ export default class SideBet extends Component {
 }
 
   componentDidMount() {
+    this.getBetTime();
     this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
     this.setState({

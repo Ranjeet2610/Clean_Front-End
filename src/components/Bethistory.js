@@ -15,7 +15,7 @@ export default class Bethistory extends Component {
       currentPage:1,
       postsPerPage:10,
       load:false,
-      betHistoryTab:["All","Cricket","Tennis","Soccer","Teenpatti","Fancy"],
+      betHistoryTab:["All","Cricket","Tennis","Soccer"],
       betHistoryTableHead:["S.no","Client","Description","Selection","Type","Odds","Stack","Date","P_L","Profit","Liability","BetType","Status","IP","Device","ID"],
       betHistory:[],
       from_date:'',
@@ -143,6 +143,36 @@ componentDidMount() {
     })
   }
 
+  handleFilterByDropdown = async(e) => {
+    let dataArray = [...this.state.newResData]
+    let searchUser = e.target.value.toLowerCase();
+    const updateList = dataArray.filter(ele => ele.status===searchUser)
+    if(searchUser!==""){
+        await this.setState({
+          betHistory:updateList
+        })
+    }
+    else{
+        await this.setState({
+          betHistory:this.state.newResData
+        })
+    }
+}
+
+handleTabFilter = (eventType) => {
+  if(eventType!==""){
+    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
+      this.setState({
+        betHistory:betHistoryFilter
+        })
+      }
+  else{
+    this.setState({
+      betHistory: this.state.newResData
+    })
+  }
+}
+
   render(){
     let color= this.state.color;
     let device;
@@ -202,7 +232,8 @@ componentDidMount() {
                       </select>
                     </div>
                     <div className="popup_col_2">
-                      <select className="form-control" onChange={this.handleChange}  name="historyType">
+                      <select className="form-control" onChange={this.handleFilterByDropdown}  name="historyType">
+                        <option value="">Select All</option>
                         <option value="open">Open</option>
                         <option value="settled">Settled</option>
                       </select>
@@ -222,9 +253,10 @@ componentDidMount() {
               <div className="col-md-12 col-sm-12 col-xs-12">
                 <div className="tab_bets get-mchlist">
                  <ul id="betsalltab" className="nav nav-pills match-lists">
-                     {
-                       this.state.betHistoryTab.map((item,index)=><li key={index}><Link to="#">{item}</Link></li>)
-                     }
+                     <li><Link to="#" onClick={()=>this.handleTabFilter('')}>All</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(2)}>Tennis</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(1)}>Soccer</Link></li>
+                     <li><Link to="#" onClick={()=>this.handleTabFilter(4)}>Cricket</Link></li>
                   </ul>
                 </div>
               </div>
@@ -238,9 +270,9 @@ componentDidMount() {
                 <div className="custom-scroll appendAjaxTbl">
                    <table className="table table-striped jambo_table bulk_action" id="datatables">
                     <thead>
-                      <tr className="headings">
+                      <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                         {
-                          this.state.betHistoryTableHead.map((item,index)=><th key={index} className="text-center">{item}</th>)
+                          this.state.betHistoryTableHead.map((item,index)=><th key={index} className="text-center"><b>{item}</b></th>)
                         }
                       </tr>
                     </thead>  

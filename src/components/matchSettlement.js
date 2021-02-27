@@ -19,7 +19,7 @@ export default class EventMatchOdds extends Component {
     this.users = new Users();
   }
 
-  componentDidMount() {
+  getMatchOdds = () => {
     this.events.getMatchOdds(this.props.match.params.id,data=>{
       let allMdata = data.data.data.marketData;
       let allrunners = data.data.data.runners[0];
@@ -28,6 +28,18 @@ export default class EventMatchOdds extends Component {
         runnersdata:allrunners
       })
     });
+  }
+
+  componentDidMount() {
+    this.getMatchOdds();
+    // this.events.getMatchOdds(this.props.match.params.id,data=>{
+    //   let allMdata = data.data.data.marketData;
+    //   let allrunners = data.data.data.runners[0];
+    //   this.setState({
+    //     marketata:allMdata,
+    //     runnersdata:allrunners
+    //   })
+    // });
   }
 
   handleChange = (event) => {
@@ -47,6 +59,7 @@ export default class EventMatchOdds extends Component {
       }
       this.users.matchSettlement(obj,(data)=>{
         // console.log("DDDDDDDDD",data);
+        this.getMatchOdds();
       })
     }
     this.setState({
@@ -61,7 +74,6 @@ export default class EventMatchOdds extends Component {
   }
 
   render(){
-    console.log("MMMMMMM",this.props.location.state);
     return (
         <div>
           <Navbar />
