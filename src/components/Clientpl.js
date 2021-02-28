@@ -22,7 +22,7 @@ export default class Clientpl extends Component {
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem("data")) != undefined ? JSON.parse(localStorage.getItem("data")) : "";
   }
-
+/*
   componentDidMount() {
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
@@ -72,12 +72,75 @@ export default class Clientpl extends Component {
       to_date:Ecurr,
     }) 
   }
+*/
+async componentDidMount() {
+  let currD = new Date().toISOString().substr(0,10);
+  //let currT = Utilities.datetime(new Date()).slice(11,16)
+  let Scurr = currD+"T00:00:01";
+  let Ecurr = currD+"T23:59:59";
+  await this.setState({
+    currentStart:currD+"T00:00:01",
+    currentend:currD+"T23:59:59",
+    from_date:Scurr,
+    to_date:Ecurr,
+    load:true
+  })
+  if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+    this.props.history.push('/dashboard')
+  }
+  await this.getUserPLData();
+}
 
-  masterData = (data) => {
-    const obj = { 
-      masterName: data 
-    }
+getUserPLData = () => {
+  if (this.userDetails.superAdmin) {
+    const obj = {
+      userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
+    this.account.superAdminUserPL(obj,(data) => {
+        this.setState({
+          adminData: data.data.adminPL,
+        });
+      }
+    );
+  } 
+  else if (this.userDetails.Admin) {
+    const obj = {
+      adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
+    this.account.adminUserPL(obj,(data) => {
+        this.setState({
+          masterData: data.data.masterPL,
+        });
+      }
+    );
+  } 
+  else if (this.userDetails.Master) {
+    const obj = {
+      masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
     this.account.userPL(obj,(data) => {
+        this.setState({
+          data: data.data,
+          ispl: false,
+        })
+      }
+    );
+  }
+}
+
+  masterData =  async (data) => {
+    const obj = { 
+      masterName: data,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+    }
+    await this.account.userPL(obj,(data) => {
       this.setState({
         data: data.data,
         ispl: false,
@@ -85,20 +148,31 @@ export default class Clientpl extends Component {
     });
   }
 
-  adminData = (data) =>  {
+  adminData =  async (data) =>  {
     const obj = { 
-      adminName: data 
+      adminName: data,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
     }
-    this.account.adminUserPL(obj,(data) => {
+    await this.account.adminUserPL(obj,(data) => {
       this.setState({
         masterData: data.data.masterPL,
       });
     });
   }
 
+  handleFilter = async () => {
+    await this.setState({
+      masterData:'',
+      data:'',
+      ispl: true
+    });
+    await this.getUserPLData();
+  }
+
   handleChange = (event) => {
     this.setState({
-      [event.target.name]: [event.target.value],
+      [event.target.name]: event.target.value
     });
   };
 
@@ -141,7 +215,7 @@ export default class Clientpl extends Component {
                       <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="block_2 buttonacount">
-                      <button type="button" id="submit_form_button" className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >
+                      <button type="button" id="submit_form_button" onClick={this.handleFilter} className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >
                         <i className="fa fa-filter" /> Filter
                       </button>
                       <button type="button" className="red_button" onClick={this.handleClear} >
@@ -176,7 +250,7 @@ export default class Clientpl extends Component {
                               return (
                                 <tr>
                                   <td className="text-center">{item.userName}</td>
-                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td className="text-center">{-(parseFloat(item.ProfitLoss)+parseFloat(item.mCommision))}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">{item.ProfitLoss}</td>
                                   <td className="text-center">0.00</td>
