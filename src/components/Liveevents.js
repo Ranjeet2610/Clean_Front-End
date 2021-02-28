@@ -62,7 +62,7 @@ export default class Liveevents extends Component {
       load: true
     })
   this.events.getLiveEvents('',data=>{
-    let allEvents = data.data;
+    let allEvents = data.data.data;
     let isEventlive = allEvents.map(item => {
       this.setState(prevState => ({ 
         checkedItems: prevState.checkedItems.set(item.eventId, item.active) 

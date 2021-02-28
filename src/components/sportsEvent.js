@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Loader from 'react-loader-spinner'
+import Utilities from "./utilities";
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Navbar from './Navbar';
@@ -122,12 +123,13 @@ export default class Liveevents extends Component {
                         {
                           this.state.resdata.length > 0 ?
                           this.state.resdata.map((item,index) => {
+                            let eventDate = Utilities.displayDateTime(item.OpenDate);
                             return (
                               <tr key={index}>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.eventId}</td>
                                   <td className="text-center green">{item.eventName}</td>
-                                  <td className="text-center red">{item.OpenDate}</td>
+                                  <td className="text-center red">{eventDate}</td>
                                   <td className="text-center green">
                                     <input type="checkbox" name={item.eventId} checked={item.active} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
                                   </td>

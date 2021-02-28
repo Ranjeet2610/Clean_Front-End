@@ -18,6 +18,7 @@ export default class MatchOdds extends Component {
     super(props);
     this.state = {
       load:false,
+      oddsload:true,
       avilBlack: [
         {
           price: 0,
@@ -359,6 +360,7 @@ export default class MatchOdds extends Component {
           marketOdds: data.odsData,
           isenable: data.isEnabled,
           data: data.pdata,
+          oddsload:false
         });
         //console.log("marketOdds",this.state.marketOdds);
         //console.log("Runner",this.state.data);
@@ -760,26 +762,6 @@ export default class MatchOdds extends Component {
                   {
                     ////////////////////////HEADER OF SCORE BOARD /////////////////////////////
                   }
-                  {
-                    this.state.sportType === 4 ?
-                    <>
-                    <div className="modal-header mod-header">
-                      <div className="block_box">
-                        <span id="tital_change">
-                          <span id="fav29905278">
-                            <i className="fa fa-star-o" aria-hidden="true" />&nbsp;{this.state.matchName}
-                          </span>
-                          <input type="hidden" defaultValue="Match Name" id="sportName_29905278" />
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div style={{ height: '228px', width: '100%', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
-                    <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
-                    </div>
-                    </>
-                    :null
-                  }
 
                   <div id="MatchOddInfo">
                     <div className="fullrow matchBoxMain  matchBox_29905278 matchBoxs_1171389306">
@@ -806,7 +788,15 @@ export default class MatchOdds extends Component {
                             </div>
                           </div>
                         </div>
-
+                        {
+                          this.state.sportType === 4 && this.state.marketOdds.length > 0?
+                          <>
+                          <div style={{ height: '100%', width: '100%', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                          <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                          </div>
+                          </>
+                          :null
+                        }
                         <div className="sportrow-4 matchOpenBox_1171389306">
                           <div className="match-odds-sec">
                             <div className="item match-status">Match Odds</div>
@@ -837,17 +827,16 @@ export default class MatchOdds extends Component {
                                 </tr>
                               </tbody>
                               {
-                                this.state.data.length > 0 ? runners.length > 0 ? runners.map((item, index) => {
+                                this.state.data.length > 0 ? this.state.marketOdds.length > 0 ? runners.map((item, index) => {
                                   if (this.state.exporunnerdata.length > 0) {
                                     expoProfit = this.state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
                                   }
-                                  if (this.state.marketOdds !== undefined) {
                                     if (this.state.marketOdds.length > 0) {
                                       filterrunners = this.state.data.filter(newdata=>{
                                         return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId;
                                       })
                                     }
-                                      if (this.state.marketOdds.length > 0) {
+                                    if (this.state.marketOdds.length > 0) {
                                       let sordataBack = this.state.marketOdds[0].runners[index].ex.availableToBack.sort(function (a, b) {
                                         return a.price - b.price;
                                       })
@@ -901,9 +890,9 @@ export default class MatchOdds extends Component {
                                         )
                                       })
                                     }
-                                  }
                                  // if(item.selectionId==this.state.marketOdds[0].runners[index].selectionId){}
-                                  return (
+                                  if (filterrunners.length > 0) {
+                                   return (
                                     <>
                                       <tr id="user_row0" className="back_lay_color runner-row-32047099">
                                         <td>
@@ -962,52 +951,73 @@ export default class MatchOdds extends Component {
                                         </td>
                                       </tr>
                                     </>
-                                  )
-                                })
-                                  : null :
+                                   )
+                                  }
+                                 })
+                                 :
                                   <tbody>
-                                    <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                      <td>
-                                        <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
-                                        <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                        <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                      </td>
-                                      {
-                                        this.state.tableTd.map((item) => {
-                                          return (
-                                            <td class="32047099_0availableToBack2_price_1171389306">
-                                              <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                              <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                            </td>
-                                          )
-                                        })
-                                      }
-                                    </tr>
-                                    <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                      <td>
-                                        <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
-                                        <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                        <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                      </td>
-                                      {
-                                        this.state.tableTd.map((item) => {
-                                          return (
-                                            <td class="32047099_0availableToBack2_price_1171389306">
-                                              <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                              <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                            </td>
-                                          )
-                                        })
-                                      }
-                                    </tr>
+                                  <tr>
+                                  <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
+                                  </tr>
                                   </tbody>
+                                  :
+                                    filterrunners.length === 0 && inplay === "IN-PLAY" ?
+                                      this.state.oddsload ? 
+                                      <tbody>
+                                        <tr>
+                                        <td colSpan="7" className="text-center"><Loader type="Grid" color="#6c1945" height={35} width={35} /></td>
+                                        </tr>
+                                      </tbody>
+                                      :
+                                      <tbody>
+                                        <tr>
+                                        <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
+                                        </tr>
+                                      </tbody>
+                                    :
+                                      <tbody>
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                    </tbody>
                               }
                             </table>
                           </div>
                         </div>
 
                       {
-                        this.state.sportType === 4 ?
+                        this.state.sportType === 4 && this.state.fancymarket.length > 0 && this.state.marketOdds.length > 0 ?
                         <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                           <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 
