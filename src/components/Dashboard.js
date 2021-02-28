@@ -33,11 +33,83 @@ class Dashboard extends Component {
       soccerStatus:[],
       tennisStatus:[],
       cricketStatus:[],
+      ct1Back:'',
+      ct1lay:'',
+      ct2Back:'',
+      ct2lay:'',
+      cdrwBack:'',
+      cdrwlay:'',
+      tt1Back:'',
+      tt1lay:'',
+      tt2Back:'',
+      tt2lay:'',
+      tdrwBack:'',
+      tdrwlay:'',
+      st1Back:'',
+      st1lay:'',
+      st2Back:'',
+      st2lay:'',
+      sdrwBack:'',
+      sdrwlay:''
     };
     this.service = new Service();
     this.livevents = new LivEvents();
     this.users =new Users();
     this.odds = "";
+  }
+
+  liveOdds = () => {
+    // let arr = []
+    this.state.cricketData.map((element)=>
+      this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
+        // arr.push(data.data)
+        this.setState({
+          ct1Back:data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price,
+          ct1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
+          ct2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
+          ct2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
+          cdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
+          cdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price,
+        })
+        // console.log(arr);
+      })
+    )
+    this.state.tenisData.map((element)=>
+      this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
+        // console.log("TENNIS",data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price);
+        // console.log("TENNIS",data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price);
+        // console.log("TENNIS",data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price);
+        // console.log("TENNIS",data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price);
+        // console.log("TENNIS",data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price);
+        // console.log("TENNIS",data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price);
+        this.setState({
+          tt1Back:data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price,
+          tt1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
+          tt2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
+          tt2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
+          tdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
+          tdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price,
+        })
+      })
+    )
+    this.state.soccerData.map((element)=>
+      this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
+        // console.log("SOCCER",data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price);
+        // console.log("SOCCER",data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price);
+        // console.log("SOCCER",data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price);
+        // console.log("SOCCER",data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price);
+        // console.log("SOCCER",data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price);
+        // console.log("SOCCER",data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price);
+        this.setState({
+          st1Back:data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price,
+          st1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
+          st2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
+          st2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
+          sdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
+          sdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price,
+        })
+      })
+    )
   }
 
   componentDidMount() {
@@ -55,6 +127,10 @@ class Dashboard extends Component {
         cricketData:dataCFilter,
         load: false
       })
+      this.liveOdds();
+      setInterval(()=>{
+        this.liveOdds();
+      },300000)
     });
   }
 
@@ -173,12 +249,12 @@ class Dashboard extends Component {
                                           <span className="inplay_txt"> {inplay}</span>
                                         </div>
                                         <div className="match_odds_front">
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">{this.state.ct1Back?this.state.ct1Back:0}</span>
+                                          <span className="lay-cell">{this.state.ct1lay?this.state.ct1lay:0}</span>
+                                          <span className="back-cell">{this.state.cdrwBack?this.state.cdrwBack:0}</span>
+                                          <span className="lay-cell">{this.state.cdrwlay?this.state.cdrwlay:0}</span>
+                                          <span className="back-cell">{this.state.ct2Back?this.state.ct2Back:0}</span>
+                                          <span className="lay-cell">{this.state.ct2lay?this.state.ct2lay:0}</span>
                                         </div>
                                       </div>
                                     </div>
@@ -226,12 +302,12 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">{this.state.tt1Back?this.state.tt1Back:0}</span>
+                                          <span className="lay-cell">{this.state.tt1lay?this.state.tt1lay:0}</span>
+                                          <span className="back-cell">{this.state.tdrwBack?this.state.tdrwBack:0}</span>
+                                          <span className="lay-cell">{this.state.tdrwlay?this.state.tdrwlay:0}</span>
+                                          <span className="back-cell">{this.state.tt2Back?this.state.tt2Back:0}</span>
+                                          <span className="lay-cell">{this.state.tt2lay?this.state.tt2lay:0}</span>
                                         </div>
                                     </div>
                                   );
@@ -278,12 +354,12 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
-                                          <span className="back-cell">0</span>
-                                          <span className="lay-cell">0</span>
+                                          <span className="back-cell">{this.state.st1Back?this.state.st1Back:0}</span>
+                                          <span className="lay-cell">{this.state.st1lay?this.state.st1lay:0}</span>
+                                          <span className="back-cell">{this.state.sdrwBack?this.state.sdrwBack:0}</span>
+                                          <span className="lay-cell">{this.state.sdrwlay?this.state.sdrwlay:0}</span>
+                                          <span className="back-cell">{this.state.st2Back?this.state.st2Back:0}</span>
+                                          <span className="lay-cell">{this.state.st2lay?this.state.st2lay:0}</span>
                                         </div>
                                     </div>
                                   );

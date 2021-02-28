@@ -4,6 +4,7 @@ import Utilities from './utilities'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Footer from './footer'
+import Users from '../Services/users';
 
 
 class FancyStack extends Component{
@@ -12,14 +13,49 @@ class FancyStack extends Component{
     this.state = {
       from_date:'',
       to_date:'',
-      currentDate:''
+      currentDate:'',
+      fancyStakeData:[]
     }
+
+    this.users =new Users();
   }
 
   handleClear = () =>{
     this.setState({
       from_date:this.state.currentStart,
       to_date:this.state.currentend,
+    })
+    this.getAllFancyStack(this.state.currentStart,this.state.currentend);
+  }
+
+  handleFilter = async () => {
+    let fD = await new Date(this.state.from_date).toISOString();
+    let tD = await new Date(this.state.to_date).toISOString();
+    const obj ={
+      startDate:fD,
+      endDate: tD
+    }
+      if(fD<=tD){
+        this.users.getAllFancyStack(obj, (data)=>{
+        this.setState({
+          fancyStakeData:data.data.data
+        })
+      })
+      console.log(fD,'---',tD);
+    }
+    }
+
+  getAllFancyStack = (Scurr,Ecurr) => {
+    let fromDate = new Date(Scurr).toISOString();
+    let toDate =  new Date(Ecurr).toISOString();
+    const obj ={
+      startDate:fromDate,
+      endDate: toDate
+    }
+    this.users.getAllFancyStack(obj, (data)=>{
+      this.setState({
+        fancyStakeData:data.data.data
+      })
     })
   }
 
@@ -32,12 +68,14 @@ class FancyStack extends Component{
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
     let Ecurr = currD+"T23:59:59"
+    this.getAllFancyStack(Scurr,Ecurr);
     this.setState({
       currentStart:currD+"T00:00:01",
       currentend:currD+"T23:59:59",
       from_date:Scurr,
       to_date:Ecurr,
-    }) 
+    })
+    console.log(Scurr,Ecurr);
   }
 
   handleChange = (event) => {
@@ -79,7 +117,7 @@ class FancyStack extends Component{
                       <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="block_4 buttonacount">
-                      <button type="button" className="blue_button" style={{marginRight:'5px'}} id="submit_form_button">
+                      <button type="button" className="blue_button" onClick={this.handleFilter} style={{marginRight:'5px'}} id="submit_form_button">
                         <i className="fa fa-filter"/> Filter
                       </button>
                       <button type="reset" onClick={this.handleClear} className="red_button" style={{marginRight:'5px'}}>
@@ -101,16 +139,25 @@ class FancyStack extends Component{
                 <div className="custom-scroll appendAjaxTbl">
                   <table className="table table-striped jambo_table bulk_action" id="datatables">
                     <thead>
-                      <tr className="headings">
+                      <tr className="headings" style={{background:'#95335c',color:'white'}}>
                         <th className="text-center">S.No.</th>
                         <th className="text-center">Master</th>
                         <th className="text-center">Total Bet</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      {
+                        this.state.fancyStakeData.length > 0 ?
+                        this.state.fancyStakeData.map((ele,index)=>
+                          <tr>
+                            <td className="text-center">{index+1}</td>
+                            <td className="text-center">{ele.clientName}</td>
+                            <td className="text-center">{ele.stack}</td>
+                          </tr>
+                          )
+                        :<tr>
                         <th colSpan={3} className="text-center">No Data...!</th>
-                      </tr>	
+                      </tr>	}
                     </tbody>
                   </table>
                 </div>
