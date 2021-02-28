@@ -229,7 +229,7 @@ export default class CloseUser extends Component {
                                   <tr key={index} id="user_row_155245">
                                     <td>{index+1}<input type="checkbox" value="155245" className="select-users"/></td>
                                     <td><span className="m-bg">{checkuser}</span></td>
-                                    <td>Betfun360</td>
+                                    <td>LordsExch2</td>
                                     <td>aarav</td>
                                     <td>Bablu</td>
                                     <td>{item.master}</td>

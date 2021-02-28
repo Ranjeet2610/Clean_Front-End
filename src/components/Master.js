@@ -837,7 +837,7 @@ export default class Master extends Component {
                                       }
                                     </span>
                                   </td>
-                                  <td className="text-center">BETFUN360</td>
+                                  <td className="text-center">LordsExch2</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>

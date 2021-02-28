@@ -785,7 +785,7 @@ export default class SuperMaster extends Component {
                                       {item.enableBetting ? <i class="fa fa-lock fa_custom fa-2x" title="Betting Locked" aria-hidden="true" style={{ color: "red" }} /> : null}
                                     </span>
                                   </td>
-                                  <td className="text-center">BETFUN360</td>
+                                  <td className="text-center">LordsExch2</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>

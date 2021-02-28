@@ -1239,7 +1239,7 @@ span.runner_amount{display:inline-block;float:right;width:100%!important;padding
 .match_runner_name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .full_row .form-group{width:48%;}
 .match-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:57%;}	
-.site_title img{width:100%;margin:3px auto;display: block;float:inherit;padding-bottom: 5px;margin-left: 30px;}
+.site_title img{width:100%;margin:3px auto;display: block;float:inherit;padding-bottom: 5px;margin-left: 5px;}
 .sportsman{display:none;}
 .tab_bets .nav{overflow-y:hidden;}
 .tms{color:#fff!important;display:block;}

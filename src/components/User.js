@@ -739,7 +739,7 @@ export default class User extends Component {
                                         <i className="fa fa-lock fa_custom fa-2x" title="Betting Locked" aria-hidden="true" style={{ color: "red" }} ></i> : ""}
                                     </span>
                                   </td>
-                                  <td className="text-center">BETFUN360</td>
+                                  <td className="text-center">LordsExch2</td>
                                   <td className="text-center">{item.master}</td>
                                   <td className="text-center">{item.profitLossChips}</td>
                                   <td className="text-center">{item.freeChips}</td>

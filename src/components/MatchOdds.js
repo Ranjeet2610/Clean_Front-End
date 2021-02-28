@@ -950,10 +950,41 @@ export default class MatchOdds extends Component {
                                     filterrunners.length === 0 && inplay === "IN-PLAY" ?
                                       this.state.oddsload ? 
                                       <tbody>
-                                        <tr>
-                                        <td colSpan="7" className="text-center"><Loader type="Grid" color="#6c1945" height={35} width={35} /></td>
-                                        </tr>
-                                      </tbody>
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                    </tbody>
                                       :
                                       <tbody>
                                         <tr>
