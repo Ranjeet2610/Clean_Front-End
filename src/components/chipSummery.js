@@ -96,9 +96,9 @@ export default class ChipSummary extends Component {
               bgColor:'green',
               suc_err:true
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
           } 
           else {
             this.setState({
@@ -127,9 +127,9 @@ export default class ChipSummary extends Component {
               bgColor:'green',
               suc_err:true
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
           } 
           else {
             this.setState({
@@ -158,9 +158,9 @@ export default class ChipSummary extends Component {
               bgColor:'green',
               suc_err:true
             });
-            setTimeout(() => {
-              window.location.reload();
-            }, 1000);
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 1000);
           } 
           else {
             this.setState({

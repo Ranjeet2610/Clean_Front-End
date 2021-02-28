@@ -24,19 +24,18 @@ export default class Clientpl extends Component {
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : null;
   }
 
-  componentDidMount(){
-    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
-      this.props.history.push('/dashboard')
-    }
+  getSportsplData = (Scurr,Ecurr) => {
     if(this.userDetails.superAdmin){
-      const obj = {
-        userName:this.props.match.params.username?this.props.match.params.username:JSON.parse(localStorage.getItem('data')).userName
-      }
+      const obj ={
+        startDate:"2021-01-02T08:37:21.702Z",
+        endDate: "2021-02-28T08:45:21.702Z"
+    }
       this.account.superAdminUserPL(obj,data=>{
         this.setState({
           adminData: data.data.adminPL,
           ispl: false
         })
+        console.log(data.data);
       })
     }
     else if(this.userDetails.Admin){
@@ -60,10 +59,17 @@ export default class Clientpl extends Component {
         });
       }); 
     }
+  }
+
+  componentDidMount(){
+    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
     let Ecurr = currD+"T23:59:59"
+    this.getSportsplData(Scurr,Ecurr);
     this.setState({
       currentStart:currD+"T00:00:01",
       currentend:currD+"T23:59:59",
@@ -86,7 +92,9 @@ export default class Clientpl extends Component {
 
   adminData = (data) => {
     const obj = {
-      adminName:data
+      adminName:data,
+      startDate:"2021-01-02T08:37:21.702Z",
+        endDate: "2021-02-28T08:45:21.702Z"
     }
     this.account.adminUserPL(obj,data=>{
       this.setState({
@@ -208,9 +216,10 @@ export default class Clientpl extends Component {
                               )
                             }):
                           this.state.adminData.length>0 ?
-                            this.state.adminData.map((item)=>{
+                            this.state.adminData.map((item,index)=>{
                               return (  
                                 <tr>
+                                  <td className="text-center">{index+1}</td>
                                   <td className="text-center"><a style={{cursor:'pointer'}} onClick={()=>this.adminData(item.admin)}>{item.admin}</a></td>
                                   <td className="text-center">{-item.profitLoss}</td>
                                   <td className="text-center">0.00</td>
@@ -220,7 +229,7 @@ export default class Clientpl extends Component {
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.profitLoss}</td>
+                                  {/* <td className="text-center">{item.profitLoss}</td> */}
                                 </tr>
                               )
                             }):

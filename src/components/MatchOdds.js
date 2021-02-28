@@ -360,9 +360,6 @@ export default class MatchOdds extends Component {
           isenable: data.isEnabled,
           data: data.pdata,
         });
-        //console.log("marketOdds",this.state.marketOdds);
-        //console.log("Runner",this.state.data);
-        //console.log("match date:",JSON.parse(localStorage.getItem("matchname")).date);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -370,22 +367,13 @@ export default class MatchOdds extends Component {
           }else{
             getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
           }
-          //console.log("updated odds",getUodds);
           this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
         }
       });
-      // livevents.getFancyMarket(this.props.match.params.id, (data) => {
-      //   this.setState({
-          // fancyOdds: data.fodds,
-      //     fancymarket: data.fancymarket,
-      //   });
-      // });
       livevents.getFancyMarket(this.props.match.params.id, (data) => {
-        // console.log("getFM",data);
         this.setState({
           fancymarket: data.fancymarket,
         });
-       //console.log("fancymarket",this.state.fancymarket);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           let getUsize = "";
@@ -396,8 +384,6 @@ export default class MatchOdds extends Component {
             getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
             getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
           }
-          //console.log("updated odds",getUodds);
-          //console.log("updated odds",getUsize);
           this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
         }
       });
@@ -907,14 +893,14 @@ export default class MatchOdds extends Component {
                                     <>
                                       <tr id="user_row0" className="back_lay_color runner-row-32047099">
                                         <td>
-                                          <p className="runner_text" id="runnderName0">{filterrunners[0].runnerName}</p>
-                                          <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}></p>
-                                          <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0].selectionId} >
+                                          <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
+                                          <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
+                                          <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId} >
                                             0{/* {expoProfit} */}
                                           </span>
 
                                           {
-                                            <p className="blue-odds" id={"profit" + filterrunners[0].selectionId}>
+                                            <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
                                               {this.state.data.length==3 ? index==0 ? <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>
                                               : index==1 ? <span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>
                                               : <span class={"runner_amount "+this.state.TthreeColor}>{this.state.TthreePL}</span>

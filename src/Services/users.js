@@ -400,4 +400,16 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+
+    getAllFancyStack = (data,cb) =>{
+        axios.post(Constants.APIURL+'getAllFancyStack',data).then((res)=>{
+            cb(res)
+        })
+    }
+
+    getLiveMatchOdds = (data,cb) => {
+        axios.post(Constants.APIURL+'getLiveMatchOdds',data).then((res)=>{
+            cb(res);
+        })
+    }
 }
