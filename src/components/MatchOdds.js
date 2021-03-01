@@ -777,7 +777,7 @@ export default class MatchOdds extends Component {
                         {
                           this.state.sportType === 4 && this.state.marketOdds.length > 0?
                           <>
-                          <div style={{ height: '100%', width: '100%', paddingTop: '7px', display: 'flex', marginBottom: '25px' }}>
+                          <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
                           <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px'}} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
                           </div>
                           </>
