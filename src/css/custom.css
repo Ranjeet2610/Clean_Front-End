@@ -252,8 +252,8 @@ ul.quick-list li i{padding-right:10px;color:#757679;}
 .match_odds_front span.lay-cell{flex:1;width:40px;color:#000;display:inline-block;text-align:center;font-size:13px;vertical-align:text-bottom;padding:14px 0px;border-left:1px solid #5c6a6f;cursor:pointer;}
 .match_odds_front span.back-cell:last-child,
 .match_odds_front span.lay-cell:last-child{border-right:1px solid #5c6a6f;}
-.match_odds_front span.back-cell{background-color:#b5e0ff;}
-.match_odds_front span.lay-cell{background-color:#fbb7c5;}
+.match_odds_front span.back-cell{background-color:#7cc4f7;}
+.match_odds_front span.lay-cell{background-color:#fca4b7;}
 #UnMatchBets, .match_bets{width:100%;overflow:scroll;height:80vh;background:#fff;}
 #UnMatchBets table{width:600px;}
 .match_bets table{width:100%;}
@@ -266,8 +266,8 @@ ul.quick-list li i{padding-right:10px;color:#757679;}
 .back_lay_color td span:last-child{font-size:8px;font-weight:normal;}
 .back_lay_color td span:nth-child(2){font-size:8px;}
 .runner_amount{font-size:12px!important;}
-.back_lay_color td:nth-child(4){background:#b5e0ff;}
-.back_lay_color td:nth-child(5){background:#fbb7c5;}
+.back_lay_color td:nth-child(4){background:#7cc4f7;}
+.back_lay_color td:nth-child(5){background:#fca4b7;}
 .matchTime {font-size:12px;display:inline-block;width:50%;}
 .block_box_btn{float:right;}
 #placeBetSilp{padding:10px;margin-bottom:5px;position:relative;background:#f9f9f9!important;
