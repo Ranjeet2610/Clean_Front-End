@@ -162,14 +162,12 @@ componentDidMount() {
 handleTabFilter = (eventType) => {
   if(eventType!==""){
     let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
-      this.setState({
-        betHistory:betHistoryFilter
-        })
-      }
-  else{
     this.setState({
-      betHistory: this.state.newResData
+      betHistory:betHistoryFilter
     })
+  }
+  else{
+    this.getBetData();
   }
 }
 
@@ -224,13 +222,13 @@ handleTabFilter = (eventType) => {
                     <div className="popup_col_2">
                       <input type="datetime-local" onChange={(e)=>this.handleChange(e,'')} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left" placeholder="To date" autoComplete="off" />
                     </div>
-                    <div className="popup_col_2">
+                    {/* <div className="popup_col_2">
                       <select className="form-control" name="betStatus">
                         <option value={-1}>Match/Unmatch</option>
                         <option value={1}>Match</option>
                         <option value={0}>Unmatch</option>
                       </select>
-                    </div>
+                    </div> */}
                     <div className="popup_col_2">
                       <select className="form-control" onChange={this.handleFilterByDropdown}  name="historyType">
                         <option value="">Select All</option>

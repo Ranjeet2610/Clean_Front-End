@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import  Inplay from '../images/inplay.png';
 import Loader from 'react-loader-spinner'
 import Utilities from "./utilities";
 import cbicon from "../images/cricket-ico.png"
@@ -33,6 +34,8 @@ class Dashboard extends Component {
       soccerStatus:[],
       tennisStatus:[],
       cricketStatus:[],
+      inplayEvents:[],
+      inplay:false,
       ct1Back:'',
       ct1lay:'',
       ct2Back:'',
@@ -50,7 +53,8 @@ class Dashboard extends Component {
       st2Back:'',
       st2lay:'',
       sdrwBack:'',
-      sdrwlay:''
+      sdrwlay:'',
+      soccerArray:[]
     };
     this.service = new Service();
     this.livevents = new LivEvents();
@@ -92,6 +96,7 @@ class Dashboard extends Component {
         })
       })
     )
+    let soccerArray = []
     this.state.soccerData.map((element)=>
       this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
         // console.log("SOCCER",data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price);
@@ -99,17 +104,32 @@ class Dashboard extends Component {
         // console.log("SOCCER",data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price);
         // console.log("SOCCER",data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price);
         // console.log("SOCCER",data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price);
-        // console.log("SOCCER",data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price);
-        this.setState({
+        // console.log("SOCCER",data.data.data[0]);
+        let soccer = {
           st1Back:data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price,
-          st1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
-          st2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
-          st2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
-          sdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
-          sdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price,
+            st1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
+            st2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
+            st2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
+            sdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
+            sdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price
+        }
+        soccerArray.push(soccer)
+        // this.setState({
+        //   st1Back:data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price,
+        //   st1lay:data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price,
+        //   st2Back:data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price,
+        //   st2lay:data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price,
+        //   sdrwBack:data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price,
+        //   sdrwlay:data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price,
+        // })
+        this.setState({
+          soccerArray: [...this.state.soccerArray, soccerArray]
+        }, () => {
+          // console.log("CCCCCCC",soccerArray);
         })
       })
-    )
+      )
+      
   }
 
   componentDidMount() {
@@ -121,7 +141,10 @@ class Dashboard extends Component {
       const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
       const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
       const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
+      const inplayData = data.data.Data.filter((ele)=>new Date(ele.OpenDate).getTime()<new Date().getTime())
+      // console.log(data.data.Data);
       this.setState({
+        inplayEvents:inplayData,
         soccerData:dataFFilter,
         tenisData:dataTFilter, 
         cricketData:dataCFilter,
@@ -212,7 +235,7 @@ class Dashboard extends Component {
                           }
 
                           {
-                          this.state.cricketStatus &&
+                          (this.state.cricketStatus && !this.state.inplay) &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport">
@@ -269,7 +292,7 @@ class Dashboard extends Component {
                           }
 
                           {
-                            this.state.tennisStatus &&
+                            (this.state.tennisStatus && !this.state.inplay) &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={tbicon} /></span>Tennis
@@ -321,7 +344,7 @@ class Dashboard extends Component {
                           }
 
                           {
-                            this.state.soccerStatus &&
+                            (this.state.soccerStatus && !this.state.inplay) &&
                           <div className="sports_box">
                             <div className="tittle_sports">
                               <span className="item_sport"><img src={fbicon}/></span>Soccer
@@ -353,6 +376,67 @@ class Dashboard extends Component {
                                       <div className="match_status">
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
+                                    {
+                                      this.state.soccerArray.length>0 && this.state.soccerArray.map((ele, i) => (
+                                        i === index
+                                        ?
+                                      <div className="match_odds_front" key={i}>
+                                          <span className="back-cell">{ele.st1Back>0?ele.st1Back:0}</span>
+                                          <span className="lay-cell">{ele.st1lay>0?ele.st1lay:0}</span>
+                                          <span className="back-cell">{ele.sdrwBack?ele.sdrwBack:0}</span>
+                                          <span className="lay-cell">{ele.sdrwlay?ele.sdrwlay:0}</span>
+                                          <span className="back-cell">{ele.st2Back?ele.st2Back:0}</span>
+                                          <span className="lay-cell">{ele.st2lay?ele.st2lay:0}</span>
+                                        </div>
+                                        :
+                                        null
+                                      ))
+                                    }  
+                            
+                                    </div>
+                                  );
+                                })    
+                            }
+                          </div>
+                          }
+
+                          {
+                            /////////////////////////// INPLAY EVENTS /////////////////////////////////////////////
+                          }
+
+{
+                          this.state.inplay &&
+                          <div className="sports_box">
+                            <div className="tittle_sports">
+                              <span className="item_sport"><img src={Inplay}/></span>In Play
+                            </div>
+                            {
+                              this.state.inplayEvents.length <= 0 ? null :
+                                this.state.inplayEvents.map((item,index) => {
+                                  let inplay ;let eventDate;
+                                  if(new Date(item.OpenDate).getTime()>new Date().getTime()){
+                                    inplay ='GOING IN-PLAY';
+                                  }
+                                  else{
+                                    inplay = 'IN-PLAY';
+                                  }
+                                  eventDate = Utilities.displayDateTime(item.OpenDate);
+                                  return (
+                                    <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
+                                      <div className="sport_name">
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                          {item.eventName}
+                                        </Link>
+                                        <time>
+                                          <i className="fa fa-clock-o" />&nbsp;{eventDate}
+                                        </time>
+                                        <span id="fav29894585">
+                                          <i className="fa fa-star-o" aria-hidden="true" />
+                                        </span>
+                                      </div>
+                                      <div className="match_status">
+                                        <span className="inplay_txt"> {inplay}</span>
+                                      </div>
                                       <div className="match_odds_front">
                                           <span className="back-cell">{this.state.st1Back?this.state.st1Back:0}</span>
                                           <span className="lay-cell">{this.state.st1lay?this.state.st1lay:0}</span>
@@ -360,13 +444,61 @@ class Dashboard extends Component {
                                           <span className="lay-cell">{this.state.sdrwlay?this.state.sdrwlay:0}</span>
                                           <span className="back-cell">{this.state.st2Back?this.state.st2Back:0}</span>
                                           <span className="lay-cell">{this.state.st2lay?this.state.st2lay:0}</span>
-                                        </div>
+                                      </div>
                                     </div>
                                   );
                                 })    
                             }
                           </div>
                           }
+
+                        { this.state.Inplay &&
+                          <div className="modal fade" id="exampleModalForEditStake" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div className="modal-dialog" role="document">
+                                      <div className="modal-content">
+                                        <form onSubmit={(e)=>this.handleSubmit(e)}>
+                                          <div className="modal-header">
+                                            <h5 className="modal-title" id="exampleModalLabel" style={{fontSize:'20px'}}>Chip Setting</h5>
+                                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">×</span>
+                                            </button>
+                                          </div>
+                                          <div className="modal-body">
+                                            <div class="modal-body row">
+                                              <div class="col-md-6">
+                                                {
+                                                  this.state.chipName.map((item,index)=>{
+                                                    return(
+                                                      <>
+                                                        <label>Chips Name {`${index+1}:`}</label>
+                                                        <input type="text" className="form-control" defaultValue={item} />
+                                                      </>
+                                                    )
+                                                  })
+                                                }
+                                              </div>
+                                              <div class="col-md-6">
+                                              {
+                                                  this.state.chipName.map((item,index)=>{
+                                                    return(
+                                                      <>
+                                                        <label>Chips Value {`${index+1}:`}</label>
+                                                        <input type="text" className="form-control" defaultValue={item} />
+                                                      </>
+                                                    )
+                                                  })
+                                                }
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="modal-footer">
+                                            <button type="submit" className="btn btn-primary text-center">Update ChipSetting</button>
+                                          </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  </div>
+                        }
 
                         </div>
                       </div>

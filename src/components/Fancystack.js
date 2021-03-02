@@ -36,14 +36,27 @@ class FancyStack extends Component{
       endDate: tD
     }
       if(fD<=tD){
+        let arr = []
         this.users.getAllFancyStack(obj, (data)=>{
-        this.setState({
-          fancyStakeData:data.data.data
-        })
-      })
-      console.log(fD,'---',tD);
+          data.data.data.map(ele=>{
+            let itemName = ele.userInfo[0].admin[0]
+            // if(!arr.includes(itemName)){
+              debugger
+            if(arr.every((ele) => ele.userInfo[0].admin[0] !== itemName)){
+              arr.push({clientName:itemName,stake:ele.stack})
+            }
+            else{
+              let indx = arr.findIndex(itemName)
+              arr[indx].stake=arr[indx].stake+ele.stack;
+            }
+          })
+        }) 
+        console.log(arr);
+        // this.setState({
+        //   fancyStakeData:data.data.data
+        // })
+      }
     }
-    }
 
   getAllFancyStack = (Scurr,Ecurr) => {
     let fromDate = new Date(Scurr).toISOString();
@@ -56,6 +69,7 @@ class FancyStack extends Component{
       this.setState({
         fancyStakeData:data.data.data
       })
+      // console.log(data.data);
     })
   }
 
