@@ -982,11 +982,7 @@ export default class MatchOdds extends Component {
                                         }
                                       </tr>
                                     </tbody>
-<<<<<<< HEAD
-                                      :
-=======
                                     :
->>>>>>> origin/sachin
                                       <tbody>
                                         <tr>
                                         <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>

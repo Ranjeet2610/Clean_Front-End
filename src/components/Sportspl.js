@@ -26,16 +26,11 @@ export default class Clientpl extends Component {
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : null;
   }
-<<<<<<< HEAD
-
-  getSportsplData = (Scurr,Ecurr) => {
-=======
 /*
   componentDidMount(){
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
     }
->>>>>>> origin/sachin
     if(this.userDetails.superAdmin){
       const obj ={
         startDate:"2021-01-02T08:37:21.702Z",
@@ -165,19 +160,11 @@ export default class Clientpl extends Component {
     });
   }
 
-<<<<<<< HEAD
-  adminData = (data) => {
-    const obj = {
-      adminName:data,
-      startDate:"2021-01-02T08:37:21.702Z",
-        endDate: "2021-02-28T08:45:21.702Z"
-=======
   adminData =  async (data) =>  {
     const obj = { 
       adminName: data,
       startDate:this.state.from_date,
       endDate:this.state.to_date
->>>>>>> origin/sachin
     }
     await this.account.adminUserPL(obj,(data) => {
       this.setState({
@@ -331,37 +318,22 @@ export default class Clientpl extends Component {
                             }):
                           this.state.adminData.length>0 ?
                             this.state.adminData.map((item,index)=>{
-<<<<<<< HEAD
-=======
                               let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
                               cTotal=cTotal+item.cricketPL;
                               tTotal=tTotal+item.tennisPL;
                               sTotal=sTotal+item.soccerPL;
                               fTotal=fTotal+item.fancyprofitLoss;
                               subTotal=subTotal+userPl;
->>>>>>> origin/sachin
                               return (  
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center"><a style={{cursor:'pointer'}} onClick={()=>this.adminData(item.admin)}>{item.admin}</a></td>
-<<<<<<< HEAD
-                                  <td className="text-center">{-item.profitLoss}</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  {/* <td className="text-center">{item.profitLoss}</td> */}
-=======
                                   <td class={item.cricketPL>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketPL>0?"-"+item.cricketPL:-parseFloat(item.cricketPL)}</td>
                                   <td class={item.tennisPL>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisPL>0?"-"+item.tennisPL:-parseFloat(item.tennisPL)}</td>
                                   <td class={item.soccerPL>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerPL>0?"-"+item.soccerPL:-parseFloat(item.soccerPL)}</td>
                                   <td class={item.fancyprofitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyprofitLoss>0?"-"+item.fancyprofitLoss:-parseFloat(item.fancyprofitLoss)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
->>>>>>> origin/sachin
                                 </tr>
                               )
                             }):
