@@ -26,16 +26,11 @@ export default class Clientpl extends Component {
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : null;
   }
-<<<<<<< HEAD
 /*
   componentDidMount(){
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
     }
-=======
-
-  getSportsplData = (Scurr,Ecurr) => {
->>>>>>> origin/BOSS
     if(this.userDetails.superAdmin){
       const obj ={
         startDate:"2021-01-02T08:37:21.702Z",
