@@ -18,40 +18,12 @@ export default class Liveevents extends Component {
       resdata:[],
       eventName:'',
       eventID:'',
-      odds1:'',
-      odds2:'',
-      odds3:'',
-      odds4:'',
-      odds4:'',
-      odds5:'',
       showModal: false,
       oddsValue:'',
       disable:true,
-      checkedItems: new Map()
     };
     this.events = new Livevents();
     this.service = new Service();
-  }
-
-  handleEnable = () => {
-  this.setState({
-    disable:false
-  })
-  }
-
-  reloadData = () => {
-  this.events.getLiveEvents('',data=>{
-    let allEvents = data.data;
-    let isEventlive = allEvents.map(item => {
-      this.setState(prevState => ({ 
-        checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
-      }));
-     });
-    this.setState({
-      resdata:allEvents,
-      load: false
-    })
-  });
   }
 
   async componentDidMount() {
@@ -61,82 +33,16 @@ export default class Liveevents extends Component {
     await this.setState({
       load: true
     })
-  this.events.getLiveEvents('',data=>{
-    let allEvents = data.data;
-    let isEventlive = allEvents.map(item => {
-      this.setState(prevState => ({ 
-        checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
-      }));
+    this.events.getLiveEvents('',data=>{
+      let allEvents = data.data.data.filter(newdata=>{
+        return newdata.active===true;
+      })
+      this.setState({
+        resdata:allEvents,
+        load: false
+      })
     });
-    this.setState({
-      resdata:allEvents,
-      load: false
-    })
-  });
   }
-
-  handleChange = (e) => {
-  const item = e.target.value;
-  const isChecked = e.target.checked;
-  this.events.UpdateEventFlag(item,(data)=>{
-    this.reloadData();
-  })
-  this.setState(prevState => ({ 
-    checkedItems: prevState.checkedItems.set(item, isChecked) 
-  }));
-  }
-
-//   addInitialOdds = (e) => {
-//   const itemName = e.target.name;
-//   const itemId = e.target.id;
-//   this.setState({
-//     eventName:itemName,
-//     eventID:itemId
-//   })
-//   this.service.getEventInitialOdds(itemId, (data) => {
-//     this.setState({
-//       oddsValue:data.data
-//     })
-//   });
-//   }
-
-//   addmarketevents = () => {
-//   this.events.storeLiveEvents({},data=>{
-//     this.setState({
-//       notifyMsg: "Market Events Added Successfully.",
-//       msgBox: "block"
-//     });
-//     switch ('success') {
-//       case 'success':
-//         NotificationManager.success(this.state.notifyMsg,"Success");
-//         break;
-//     }
-//     this.reloadData()
-//   });
-//   }
-
-//   handleSubmit = (event) => {
-//   event.preventDefault();
-//   const odds = new FormData(event.target);
-//   const obj = {
-//     eventID:Number(odds.get('eventID')),
-//     odds1:Number(odds.get('odds1')),
-//     odds2:Number(odds.get('odds2')),
-//     odds3:Number(odds.get('odds3')),
-//     odds4:Number(odds.get('odds4')),
-//     odds5:Number(odds.get('odds5')),
-//     odds6:Number(odds.get('odds6'))
-//   }
-//   this.events.updateInitialOdds(obj,data=>{
-//     this.setState({
-//       notifyMsg: "Odds Added successfully...!",
-//       msgBox: "block",
-//     });
-//     setTimeout(() => {
-//       window.location.reload();
-//     }, 3000);
-//   });
-//   }
 
   render(){
     return (
@@ -204,10 +110,14 @@ export default class Liveevents extends Component {
                                     <td className="text-center text-success" style={{fontSize:'15px',fontWeight:'400'}}><i>Open</i></td>
                                   }
                                   {
+                                    item.eventType === 4 ?
                                     <td className="text-center red">
                                       <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
-                                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-                                      <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
+                                      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
+                                    </td>
+                                    :
+                                    <td className="text-center red">
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
                                     </td>
                                   }
                                 </tr>

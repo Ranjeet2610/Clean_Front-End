@@ -74,13 +74,17 @@ getListMarketType(eid,cb){
   // call for cricket
   axios.post(Constants.APIURL+'marketTypeData', { eventId: eid })
     .then((response) => {
-      let mid = response.data.data.marketData.marketId;
-      let isEnabled = response.data.data.marketData.isEnabled;
-        if (response.data.data.runners[0].length > 0) {
-          this.getlistMarketOdds(mid,data=>{
-            cb({pdata:response.data.data.runners[0],odsData:data,isEnabled:isEnabled})
-          });
-        }
+      if(response.data.data.length !== 0){
+        let mid = response.data.data.marketData.marketId;
+        let isEnabled = response.data.data.marketData.isEnabled;
+          if (response.data.data.runners[0].length > 0) {
+            this.getlistMarketOdds(mid,data=>{
+              cb({pdata:response.data.data.runners[0],odsData:data,isEnabled:isEnabled})
+            });
+          }
+      }else{
+        cb({pdata:'',odsData:'',isEnabled:''})
+      }
     }).catch((error) => console.log(error));
 }
 

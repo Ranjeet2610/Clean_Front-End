@@ -323,7 +323,7 @@ handleTabFilter = (eventType) => {
                       </tr>  
                     </tfoot>:
                       null
-                     }                         
+                     }
                   </table>
                 </div>
               </div>

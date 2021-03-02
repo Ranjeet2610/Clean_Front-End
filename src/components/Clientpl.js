@@ -18,11 +18,13 @@ export default class Clientpl extends Component {
       from_date: "",
       to_date: "",
       currentDate: "",
-    };
+      currentStart:"",
+      currentend:""
+      };
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem("data")) != undefined ? JSON.parse(localStorage.getItem("data")) : "";
   }
-
+/*
   componentDidMount() {
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
@@ -72,12 +74,76 @@ export default class Clientpl extends Component {
       to_date:Ecurr,
     }) 
   }
+*/
+async componentDidMount() {
+  let currD = new Date().toISOString().substr(0,10);
+  //let currT = Utilities.datetime(new Date()).slice(11,16)
+  let Scurr = currD+"T00:00:01";
+  let Ecurr = currD+"T23:59:59";
+  await this.setState({
+    currentStart:currD+"T00:00:01",
+    currentend:currD+"T23:59:59",
+    from_date:Scurr,
+    to_date:Ecurr,
+    load:true
+  })
+  if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+    this.props.history.push('/dashboard')
+  }
+  await this.getUserPLData();
+}
 
-  masterData = (data) => {
-    const obj = { 
-      masterName: data 
-    }
+getUserPLData = () => {
+  if (this.userDetails.superAdmin) {
+    const obj = {
+      userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
+    this.account.superAdminUserPL(obj,(data) => {
+        this.setState({
+          adminData: data.data.adminPL,
+        });
+      }
+    );
+  } 
+  else if (this.userDetails.Admin) {
+    const obj = {
+      adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
+    this.account.adminUserPL(obj,(data) => {
+        this.setState({
+          masterData: data.data.masterPL,
+          ispl: false,
+        });
+      }
+    );
+  } 
+  else if (this.userDetails.Master) {
+    const obj = {
+      masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+  }
     this.account.userPL(obj,(data) => {
+        this.setState({
+          data: data.data,
+          ispl: false,
+        })
+      }
+    );
+  }
+}
+
+  masterData =  async (data) => {
+    const obj = { 
+      masterName: data,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
+    }
+    await this.account.userPL(obj,(data) => {
       this.setState({
         data: data.data,
         ispl: false,
@@ -85,31 +151,50 @@ export default class Clientpl extends Component {
     });
   }
 
-  adminData = (data) =>  {
+  adminData =  async (data) =>  {
     const obj = { 
-      adminName: data 
+      adminName: data,
+      startDate:this.state.from_date,
+      endDate:this.state.to_date
     }
-    this.account.adminUserPL(obj,(data) => {
+    await this.account.adminUserPL(obj,(data) => {
       this.setState({
         masterData: data.data.masterPL,
+        ispl: false,
       });
     });
   }
 
+  handleFilter = async () => {
+    await this.setState({
+      masterData:'',
+      data:'',
+      ispl: true
+    });
+    await this.getUserPLData();
+  }
+
   handleChange = (event) => {
     this.setState({
-      [event.target.name]: [event.target.value],
+      [event.target.name]: event.target.value
     });
   };
 
-  handleClear = () => {
-    this.setState({
+  handleClear = async () => {
+    await this.setState({
       from_date: this.state.currentStart,
       to_date: this.state.currentend,
+      adminData:'',
+      masterData:'',
+      data:'',
+      ispl: true
     });
+    await this.getUserPLData();
   };
 
   render() {
+    let cTotal=0;
+    let uTotal=0;
     return (
       <div>
         <Navbar />
@@ -141,7 +226,7 @@ export default class Clientpl extends Component {
                       <input type="datetime-local" onChange={this.handleChange} name="to_date" value={this.state.to_date} id="to-date" className="form-control col-md-7 col-xs-12 has-feedback-left datetimepicker" placeholder="To date" autoComplete="off" />
                     </div>
                     <div className="block_2 buttonacount">
-                      <button type="button" id="submit_form_button" className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >
+                      <button type="button" id="submit_form_button" onClick={this.handleFilter} className="blue_button" data-attr="submit" style={{ marginRight: "5px" }} >
                         <i className="fa fa-filter" /> Filter
                       </button>
                       <button type="button" className="red_button" onClick={this.handleClear} >
@@ -170,25 +255,35 @@ export default class Clientpl extends Component {
                         </tr>
                       </thead>
                       <tbody>
+                      {/*Medy555	39.00	0.00	39.00 - But user loss (-39)
+                      Roshan2	-585.00	0.00	-585.00 - But user win (585)*/}
                         {
                           this.state.data.length > 0 ?
                             this.state.data.map((item) => {
+                              let clientPl = (parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss)+parseFloat(item.mCommision));
+                              let userPl = (parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss));
+                              cTotal=cTotal+clientPl;
+                              uTotal=uTotal+userPl;
                               return (
                                 <tr>
                                   <td className="text-center">{item.userName}</td>
-                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{item.Commission}.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
                                 </tr>
                               );
                             }):
                           this.state.masterData.length > 0 ?
                             this.state.masterData.map((item) => {
+                              let clientPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
+                              let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss));
+                              cTotal=cTotal+clientPl;
+                              uTotal=uTotal+userPl;
                               return (
                                 <tr>
                                   <td className="text-center">
@@ -196,20 +291,23 @@ export default class Clientpl extends Component {
                                       {item.master}
                                     </Link>
                                   </td>
-                                  <td className="text-center">{-item.profitLoss}</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.profitLoss}</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
                                 </tr>
                               );
                             }):
                           this.state.adminData.length > 0 ?
                             this.state.adminData.map((item) => {
+                              let clientPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
+                              let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss));
+                              cTotal=cTotal+clientPl;
+                              uTotal=uTotal+userPl;
                               return (
                                 <tr>
                                   <td className="text-center">
@@ -217,21 +315,60 @@ export default class Clientpl extends Component {
                                       {item.admin}
                                     </Link>
                                   </td>
-                                  <td className="text-center">{-item.profitLoss}</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">0.00</td>
+                                  <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.profitLoss}</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
                                 </tr>
                               );
                             }):
                           <tr>
-                            <td colSpan="10" className="text-center">EMPTY...!</td>
+                            <td colSpan="10" className="text-center">No data available in table!</td>
                           </tr>
+                         }
+                         {
+                           this.state.data.length > 0 ?
+                            <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                            <td className="text-center">Total</td>
+                            <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                            <td className="text-center">0.00</td>
+                            <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                            <td className="text-center">0.00</td>
+                            <td className="text-center">0.00</td>
+                            <td className="text-center">0.00</td>
+                            <td className="text-center">0.00</td>
+                            <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
+                          </tr>:
+                          this.state.masterData.length > 0 ?
+                          <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                          <td className="text-center">Total</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                          <td className="text-center">0.00</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
+                        </tr>                          :
+                          this.state.adminData.length > 0 ?
+                          <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                          <td className="text-center">Total</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
+                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
+                        </tr>:null
                          }
                       </tbody>
                     </table>
