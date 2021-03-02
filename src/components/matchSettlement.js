@@ -9,11 +9,14 @@ export default class EventMatchOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-        runnerID:'',
-        disabled:false,
+      runnerID:'',
+      disabled:false,
       tableHead:["S.No.","Market_Id","Market_Name","Runner_Name","Settlement"],
       marketata:'',
-      runnersdata:[]
+      liveodds:'',
+      runnersdata:[],
+      winnerTeam:'',
+      settledisabled:false
     };
     this.events = new Livevents();
     this.users = new Users();
@@ -23,6 +26,12 @@ export default class EventMatchOdds extends Component {
     this.events.getMatchOdds(this.props.match.params.id,data=>{
       let allMdata = data.data.data.marketData;
       let allrunners = data.data.data.runners[0];
+       this.events.ListMarketOdds(allMdata.marketId,async (data)=>{
+          //console.log(data.data.data);
+          await this.setState({
+            liveodds:data.data.data
+          })
+        })
       this.setState({
         marketata:allMdata,
         runnersdata:allrunners
@@ -50,12 +59,13 @@ export default class EventMatchOdds extends Component {
     })
   }
 
-  handleSettlement = (selectionId,marketId) => {
+  handleSettlement = (selectionId,marketId,winnerTeam) => {
     if(selectionId !== ""){
       const obj = {
         selectionId : selectionId,
         marketId: marketId,
-        eventId:this.props.match.params.id
+        eventId:this.props.match.params.id,
+        winnerTeam: winnerTeam
       }
       this.users.matchSettlement(obj,(data)=>{
         // console.log("DDDDDDDDD",data);
@@ -69,7 +79,8 @@ export default class EventMatchOdds extends Component {
 
   handleMatchSettle = (event) => {
       this.setState({
-          [event.target.name]:event.target.value
+          [event.target.name]:event.target.value.split("||")[0],
+          winnerTeam:event.target.value.split("||")[1]
       })
   }
 
@@ -129,9 +140,12 @@ export default class EventMatchOdds extends Component {
                               <input type="checkbox"  checked={this.state.marketata.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e)}  style={{height: '20px',width: '20px'}}/>
                             </td> 					    */}
                             <td className="text-center">
-                                {
+                                {/*
                                   this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i> : null
-                                }
+                                */}
+                                {
+                                this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i>:
+                                new Date(this.state.marketata.marketStartTime).getTime()<new Date().getTime() && this.state.liveodds.length===0 ?
                                 <form>
                                     <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled"} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
                                     <option value="">Select Winner</option>
@@ -139,13 +153,15 @@ export default class EventMatchOdds extends Component {
                                             this.state.runnersdata.length > 0 &&
                                             this.state.runnersdata.map((item,index) => {
                                             return(
-                                                <option key={index} value={item.selectionId}>{item.runnerName}</option>
+                                                <option key={index} value={item.selectionId+'||'+item.runnerName}>{item.runnerName}</option>
                                             )}
                                             )
                                         }
                                     </select>
-                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                 </form>
+                                :"In-Play"
+                                }
                             </td>
                           </tr>
                         </tbody>

@@ -29,7 +29,7 @@ export default class Userpl extends Component {
       filter_value:10,
       currentDate: '',
       currentStart:'',
-      currentend:''
+      currentend:'',
     }
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem('data'));
@@ -123,48 +123,48 @@ export default class Userpl extends Component {
           if (this.state.filter_order === "asc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return a.cricketProfit - b.cricketProfit
-              })
+              }),filter_sport_pos:'cricket'
             });
           } else if (this.state.filter_order === "desc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return b.cricketProfit - a.cricketProfit
-              })
+              }),filter_sport_pos:'cricket'
             });
           }
         }else if(this.state.filter_sport==="tennis"){
           if (this.state.filter_order === "asc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return a.tennisProfit - b.tennisProfit
-              })
+              }),filter_sport_pos:'tennis'
             });
           } else if (this.state.filter_order === "desc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return b.tennisProfit - a.tennisProfit
-              })
+              }),filter_sport_pos:'tennis'
             });
           }
         }else if(this.state.filter_sport==="soccer"){
           if (this.state.filter_order === "asc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return a.soccerProfit - b.soccerProfit
-              })
+              }),filter_sport_pos:'soccer'
             });
           } else if (this.state.filter_order === "desc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return b.soccerProfit - a.soccerProfit
-              })
+              }),filter_sport_pos:'soccer'
             });
           }
         }else if(this.state.filter_sport==="fancy"){
           if (this.state.filter_order === "asc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return a.fancyProfitLoss - b.fancyProfitLoss
-              })
+              }),filter_sport_pos:'fancy'
             });
           } else if (this.state.filter_order === "desc") {
             this.setState({masterData: data.data.userPL.sort(function(a, b) {
                 return b.fancyProfitLoss - a.fancyProfitLoss
-              })
+              }),filter_sport_pos:'fancy'
             });
           }
         }
@@ -179,50 +179,50 @@ export default class Userpl extends Component {
       this.account.userPL(obj,(data) => {
         if(this.state.filter_sport==="cricket"){
           if (this.state.filter_order === "asc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return a.cricketProfit - b.cricketProfit
-              })
+              }),filter_sport_pos:'cricket'
             });
           } else if (this.state.filter_order === "desc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return b.cricketProfit - a.cricketProfit
-              })
+              }),filter_sport_pos:'cricket'
             });
           }
         }else if(this.state.filter_sport==="tennis"){
           if (this.state.filter_order === "asc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return a.tennisProfit - b.tennisProfit
-              })
+              }),filter_sport_pos:'tennis'
             });
           } else if (this.state.filter_order === "desc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return b.tennisProfit - a.tennisProfit
-              })
+              }),filter_sport_pos:'tennis'
             });
           }
         }else if(this.state.filter_sport==="soccer"){
           if (this.state.filter_order === "asc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return a.soccerProfit - b.soccerProfit
-              })
+              }),filter_sport_pos:'soccer'
             });
           } else if (this.state.filter_order === "desc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return b.soccerProfit - a.soccerProfit
-              })
+              }),filter_sport_pos:'soccer'
             });
           }
         }else if(this.state.filter_sport==="fancy"){
           if (this.state.filter_order === "asc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return a.fancyProfitLoss - b.fancyProfitLoss
-              })
+              }),filter_sport_pos:'fancy'
             });
           } else if (this.state.filter_order === "desc") {
-            this.setState({masterData: data.data.sort(function(a, b) {
+            this.setState({data: data.data.sort(function(a, b) {
                 return b.fancyProfitLoss - a.fancyProfitLoss
-              })
+              }),filter_sport_pos:'fancy'
             });
           }
         }
@@ -280,6 +280,11 @@ export default class Userpl extends Component {
     const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
     const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
     const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    let cTotal=0;
+    let tTotal=0;
+    let sTotal=0;
+    let fTotal=0;
+    let numRecord=0;
     return (
       <div>
         <Navbar />
@@ -370,73 +375,227 @@ export default class Userpl extends Component {
                       {
                         currentdataPosts.length > 0 ?
                           currentdataPosts.map((item,index) => {
-                            return (
-                              <tr>
-                                <td className="text-center">{index+1}</td>
-                                <td className="text-center">{item.userName}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="cricket" ? item.cricketProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="tennis" ? item.tennisProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="soccer" ? item.soccerProfit:'0.00'}</td>
-                                <td className="text-center">0.00</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="fancy" ? item.fancyProfitLoss:'0.00'}</td>
-                              </tr>
-                            )
+                            cTotal=cTotal+item.cricketProfit;
+                            tTotal=tTotal+item.tennisProfit;
+                            sTotal=sTotal+item.soccerProfit;
+                            fTotal=fTotal+item.fancyProfitLoss;
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName}</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName}</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName}</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName}</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }
                           }):
                         currentmasterDataPosts.length > 0 ?
                           currentmasterDataPosts.map((item,index) => {
-                            return (
-                              <tr>
-                                <td className="text-center">{index+1}</td>
-                                <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="cricket" ? item.cricketProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="tennis" ? item.tennisProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="soccer" ? item.soccerProfit:'0.00'}</td>
-                                <td className="text-center">0.00</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="fancy" ? item.fancyProfitLoss:'0.00'}</td>
-                              </tr>
-                            );
+                            cTotal=cTotal+item.cricketProfit;
+                            tTotal=tTotal+item.tennisProfit;
+                            sTotal=sTotal+item.soccerProfit;
+                            fTotal=fTotal+item.fancyProfitLoss;
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }
                           }):
                         currentadminDataPosts.length > 0 ?
                           currentadminDataPosts.map((item,index) => {
-                            return (
-                              <tr>
-                                <td className="text-center">{index}</td>
-                                <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="cricket" ? item.cricketProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="tennis" ? item.tennisProfit:'0.00'}</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="soccer" ? item.soccerProfit:'0.00'}</td>
-                                <td className="text-center">0.00</td>
-                                <td className="text-center">{this.state.filter_sport_pos==="fancy" ? item.fancyProfitLoss:'0.00'}</td>
-                              </tr>
-                            )
+                            cTotal=cTotal+item.cricketProfit;
+                            tTotal=tTotal+item.tennisProfit;
+                            sTotal=sTotal+item.soccerProfit;
+                            fTotal=fTotal+item.fancyProfitLoss;
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                              numRecord++
+                              return (
+                                <tr>
+                                  <td className="text-center">{index+1}</td>
+                                  <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                  <td className="text-center inplay_txt">0.00</td>
+                                </tr>
+                              )
+                            }
                           }):
                         <tr>
-                          <td colSpan="7" className="text-center">Empty...!</td>
+                          <td colSpan="7" className="text-center">No data available in table!</td>
                         </tr>
+                      }
+                      {currentdataPosts.length > 0  && numRecord == 0 ?
+                      <tr>
+                        <td colSpan="7" className="text-center">No data available in table!</td>
+                      </tr>
+                      :
+                      currentmasterDataPosts.length > 0  && numRecord == 0 ?
+                      <tr>
+                        <td colSpan="7" className="text-center">No data available in table!</td>
+                      </tr>
+                      :
+                      currentadminDataPosts.length > 0  && numRecord == 0 ?
+                      <tr>
+                        <td colSpan="7" className="text-center">No data available in table!</td>
+                      </tr>
+                      :null
                       }
                     </tbody>
                     {
-                      currentdataPosts.length > 0 ?
+                      currentdataPosts.length > 0  && numRecord > 0 ?
                       <tfoot>
                       <tr>
                         <td colSpan={16}>
-                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={numRecord} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
                       </tr>  
                     </tfoot>:
-                      currentmasterDataPosts.length > 0 ?
+                      currentmasterDataPosts.length > 0  && numRecord > 0 ?
                       <tfoot>
                       <tr>
                         <td colSpan={16}>
-                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.masterData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={numRecord} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
                       </tr>  
                     </tfoot>:
-                      currentadminDataPosts.length > 0 ?
+                      currentadminDataPosts.length > 0  && numRecord > 0 ?
                       <tfoot>
                       <tr>
                         <td colSpan={16}>
-                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.adminData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={numRecord} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
                       </tr>  
                     </tfoot>:

@@ -827,15 +827,14 @@ export default class MatchOdds extends Component {
                                 </tr>
                               </tbody>
                               {
-                                this.state.data.length > 0 ? this.state.marketOdds.length > 0 ? runners.map((item, index) => {
-                                  if (this.state.exporunnerdata.length > 0) {
-                                    expoProfit = this.state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
-                                  }
-                                    if (this.state.marketOdds.length > 0) {
-                                      filterrunners = this.state.data.filter(newdata=>{
-                                        return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId;
-                                      })
+                                this.state.data.length > 0 ? this.state.marketOdds.length > 0 ? 
+                                  runners.map((item, index) => {
+                                    if (this.state.exporunnerdata.length > 0) {
+                                      expoProfit = this.state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
                                     }
+                                    filterrunners = this.state.data.filter(newdata=>{
+                                      return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId;
+                                    })
                                     if (this.state.marketOdds.length > 0) {
                                       let sordataBack = this.state.marketOdds[0].runners[index].ex.availableToBack.sort(function (a, b) {
                                         return a.price - b.price;
@@ -847,7 +846,7 @@ export default class MatchOdds extends Component {
 
                                       avilBlack = sordataBack.map((itemback) => {
                                         return (
-                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, item, this.state.marketOdds, index, window.innerWidth)} >
+                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
                                             <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                             <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                           </td>
@@ -864,7 +863,7 @@ export default class MatchOdds extends Component {
 
                                       availLay = sordataLay.map((itemlay) => {
                                         return (
-                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, item, this.state.marketOdds, index, window.innerWidth)} >
+                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
                                             <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                             <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                           </td>
@@ -874,7 +873,7 @@ export default class MatchOdds extends Component {
                                     else {
                                       avilBlack = this.state.avilBlack.map((itemback) => {
                                         return (
-                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, item, this.state.marketOdds, index, window.innerWidth)} >
+                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
                                             <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                             <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                           </td>
@@ -883,15 +882,15 @@ export default class MatchOdds extends Component {
 
                                       availLay = this.state.availLay.map((itemlay) => {
                                         return (
-                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, item, this.state.marketOdds, index, window.innerWidth)} >
+                                          <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
                                             <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                             <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                           </td>
                                         )
                                       })
                                     }
-                                 // if(item.selectionId==this.state.marketOdds[0].runners[index].selectionId){}
-                                  if (filterrunners.length > 0) {
+                                   // if(item.selectionId==this.state.marketOdds[0].runners[index].selectionId){}
+                                   if (filterrunners.length > 0) {
                                    return (
                                     <>
                                       <tr id="user_row0" className="back_lay_color runner-row-32047099">
@@ -911,10 +910,8 @@ export default class MatchOdds extends Component {
                                               :<span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>}
                                             </p>
                                           }
-
                                           <input type="hidden" className="position_1171389306" id="selection_0" data-id={32047099} defaultValue={0} />
                                         </td>
-
                                         {avilBlack}
                                         {availLay}
                                       </tr>
@@ -952,8 +949,8 @@ export default class MatchOdds extends Component {
                                       </tr>
                                     </>
                                    )
-                                  }
-                                 })
+                                   }
+                                  })
                                  :
                                   <tbody>
                                   <tr>
@@ -964,11 +961,42 @@ export default class MatchOdds extends Component {
                                     filterrunners.length === 0 && inplay === "IN-PLAY" ?
                                       this.state.oddsload ? 
                                       <tbody>
-                                        <tr>
-                                        <td colSpan="7" className="text-center"><Loader type="Grid" color="#6c1945" height={35} width={35} /></td>
-                                        </tr>
-                                      </tbody>
-                                      :
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <td>
+                                          <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
+                                          <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                          <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                        </td>
+                                        {
+                                          this.state.tableTd.map((item) => {
+                                            return (
+                                              <td class="32047099_0availableToBack2_price_1171389306">
+                                                <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
+                                                <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
+                                              </td>
+                                            )
+                                          })
+                                        }
+                                      </tr>
+                                    </tbody>
+                                    :
                                       <tbody>
                                         <tr>
                                         <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
