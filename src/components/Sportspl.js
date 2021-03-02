@@ -26,11 +26,16 @@ export default class Clientpl extends Component {
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : null;
   }
+<<<<<<< HEAD
 /*
   componentDidMount(){
     if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
       this.props.history.push('/dashboard')
     }
+=======
+
+  getSportsplData = (Scurr,Ecurr) => {
+>>>>>>> origin/BOSS
     if(this.userDetails.superAdmin){
       const obj ={
         startDate:"2021-01-02T08:37:21.702Z",
@@ -83,24 +88,7 @@ export default class Clientpl extends Component {
       to_date:Ecurr,
     }) 
   }
-*/
-  async componentDidMount() {
-    let currD = new Date().toISOString().substr(0,10);
-    //let currT = Utilities.datetime(new Date()).slice(11,16)
-    let Scurr = currD+"T00:00:01";
-    let Ecurr = currD+"T23:59:59";
-    await this.setState({
-      currentStart:currD+"T00:00:01",
-      currentend:currD+"T23:59:59",
-      from_date:Scurr,
-      to_date:Ecurr,
-      load:true
-    })
-    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
-      this.props.history.push('/dashboard')
-    }
-    await this.getUserPLData();
-  }
+
   getUserPLData = () => {
     if (this.userDetails.superAdmin) {
       const obj = {
