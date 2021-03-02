@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Pagination from './Pagination'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Utilities from './utilities'
@@ -11,7 +12,9 @@ export default class Marketpl extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["Date","Market","Hyper","SuperMaster","Total","Amount","M_comm","S_comm","Net_Amount"],
+      currentPage:1,
+      postsPerPage:10,
+      tableHead:["Date","Market","Admin","SuperMaster","Total","Amount","M_comm","S_comm","Net_Amount"],
       data:'',
       masterData:'',
       adminData:'',
@@ -20,7 +23,9 @@ export default class Marketpl extends Component {
       from_date:'',
       to_date:'',
       newResData:[],
-      currentDate:''
+      currentDate:'',
+      currentStart:"",
+      currentend:""
     }
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined?JSON.parse(localStorage.getItem('data')):'';
@@ -68,7 +73,6 @@ export default class Marketpl extends Component {
   }
 
   componentDidMount(){
-    this.getMarketplData();
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
@@ -79,6 +83,7 @@ export default class Marketpl extends Component {
       from_date:Scurr,
       to_date:Ecurr,
     }) 
+    this.getMarketplData();
   }
 
   handleFilter = async () => {
@@ -106,6 +111,12 @@ export default class Marketpl extends Component {
     }
   }
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
   handleChange = (event) =>{
     this.setState({
       [event.target.name]:[event.target.value]
@@ -121,6 +132,13 @@ export default class Marketpl extends Component {
   }
        
   render() {
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    let sportType;
+    let mTotal=0;
     return (
       <div>
         <Navbar />
@@ -181,15 +199,27 @@ export default class Marketpl extends Component {
                       <tbody>
                         {/* {displaydata}	 */}
                         {
-                          this.state.data.length>0 ?
-                            this.state.data.map((item)=>{
-                              return (  
+                          currentdataPosts.length>0 ?
+                            currentdataPosts.map((item)=>{
+                              if(item.data[0].eventType === 4){
+                                sportType = "Cricket";
+                              }else if(item.data[0].eventType === 1){
+                                sportType = "Tennis";
+                              }else if(item.data[0].eventType === 2){
+                                sportType = "Soccer";
+                              }else{
+                                sportType = "Event";
+                              }
+                              mTotal=mTotal+item.ProfitLoss;
+                              let eventName = JSON.parse(item.data[0].description);
+                            return (  
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
+                                  <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss:-parseFloat(item.ProfitLoss)}</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
@@ -197,15 +227,27 @@ export default class Marketpl extends Component {
                                 </tr>
                               );
                             }):
-                          this.state.masterData.length>0  ?
-                            this.state.masterData.map((item)=>{
-                              return (  
+                          currentmasterDataPosts.length>0  ?
+                            currentmasterDataPosts.map((item)=>{
+                              if(item.data[0].eventType === 4){
+                                sportType = "Cricket";
+                              }else if(item.data[0].eventType === 1){
+                                sportType = "Tennis";
+                              }else if(item.data[0].eventType === 2){
+                                sportType = "Soccer";
+                              }else{
+                                sportType = "Event";
+                              }
+                              mTotal=mTotal+item.ProfitLoss;
+                              let eventName = JSON.parse(item.data[0].description);
+                            return (  
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                  <td className="text-center">{-item.ProfitLoss}</td>
+                                  <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
+                                  <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss:-parseFloat(item.ProfitLoss)}</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.ProfitLoss}</td>
+                                  <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
@@ -213,27 +255,101 @@ export default class Marketpl extends Component {
                                 </tr>
                               );
                             }):
-                          this.state.adminData.length>0 ?
-                            this.state.adminData.map((item)=>{
+                          currentadminDataPosts.length>0 ?
+                            currentadminDataPosts.map((item)=>{
+                                if(item.data[0].eventType === 4){
+                                  sportType = "Cricket";
+                                }else if(item.data[0].eventType === 1){
+                                  sportType = "Tennis";
+                                }else if(item.data[0].eventType === 2){
+                                  sportType = "Soccer";
+                                }else{
+                                  sportType = "Event";
+                                }
+                                mTotal=mTotal+item.ProfitLoss;
+                                let eventName = JSON.parse(item.data[0].description);
                                 return (  
                                   <tr>
                                     <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()}</td>
-                                    <td className="text-center">Cricket/{item.data[0].description}/{item.data[0].marketType}/Winner:{item.data[0].selection}</td>
-                                    <td className="text-center">{-item.ProfitLoss}</td>
-                                    <td className="text-center">0.00</td>
-                                    <td className="text-center">{item.ProfitLoss}</td>
-                                    <td className="text-center">0.00</td>
-                                    <td className="text-center">0.00</td>
-                                    <td className="text-center">0.00</td>
-                                    <td className="text-center">0.00</td>
+                                    <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                    {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
+                                    <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss:-parseFloat(item.ProfitLoss)}</td>
+                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">0.00</td>
                                   </tr>
                                 );
                               }):
                           <tr>
-                            <td colSpan="9" className="text-center">Empty...!</td>
+                            <td colSpan="9" className="text-center">No data available in table!</td>
                           </tr>
                         }
+                        {
+                           this.state.data.length > 0 ?
+                            <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                            <td colSpan="2" className="text-center">Total</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal:-parseFloat(mTotal)}</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                          </tr>:
+                          this.state.masterData.length > 0 ?
+                          <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                            <td colSpan="2" className="text-center">Total</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal:-parseFloat(mTotal)}</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                          </tr>:
+                            this.state.adminData.length > 0 ?
+                            <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                            <td colSpan="2" className="text-center">Total</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal:-parseFloat(mTotal)}</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                            <td className="text-center inplay_txt">0.00</td>
+                        </tr>:null
+                         }
                       </tbody>
+                      {
+                      currentdataPosts.length > 0?
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>:
+                      currentmasterDataPosts.length > 0?
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.masterData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>:
+                      currentadminDataPosts.length > 0?
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.adminData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>:
+                      null
+                    }
                     </table>
                   </div>
                 </div>
