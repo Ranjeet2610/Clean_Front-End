@@ -87,7 +87,7 @@ async componentDidMount() {
     to_date:Ecurr,
     load:true
   })
-  if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+  if(this.userDetails.superAdmin === false){
     this.props.history.push('/dashboard')
   }
   await this.getUserPLData();

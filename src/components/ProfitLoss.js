@@ -12,6 +12,8 @@ export default class ProfitLoss extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage:1,
+      postsPerPage:10,
       profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
       showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
       // allGames:["Cricket","Soccer","Tennis"/*,"Live Teenpatti","Live Casino","Fancy"*/],
@@ -53,9 +55,10 @@ export default class ProfitLoss extends Component {
   }
 
     getprofitlossData = () =>{
+      console.log(this.props);
       this.userDetails = JSON.parse(localStorage.getItem('data'));
       if (this.userDetails.superAdmin) {
-        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
           this.setState({
             data: data.data,
             newResData: data.data
@@ -63,7 +66,7 @@ export default class ProfitLoss extends Component {
         });
       }
       else if (this.userDetails.Admin) {
-        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
           this.setState({
             data: data.data,
             newResData: data.data
@@ -71,15 +74,16 @@ export default class ProfitLoss extends Component {
         });
       }
       else if (this.userDetails.Master) {
-        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
           this.setState({
             data: data.data,
             newResData: data.data
           });
+          console.log(data.data);
         });
       }
       else {
-        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem('data')).userName }, data => {
+        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
           this.setState({
             data: data.data,
             newResData: data.data
@@ -131,6 +135,13 @@ export default class ProfitLoss extends Component {
   }
 
   render() {
+    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    let sportType;
+    let mTotal=0;
     let totalPL = 0;
     return (
       <div>
@@ -288,13 +299,24 @@ export default class ProfitLoss extends Component {
                       </thead>
                       <tbody>
                         {
-                          this.state.data.length > 0 ?
-                          this.state.data.map((item,index) => {
+                          currentdataPosts.length > 0 ?
+                          currentdataPosts.map((item,index) => {
+                            if(item.data[0].eventType === 4){
+                              sportType = "Cricket";
+                            }else if(item.data[0].eventType === 1){
+                              sportType = "Tennis";
+                            }else if(item.data[0].eventType === 2){
+                              sportType = "Soccer";
+                            }else{
+                              sportType = "Event";
+                            }
+                            mTotal=mTotal+item.ProfitLoss;
+                            let eventName = JSON.parse(item.data[0].description);
                               totalPL += item.ProfitLoss;
                               return (
                                 <tr>
                                   <td className="text-center">{index+1}</td>
-                                  <td className="text-center">{item.data[0].description}</td>
+                                  <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   <td className="text-center">{item.data[0].marketType}</td>
                                   <td className="text-center">{item.ProfitLoss}</td>
                                   <td className="text-center">0.0</td>

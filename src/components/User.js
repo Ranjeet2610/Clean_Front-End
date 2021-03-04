@@ -3,6 +3,7 @@ import Pagination from './Pagination'
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import Utilities from "./utilities";
 import Users from "../Services/users";
 import { Link } from "react-router-dom";
 import Footer from './footer'
@@ -51,6 +52,7 @@ export default class User extends Component {
       totalBalance: 0,
     };
     this.users = new Users();
+    this.currentDate = Utilities.formatDate(new Date());
   }
 
   handleChange = (event) => {
@@ -575,24 +577,12 @@ export default class User extends Component {
                 <div className="modal-content"></div>
               </div>
             </div>
-
-            {
-              ////////////////////////////////////// NOTIFY BOX /////////////////////////////////
-            }
-            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green"}} >
-              <div className="error-head" style={{ padding: "3px 0" }}>
-                <h2>SUCCESS</h2>
-              </div>
-              <div className="error-mess" style={{ padding: "5px 0" }}>
-                <h6>{this.state.notifyMsg}</h6>
-              </div>
-            </div> */}
-
             <div className="right_col" role="main">
 
             {
               ////////////////////////////////////// USER HEADER /////////////////////////////////
             }
+
               <div className="col-md-12">
                 <div className="title_new_at">
                   <span className="lable-user-name">Users Listing</span>
@@ -657,7 +647,7 @@ export default class User extends Component {
                             </div>
                             <div className="col-md-4 col-xs-6">
                               <label> Registration Data </label>
-                              <input type="text" name="FromDate" className="form-control" id="Fleft_romDate" autoComplete="off" defaultValue={"2020-07-14"} readOnly="" />
+                              <input type="text" name="FromDate" className="form-control" id="Fleft_romDate" autoComplete="off" value={this.currentDate} readonly="" />
                               <span id="left_FromDateN" className="errmsg"></span>
                             </div>
                             <div className="col-md-4 col-xs-6">
@@ -670,7 +660,7 @@ export default class User extends Component {
                               <input type="password" required name="password" onChange={this.handleChange} className="form-control" id="left_password" autoComplete="off" />
                               <span id="left_passwordN" className="errmsg"></span>
                             </div>
-                            <div className="col-md-4 col-xs-6">
+                            {/* <div className="col-md-4 col-xs-6">
                               <label id="partnerMAx">Partnership [ 0]</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
                               <input type="number" required name="partner" className="form-control" id="left_partner" max="100" min="0" autoComplete="off" defaultValue="0" />
@@ -687,7 +677,7 @@ export default class User extends Component {
                               <span id="less-partnershipLiveTennPatti"></span>
                               <input type="number" required name="partnershipLiveTennPatti" className="form-control" id="left_partnershipLiveTennPatti" max="100" min="0" autoComplete="off" defaultValue="0" />
                               <span id="left_partnerLiveTennPattiN" className="errmsg"></span>
-                            </div>
+                            </div> */}
                             <div className="col-md-12 col-xs-6 modal-footer">
                               <button type="button" className="blue_button Addsuper1" onClick={this.save} id="child_player_add" >
                                 Add

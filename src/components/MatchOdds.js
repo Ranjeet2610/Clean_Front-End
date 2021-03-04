@@ -889,11 +889,14 @@ export default class MatchOdds extends Component {
 
                                           {
                                             <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
-                                              {this.state.data.length==3 ? index==0 ? <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>
-                                              : index==1 ? <span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>
-                                              : <span class={"runner_amount "+this.state.TthreeColor}>{this.state.TthreePL}</span>
-                                              : index==0 ? <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>
-                                              :<span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>}
+                                              {
+                                                this.state.data.length==3 ? index===0 ? 
+                                                <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span> : index==1 ? 
+                                                <span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>: 
+                                                <span class={"runner_amount "+this.state.TthreeColor}>{this.state.TthreePL}</span>: index==0 ? 
+                                                <span class={"runner_amount "+this.state.ToneColor}>{this.state.TonePL}</span>:
+                                                <span class={"runner_amount "+this.state.TtwoColor}>{this.state.TtwoPL}</span>
+                                              }
                                             </p>
                                           }
                                           <input type="hidden" className="position_1171389306" id="selection_0" data-id={32047099} defaultValue={0} />
@@ -939,15 +942,15 @@ export default class MatchOdds extends Component {
                                   })
                                  :
                                   <tbody>
-                                  <tr>
-                                  <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
-                                  </tr>
+                                    <tr>
+                                      <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
+                                    </tr>
                                   </tbody>
                                   :
                                     filterrunners.length === 0 && inplay === "IN-PLAY" ?
                                       this.state.oddsload ? 
                                       <tbody>
-                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <tr id="user_row0" class="back_lay_color runner-row-32047099">
                                         <td>
                                           <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
                                           <p class="blue-odds" id="Val1-117138930632047099">0</p>
@@ -964,7 +967,7 @@ export default class MatchOdds extends Component {
                                           })
                                         }
                                       </tr>
-                                      <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                        <tr id="user_row0" class="back_lay_color runner-row-32047099">
                                         <td>
                                           <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
                                           <p class="blue-odds" id="Val1-117138930632047099">0</p>
@@ -981,7 +984,7 @@ export default class MatchOdds extends Component {
                                           })
                                         }
                                       </tr>
-                                    </tbody>
+                                      </tbody>
                                     :
                                       <tbody>
                                         <tr>

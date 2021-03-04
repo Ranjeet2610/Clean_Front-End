@@ -33,7 +33,7 @@ export default class Marketpl extends Component {
   }
 
   getMarketplData = () =>   {
-    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
+    if(this.userDetails.superAdmin === false){
       this.props.history.push('/dashboard')
     }
     if(this.userDetails.superAdmin){
