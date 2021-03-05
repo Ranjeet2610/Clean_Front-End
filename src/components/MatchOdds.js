@@ -362,6 +362,8 @@ export default class MatchOdds extends Component {
           data: data.pdata,
           oddsload:false
         });
+        console.log("marketOdds",this.state.marketOdds);
+        console.log("data",this.state.data);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -937,10 +939,17 @@ export default class MatchOdds extends Component {
                                    )
                                    }
                                   })
-                                 :
+                                  :
+                                  inplay === "IN-PLAY" ?
                                   <tbody>
                                   <tr>
                                   <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
+                                  </tr>
+                                  </tbody>
+                                  :
+                                  <tbody>
+                                  <tr>
+                                  <td colSpan="7" className="text-center"><h2>Start Soon..</h2></td>
                                   </tr>
                                   </tbody>
                                   :
