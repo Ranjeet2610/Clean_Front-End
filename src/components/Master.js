@@ -181,6 +181,7 @@ export default class Master extends Component {
       username: userdetails.userName,
       userdetails: userdetails,
     });
+    console.log(userdetails);
     document.getElementById("masterpasswordpopup").classList.add("in");
     document.getElementById("masterpasswordpopup").style.display = "block";
   }
@@ -367,7 +368,8 @@ export default class Master extends Component {
   }
 
   save = async () => {
-    console.log('password change save called')
+    debugger
+    // console.log('password change save called')
     let data;
     let message;
     let path;
@@ -390,6 +392,7 @@ export default class Master extends Component {
           password: this.state.password,
           admin: JSON.parse(localStorage.getItem("data")).userName,
           Master: true,
+          Commission:this.state.partner,
         };
         message = "Master Added Successfully";
         path = "master";
@@ -608,11 +611,13 @@ export default class Master extends Component {
       userName: this.state.userdetails.userName, Name: this.state.Name
     }
     this.users.updateMyprofile(obj, (data) => {
-      alert("updated");
+      // alert("updated");
+      console.log(data);
     });
   }
 
   view_account = (user) => {
+    debugger
     this.setState({
       userdetails: user,
     });
@@ -671,19 +676,6 @@ export default class Master extends Component {
                 <div className="modal-content"></div>
               </div>
             </div>
-
-            {
-              ///////////////////////////// NOTIFY MESSAGE BOX ////////////////////////////////////////////////////////
-            }
-
-            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
-              <div className="error-head" style={{ padding: "3px 0" }}>
-                <h2>SUCCESS</h2>
-              </div>
-              <div className="error-mess" style={{ padding: "5px 0" }}>
-                <h6>{this.state.notifyMsg}</h6>
-              </div>
-            </div> */}
 
             {
               ///////////////////////////////// TITLE OF MASTER LISTING /////////////////////////////////////////////////
@@ -764,13 +756,12 @@ export default class Master extends Component {
                               <span id="left_passwordN" class="errmsg">{this.state.reqPwd ? "*" + this.state.reqPwd : null}</span>
                             </div>
                             <div class="col-md-4 col-xs-6">
-                              <label id="partnerMAx">Partnership [ 0]</label>
-                              &nbsp;&nbsp;&nbsp;&nbsp;
+                              <label id="partnerMAx">Commission</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
-                              <input type="number" required name="partner" class="form-control" id="left_partner" max="100" min="0" autocomplete="off" value="0" />
+                              <input type="number" name="partner"  onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
                               <span id="left_partnerN" class="errmsg"></span>
                             </div>
-                            <div class="col-md-4 col-xs-6">
+                            {/* <div class="col-md-4 col-xs-6">
                               <label id="partnershipCasino">partnership Casino [ 0]</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnershipCasino"></span>
                               <input type="number" name="partnershipCasino" class="form-control" id="left_partnershipCasino" max="100" min="0" autocomplete="off" value="0" />
@@ -781,7 +772,7 @@ export default class Master extends Component {
                               <span id="less-partnershipLiveTennPatti"></span>
                               <input type="number" required name="partnershipLiveTennPatti" class="form-control" id="left_partnershipLiveTennPatti" max="100" min="0" autocomplete="off" value="0" />
                               <span id="left_partnerLiveTennPattiN" class="errmsg" ></span>
-                            </div>
+                            </div> */}
                             <div class="col-md-12 col-xs-6 modal-footer">
                               <button type="button" class="blue_button Addsuper1" onClick={this.save} id="child_player_add" >
                                 Add
@@ -841,7 +832,7 @@ export default class Master extends Component {
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>
-                                  <td className="text-center">0%</td>
+                                  <td className="text-center">{item.Commission}</td>
                                   <td className="text-center">0%</td>
                                   <td className="text-center">0%</td>
                                   <td className="text-center">0.00</td>

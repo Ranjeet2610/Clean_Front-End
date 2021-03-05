@@ -12,6 +12,7 @@ export default class Bethistory extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openSettle:'',
       currentPage:1,
       postsPerPage:10,
       load:false,
@@ -32,16 +33,30 @@ export default class Bethistory extends Component {
 
   }
 
-  handleFilter = async () => {
+  handleFilter= async () => {
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
       let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+      const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
       await this.setState({
-          betHistory:betHistoryFilter
+          betHistory:updateList
         })
       }
-    }
+   }
+
+handleTabFilter = (eventType) => {
+  if(eventType!==""){
+    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
+    this.setState({
+      betHistory:betHistoryFilter
+    })
+  }
+  else{
+    this.getBetData();
+  }
+}
+
 
   changeBackground = (e,type) =>{
     if(type==='Back'){
@@ -63,8 +78,9 @@ export default class Bethistory extends Component {
 
   handleChange = (event) => {
     this.setState({
-      [event.target.name]:[event.target.value]
+      [event.target.name]:event.target.value
     })  
+    console.log(event.target.name,"=>",event.target.value);
   }
 
   handleClear = () =>{
@@ -159,18 +175,6 @@ componentDidMount() {
     }
 }
 
-handleTabFilter = (eventType) => {
-  if(eventType!==""){
-    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
-    this.setState({
-      betHistory:betHistoryFilter
-    })
-  }
-  else{
-    this.getBetData();
-  }
-}
-
   render(){
     let color= this.state.color;
     let device;
@@ -230,10 +234,10 @@ handleTabFilter = (eventType) => {
                       </select>
                     </div> */}
                     <div className="popup_col_2">
-                      <select className="form-control" onChange={this.handleFilterByDropdown}  name="historyType">
-                        <option value="">Select All</option>
-                        <option value="open">Open</option>
-                        <option value="settled">Settled</option>
+                      <select className="form-control" onChange={this.handleChange}  name="historyType">
+                        {/* <option value="">Select All</option> */}
+                        <option >open</option>
+                        <option >settled</option>
                       </select>
                     </div>
                     <div className="popup_col_3">
