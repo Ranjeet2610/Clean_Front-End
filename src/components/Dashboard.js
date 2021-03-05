@@ -36,24 +36,24 @@ class Dashboard extends Component {
       cricketStatus:[],
       inplayEvents:[],
       inplay:false,
-      ct1Back:'',
-      ct1lay:'',
-      ct2Back:'',
-      ct2lay:'',
-      cdrwBack:'',
-      cdrwlay:'',
-      tt1Back:'',
-      tt1lay:'',
-      tt2Back:'',
-      tt2lay:'',
-      tdrwBack:'',
-      tdrwlay:'',
-      st1Back:'',
-      st1lay:'',
-      st2Back:'',
-      st2lay:'',
-      sdrwBack:'',
-      sdrwlay:'',
+      ct1Back:[],
+      ct1lay:[],
+      ct2Back:[],
+      ct2lay:[],
+      cdrwBack:[],
+      cdrwlay:[],
+      tt1Back:[],
+      tt1lay:[],
+      tt2Back:[],
+      tt2lay:[],
+      tdrwBack:[],
+      tdrwlay:[],
+      st1Back:[],
+      st1lay:[],
+      st2Back:[],
+      st2lay:[],
+      sdrwBack:[],
+      sdrwlay:[],
       soccerArray:[]
     };
     this.service = new Service();
@@ -113,7 +113,7 @@ class Dashboard extends Component {
     localStorage.setItem("matchname", JSON.stringify({name:name,date:date,sport:sportType}));
     this.setState({
       load:true
-  })
+    })
   }
 
   render() {
@@ -207,6 +207,7 @@ class Dashboard extends Component {
                                           <span className="inplay_txt"> {inplay}</span>
                                         </div>
                                         <div className="match_odds_front">
+<<<<<<< HEAD
                                           <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
                                           <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
                                           <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
@@ -214,6 +215,15 @@ class Dashboard extends Component {
                                           <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
                                           <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
                                       </div> 
+=======
+                                          <span className="back-cell">{this.state.ct1Back[item.eventId]?this.state.ct1Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.ct1lay[item.eventId]?this.state.ct1lay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.cdrwBack[item.eventId]?this.state.cdrwBack[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.cdrwlay[item.eventId]?this.state.cdrwlay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.ct2Back[item.eventId]?this.state.ct2Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.ct2lay[item.eventId]?this.state.ct2lay[item.eventId]:0}</span>
+                                        </div>
+>>>>>>> origin/sachin
                                       </div>
                                     </div>
                                   );
@@ -260,6 +270,7 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
+<<<<<<< HEAD
                                           <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
                                           <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
                                           <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
@@ -267,6 +278,15 @@ class Dashboard extends Component {
                                           <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
                                           <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
                                       </div> 
+=======
+                                          <span className="back-cell">{this.state.tt1Back[item.eventId]?this.state.tt1Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.tt1lay[item.eventId]?this.state.tt1lay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.tdrwBack[item.eventId]?this.state.tdrwBack[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.tdrwlay[item.eventId]?this.state.tdrwlay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.tt2Back[item.eventId]?this.state.tt2Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.tt2lay[item.eventId]?this.state.tt2lay[item.eventId]:0}</span>
+                                        </div>
+>>>>>>> origin/sachin
                                     </div>
                                   );
                                 })
@@ -312,6 +332,7 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
+<<<<<<< HEAD
                                           <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
                                           <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
                                           <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
@@ -320,6 +341,15 @@ class Dashboard extends Component {
                                           <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
                                       </div> 
                             
+=======
+                                          <span className="back-cell">{this.state.st1Back[item.eventId]?this.state.st1Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.st1lay[item.eventId]?this.state.st1lay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.sdrwBack[item.eventId]?this.state.sdrwBack[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.sdrwlay[item.eventId]?this.state.sdrwlay[item.eventId]:0}</span>
+                                          <span className="back-cell">{this.state.st2Back[item.eventId]?this.state.st2Back[item.eventId]:0}</span>
+                                          <span className="lay-cell">{this.state.st2lay[item.eventId]?this.state.st2lay[item.eventId]:0}</span>
+                                        </div>
+>>>>>>> origin/sachin
                                     </div>
                                   );
                                 })    

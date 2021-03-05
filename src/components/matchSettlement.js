@@ -16,6 +16,9 @@ export default class EventMatchOdds extends Component {
       liveodds:'',
       runnersdata:[],
       winnerTeam:'',
+      selectionOne:'',
+      selectionTwo:'',
+      selectionThree:'',
       settledisabled:false
     };
     this.events = new Livevents();
@@ -59,15 +62,19 @@ export default class EventMatchOdds extends Component {
     })
   }
 
-  handleSettlement = (selectionId,marketId,winnerTeam) => {
+  handleSettlement = (selectionId,marketId,winnerTeam,selectionOne,selectionTwo,selectionThree) => {
     if(selectionId !== ""){
       const obj = {
-        selectionId : selectionId,
-        marketId: marketId,
+        selectionId:selectionId,
+        marketId:marketId,
         eventId:this.props.match.params.id,
-        winnerTeam: winnerTeam
+        winnerTeam:winnerTeam,
+        selectionOne:selectionOne,
+        selectionTwo:selectionTwo,
+        selectionThree:selectionThree
       }
-      this.users.matchSettlement(obj,(data)=>{
+      console.log(obj);
+     this.users.matchSettlement(obj,(data)=>{
         // console.log("DDDDDDDDD",data);
         this.getMatchOdds();
       })
@@ -80,11 +87,14 @@ export default class EventMatchOdds extends Component {
   handleMatchSettle = (event) => {
       this.setState({
           [event.target.name]:event.target.value.split("||")[0],
-          winnerTeam:event.target.value.split("||")[1]
+          winnerTeam:event.target.value.split("||")[1],
+          selectionOne:event.target.value.split("||")[3],
+          selectionTwo:event.target.value.split("||")[4],
+          selectionThree:event.target.value.split("||")[5]
       })
   }
-
   render(){
+    let teamSelectionsID;
     return (
         <div>
           <Navbar />
@@ -126,8 +136,8 @@ export default class EventMatchOdds extends Component {
                               {
                                 this.state.runnersdata.length > 0 &&
                                 this.state.runnersdata.map((item,index) => {
-                                   
-                                  return (
+                                teamSelectionsID = teamSelectionsID+'||'+item.selectionId;
+                                return (
                                         <div key={index}>
                                             <p>Runner Name : {item.runnerName} </p>,
                                             <p>Selection Id : {item.selectionId}</p><br/>
@@ -140,7 +150,8 @@ export default class EventMatchOdds extends Component {
                               <input type="checkbox"  checked={this.state.marketata.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e)}  style={{height: '20px',width: '20px'}}/>
                             </td> 					    */}
                             <td className="text-center">
-                                {/*
+                                {
+                                /*
                                   this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i> : null
                                 */}
                                 {
@@ -153,12 +164,16 @@ export default class EventMatchOdds extends Component {
                                             this.state.runnersdata.length > 0 &&
                                             this.state.runnersdata.map((item,index) => {
                                             return(
-                                                <option key={index} value={item.selectionId+'||'+item.runnerName}>{item.runnerName}</option>
+                                                <option key={index} value={item.selectionId+'||'+item.runnerName+'||'+teamSelectionsID}>{item.runnerName}</option>
                                             )}
                                             )
                                         }
                                     </select>
+<<<<<<< HEAD
                                     <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam)} className="SettleButton" disabled={this.props.location.state.status==="settled" || this.state.disabled} style={this.props.location.state.status==="settled" || this.state.disabled ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+=======
+                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam, this.state.selectionOne, this.state.selectionTwo, this.state.selectionThree)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+>>>>>>> origin/sachin
                                 </form>
                                 :"In-Play"
                                 }
