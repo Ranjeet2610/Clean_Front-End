@@ -169,11 +169,7 @@ export default class EventMatchOdds extends Component {
                                             )
                                         }
                                     </select>
-<<<<<<< HEAD
-                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam)} className="SettleButton" disabled={this.props.location.state.status==="settled" || this.state.disabled} style={this.props.location.state.status==="settled" || this.state.disabled ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
-=======
                                     <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam, this.state.selectionOne, this.state.selectionTwo, this.state.selectionThree)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
->>>>>>> origin/sachin
                                 </form>
                                 :"In-Play"
                                 }
