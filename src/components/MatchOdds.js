@@ -142,10 +142,11 @@ export default class MatchOdds extends Component {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     setTimeout(()=> {
     let getRunner = this.state.data.length;
-    let Team1 = this.state.data[0].runnerName;
-    let Team2 = this.state.data[1].runnerName;
+    let teams = this.state.matchName.split(" v ");
+    let Team1 = teams[0];//this.state.data[0].runnerName;
+    let Team2 = teams[1];//this.state.data[1].runnerName;
     if(getRunner==3){
-      var Team3 = this.state.data[2].runnerName;
+      var Team3 = "The Draw";//this.state.data[2].runnerName;
     }
     if(val!=0){
       if(type=='Back'){
@@ -435,10 +436,16 @@ export default class MatchOdds extends Component {
       // });
         let getRunner = data.pdata.length;
         // console.log("DDDD",data.pdata);
-        let Teamone = data.pdata[0].runnerName;
+        /*let Teamone = data.pdata[0].runnerName;
         let Teamtwo = data.pdata[1].runnerName;
         if(getRunner==3){
           var Teamthree = data.pdata[2].runnerName;
+        }*/
+        let teams = this.state.matchName.split(" v ");
+        let Teamone = teams[0];//this.state.data[0].runnerName;
+        let Teamtwo = teams[1];//this.state.data[1].runnerName;
+        if(getRunner==3){
+          var Teamthree = "The Draw";//this.state.data[2].runnerName;
         }
         let T1TotalPL = 0;
         let T2TotalPL = 0;
@@ -613,10 +620,16 @@ export default class MatchOdds extends Component {
     setTimeout(()=> {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     let getRunner = this.state.data.length;
-    let Team1 = this.state.data[0].runnerName;
+    /*let Team1 = this.state.data[0].runnerName;
     let Team2 = this.state.data[1].runnerName;
     if(getRunner==3){
       var Team3 = this.state.data[2].runnerName;
+    }*/
+    let teams = this.state.matchName.split(" v ");
+    let Team1 = teams[0];//this.state.data[0].runnerName;
+    let Team2 = teams[1];//this.state.data[1].runnerName;
+    if(getRunner==3){
+      var Team3 = "The Draw";//this.state.data[2].runnerName;
     }
     if(betType=='Back'){
       if(teamSelection==Team1){
