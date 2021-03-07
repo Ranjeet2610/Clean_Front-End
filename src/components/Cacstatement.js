@@ -124,6 +124,7 @@ render(){
         dwuserby = item.depositedByName;
       }else{
         deposited = 0;
+        withdraw = item.amount;
       }
       if(item.hasOwnProperty('withdrawIn')){
         withdraw = item.amount;
@@ -131,6 +132,7 @@ render(){
         dwuserby = item.withdrawInName;
       }else{
         withdraw = 0;
+        deposited = item.amount;
       }
       return (
         <tr key={index}>

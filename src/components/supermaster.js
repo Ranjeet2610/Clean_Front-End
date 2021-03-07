@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pagination from './Pagination'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -22,7 +23,7 @@ export default class SuperMaster extends Component {
       eqlOrNot: '',
       confirm_password: '',
       newPassword: '',
-      data: "",
+      data: [],
       name: "",
       userName: "",
       password: "",
@@ -53,7 +54,6 @@ export default class SuperMaster extends Component {
       searchFilter: [],
       totalBalance: 0,
       notifyMsg: "",
-      msgBox: "none",
       naam: "",
       userNaam: "",
       pwd: "",
@@ -68,6 +68,9 @@ export default class SuperMaster extends Component {
   addUser = (name) => {
     this.setState({
       masterUName: name,
+      reqPwd: '',
+      reqID: '',
+      reqMsg: ''
     });
   }
 
@@ -77,23 +80,27 @@ export default class SuperMaster extends Component {
       this.props.history.push('/dashboard')
     }
     else{
-    this.setState({
-      load:true
-    })
-      this.users.getAllAdmin((data) => {
-        this.setState({
-          data: data.data,
-          searchFilter: data.data,
-          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-          load:false
-        });
-        let totalBalance = 0;
-        this.state.data.map((ele) => {
-          totalBalance += ele.walletBalance;
-        });
-        this.setState({ totalBalance });
-      });
+      this.setState({
+        load:true
+      })
+      this.getAllAdmin();
     }
+  }
+
+  getAllAdmin = () => {
+    this.users.getAllAdmin((data) => {
+      this.setState({
+        data: data.data,
+        searchFilter: data.data,
+        walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+        load:false
+      });
+      let totalBalance = 0;
+      this.state.data.map((ele) => {
+        totalBalance += ele.walletBalance;
+      });
+      this.setState({ totalBalance });
+    });
   }
 
   update_free_chips = () => {
@@ -102,40 +109,44 @@ export default class SuperMaster extends Component {
         userid: this.state.userdetails.id,
         fillAmount: this.state.Chips
       }
+      if(this.state.Chips!==""){
       this.users.creditbyUser(obj, "creditAmountBySuperAdmin", (pdata) => {
         const obj1 = {
           userName: JSON.parse(localStorage.getItem("data")).userName
         }
         this.users.getMyprofile(obj1, (data) => {
           localStorage.setItem("data", JSON.stringify(data.data));
-          this.setState({
-            notifyMsg: pdata.data.message
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
         });
+        switch ('success') {
+          case 'success':
+            NotificationManager.success(pdata.data.message,"Success");
+          break;
+      }
       });
+    }
+    this.closechipDepositpopup();
     }
     else {
       const obj = {
         userid: this.state.userdetails.id,
         fillAmount: this.state.Chips
       }
+      if(this.state.Chips!==""){
       this.users.debitbyUser(obj, "debitAmountBySuperAdmin", (pdata) => {
         const obj = {
           userName: JSON.parse(localStorage.getItem("data")).userName
         }
         this.users.getMyprofile(obj, (data) => {
           localStorage.setItem("data", JSON.stringify(data.data));
-          this.setState({
-            notifyMsg: pdata.data.message
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
+          switch ('success') {
+            case 'success':
+              NotificationManager.success(pdata.data.message,"Success");
+              break;
+        }
         });
       });
+    }
+    this.closechipWithdrawalpopup();
     }
   }
 
@@ -215,6 +226,11 @@ export default class SuperMaster extends Component {
   }
 
   closePasswordpopup = () => {
+    this.setState({
+      reqNewPwd: '',
+      reqConfirmPwd: '',
+      notEqualMsg: ''
+    });
     document.getElementById("masterpasswordpopup").style.display = "none";
     document.getElementById("masterpasswordpopup").classList.remove("in");
   }
@@ -223,6 +239,7 @@ export default class SuperMaster extends Component {
     document.getElementById("chipdeposit").style.display = "none";
     document.getElementById("chipdeposit").classList.remove("in");
     this.setState({
+      Chips:'',
       newParentChip: "",
       newCurrChip: "",
     })
@@ -232,6 +249,7 @@ export default class SuperMaster extends Component {
     document.getElementById("chipwithdrawal").style.display = "none";
     document.getElementById("chipwithdrawal").classList.remove("in");
     this.setState({
+      Chips:'',
       newParentChip: "",
       newCurrChip: "",
     })
@@ -354,7 +372,7 @@ export default class SuperMaster extends Component {
     }
   };
 
-  save = async () => {
+  save = async (userType) => {
     let data;
     let message;
     let path;
@@ -371,7 +389,8 @@ export default class SuperMaster extends Component {
         };
         message = "Master Added Successfully";
         path = "master/" + this.state.masterUName;
-      } else {
+      } 
+      else {
         data = {
           userName: this.state.userName,
           Name: this.state.name,
@@ -385,29 +404,38 @@ export default class SuperMaster extends Component {
       }
 
       this.users.createUser(data, (data) => {
-        this.setState({
-          notifyMsg: message
-        });
-        setTimeout(() => {
-          window.location.href = path;
-        }, 1000)
-      });
+        switch ('success') {
+          case 'success':
+              NotificationManager.success(message,"Success");
+              break;
+      }
+    });
+    this.getAllAdmin();
+    if(userType==="superAddMaster"){
+      document.getElementById('superAddUser').click();
+    }
+    else{
+      document.getElementById("addMaster").click();
+    }
     }
   }
 
   setAction = () => {
+    debugger
     if (this.state.useraction == "mstrlock-0") {
       const obj = {
         userName: this.state.mName
       }
       this.users.lockunlock(obj, (data) => {
-        this.setState({
-          notifyMsg: "Supermaster Locked !",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Supermaster Locked !","Success");
+          break;
+        }
+        this.getAllAdmin();
+      });
+      this.setState({
+        notifyMsg: ''
       });
     }
     else if (this.state.useraction == "mstrlock-1") {
@@ -415,13 +443,15 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockunlock(obj1, (data) => {
-        this.setState({
-          notifyMsg: "Supermaster Unlocked !",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+              NotificationManager.success("Supermaster Unlocked !","Success");
+              break;
+      }
+        this.getAllAdmin();
+      });
+      this.setState({
+        notifyMsg: ''
       });
     }
     else if (this.state.useraction == "lgnusrlckbtng-0") {
@@ -429,28 +459,48 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockingUnlockingBetting(obj2, (data) => {
-        this.setState({
-          notifyMsg: "Betting locked !",
-          msgBox: "block",
+        switch ('success') {
+          case 'success':
+              NotificationManager.success("Betting locked !","Success");
+              break;
+      }
+        this.getAllAdmin();
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      });
+        this.setState({
+          notifyMsg: ''
+        });
     }
     else if (this.state.useraction == "lgnusrlckbtng-1") {
       const obj2 = {
         userName: this.state.mName
       }
       this.users.lockingUnlockingBetting(obj2, (data) => {
-        this.setState({
-          notifyMsg: "Betting Unlocked !",
-          msgBox: "block",
+        switch ('success') {
+          case 'success':
+              NotificationManager.success("Betting Unlocked !","Success");
+              break;
+      }
+        this.getAllAdmin();
         });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
-      });
+        this.setState({
+          notifyMsg: ''
+        });
+    }
+    else{
+      const obj2 = {
+        userName: this.state.mName
+      }
+      this.users.closeuser(obj2, (data) => {
+        switch ('success') {
+          case 'success':
+              NotificationManager.success("User Account Close !","Success");
+              break;
+      }
+        this.getAllAdmin();
+        });
+        this.setState({
+          notifyMsg: ''
+        });
     }
   }
 
@@ -555,23 +605,29 @@ export default class SuperMaster extends Component {
         this.users.changePassword(obj, (data) => {
           document.getElementById("newPassword").value = "";
           document.getElementById("confirm_password").value = "";
-          this.setState({
-            notifyMsg: data.data.message
+          // this.setState({
+          //   notifyMsg: data.data.message
+          // });
+          switch ('success') {
+            case 'success':
+                NotificationManager.success(data.data.message,"Success");
+                break;
+        }
           });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
-        });
+          this.setState({
+            notifyMsg: ''
+          });
+        };
       }
+      this.closePasswordpopup();
     }
-  }
 
-  view_account = (user) => {
-    this.setState({
+  view_account = async (user) => {
+    await this.setState({
       userdetails: user,
     });
-    document.getElementById("viewinfo").classList.add("in");
-    document.getElementById("viewinfo").style.display = "block";
+    // document.getElementById("viewinfo").classList.add("in");
+    // document.getElementById("viewinfo").style.display = "block";
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
@@ -587,6 +643,15 @@ export default class SuperMaster extends Component {
   closeviewinfo = () => {
     document.getElementById("viewinfo").style.display = "none";
     document.getElementById("viewinfo").classList.remove("in");
+  }
+
+  handleNotifyMsgClean = () => {
+    this.setState({
+      reqPwd: '',
+      reqID: '',
+      reqMsg: ''
+    });
+    document.getElementById("superAddUser").click();
   }
 
   handleSearch = (e) => {
@@ -605,15 +670,14 @@ export default class SuperMaster extends Component {
   }
 
   render() {
-
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
-
+    const currentPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />
         <Sidebar />
+        <NotificationContainer/>
         <div className="forModal" />
       {
         this.state.load ?
@@ -627,19 +691,6 @@ export default class SuperMaster extends Component {
                 <div className="modal-content"></div>
               </div>
             </div>
-
-            {
-              ////////////////////////////////// NOTIFY MSG BOX //////////////////////////////////////////////////
-            }
-            {/* <div className="error-box" style={{ border: "5px solid #fff", width: "30rem", height: "110px", textAlign: "center", color: "#fff", position: "absolute", left: "42%", top: "4%", zIndex: "100", display: this.state.msgBox, backgroundColor: "green" }} >
-              <div className="error-head" style={{ padding: "3px 0" }}>
-                <h2>SUCCESS</h2>
-              </div>
-              <div className="error-mess" style={{ padding: "5px 0" }}>
-                <h6>{this.state.notifyMsg}</h6>
-              </div>
-            </div> */}
-
             <div className="right_col" role="main">
               <div className="col-md-12">
                 <div className="title_new_at">
@@ -673,7 +724,8 @@ export default class SuperMaster extends Component {
                   <button className="btn btn-warning btn-xs" onClick={this.setAction} style={{ padding: "5px", marginLeft: "4px" }} >
                     ACTION
                   </button>
-                  <button className="btn btn-warning btn-xs " data-toggle="modal" data-target="#exampleModal" style={{ padding: "5px", marginLeft: "2px", marginRight: "2px", }} >
+                  <span id="superAddUser" data-toggle="modal" data-target="#exampleModalAddSuperMaster"></span>
+                  <button className="btn btn-warning btn-xs" onClick={this.handleNotifyMsgClean}  style={{ padding: "5px", marginLeft: "2px", marginRight: "2px", }} >
                     ADD USER
                   </button>
                   <button className="btn btn-warning btn-xs " style={{ padding: "5px", marginTop: "2px" }} onClick={() => { this.props.history.goBack(); }} >
@@ -684,19 +736,19 @@ export default class SuperMaster extends Component {
                     ////////////////////////////// MODAL FOR ADD USER /////////////////////////////////////////
                   }
 
-                  <div className="modal fade" id="exampleModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                  <div className="modal fade" id="exampleModalAddSuperMaster" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title" id="exampleModalLabel">
-                            Add Master
+                            Add SuperMaster
                           </h5>
                           <button type="button" className="close" data-dismiss="modal" aria-label="Close" >
-                            <span aria-hidden="true">×</span>
+                            <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
                         <div class="modal-body">
-                          <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                          {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                           <div class="row">
                             <div class="col-md-4 col-xs-6">
                               <label> Name *</label>
@@ -721,7 +773,7 @@ export default class SuperMaster extends Component {
                             <div class="col-md-4 col-xs-6">
                               <label id="partnerMAx">Partnership [0]</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
-                              <input type="number" name="partner" readonly="" onChange={this.handleChange} class="form-control" id="left_partner" placeholder="0" max="100" min="0" autocomplete="off" />
+                              <input type="number" name="partner" readonly="" onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
                               <span id="left_partnerN" class="errmsg"></span>
                             </div>
                             <div class="col-md-4 col-xs-6">
@@ -737,7 +789,10 @@ export default class SuperMaster extends Component {
                               <span id="left_partnerLiveTennPattiN" class="errmsg" ></span>
                             </div>
                             <div class="col-md-12 col-xs-6 modal-footer">
-                              {JSON.parse(localStorage.getItem("data")).superAdmin ? <button type="button" class="blue_button Addsuper1" onClick={this.save} id="child_player_add" >Add</button> : null}
+                              {
+                                JSON.parse(localStorage.getItem("data")).superAdmin ? 
+                                <button type="button" class="blue_button Addsuper1" onClick={()=>this.save("superAddMaster")} id="child_player_add" >Add</button> : null
+                              }
                               <button data-dismiss="modal" type="button" class="red_button" >
                                 Cancel
                               </button>
@@ -812,7 +867,7 @@ export default class SuperMaster extends Component {
                                           <Link to={"/profitloss/" + item.userName}>Profit Loss</Link>
                                         </li>
                                         <li>
-                                          <Link className title="View Account Info" nClick={() => this.view_account(item)} >
+                                          <Link className title="View Account Info" onClick={() => this.view_account(item)} >
                                             <span>View Info</span>
                                           </Link>
                                         </li>
@@ -871,14 +926,14 @@ export default class SuperMaster extends Component {
                 <div className="modal-content">
                   <div className="popup_form">
                     <div className="title_popup">
-                      <span>Add User</span>
+                      <span>Add Master</span>
                       <button type="button" className="close" data-dismiss="modal" >
                         <div className="close_new"><i className="fa fa-ties-circle" /></div>
                       </button>
                     </div>
                     <div className="content_popup">
                       <div className="popup_form_row">
-                        <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                        {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                         <div className="modal-body">
                           <div className="row">
                             <div className="col-md-4 col-xs-6">
@@ -901,8 +956,15 @@ export default class SuperMaster extends Component {
                               <input type="password" name="password" onChange={this.handleChange} className="form-control" id="left_password" autocomplete="off" />
                               <span id="left_passwordN" className="errmsg"> {this.state.reqPwd ? "*" + this.state.reqPwd : null} </span>
                             </div>
+                            <div class="col-md-4 col-xs-6">
+                              <label id="partnerMAx">Commission</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                              <span id="less-partnership"></span>
+                              <input type="number" name="partner" readonly="" onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
+                              <span id="left_partnerN" class="errmsg"></span>
+                            </div>
                             <div className="col-md-12 col-xs-6 modal-footer">
-                              <button type="button" className="blue_button Addsuper1" onClick={this.save} id="child_player_add" >
+                              <span id="addMaster" data-dismiss="modal"></span>
+                              <button type="button" className="blue_button Addsuper1" onClick={()=>this.save("addMaster")} id="child_player_add" >
                                 Add
                               </button>
                               <button data-dismiss="modal" type="button" className="red_button" >
@@ -980,7 +1042,7 @@ export default class SuperMaster extends Component {
                         <span id="tital_change"> Free Chips In/Out {this.state.username} </span>
                       </h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div class="row">
                         <div id="UpdateChipsMsg"></div>
@@ -988,7 +1050,7 @@ export default class SuperMaster extends Component {
                           <span id="msg_error"></span> <span id="errmsg"></span>
                           <div class="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" class="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" class="form-control" value={this.state.Chips} onChange={this.handleChange} autoComplete="off" required="" />
                             <span id="ChipsN" class="errmsg"></span>
                           </div>
                           <div class="col-md-12">
@@ -1051,7 +1113,7 @@ export default class SuperMaster extends Component {
                           <span id="msg_error"></span> <span id="errmsg"></span>
                           <div class="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" class="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" class="form-control" value={this.state.Chips} onChange={this.handleChange} autoComplete="off" required="" />
                             <span id="ChipsN" class="errmsg"></span>
                           </div>
                           <div class="col-md-12">
@@ -1099,7 +1161,7 @@ export default class SuperMaster extends Component {
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header" style={{ background: "#6c1945", color: "white" }}>
-                    <button type="button" class="close" Click={() => this.closeviewinfo()} data-dismiss="modal" > × </button>
+                    <button type="button" class="close" onClick={this.closeviewinfo} data-dismiss="modal" > &times; </button>
                     <h4 class="modal-title">
                       <span id="tital_change"> Account of {this.state.userdetails.userName} </span>
                     </h4>

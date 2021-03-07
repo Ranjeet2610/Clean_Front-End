@@ -11,6 +11,8 @@ export default class BlockMarket extends React.Component {
       data:[],      
     }
     this.users =new Users();
+    this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined?JSON.parse(localStorage.getItem('data')):'';
+
   }
 
   getallsports = async() => {
@@ -29,7 +31,12 @@ export default class BlockMarket extends React.Component {
   }
 
   componentDidMount = () => {
-    this.getallsports();
+    if(this.userDetails.superAdmin === false){
+      this.props.history.push('/dashboard')
+    }
+    else{
+      this.getallsports();
+    }
   }
 
   handleBlockMarket = (eventType) => {

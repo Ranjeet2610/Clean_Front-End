@@ -119,7 +119,7 @@ export default class ManageFancyOdds extends Component {
                                           // this.state.disabledIndex===index ?
                                           <>
                                             <input type="text" size="5" name="result" value={item.settledValue} disabled={item.settlementStatus ? true : false} onChange={this.handleOnChange}/>
-                                            <input type="button" onClick={(id)=>this.handleFancySettlement(item.marketId)} value="Settle" disabled={item.settlementStatus ? true : false} className="SettleButton" style={item.settlementStatus ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+                                            <input type="button" onClick={()=>this.handleFancySettlement(item.marketId)} value="Settle" disabled={item.settlementStatus ? true : false} className="SettleButton" style={item.settlementStatus ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                           </>
                                           // :
                                           // <>

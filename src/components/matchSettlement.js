@@ -223,7 +223,7 @@ export default class EventMatchOdds extends Component {
                                 new Date(this.state.marketata.marketStartTime).getTime()<new Date().getTime() && this.state.liveodds.length===0 ?
                                 showSettlement?
                                 <form>
-                                    <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled"} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
+                                    <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled" || this.state.disabled } style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
                                     <option value="">Select Winner</option>
                                         {
                                             this.state.runnersdata.length > 0 &&

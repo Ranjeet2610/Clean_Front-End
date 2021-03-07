@@ -62,61 +62,6 @@ class Dashboard extends Component {
     this.odds = "";
   }
 
-  liveOdds = () => {
-    /* this.state.cricketData.map((element)=>
-     this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
-        let ct1Back = [ ...this.state.ct1Back ];
-        ct1Back[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price;
-        let ct1lay = [ ...this.state.ct1lay ];
-        ct1lay[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price;
-        let ct2Back = [ ...this.state.ct2Back ];
-        ct2Back[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price;
-        let ct2lay = [ ...this.state.ct2lay ];
-        ct2lay[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price;
-        let cdrwBack = [ ...this.state.cdrwBack ];
-        cdrwBack[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price;
-        let cdrwlay = [ ...this.state.cdrwlay ];
-        cdrwlay[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price;
-        this.setState({ct1Back,ct1lay,ct2Back,ct2lay,cdrwBack,cdrwlay});
-      })
-    )      
-
-    this.state.tenisData.map((element)=>
-      this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
-        let tt1Back = [ ...this.state.tt1Back ];
-        tt1Back[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price;
-        let tt1lay = [ ...this.state.tt1lay ];
-        tt1lay[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price;
-        let tt2Back = [ ...this.state.tt2Back ];
-        tt2Back[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price;
-        let tt2lay = [ ...this.state.tt2lay ];
-        tt2lay[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price;
-        let tdrwBack = [ ...this.state.tdrwBack ];
-        tdrwBack[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price;
-        let tdrwlay = [ ...this.state.tdrwlay ];
-        tdrwlay[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price;
-        this.setState({tt1Back,tt1lay,tt2Back,tt2lay,tdrwBack,tdrwlay});
-      })
-    )
-    this.state.soccerData.map((element)=>
-      this.users.getLiveMatchOdds({eventId:element.eventId},(data)=>{
-        let st1Back = [ ...this.state.st1Back ];
-        st1Back[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToBack[0]?.price;
-        let st1lay = [ ...this.state.st1lay ];
-        st1lay[element.eventId] = data.data.data[0]?.runners[0]?.ex?.availableToLay[0]?.price;
-        let st2Back = [ ...this.state.st2Back ];
-        st2Back[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToBack[1]?.price;
-        let st2lay = [ ...this.state.st2lay ];
-        st2lay[element.eventId] = data.data.data[0]?.runners[1]?.ex?.availableToLay[1]?.price;
-        let sdrwBack = [ ...this.state.sdrwBack ];
-        sdrwBack[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToBack[2]?.price;
-        let sdrwlay = [ ...this.state.sdrwlay ];
-        sdrwlay[element.eventId] = data.data.data[0]?.runners[2]?.ex?.availableToLay[2]?.price;
-        this.setState({st1Back,st1lay,st2Back,st2lay,sdrwBack,sdrwlay});
-      })
-    )*/
-  }
-
   componentDidMount() {
     this.setState({
         load:true
@@ -127,7 +72,6 @@ class Dashboard extends Component {
       const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
       const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
       const inplayData = data.data.Data.filter((ele)=>new Date(ele.OpenDate).getTime()<new Date().getTime())
-      // console.log(data.data.Data);
       this.setState({
         inplayEvents:inplayData,
         soccerData:dataFFilter,
@@ -135,10 +79,7 @@ class Dashboard extends Component {
         cricketData:dataCFilter,
         load: false
       })
-      this.liveOdds();
-      setInterval(()=>{
-        this.liveOdds();
-      },300000)
+      console.log(dataTFilter);
     });
   }
 
@@ -164,12 +105,13 @@ class Dashboard extends Component {
     })
   }
 
-  matchOddspage = (txt, name,date,sportType) => {
+  matchOddspage = (txt, team1, team2,date,sportType) => {
     this.setState({
       load:false
     })
+    let team = team1+ " v " + team2
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
-    localStorage.setItem("matchname", JSON.stringify({name:name,date:date,sport:sportType}));
+    localStorage.setItem("matchname", JSON.stringify({name:team,date:date,sport:sportType}));
     this.setState({
       load:true
     })
@@ -231,7 +173,16 @@ class Dashboard extends Component {
                             {
                               this.state.cricketData.length <= 0 ? null :
                                 this.state.cricketData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
+                                  // let oddsDB = {
+                                  //   item:item?.runners[0]?.backOdds,
+                                  //   item:item?.runners[0]?.backOdds,
+                                  //   item:item?.runners[0]?.backOdds,
+                                  //   item:item?.runners[0]?.backOdds,
+                                  //   item:item?.runners[0]?.backOdds,
+                                  //   item:item?.runners[0]?.backOdds,
+                                  // }
+                                  // console.log(item);
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
@@ -243,7 +194,12 @@ class Dashboard extends Component {
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName,item.OpenDate,item.eventType) }>
+                                          {
+                                            TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
+                                            TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
+                                            console.log(TeamA[0].runnerName,TeamB[0].runnerName)
+                                          }
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName,item.OpenDate,item.eventType) }>
                                             {item.eventName}
                                           </Link>
                                           <time>
@@ -257,13 +213,13 @@ class Dashboard extends Component {
                                           <span className="inplay_txt"> {inplay}</span>
                                         </div>
                                         <div className="match_odds_front">
-                                          <span className="back-cell">{this.state.ct1Back[item.eventId]?this.state.ct1Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.ct1lay[item.eventId]?this.state.ct1lay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.cdrwBack[item.eventId]?this.state.cdrwBack[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.cdrwlay[item.eventId]?this.state.cdrwlay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.ct2Back[item.eventId]?this.state.ct2Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.ct2lay[item.eventId]?this.state.ct2lay[item.eventId]:0}</span>
-                                        </div>
+                                          <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[2]?.layOdds?item?.runners[2]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
+                                      </div> 
                                       </div>
                                     </div>
                                   );
@@ -285,7 +241,7 @@ class Dashboard extends Component {
                             {
                               this.state.tenisData.length <= 0 ? null :
                                 this.state.tenisData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
@@ -296,7 +252,12 @@ class Dashboard extends Component {
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                      {
+                                        // TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
+                                        // TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
+                                        // console.log(TeamA[0].runnerName,TeamB[0].runnerName)
+                                      }
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName, item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
                                         <time>
@@ -310,13 +271,13 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                          <span className="back-cell">{this.state.tt1Back[item.eventId]?this.state.tt1Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.tt1lay[item.eventId]?this.state.tt1lay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.tdrwBack[item.eventId]?this.state.tdrwBack[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.tdrwlay[item.eventId]?this.state.tdrwlay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.tt2Back[item.eventId]?this.state.tt2Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.tt2lay[item.eventId]?this.state.tt2lay[item.eventId]:0}</span>
-                                        </div>
+                                          <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[2]?.layOdds?item?.runners[2]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
+                                      </div> 
                                     </div>
                                   );
                                 })
@@ -337,7 +298,7 @@ class Dashboard extends Component {
                             {
                               this.state.soccerData.length <= 0 ? null :
                                 this.state.soccerData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
@@ -362,13 +323,14 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                          <span className="back-cell">{this.state.st1Back[item.eventId]?this.state.st1Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.st1lay[item.eventId]?this.state.st1lay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.sdrwBack[item.eventId]?this.state.sdrwBack[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.sdrwlay[item.eventId]?this.state.sdrwlay[item.eventId]:0}</span>
-                                          <span className="back-cell">{this.state.st2Back[item.eventId]?this.state.st2Back[item.eventId]:0}</span>
-                                          <span className="lay-cell">{this.state.st2lay[item.eventId]?this.state.st2lay[item.eventId]:0}</span>
-                                        </div>
+                                          <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[2]?.layOdds?item?.runners[2]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
+                                      </div> 
+                            
                                     </div>
                                   );
                                 })    
@@ -414,13 +376,13 @@ class Dashboard extends Component {
                                         <span className="inplay_txt"> {inplay}</span>
                                       </div>
                                       <div className="match_odds_front">
-                                          <span className="back-cell">{this.state.st1Back?this.state.st1Back:0}</span>
-                                          <span className="lay-cell">{this.state.st1lay?this.state.st1lay:0}</span>
-                                          <span className="back-cell">{this.state.sdrwBack?this.state.sdrwBack:0}</span>
-                                          <span className="lay-cell">{this.state.sdrwlay?this.state.sdrwlay:0}</span>
-                                          <span className="back-cell">{this.state.st2Back?this.state.st2Back:0}</span>
-                                          <span className="lay-cell">{this.state.st2lay?this.state.st2lay:0}</span>
-                                      </div>
+                                          <span className="back-cell">{item?.runners[0]?.backOdds?item.runners[0].backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[0]?.layOdds?item?.runners[0]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[2]?.backOdds?item?.runners[2]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[2]?.layOdds?item?.runners[2]?.layOdds:0}</span>
+                                          <span className="back-cell">{item?.runners[1]?.backOdds?item.runners[1]?.backOdds:0}</span>
+                                          <span className="lay-cell">{item?.runners[1]?.layOdds?item?.runners[1]?.layOdds:0}</span>
+                                      </div> 
                                     </div>
                                   );
                                 })    
