@@ -917,7 +917,7 @@ export default class SideBet extends Component {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
     const currentPosts = this.state.betHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
-    //const fcurrentPosts = this.state.fbetHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const fcurrentPosts = this.state.fbetHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
 
     return (
     <div className="col-md-4 col-xs-12">
@@ -1120,7 +1120,7 @@ export default class SideBet extends Component {
                       <tbody>
                       {
                         this.state.openTab==='fancyBets' ?
-                        // fcurrentPosts.length>0 &&
+                         fcurrentPosts.length> 0 ?
                         fcurrentPosts.map((item,index)=>{
                           (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           return(
@@ -1151,7 +1151,7 @@ export default class SideBet extends Component {
                           );
                         })
                         :
-                        currentPosts.length>0 &&
+                        currentPosts.length> 0 ?
                           currentPosts.map((item,index)=>{
                             (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                             return(
