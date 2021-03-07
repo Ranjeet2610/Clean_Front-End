@@ -262,19 +262,19 @@ getUserPLData = () => {
                             this.state.data.map((item) => {
                               let clientPl = (parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss)+parseFloat(item.mCommision));
                               let userPl = (parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss));
-                              cTotal=cTotal+clientPl;
-                              uTotal=uTotal+userPl;
+                              cTotal=cTotal+clientPl.toFixed(2);
+                              uTotal=uTotal+userPl.toFixed(2);
                               return (
                                 <tr>
                                   <td className="text-center">{item.userName}</td>
                                   <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
-                                  <td className="text-center">0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
                                   <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">{item.Commission}.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>{item.Commission}.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
                               );
                             }):
@@ -282,8 +282,8 @@ getUserPLData = () => {
                             this.state.masterData.map((item) => {
                               let clientPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
                               let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss));
-                              cTotal=cTotal+clientPl;
-                              uTotal=uTotal+userPl;
+                              cTotal=cTotal+clientPl.toFixed(2);
+                              uTotal=uTotal+userPl.toFixed(2);
                               return (
                                 <tr>
                                   <td className="text-center">
@@ -298,7 +298,7 @@ getUserPLData = () => {
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
-                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
                               );
                             }):
@@ -316,14 +316,14 @@ getUserPLData = () => {
                                     </Link>
                                   </td>
                                   <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
                                   <td class={clientPl>0?"text-center color_red":"text-center inplay_txt"}>{clientPl>0?"-"+clientPl:-parseFloat(clientPl)}</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl}</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td className="text-center" style={{color:'green'}}>0.00</td>
+                                  <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
                               );
                             }):
@@ -336,38 +336,38 @@ getUserPLData = () => {
                             <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
                             <td className="text-center">Total</td>
                             <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                            <td className="text-center">0.00</td>
+                            <td className="text-center" style={{color:'green'}}>0.00</td>
                             <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                            <td className="text-center">0.00</td>
-                            <td className="text-center">0.00</td>
-                            <td className="text-center">0.00</td>
-                            <td className="text-center">0.00</td>
-                            <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
+                            <td className="text-center" style={{color:'green'}}>0.00</td>
+                            <td className="text-center" style={{color:'green'}}>0.00</td>
+                            <td className="text-center" style={{color:'green'}}>0.00</td>
+                            <td className="text-center" style={{color:'green'}}>0.00</td>
+                            <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal.toFixed(2)}</td>
                           </tr>:
                           this.state.masterData.length > 0 ?
                           <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
                           <td className="text-center">Total</td>
                           <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td className="text-center">0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
                           <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
-                        </tr>                          :
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal.toFixed(2)}</td>
+                        </tr>:
                           this.state.adminData.length > 0 ?
                           <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
                           <td className="text-center">Total</td>
                           <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
                           <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
-                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal}</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td className="text-center" style={{color:'green'}}>0.00</td>
+                          <td class={uTotal>0?"text-center inplay_txt":"text-center color_red"}>{uTotal.toFixed(2)}</td>
                         </tr>:null
                          }
                       </tbody>

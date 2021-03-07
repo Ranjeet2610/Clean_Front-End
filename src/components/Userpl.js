@@ -375,17 +375,17 @@ export default class Userpl extends Component {
                       {
                         currentdataPosts.length > 0 ?
                           currentdataPosts.map((item,index) => {
-                            cTotal=cTotal+item.cricketProfit;
-                            tTotal=tTotal+item.tennisProfit;
-                            sTotal=sTotal+item.soccerProfit;
-                            fTotal=fTotal+item.fancyProfitLoss;
+                            cTotal=cTotal+item.cricketProfit.toFixed(2);
+                            tTotal=tTotal+item.tennisProfit.toFixed(2);
+                            sTotal=sTotal+item.soccerProfit.toFixed(2);
+                            fTotal=fTotal+item.fancyProfitLoss.toFixed(2);
                             if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
                               numRecord++
                               return (
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName}</td>
-                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -398,7 +398,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName}</td>
-                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -411,7 +411,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName}</td>
-                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -424,7 +424,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName}</td>
-                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -435,17 +435,17 @@ export default class Userpl extends Component {
                           }):
                         currentmasterDataPosts.length > 0 ?
                           currentmasterDataPosts.map((item,index) => {
-                            cTotal=cTotal+item.cricketProfit;
-                            tTotal=tTotal+item.tennisProfit;
-                            sTotal=sTotal+item.soccerProfit;
-                            fTotal=fTotal+item.fancyProfitLoss;
+                            cTotal=cTotal+item.cricketProfit.toFixed(2);
+                            tTotal=tTotal+item.tennisProfit.toFixed(2);
+                            sTotal=sTotal+item.soccerProfit.toFixed(2);
+                            fTotal=fTotal+item.fancyProfitLoss.toFixed(2);
                             if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
                               numRecord++
                               return (
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
-                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -458,7 +458,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
-                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -471,7 +471,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
-                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -484,7 +484,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} )</td>
-                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -495,17 +495,17 @@ export default class Userpl extends Component {
                           }):
                         currentadminDataPosts.length > 0 ?
                           currentadminDataPosts.map((item,index) => {
-                            cTotal=cTotal+item.cricketProfit;
-                            tTotal=tTotal+item.tennisProfit;
-                            sTotal=sTotal+item.soccerProfit;
-                            fTotal=fTotal+item.fancyProfitLoss;
+                            cTotal=cTotal+item.cricketProfit.toFixed(2);
+                            tTotal=tTotal+item.tennisProfit.toFixed(2);
+                            sTotal=sTotal+item.soccerProfit.toFixed(2);
+                            fTotal=fTotal+item.fancyProfitLoss.toFixed(2);
                             if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
                               numRecord++
                               return (
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit}</td>
+                                  <td class={item.cricketProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -518,7 +518,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit}</td>
+                                  <td class={item.tennisProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -531,7 +531,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit}</td>
+                                  <td class={item.soccerProfit<0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
@@ -544,7 +544,7 @@ export default class Userpl extends Component {
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName} ( <b>M:</b>{item.master} ) ( <b>A:</b>{item.admin} )</td>
-                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss}</td>
+                                  <td class={item.fancyProfitLoss<0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss.toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td className="text-center inplay_txt">0.00</td>

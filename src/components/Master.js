@@ -23,7 +23,7 @@ export default class Master extends Component {
       eqlOrNot: '',
       confirm_password: '',
       newPassword: '',
-      data: "",
+      data: [],
       name: "",
       userName: "",
       password: "",
@@ -368,8 +368,6 @@ export default class Master extends Component {
   }
 
   save = async () => {
-    debugger
-    // console.log('password change save called')
     let data;
     let message;
     let path;

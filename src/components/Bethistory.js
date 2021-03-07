@@ -80,7 +80,6 @@ handleTabFilter = (eventType) => {
     this.setState({
       [event.target.name]:event.target.value
     })  
-    console.log(event.target.name,"=>",event.target.value);
   }
 
   handleClear = () =>{
@@ -98,9 +97,9 @@ handleTabFilter = (eventType) => {
   getBetData = () => {
   if(this.userDetails.superAdmin){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
-      // var i = 0;
+      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
       this.setState({
-        betHistory:data,
+        betHistory:datafilter,
         newResData:data,
         load:false
       });            
@@ -108,9 +107,9 @@ handleTabFilter = (eventType) => {
    }
    else if(this.userDetails.Admin){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
-      // var i = 0;
+      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
       this.setState({
-        betHistory:data,
+        betHistory:datafilter,
         newResData:data,
         load:false
       });             
@@ -118,9 +117,9 @@ handleTabFilter = (eventType) => {
    }
    else if(this.userDetails.Master){
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
-      // var i = 0;
+      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
       this.setState({
-        betHistory:data,
+        betHistory:datafilter,
         newResData:data,
         load:false
       });             
@@ -128,9 +127,9 @@ handleTabFilter = (eventType) => {
    }
    else{
     this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
-      var i = 0;
+      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
       this.setState({
-        betHistory:data,
+        betHistory:datafilter,
         newResData:data,
         load:false
       });             
@@ -159,21 +158,21 @@ componentDidMount() {
     })
   }
 
-  handleFilterByDropdown = async(e) => {
-    let dataArray = [...this.state.newResData]
-    let searchUser = e.target.value.toLowerCase();
-    const updateList = dataArray.filter(ele => ele.status===searchUser)
-    if(searchUser!==""){
-        await this.setState({
-          betHistory:updateList
-        })
-    }
-    else{
-        await this.setState({
-          betHistory:this.state.newResData
-        })
-    }
-}
+//   handleFilterByDropdown = async(e) => {
+//     let dataArray = [...this.state.newResData]
+//     let searchUser = e.target.value.toLowerCase();
+//     const updateList = dataArray.filter(ele => ele.status===searchUser)
+//     if(searchUser!==""){
+//         await this.setState({
+//           betHistory:updateList
+//         })
+//     }
+//     else{
+//         await this.setState({
+//           betHistory:this.state.newResData
+//         })
+//     }
+// }
 
   render(){
     let color= this.state.color;

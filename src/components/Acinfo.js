@@ -27,6 +27,7 @@ export default class Acinfo extends Component {
           this.setState({
             upsDownDetails: data.data,
           });
+          console.log(data);
         }
       );
     }

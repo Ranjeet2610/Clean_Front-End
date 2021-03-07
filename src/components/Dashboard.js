@@ -78,7 +78,8 @@ class Dashboard extends Component {
         tenisData:dataTFilter, 
         cricketData:dataCFilter,
         load: false
-      })  
+      })
+      console.log(dataTFilter);
     });
   }
 
@@ -104,13 +105,13 @@ class Dashboard extends Component {
     })
   }
 
-  matchOddspage = (txt, name,date,sportType) => {
-    debugger
+  matchOddspage = (txt, team1, team2,date,sportType) => {
     this.setState({
       load:false
     })
+    let team = team1+ " v " + team2
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
-    localStorage.setItem("matchname", JSON.stringify({name:name,date:date,sport:sportType}));
+    localStorage.setItem("matchname", JSON.stringify({name:team,date:date,sport:sportType}));
     this.setState({
       load:true
   })
@@ -172,7 +173,7 @@ class Dashboard extends Component {
                             {
                               this.state.cricketData.length <= 0 ? null :
                                 this.state.cricketData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
                                   // let oddsDB = {
                                   //   item:item?.runners[0]?.backOdds,
                                   //   item:item?.runners[0]?.backOdds,
@@ -193,7 +194,12 @@ class Dashboard extends Component {
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName,item.OpenDate,item.eventType) }>
+                                          {
+                                            TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
+                                            TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
+                                            console.log(TeamA[0].runnerName,TeamB[0].runnerName)
+                                          }
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName,item.OpenDate,item.eventType) }>
                                             {item.eventName}
                                           </Link>
                                           <time>
@@ -235,7 +241,7 @@ class Dashboard extends Component {
                             {
                               this.state.tenisData.length <= 0 ? null :
                                 this.state.tenisData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
@@ -246,7 +252,12 @@ class Dashboard extends Component {
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                      {
+                                        // TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
+                                        // TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
+                                        // console.log(TeamA[0].runnerName,TeamB[0].runnerName)
+                                      }
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName, item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
                                         <time>
@@ -287,7 +298,7 @@ class Dashboard extends Component {
                             {
                               this.state.soccerData.length <= 0 ? null :
                                 this.state.soccerData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let TeamA;let TeamB;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
