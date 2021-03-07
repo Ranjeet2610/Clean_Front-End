@@ -192,7 +192,7 @@ class Dashboard extends Component {
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.runners[0].backOdds,item.runners[0].layOdds, item.runners[1].backOdds,item.runners[1].layOdds, item.eventName,item.OpenDate,item.eventType) }>
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.OpenDate,item.eventType) }>
                                             {item.eventName}
                                           </Link>
                                           <time>

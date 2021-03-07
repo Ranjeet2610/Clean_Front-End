@@ -11,9 +11,9 @@ export default class Clientpl extends Component {
     super(props);
     this.state = {
       tableHead:["Cricket","Tennis","Soccer","Fancy","Teenpatti","Total Userpl"],
-      data:'',
-      masterData:'',
-      adminData:'',
+      data:[],
+      masterData:[],
+      adminData:[],
       ispl:true,
       uspl:false,
       showbetData:'',
@@ -35,10 +35,9 @@ export default class Clientpl extends Component {
     }
       this.account.superAdminUserPL(obj,data=>{
         this.setState({
-          adminData: data.data.adminPL,
+          adminData: data.data.adminPL.reverse(),
           ispl: false
         })
-        console.log(data.data);
       })
     }
     else if(this.userDetails.Admin){
@@ -47,7 +46,7 @@ export default class Clientpl extends Component {
       }
       this.account.adminUserPL(obj,data=>{
         this.setState({
-          masterData: data.data.masterPL,
+          masterData: data.data.masterPL.reverse(),
           ispl: false
         })
       }); 
@@ -58,7 +57,7 @@ export default class Clientpl extends Component {
       }
       this.account.userPL(obj,data=>{
         this.setState({
-          data: data.data
+          data: data.data.reverse()
         });
       }); 
     }
@@ -90,7 +89,7 @@ export default class Clientpl extends Component {
     }
       this.account.superAdminUserPL(obj,(data) => {
           this.setState({
-            adminData: data.data.adminPL,
+            adminData: data.data.adminPL.reverse(),
           });
         }
       );
@@ -103,7 +102,7 @@ export default class Clientpl extends Component {
     }
       this.account.adminUserPL(obj,(data) => {
           this.setState({
-            masterData: data.data.masterPL,
+            masterData: data.data.masterPL.reverse(),
             ispl: false,
           });
         }
@@ -134,7 +133,7 @@ export default class Clientpl extends Component {
     }
     await this.account.userPL(obj,(data) => {
       this.setState({
-        data: data.data,
+        data: data.data.reverse(),
         ispl: false,
       })
     });
@@ -148,7 +147,7 @@ export default class Clientpl extends Component {
     }
     await this.account.adminUserPL(obj,(data) => {
       this.setState({
-        masterData: data.data.masterPL,
+        masterData: data.data.masterPL.reverse(),
         ispl: false,
       });
     });

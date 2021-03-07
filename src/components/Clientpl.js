@@ -10,9 +10,9 @@ export default class Clientpl extends Component {
     super(props);
     this.state = {
       tableHead:["Super Master","Master","Total","Amount","M-comm","S-comm","Net-Amount","User PL"],
-      data: "",
-      masterData: "",
-      adminData: "",
+      data: [],
+      masterData: [],
+      adminData: [],
       ispl: true,
       showbetData: "",
       from_date: "",
@@ -102,7 +102,7 @@ getUserPLData = () => {
   }
     this.account.superAdminUserPL(obj,(data) => {
         this.setState({
-          adminData: data.data.adminPL,
+          adminData: data.data.adminPL.reverse(),
         });
       }
     );
@@ -115,7 +115,7 @@ getUserPLData = () => {
   }
     this.account.adminUserPL(obj,(data) => {
         this.setState({
-          masterData: data.data.masterPL,
+          masterData: data.data.masterPL.reverse(),
           ispl: false,
         });
       }
@@ -129,7 +129,7 @@ getUserPLData = () => {
   }
     this.account.userPL(obj,(data) => {
         this.setState({
-          data: data.data,
+          data: data.data.reverse(),
           ispl: false,
         })
       }
@@ -145,7 +145,7 @@ getUserPLData = () => {
     }
     await this.account.userPL(obj,(data) => {
       this.setState({
-        data: data.data,
+        data: data.data.reverse(),
         ispl: false,
       })
     });
@@ -159,7 +159,7 @@ getUserPLData = () => {
     }
     await this.account.adminUserPL(obj,(data) => {
       this.setState({
-        masterData: data.data.masterPL,
+        masterData: data.data.masterPL.reverse(),
         ispl: false,
       });
     });

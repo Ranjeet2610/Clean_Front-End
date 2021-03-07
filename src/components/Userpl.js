@@ -16,9 +16,9 @@ export default class Userpl extends Component {
       postsPerPage:10,
       load:false,
       tableHead:["S.No.","Username","Cricket","Tennis","Soccer","Teenpatti","Fancy"],
-      data: '',
-      masterData: '',
-      adminData: '',
+      data: [],
+      masterData: [],
+      adminData: [],
       ispl: false,
       showbetData: '',
       from_date: '',
@@ -277,9 +277,9 @@ export default class Userpl extends Component {
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentdataPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentmasterDataPosts = this.state.masterData?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentadminDataPosts = this.state.adminData?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     let cTotal=0;
     let tTotal=0;
     let sTotal=0;
