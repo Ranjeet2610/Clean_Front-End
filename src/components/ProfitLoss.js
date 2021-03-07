@@ -41,7 +41,6 @@ export default class ProfitLoss extends Component {
   }
 
   handleFilter = async () => {
-    debugger
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
@@ -50,7 +49,6 @@ export default class ProfitLoss extends Component {
       await this.setState({
           data:updateList
         })
-        console.log('game',updateList);
       }
   };
 
