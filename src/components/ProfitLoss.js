@@ -14,16 +14,20 @@ export default class ProfitLoss extends Component {
     this.state = {
       currentPage:1,
       postsPerPage:10,
-      profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
+      profitAndLossTableHead:["S.No.","EventName","eventType","Market","P_L","Commission","CreatedOn","Action"],
       showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
       // allGames:["Cricket","Soccer","Tennis"/*,"Live Teenpatti","Live Casino","Fancy"*/],
-      data: '',
+      data: [],
+      adminData:[],
+      masterData:[],
       ispl: false,
       showbetData: '',
       from_date: '',
       to_date: '',
       searchTerm:'',
-      currentDate: ''
+      currentDate: '',
+      color:'lightblue',
+      sportid:"cricket"
     }
     this.account = new Account();
     this.userDetails = "";
@@ -31,17 +35,19 @@ export default class ProfitLoss extends Component {
 
   handleChange = (event) => {
     this.setState({
-      [event.target.name]: [event.target.value]
+      [event.target.name]: event.target.value
     })
+    console.log(event.target.name,"=>",event.target.value);
   }
 
   handleFilter = async () => {
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
-      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+      let  betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+      let updateList = betHistoryFilter.filter(ele=>ele.eventType==this.state.sportid)
       await this.setState({
-          data:betHistoryFilter
+          data:updateList
         })
       }
   };
@@ -54,43 +60,43 @@ export default class ProfitLoss extends Component {
     this.getprofitlossData();
   }
 
-    getprofitlossData = () =>{
-      console.log(this.props);
-      this.userDetails = JSON.parse(localStorage.getItem('data'));
-      if (this.userDetails.superAdmin) {
-        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          this.setState({
-            data: data.data,
-            newResData: data.data
-          });
+  getprofitlossData = () =>{
+    this.userDetails = JSON.parse(localStorage.getItem('data'));
+    if (this.userDetails.superAdmin) {
+      this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+        
+        this.setState({
+          data: data.data,
+          newResData: data.data
         });
-      }
-      else if (this.userDetails.Admin) {
-        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          this.setState({
-            data: data.data,
-            newResData: data.data
-          });
-        });
-      }
-      else if (this.userDetails.Master) {
-        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          this.setState({
-            data: data.data,
-            newResData: data.data
-          });
-          console.log(data.data);
-        });
-      }
-      else {
-        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          this.setState({
-            data: data.data,
-            newResData: data.data
-          });
-        });
-      }
+      });
     }
+    else if (this.userDetails.Admin) {
+      this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+        this.setState({
+          data: data.data,
+          newResData: data.data
+        });
+      });
+    }
+    else if (this.userDetails.Master) {
+      this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+        this.setState({
+          data: data.data,
+          newResData: data.data
+        });
+        console.log(data.data);
+      });
+    }
+    else {
+      this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+        this.setState({
+          data: data.data,
+          newResData: data.data
+        });
+      });
+    }
+  }
     
     async componentDidMount() {
     await this.getprofitlossData();
@@ -119,28 +125,48 @@ export default class ProfitLoss extends Component {
     })
   }
 
-  handleGameFilter = (event) => {
-    let sportId = event.target.value
-    if(sportId!==""){
-      let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === sportId )
-        this.setState({
-          data:betHistoryFilter
-        })
-      }
+//   handleGameFilter = (event) => {
+//     if(sportId!==""){
+//       let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === sportId )
+//         this.setState({
+//           data:betHistoryFilter
+//         })
+//       }
+//     else{
+//       this.setState({
+//         data: this.state.newResData
+//       })
+//     }
+//   }
+
+  changeBackground = (e,type) =>{
+    if(type==='Back'){
+      e.target.parentElement.classList.add('blue')
+    }
     else{
-      this.setState({
-        data: this.state.newResData
-      })
+      e.target.parentElement.classList.add('lightred')
     }
   }
 
+  changeBackColor = (e,type) => {
+    if(type==='Back'){
+      e.target.parentElement.classList.remove('blue')
+    }
+    else{
+      e.target.parentElement.classList.remove('lightred')
+    }
+  }
+
+
   render() {
+    let color = this.state.color;
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentdataPosts = this.state.data?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentmasterDataPosts = this.state.masterData?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentadminDataPosts = this.state.adminData?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
     let sportType;
+    let eventType;
     let mTotal=0;
     let totalPL = 0;
     return (
@@ -189,19 +215,31 @@ export default class ProfitLoss extends Component {
                         <tbody>
                           {
                             this.state.showbetData.map((item,index) => {
+                              if(item.eventType === 4){
+                                eventType = "Cricket";
+                              }else if(item.eventType === 1){
+                                eventType = "Tennis";
+                              }else if(item.eventType === 2){
+                                eventType = "Soccer";
+                              }else{
+                                eventType = "Event";
+                              }
+                              mTotal=mTotal+item.ProfitLoss;
+                              let eventName = JSON.parse(item.description);
+                              (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                               return (
-                                <tr className="mark-back content_user_table  odd" role="row">
+                                <tr className="mark-back content_user_table odd" style={{backgroundColor:color}} onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)} role="row">
                                   <td className="sorting_1">{index+1}</td>
                                   <td className="text-center">{item.clientName}</td>
-                                  <td className="text-center">Cricket&gt;{item.description}&gt;{item.marketType}&nbsp;</td>
+                                  <td className="text-center">{eventType}&gt;{eventName.name}&gt;{item.marketType}&nbsp;</td>
                                   <td className="text-center">{item.selection}</td>
                                   <td className="text-center">{item.bettype} </td>
                                   <td className="text-center">{item.odds}</td>
                                   <td className="text-center">{item.stack}</td>
                                   <td className="text-center">{new Date(item.createdDate).toLocaleString()}</td>
-                                  <td className="text-center">{item.P_L}</td>
-                                  <td className="text-center">{item.profit}</td>
-                                  <td className="text-center">{item.liability}</td>
+                                  <td className="text-center">{item.P_L.toFixed(2)}</td>
+                                  <td className="text-center">{item.profit.toFixed(2)}</td>
+                                  <td className="text-center">{item.liability.toFixed(2)}</td>
                                   <td className="text-center">{item.status}</td>
                                   <td className="text-center">{item._id} </td>
                                 </tr>
@@ -243,8 +281,7 @@ export default class ProfitLoss extends Component {
                       <div className="col-md-3 col-xs-6">
                         <input type="hidden" name="user_id" defaultValue={145315} />
                         <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
-                        <select className="form-control" name="sportid" onChange={this.handleGameFilter}>
-                          <option value="">All</option>
+                        <select className="form-control" name="sportid" onChange={this.handleChange}>
                           <option value="4">Cricket</option>
                           <option value="2">Tennis</option>
                           <option value="1">Soccer</option>
@@ -303,27 +340,29 @@ export default class ProfitLoss extends Component {
                           currentdataPosts.map((item,index) => {
                             if(item.data[0].eventType === 4){
                               sportType = "Cricket";
-                            }else if(item.data[0].eventType === 1){
-                              sportType = "Tennis";
                             }else if(item.data[0].eventType === 2){
+                              sportType = "Tennis";
+                            }else if(item.data[0].eventType === 1){
                               sportType = "Soccer";
                             }else{
                               sportType = "Event";
                             }
-                            mTotal=mTotal+item.ProfitLoss;
+                            mTotal=mTotal+item.ProfitLoss.toFixed(2);
                             let eventName = JSON.parse(item.data[0].description);
-                              totalPL += item.ProfitLoss;
+                              totalPL += item.ProfitLoss.toFixed(2);
+                              (item.ProfitLoss>=0) ? (color='green') : (color='red')
                               return (
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  <td className="text-center">{item.eventType}</td>
                                   <td className="text-center">{item.data[0].marketType}</td>
-                                  <td className="text-center">{item.ProfitLoss}</td>
-                                  <td className="text-center">0.0</td>
-                                  <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()} </td>
+                                  <td className="text-center" style={{color:color}}>{item.ProfitLoss.toFixed(2)}</td>
+                                  <td className="text-center">0.00</td>
+                                  <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString().replace(" ","")} </td>
                                   <td className="text-center">
                                     <Link style={{ cursor: "pointer" }} onClick={() => this.showBet(item.data)} >
-                                      Show Bet
+                                      Show&nbsp;Bet
                                     </Link>
                                   </td>
                                 </tr>
