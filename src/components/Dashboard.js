@@ -98,7 +98,7 @@ class Dashboard extends Component {
       team = eventName;
     }
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
-    localStorage.setItem("matchname", JSON.stringify({name:name,date:date,sport:sportType}));
+    localStorage.setItem("matchname", JSON.stringify({name:userName,date:date,sport:sportType}));
     this.setState({
       load:true
     })
