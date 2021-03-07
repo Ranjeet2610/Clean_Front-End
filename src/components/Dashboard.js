@@ -35,26 +35,7 @@ class Dashboard extends Component {
       tennisStatus:[],
       cricketStatus:[],
       inplayEvents:[],
-      inplay:false,
-      ct1Back:[],
-      ct1lay:[],
-      ct2Back:[],
-      ct2lay:[],
-      cdrwBack:[],
-      cdrwlay:[],
-      tt1Back:[],
-      tt1lay:[],
-      tt2Back:[],
-      tt2lay:[],
-      tdrwBack:[],
-      tdrwlay:[],
-      st1Back:[],
-      st1lay:[],
-      st2Back:[],
-      st2lay:[],
-      sdrwBack:[],
-      sdrwlay:[],
-      soccerArray:[]
+      inplay:false
     };
     this.service = new Service();
     this.livevents = new LivEvents();
@@ -105,18 +86,61 @@ class Dashboard extends Component {
     })
   }
 
-  matchOddspage = (txt, team1, team2,date,sportType) => {
+  matchOddspage = async(txt, eventName, runners,date,sportType) => {
     this.setState({
       load:false
     })
-    let team = team1+ " v " + team2
+    let team;
+    let team1 = await this.getTeam(0,eventName,runners);
+    let team2 = await this.getTeam(1,eventName,runners);
+    if(team1!="undefined" && team2!="undefined"){
+      team = team1+ " v " + team2;
+    }else{
+      team = eventName;
+    }
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
     localStorage.setItem("matchname", JSON.stringify({name:team,date:date,sport:sportType}));
     this.setState({
       load:true
     })
   }
-
+  getTeam = (sel,eventName,runners) => {
+    let getTeam;
+    let teams = eventName.split(" v ");
+    let teamsel = teams[sel].split(" ");
+    runners.length > 0 &&
+    runners.map((item,index) => {
+        let team1str = item.runnerName.split(" ");
+        if(team1str.length>=1){
+            if(teams[sel]===item.runnerName){
+                getTeam = item.runnerName;
+            }else if(teams[sel]===team1str[0] || teams[sel]===team1str[1]){
+                getTeam = item.runnerName;
+            }else if((teamsel[0].slice(0, 1)+' '+teamsel[1])===(team1str[0].slice(0, 1)+' '+team1str[1])){
+                getTeam = item.runnerName;
+            }else if(item.runnerName.includes(teams[sel])){
+                getTeam = item.runnerName;
+            }
+            if(getTeam==="" && teamsel.length>1){
+                if(item.runnerName.includes(teamsel[0])){
+                    getTeam = item.runnerName;
+                }else if(item.runnerName.includes(teamsel[1])){
+                    getTeam = item.runnerName;
+                }
+            }
+            if(getTeam==="" && team1str.length>2){
+                if(teams[sel]===team1str[2]){
+                    getTeam = item.runnerName;
+                }else if(teams[sel]===(team1str[0].slice(0, 1)+' '+team1str[1]+' '+team1str[2]) || teams[sel]===(team1str[0].slice(0, 1)+' '+team1str[1].slice(0, 1)+' '+team1str[2])){
+                    getTeam = item.runnerName;
+                }
+            }
+        }else{
+            getTeam = item.runnerName;
+        }
+    })
+    return getTeam;
+  }
   render() {
     return (
       <div>
@@ -194,12 +218,7 @@ class Dashboard extends Component {
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          {
-                                            TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
-                                            TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
-                                            console.log(TeamA[0].runnerName,TeamB[0].runnerName)
-                                          }
-                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName,item.OpenDate,item.eventType) }>
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType) }>
                                             {item.eventName}
                                           </Link>
                                           <time>
@@ -257,7 +276,7 @@ class Dashboard extends Component {
                                         // TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
                                         // console.log(TeamA[0].runnerName,TeamB[0].runnerName)
                                       }
-                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, TeamA[0].runnerName,TeamB[0].runnerName, item.OpenDate,item.eventType)}>
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
                                         <time>
@@ -309,7 +328,7 @@ class Dashboard extends Component {
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
                                         <time>
@@ -362,7 +381,7 @@ class Dashboard extends Component {
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId, item.eventName, item.OpenDate,item.eventType)}>
+                                        <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
                                         <time>
