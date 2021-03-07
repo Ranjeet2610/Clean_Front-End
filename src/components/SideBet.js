@@ -1120,7 +1120,7 @@ export default class SideBet extends Component {
                       <tbody>
                       {
                         this.state.openTab==='fancyBets' ?
-                         fcurrentPosts.length>0 &&
+                        // fcurrentPosts.length>0 &&
                         fcurrentPosts.map((item,index)=>{
                           (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           return(
