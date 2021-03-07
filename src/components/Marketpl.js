@@ -15,9 +15,9 @@ export default class Marketpl extends Component {
       currentPage:1,
       postsPerPage:10,
       tableHead:["Date","Market","Admin","SuperMaster","Total","Amount","M_comm","S_comm","Net_Amount"],
-      data:'',
-      masterData:'',
-      adminData:'',
+      data:[],
+      masterData:[],
+      adminData:[],
       ispl:true,
       showbetData:'',
       from_date:'',
@@ -134,9 +134,9 @@ export default class Marketpl extends Component {
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentdataPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentmasterDataPosts = this.state.masterData?.slice(indexOfFirstPost, indexOfLastPost);
-    const currentadminDataPosts = this.state.adminData?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentdataPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentmasterDataPosts = this.state.masterData?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentadminDataPosts = this.state.adminData?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     let sportType;
     let mTotal=0;
     return (
