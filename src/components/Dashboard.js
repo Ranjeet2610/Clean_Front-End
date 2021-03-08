@@ -60,7 +60,6 @@ class Dashboard extends Component {
         cricketData:dataCFilter,
         load: false
       })
-      console.log(dataTFilter);
     });
   }
 
@@ -198,7 +197,7 @@ class Dashboard extends Component {
                             {
                               this.state.cricketData.length <= 0 ? null :
                                 this.state.cricketData.map((item,index) => {
-                                  let inplay ;let eventDate;let TeamA;let TeamB;
+                                  let inplay ;let eventDate;
                                   // let oddsDB = {
                                   //   item:item?.runners[0]?.backOdds,
                                   //   item:item?.runners[0]?.backOdds,
@@ -261,7 +260,7 @@ class Dashboard extends Component {
                             {
                               this.state.tenisData.length <= 0 ? null :
                                 this.state.tenisData.map((item,index) => {
-                                  let inplay ;let eventDate;let TeamA;let TeamB;
+                                  let inplay ;let eventDate;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }
@@ -313,7 +312,7 @@ class Dashboard extends Component {
                             {
                               this.state.soccerData.length <= 0 ? null :
                                 this.state.soccerData.map((item,index) => {
-                                  let inplay ;let eventDate;let TeamA;let TeamB;
+                                  let inplay ;let eventDate;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
                                   }

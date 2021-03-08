@@ -23,7 +23,7 @@ export default class User extends Component {
       eqlOrNot: '',
       confirm_password: '',
       newPassword: '',
-      data: "",
+      data: [],
       redirectToReferrer: false,
       newPassword: "",
       confirm_password: "",
@@ -559,7 +559,7 @@ export default class User extends Component {
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />

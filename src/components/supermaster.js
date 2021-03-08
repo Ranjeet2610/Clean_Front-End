@@ -70,7 +70,7 @@ export default class SuperMaster extends Component {
       masterUName: name,
       reqPwd: '',
       reqID: '',
-      reqMsg: ''
+      reqMsg: '',
     });
   }
 
@@ -406,8 +406,8 @@ export default class SuperMaster extends Component {
       this.users.createUser(data, (data) => {
         switch ('success') {
           case 'success':
-              NotificationManager.success(message,"Success");
-              break;
+            NotificationManager.success(message,"Success");
+          break;
       }
     });
     this.getAllAdmin();
@@ -421,7 +421,6 @@ export default class SuperMaster extends Component {
   }
 
   setAction = () => {
-    debugger
     if (this.state.useraction == "mstrlock-0") {
       const obj = {
         userName: this.state.mName
@@ -649,7 +648,11 @@ export default class SuperMaster extends Component {
     this.setState({
       reqPwd: '',
       reqID: '',
-      reqMsg: ''
+      reqMsg: '',
+      userName:"",
+      name: "",
+      password: "",
+      partner: "",
     });
     document.getElementById("superAddUser").click();
   }
@@ -752,7 +755,7 @@ export default class SuperMaster extends Component {
                           <div class="row">
                             <div class="col-md-4 col-xs-6">
                               <label> Name *</label>
-                              <input type="text" name="name" onChange={this.handleChange} class="form-control" id="left_master_name" autocomplete="off" />
+                              <input type="text" name="name" value={this.state.name} onChange={this.handleChange} class="form-control" id="left_master_name" autocomplete="off" />
                               <span id="left_master_nameN" class="errmsg"> {this.state.reqMsg ? this.state.reqMsg : null} </span>
                             </div>
                             <div class="col-md-4 col-xs-6">
@@ -762,18 +765,18 @@ export default class SuperMaster extends Component {
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label> User ID *</label>
-                              <input type="text" name="userName" onChange={this.handleChange} class="form-control" id="left_username" />
+                              <input type="text" name="userName" value={this.state.userName} onChange={this.handleChange} class="form-control" id="left_username" />
                               <span id="left_usernameN" class="errmsg"> {this.state.reqID ? this.state.reqID : null} </span>
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label> Password *</label>
-                              <input type="password" name="password" onChange={this.handleChange} class="form-control" id="left_password" autocomplete="off" />
+                              <input type="password" name="password" value={this.state.password} onChange={this.handleChange} class="form-control" id="left_password" autocomplete="off" />
                               <span id="left_passwordN" class="errmsg"> {this.state.reqPwd ? this.state.reqPwd : null} </span>
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label id="partnerMAx">Partnership [0]</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
-                              <input type="number" name="partner" readonly="" onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
+                              <input type="number" name="partner" value={this.state.partner} onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
                               <span id="left_partnerN" class="errmsg"></span>
                             </div>
                             <div class="col-md-4 col-xs-6">
@@ -938,7 +941,7 @@ export default class SuperMaster extends Component {
                           <div className="row">
                             <div className="col-md-4 col-xs-6">
                               <label> Name*</label>
-                              <input type="text" name="name" onChange={this.handleChange} className="form-control" id="left_master_name" autocomplete="off" />
+                              <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" id="left_master_name" autocomplete="off" />
                               <span id="left_master_nameN" className="errmsg"> {this.state.reqMsg ? "*" + this.state.reqMsg : null} </span>
                             </div>
                             <div className="col-md-4 col-xs-6">
@@ -948,18 +951,18 @@ export default class SuperMaster extends Component {
                             </div>
                             <div className="col-md-4 col-xs-6">
                               <label> User ID* </label>
-                              <input type="text" name="userName" onChange={this.handleChange} className="form-control" id="left_username" />
+                              <input type="text" name="userName" value={this.state.userName} onChange={this.handleChange} className="form-control" id="left_username" />
                               <span id="left_usernameN" className="errmsg"> {this.state.reqID ? "*" + this.state.reqID : null} </span>
                             </div>
                             <div className="col-md-4 col-xs-6">
                               <label> Password*</label>
-                              <input type="password" name="password" onChange={this.handleChange} className="form-control" id="left_password" autocomplete="off" />
+                              <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="left_password" autocomplete="off" />
                               <span id="left_passwordN" className="errmsg"> {this.state.reqPwd ? "*" + this.state.reqPwd : null} </span>
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label id="partnerMAx">Commission</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
-                              <input type="number" name="partner" readonly="" onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
+                              <input type="number" name="partner" value={this.state.partner} onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
                               <span id="left_partnerN" class="errmsg"></span>
                             </div>
                             <div className="col-md-12 col-xs-6 modal-footer">

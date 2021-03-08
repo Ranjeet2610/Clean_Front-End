@@ -14,9 +14,8 @@ export default class ProfitLoss extends Component {
     this.state = {
       currentPage:1,
       postsPerPage:10,
-      profitAndLossTableHead:["S.No.","EventName","eventType","Market","P_L","Commission","CreatedOn","Action"],
+      profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
       showBetHistoryTableHead:["S.No.","UserName","Description","selectionName","Type","Odds","Stack","Date","P_L","Profit","Liability","Status","Bet Code"],
-      // allGames:["Cricket","Soccer","Tennis"/*,"Live Teenpatti","Live Casino","Fancy"*/],
       data: [],
       adminData:[],
       masterData:[],
@@ -37,7 +36,6 @@ export default class ProfitLoss extends Component {
     this.setState({
       [event.target.name]: event.target.value
     })
-    console.log(event.target.name,"=>",event.target.value);
   }
 
   handleFilter = async () => {
@@ -124,20 +122,6 @@ export default class ProfitLoss extends Component {
       ispl: true,
     })
   }
-
-//   handleGameFilter = (event) => {
-//     if(sportId!==""){
-//       let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === sportId )
-//         this.setState({
-//           data:betHistoryFilter
-//         })
-//       }
-//     else{
-//       this.setState({
-//         data: this.state.newResData
-//       })
-//     }
-//   }
 
   changeBackground = (e,type) =>{
     if(type==='Back'){
@@ -350,14 +334,13 @@ export default class ProfitLoss extends Component {
                             mTotal=mTotal+item.ProfitLoss.toFixed(2);
                             let eventName = JSON.parse(item.data[0].description);
                               totalPL += item.ProfitLoss.toFixed(2);
-                              (item.ProfitLoss>=0) ? (color='green') : (color='red')
+                              (item.ProfitLoss<0) ? (color='#eb8295') : (color='#6ad0f1')
                               return (
-                                <tr>
+                                <tr style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
-                                  <td className="text-center">{item.eventType}</td>
                                   <td className="text-center">{item.data[0].marketType}</td>
-                                  <td className="text-center" style={{color:color}}>{item.ProfitLoss.toFixed(2)}</td>
+                                  <td className="text-center">{item.ProfitLoss.toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString().replace(" ","")} </td>
                                   <td className="text-center">
