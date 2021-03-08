@@ -108,8 +108,6 @@ class Dashboard extends Component {
     let getTeam;
     let teams = eventName.split(" v ");
     let teamsel = teams[sel].split(" ");
-    alert(JSON.stringify(runners))
-    alert(runners.length)
     runners.length > 0 &&
     runners.map((item,index) => {
         let team1str = item.runnerName.split(" ");
@@ -220,7 +218,7 @@ class Dashboard extends Component {
                                     <div key={index}>
                                       <div id="user_row_" className="sport_row sportrow-4 matchrow-29894585" title="Match OODS" >
                                         <div className="sport_name">
-                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.OpenDate,item.eventType) }>
+                                          <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType) }>
                                             {item.eventName}
                                           </Link>
                                           <time>
