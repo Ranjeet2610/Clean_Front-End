@@ -24,57 +24,7 @@ export default class Clientpl extends Component {
     this.account = new Account();
     this.userDetails = JSON.parse(localStorage.getItem("data")) != undefined ? JSON.parse(localStorage.getItem("data")) : "";
   }
-/*
-  componentDidMount() {
-    if(this.userDetails.superAdmin === this.userDetails.Admin === this.userDetails.Master === false){
-      this.props.history.push('/dashboard')
-    }
-    if (this.userDetails.superAdmin) {
-      const obj = {
-        userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
-      }
-      this.account.superAdminUserPL(obj,(data) => {
-          this.setState({
-            adminData: data.data.adminPL,
-          });
-        }
-      );
-    } 
-    else if (this.userDetails.Admin) {
-      const obj = {
-        adminName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
-      }
-      this.account.adminUserPL(obj,(data) => {
-          this.setState({
-            masterData: data.data.masterPL,
-          });
-        }
-      );
-    } 
-    else if (this.userDetails.Master) {
-      const obj = {
-        masterName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
-      }
-      this.account.userPL(obj,(data) => {
-          this.setState({
-            data: data.data,
-            ispl: false,
-          })
-        }
-      );
-    }
-    let currD = new Date().toISOString().substr(0,10);
-    //let currT = Utilities.datetime(new Date()).slice(11,16)
-    let Scurr = currD+"T00:00:01"
-    let Ecurr = currD+"T23:59:59"
-    this.setState({
-      currentStart:currD+"T00:00:01",
-      currentend:currD+"T23:59:59",
-      from_date:Scurr,
-      to_date:Ecurr,
-    }) 
-  }
-*/
+
 async componentDidMount() {
   let currD = new Date().toISOString().substr(0,10);
   //let currT = Utilities.datetime(new Date()).slice(11,16)
