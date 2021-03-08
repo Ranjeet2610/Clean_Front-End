@@ -273,11 +273,6 @@ class Dashboard extends Component {
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
-                                      {
-                                        // TeamA = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[0]),
-                                        // TeamB = item.runners.filter(ele=>ele.runnerName===item.eventName.split(" v ")[1]),
-                                        // console.log(TeamA[0].runnerName,TeamB[0].runnerName)
-                                      }
                                         <Link to="#" onClick={() => this.matchOddspage(item.eventId,item.eventName,item.runners,item.OpenDate,item.eventType)}>
                                           {item.eventName}
                                         </Link>
@@ -362,8 +357,7 @@ class Dashboard extends Component {
                           {
                             /////////////////////////// INPLAY EVENTS /////////////////////////////////////////////
                           }
-
-{
+                          {
                           this.state.inplay &&
                           <div className="sports_box">
                             <div className="tittle_sports">
@@ -492,5 +486,4 @@ class Dashboard extends Component {
     );
   }
 }
-
 export default Dashboard;
