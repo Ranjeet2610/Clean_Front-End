@@ -300,7 +300,7 @@ componentDidMount() {
                             <td className="text-center">{item.bettype}</td>
                             <td className="text-center">{item.odds}</td>
                             <td className="text-center">{item.stack}</td>
-                            <td className="text-center">{Utilities.datetime(item.createdDate)}</td>
+                            <td className="text-center">{Utilities.datetime(item.updatedAt)}</td>
                             <td className="text-center">{item.P_L.toFixed(2)}</td>
                             <td className="text-center">{item.profit?item.profit:0.0}</td>
                             <td className="text-center">{item.liability}</td>
