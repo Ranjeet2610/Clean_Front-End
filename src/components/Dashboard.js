@@ -85,15 +85,16 @@ class Dashboard extends Component {
     })
   }
 
-  matchOddspage = async(txt, eventName, runners,date,sportType) => {
+  matchOddspage = async(txt,eventName,runners,date,sportType) => {
     this.setState({
       load:false
     })
+    //alert(JSON.stringify(runners));
     let team;
     let team1 = await this.getTeam(0,eventName,runners);
     let team2 = await this.getTeam(1,eventName,runners);
     if(team1!="undefined" && team2!="undefined"){
-      team = team1+ " v " + team2;
+      team = team1+" v "+team2;
     }else{
       team = eventName;
     }
