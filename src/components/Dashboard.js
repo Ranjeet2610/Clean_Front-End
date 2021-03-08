@@ -108,6 +108,8 @@ class Dashboard extends Component {
     let getTeam;
     let teams = eventName.split(" v ");
     let teamsel = teams[sel].split(" ");
+    alert(JSON.stringify(runners))
+    alert(runners.length)
     runners.length > 0 &&
     runners.map((item,index) => {
         let team1str = item.runnerName.split(" ");
