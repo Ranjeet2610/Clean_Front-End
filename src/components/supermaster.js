@@ -67,6 +67,10 @@ export default class SuperMaster extends Component {
 
   addUser = (name) => {
     this.setState({
+      userName:"",
+      name: "",
+      password: "",
+      partner: "",
       masterUName: name,
       reqPwd: '',
       reqID: '',
@@ -117,14 +121,15 @@ export default class SuperMaster extends Component {
         this.users.getMyprofile(obj1, (data) => {
           localStorage.setItem("data", JSON.stringify(data.data));
         });
+        this.getAllAdmin();
         switch ('success') {
           case 'success':
             NotificationManager.success(pdata.data.message,"Success");
           break;
       }
       });
+      this.closechipDepositpopup();
     }
-    this.closechipDepositpopup();
     }
     else {
       const obj = {
@@ -138,15 +143,16 @@ export default class SuperMaster extends Component {
         }
         this.users.getMyprofile(obj, (data) => {
           localStorage.setItem("data", JSON.stringify(data.data));
+          this.getAllAdmin();
           switch ('success') {
             case 'success':
               NotificationManager.success(pdata.data.message,"Success");
-              break;
-        }
+            break;
+          }
         });
       });
+      this.closechipWithdrawalpopup();
     }
-    this.closechipWithdrawalpopup();
     }
   }
 
@@ -190,9 +196,14 @@ export default class SuperMaster extends Component {
       cricketminOdds: this.state.min_odds,
     }
     this.users.updateUserSportsInfo(obj, (data) => {
-      alert("updated");
-    }
-    );
+      // alert("updated");
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("updated","Success");
+        break;
+      }
+      this.closeviewinfo();
+    });
   }
 
   submit_userInfo = () => {
@@ -201,7 +212,13 @@ export default class SuperMaster extends Component {
       Name: this.state.Name
     }
     this.users.updateMyprofile(obj, (data) => {
-      alert("updated");
+      // alert("updated");
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("updated","Success");
+        break;
+    }
+    this.closeviewinfo();
     });
   }
 
@@ -415,6 +432,7 @@ export default class SuperMaster extends Component {
       document.getElementById('superAddUser').click();
     }
     else{
+      window.location.href = path
       document.getElementById("addMaster").click();
     }
     }
@@ -604,21 +622,18 @@ export default class SuperMaster extends Component {
         this.users.changePassword(obj, (data) => {
           document.getElementById("newPassword").value = "";
           document.getElementById("confirm_password").value = "";
-          // this.setState({
-          //   notifyMsg: data.data.message
-          // });
           switch ('success') {
             case 'success':
                 NotificationManager.success(data.data.message,"Success");
                 break;
         }
+        this.closePasswordpopup();
           });
           this.setState({
             notifyMsg: ''
           });
         };
       }
-      this.closePasswordpopup();
     }
 
   view_account = async (user) => {
@@ -995,7 +1010,7 @@ export default class SuperMaster extends Component {
                       <button type="button" class="close" onClick={this.closePasswordpopup} data-dismiss="modal" > × </button>
                       <h4 class="modal-title">Change Password</h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div id="PassUserMsg"></div>
                       <div class="row">
@@ -1107,7 +1122,7 @@ export default class SuperMaster extends Component {
                         <span id="tital_change"> Free Chips In/Out {this.state.username} </span>
                       </h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div class="row">
                         <div id="UpdateChipsMsg"></div>
@@ -1241,7 +1256,7 @@ export default class SuperMaster extends Component {
                           <br />
                         </div>
                         <div class="col-md-12 col-xs-12 modal-footer">
-                          <button type="button" class="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info()} style={{ background: "#6c1945", color: "white" }}>
+                          <button type="button" class="blue_button submit_user_setting" id="update-4-setting" onClick={this.submit_info} style={{ background: "#6c1945", color: "white" }}>
                             Update
                           </button>
                         </div>

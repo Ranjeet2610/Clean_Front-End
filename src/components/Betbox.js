@@ -9,7 +9,9 @@ export default class BetBox extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        timeDuration:'',
+          exposure:'',
+          balance:'',
+          timeDuration:'',
           chipName:["500","2000","5000","25000","50000","100000"],
           chipStake:["500","2000","5000","25000","50000"],
           color:'lightblue',
@@ -41,6 +43,7 @@ export default class BetBox extends Component {
     }
     
     componentDidMount() {
+      this.getUserInfo();
       document.getElementById('tital_change').focus();
       this.setState({
           betData: this.props.betData,
@@ -54,6 +57,20 @@ export default class BetBox extends Component {
         })
       })
     }
+
+    getUserInfo = () => {
+      const user = {
+        userName: JSON.parse(localStorage.getItem('data')).userName,
+        password: JSON.parse(localStorage.getItem('data')).passwordString
+      };
+      this.users.getUserInfo(user.userName, (data)=>{
+        this.setState({
+          balance:data.data.data.walletBalance,
+          exposure:data.data.data.exposure,
+        })
+      })
+    }
+
     placeBet=async(e)=>{
       this.getBetTime();
       // device 1 for desktop,2 for mobile,3 for tab
@@ -66,12 +83,17 @@ export default class BetBox extends Component {
       device = 3;
       
       e.preventDefault();
-      
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
-      else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
+      // else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
+      //   this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+      // }
+      else if(this.stackInput.value > this.state.balance){
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+      }
+      else if(this.state.loss > this.state.balance){
+        this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
       }
       else{
         this.setState({

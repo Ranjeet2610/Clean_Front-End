@@ -13,6 +13,8 @@ export default class SideBet extends Component {
   constructor(props) {
     super(props);
     this.state = {
+        exposure:'',
+        balance:'',
         currentPage:1,
         postsPerPage:10,
         load:false,
@@ -180,6 +182,20 @@ export default class SideBet extends Component {
     }
   }
 
+  getUserInfo = () => {
+    const user = {
+      userName: JSON.parse(localStorage.getItem('data')).userName,
+      password: JSON.parse(localStorage.getItem('data')).passwordString
+    };
+    this.users.getUserInfo(user.userName, (data)=>{
+      this.setState({
+        balance:data.data.data.walletBalance,
+        exposure:data.data.data.exposure,
+      })
+      console.log(this.state.balance,"-",this.state.exposure);
+    })
+  }
+
   placeBet=async(e)=>{
     this.getBetTime();
     // device 1 for desktop,2 for mobile,3 for tab
@@ -194,8 +210,14 @@ export default class SideBet extends Component {
     if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
-    else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
+    else if(this.stackInput.value > this.state.balance){
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+    }
+    // else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
+    //   this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+    // }
+    else if(this.state.loss > this.state.balance){
+      this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
     }
     else{
       this.setState({
@@ -635,6 +657,7 @@ export default class SideBet extends Component {
 
   componentDidMount() {
     this.getBetTime();
+    this.getUserInfo();
     this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
     this.setState({
