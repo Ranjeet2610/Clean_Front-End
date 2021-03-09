@@ -3,16 +3,32 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./footer";
 import Account from "../Services/account";
+import Users from '../Services/users';
 export default class Acinfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      accInfoData:'',
       tableHead:["Chips","Free Chips","Liability","Wallet","Up","Down"],
       data: "",
       userDetails: "",
       upsDownDetails: "",
     };
     this.account = new Account();
+    this.users =new Users();
+  }
+
+  getUserData = (userName) => {
+    // const user = {
+    //   userName: JSON.parse(localStorage.getItem('data')).userName,
+    //   password: JSON.parse(localStorage.getItem('data')).passwordString
+    // };
+    this.users.getUserInfo(userName, (data)=>{
+      this.setState({
+        accInfoData:data.data.data
+      })
+      console.log(this.state.accInfoData);
+    })
   }
 
   componentDidMount() {
@@ -23,18 +39,19 @@ export default class Acinfo extends Component {
       const obj={
         userName: JSON.parse(localStorage.getItem("data")).userName 
       }
+      this.getUserData(obj.userName);
       this.account.superAdminUpDown(obj,(data) => {
-          this.setState({
-            upsDownDetails: data.data,
-          });
-          console.log(data);
-        }
+        this.setState({
+          upsDownDetails: data.data,
+        });
+      }
       );
     }
     else if (JSON.parse(localStorage.getItem("data")).Admin) {
       const obj={
         adminName: JSON.parse(localStorage.getItem("data")).userName 
       }
+      this.getUserData(obj.userName);
       this.account.adminUpDown(obj,(data) => {
           this.setState({
             upsDownDetails: data.data,
@@ -84,18 +101,18 @@ export default class Acinfo extends Component {
                         {
                           (this.state.userDetails.Admin || this.state.userDetails.superAdmin) ?
                           <tr>
-                            <td className="text-center">{this.state.userDetails.profitLossChips}</td>
-                            <td className="text-center">{this.state.userDetails.freeChips}</td>
-                            <td className="text-center">{this.state.userDetails.down}</td>
-                            <td className="text-center">{this.state.userDetails.walletBalance}</td>
+                            <td className="text-center">{this.state.accInfoData.profitLossChips}</td>
+                            <td className="text-center">{this.state.accInfoData.freeChips}</td>
+                            <td className="text-center">{this.state.userDetails.exposure}</td>
+                            <td className="text-center">{this.state.accInfoData.walletBalance}</td>
                             <td className="text-center">{this.state.upsDownDetails.up} </td>
                             <td className="text-center">{this.state.upsDownDetails.down} </td>
                           </tr>:
                           <tr>
-                          <td className="text-center">{this.state.userDetails.profitLossChips}</td>
-                          <td className="text-center">{this.state.userDetails.freeChips}</td>
-                          <td className="text-center">{this.state.userDetails.exposure}</td>
-                          <td className="text-center">{this.state.userDetails.walletBalance}</td>
+                          <td className="text-center">{this.state.accInfoData.profitLossChips}</td>
+                          <td className="text-center">{this.state.accInfoData.freeChips}</td>
+                          <td className="text-center">{this.state.accInfoData.exposure}</td>
+                          <td className="text-center">{this.state.accInfoData.walletBalance}</td>
                           <td className="text-center">0.00</td>
                           <td className="text-center">0.00</td>
                         </tr>
