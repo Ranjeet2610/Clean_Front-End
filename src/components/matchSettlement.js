@@ -75,7 +75,6 @@ export default class EventMatchOdds extends Component {
       }
       console.log(obj);
      this.users.matchSettlement(obj,(data)=>{
-        // console.log("DDDDDDDDD",data);
         this.getMatchOdds();
       })
     }
@@ -145,20 +144,20 @@ export default class EventMatchOdds extends Component {
     let team3  = this.getTeamselection(2);
     let teamSelectionsID = team1+'||'+team2+'||'+team3;
     let teamselectionsIds;
-    let showSettlement = false;
-    if(this.state.runnersdata.length==2){
-      if(team1!="undefined" && team2!="undefined"){
+    let showSettlement = true;
+    /*if(this.state.runnersdata.length==2){
+      if(team1!="undefined" || team2!="undefined"){
         showSettlement = true;
       }else{
         showSettlement = false;
       }
     }else if(this.state.runnersdata.length==3){
-      if(team1!="undefined" && team2!="undefined" && team3!="undefined"){
+      if(team1!="undefined" || team2!="undefined" || team3!="undefined"){
         showSettlement = true;
       }else{
         showSettlement = false;
       }
-    }
+    }*/
     return (
         <div>
           <Navbar />
@@ -220,7 +219,7 @@ export default class EventMatchOdds extends Component {
                                 */}
                                 {
                                 this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i>:
-                                new Date(this.state.marketata.marketStartTime).getTime()<new Date().getTime() && this.state.liveodds.length===0 ?
+                               // new Date(this.state.marketata.marketStartTime).getTime()<new Date().getTime() && this.state.liveodds.length===0 ?:"In-Play"
                                 showSettlement?
                                 <form>
                                     <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled" || this.state.disabled } style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
@@ -250,7 +249,7 @@ export default class EventMatchOdds extends Component {
                                   </select>
                                   <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam, this.state.selectionOne, this.state.selectionTwo, this.state.selectionThree)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                 </form>
-                                :"In-Play"
+                                
                                 }
                             </td>
                           </tr>
