@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pagination from './Pagination'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Loader from 'react-loader-spinner';
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -67,20 +68,17 @@ export default class Master extends Component {
   addUser = (name) => {
     this.setState({
       masterUName: name,
+      name:"",
+      userName:"",
+      password:"",
+      reqPwd: '',
+      reqID: '',
+      reqMsg: '',
     });
   }
 
-  componentDidMount() {
-    let infoDetails = JSON.parse(localStorage.getItem('data'));
-    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
-      this.props.history.push('/dashboard')
-    }
-    else{
-      if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
-        this.setState({
-          load:true
-        })
-        const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
+  getmasterforSupermaster = () => {
+    const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
         this.users.getmasterforSupermaster(obj, (data) => {
           this.setState({
             data: data.data,
@@ -94,26 +92,43 @@ export default class Master extends Component {
           });
           this.setState({ totalBalance });
         })
+  }
+
+  componentDidMount() {
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
+    else{
+      if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
+        this.setState({
+          load:true
+        })
+        this.getmasterforSupermaster();
       }
       else {
         this.setState({
           load:true
         })
-        this.users.getMastersforAdmin((data) => {
-          this.setState({
-            data: data.data,
-            searchFilter: data.data,
-            walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-            load:false
-          });
-          let totalBalance = 0;
-          this.state.data.map((ele) => {
-            totalBalance += ele.walletBalance;
-          });
-          this.setState({ totalBalance });
-        });
+        this.getMastersforAdmin();
       }
     }
+  }
+
+  getMastersforAdmin = () => {
+    this.users.getMastersforAdmin((data) => {
+      this.setState({
+        data: data.data,
+        searchFilter: data.data,
+        walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+        load:false
+      });
+      let totalBalance = 0;
+      this.state.data.map((ele) => {
+        totalBalance += ele.walletBalance;
+      });
+      this.setState({ totalBalance });
+    });
   }
 
   update_free_chips = () => {
@@ -121,40 +136,45 @@ export default class Master extends Component {
       const obj = {
         userid: this.state.userdetails.id, fillAmount: this.state.Chips
       }
-      this.users.creditbyUser(obj, "creditAmountByAdmin", (pdata) => {
-        const obj1 = {
-          userName: JSON.parse(localStorage.getItem("data")).userName
-        }
-        this.users.getMyprofile(obj1, (data) => {
-          localStorage.setItem("data", JSON.stringify(data.data));
-          this.setState({
-            notifyMsg: pdata.data.message
+      if(this.state.Chips){
+        this.users.creditbyUser(obj, "creditAmountByAdmin", (pdata) => {
+          const obj1 = {
+            userName: JSON.parse(localStorage.getItem("data")).userName
+          }
+          this.users.getMyprofile(obj1, (data) => {
+            localStorage.setItem("data", JSON.stringify(data.data));
+            this.getmasterforSupermaster();
+            switch ('success') {
+              case 'success':
+                NotificationManager.success(pdata.data.message,"Success");
+              break;
+            }
           });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
-        }
-        );
-      });
+        });
+        this.closechipDepositpopup();
+      }
     }
     else {
       const obj2 = {
         userid: this.state.userdetails.id, fillAmount: this.state.Chips
       }
-      this.users.debitbyUser(obj2, "debitAmountByAdmin", (pdata) => {
-        const obj3 = {
-          userName: JSON.parse(localStorage.getItem("data")).userName
-        }
-        this.users.getMyprofile(obj3, (data) => {
-          localStorage.setItem("data", JSON.stringify(data.data));
-          this.setState({
-            notifyMsg: pdata.data.message
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
+      if(this.state.Chips){
+        this.users.debitbyUser(obj2, "debitAmountByAdmin", (pdata) => {
+          const obj3 = {
+            userName: JSON.parse(localStorage.getItem("data")).userName
+          }
+          this.users.getMyprofile(obj3, (data) => {
+            localStorage.setItem("data", JSON.stringify(data.data));
+            this.getmasterforSupermaster();
+            switch ('success') {
+              case 'success':
+                NotificationManager.success(pdata.data.message,"Success");
+              break;
+            }
+          })
         })
-      })
+        this.closechipWithdrawalpopup();
+      }
     }
   }
 
@@ -181,7 +201,6 @@ export default class Master extends Component {
       username: userdetails.userName,
       userdetails: userdetails,
     });
-    console.log(userdetails);
     document.getElementById("masterpasswordpopup").classList.add("in");
     document.getElementById("masterpasswordpopup").style.display = "block";
   }
@@ -223,6 +242,13 @@ export default class Master extends Component {
   }
 
   closePasswordpopup = () => {
+    this.setState({
+      reqNewPwd: '',
+      reqConfirmPwd: '',
+      notEqualMsg: '',
+      newPassword:'',
+      confirm_password:''
+    });
     document.getElementById("masterpasswordpopup").style.display = "none";
     document.getElementById("masterpasswordpopup").classList.remove("in");
   }
@@ -233,6 +259,7 @@ export default class Master extends Component {
     this.setState({
       newParentChip: "",
       newCurrChip: "",
+      Chips:''
     })
   }
 
@@ -242,6 +269,7 @@ export default class Master extends Component {
     this.setState({
       newParentChip: "",
       newCurrChip: "",
+      Chips:''
     })
   }
 
@@ -367,7 +395,7 @@ export default class Master extends Component {
     }
   }
 
-  save = async () => {
+  save = async (userType) => {
     let data;
     let message;
     let path;
@@ -381,7 +409,7 @@ export default class Master extends Component {
           master: this.state.masterUName,
         };
         message = "User Added Successfully";
-        path = "user/"
+        path = "user/"+this.state.masterUName
       }
       else {
         data = {
@@ -396,13 +424,20 @@ export default class Master extends Component {
         path = "master";
       }
       this.users.createUser(data, (data) => {
-        this.setState({
-          notifyMsg: message
-        });
-        setTimeout(() => {
-          window.location.href = path;
-        }, 1000)
-      });
+        switch ('success') {
+          case 'success':
+            NotificationManager.success(message,"Success");
+          break;
+      }
+    });
+    this.getMastersforAdmin();
+    if(userType==="superAddMaster"){
+      document.getElementById('superAddMaster').click();
+    }
+    else{
+      window.location.href = path
+      document.getElementById('superAddUser').click();
+    }
     }
   }
 
@@ -412,13 +447,12 @@ export default class Master extends Component {
         userName: this.state.mName
       }
       this.users.lockunlock(obj, (data) => {
-        this.setState({
-          notifyMsg: "Master locked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Master locked successfully","Success");
+          break;
+        }
+        this.getMastersforAdmin();
       });
     }
     else if (this.state.useraction == "mstrlock-1") {
@@ -426,13 +460,12 @@ export default class Master extends Component {
         userName: this.state.mName
       }
       this.users.lockunlock(obj1, (data) => {
-        this.setState({
-          notifyMsg: "Master unlocked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Master unlocked successfully","Success");
+          break;
+        }
+        this.getMastersforAdmin();
       });
     }
     else if (this.state.useraction == "lgnusrCloseAc-0") {
@@ -440,13 +473,12 @@ export default class Master extends Component {
         userName: this.state.mName
       }
       this.users.closeuser(obj2, (data) => {
-        this.setState({
-          notifyMsg: "Master close successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Master close successfully","Success");
+          break;
+        }
+        this.getMastersforAdmin();
       });
     }
     else if (this.state.useraction == "lgnusrlckbtng-0") {
@@ -454,25 +486,22 @@ export default class Master extends Component {
         userName: this.state.mName
       }
       this.users.lockingUnlockingBetting(obj3, (data) => {
-        this.setState({
-          notifyMsg: "Betting locked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Betting locked successfully","Success");
+          break;
+        }
+        this.getMastersforAdmin();
       });
     }
     else if (this.state.useraction == "lgnusrlckbtng-1") {
-
       this.users.lockingUnlockingBetting({ userName: this.state.mName }, (data) => {
-        this.setState({
-          notifyMsg: "Betting unlocked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Betting unlocked successfully","Success");
+          break;
+        }
+        this.getMastersforAdmin();
       });
     }
   }
@@ -576,12 +605,12 @@ export default class Master extends Component {
         this.users.changePassword(obj, (data) => {
           document.getElementById("newPassword").value = "";
           document.getElementById("confirm_password").value = "";
-          this.setState({
-            notifyMsg: data.data.message
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
+          switch ('success') {
+            case 'success':
+                NotificationManager.success(data.data.message,"Success");
+                break;
+        }
+        this.closePasswordpopup();
         });
       }
     }
@@ -600,7 +629,13 @@ export default class Master extends Component {
       cricketminOdds: this.state.min_odds,
     }
     this.users.updateUserSportsInfo(obj, (data) => {
-      alert("updated");
+      // alert("updated");
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("updated","Success");
+        break;
+      }
+      this.closeviewinfo();
     });
   }
 
@@ -610,13 +645,18 @@ export default class Master extends Component {
     }
     this.users.updateMyprofile(obj, (data) => {
       // alert("updated");
-      console.log(data);
+      // console.log(data);
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("updated","Success");
+        break;
+      }
+      this.closeviewinfo();
     });
   }
 
-  view_account = (user) => {
-    debugger
-    this.setState({
+  view_account =async (user) => {
+    await this.setState({
       userdetails: user,
     });
     document.getElementById("viewinfo").classList.add("in");
@@ -651,6 +691,19 @@ export default class Master extends Component {
     })
   }
 
+  handleNotifyMsgClean = () => {
+    this.setState({
+      reqPwd: '',
+      reqID: '',
+      reqMsg: '',
+      userName:"",
+      name: "",
+      password: "",
+      partner: "",
+    });
+    document.getElementById("superAddMaster").click();
+  }
+
   render() {
 
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
@@ -661,6 +714,7 @@ export default class Master extends Component {
       <div>
         <Navbar />
         <Sidebar />
+        <NotificationContainer/>
         <div className="forModal" />
       {
         this.state.load ?
@@ -709,7 +763,15 @@ export default class Master extends Component {
                   <button className="btn btn-warning btn-xs" onClick={this.setAction} style={{ padding: "4px 5px", marginRight: "3px" }} >
                     ACTION
                   </button>
-                  {JSON.parse(localStorage.getItem('data')).Admin ? <button className="btn btn-warning btn-xs" data-toggle="modal" data-target="#exampleModal" style={{ padding: "4px 5px" }} > ADD USER </button> : null}
+                  {
+                    JSON.parse(localStorage.getItem('data')).Admin ? 
+                    <>
+                      <span id="superAddMaster" data-toggle="modal" data-target="#exampleModalForAddMaster"></span>
+                      <button className="btn btn-warning btn-xs" onClick={this.handleNotifyMsgClean} style={{ padding: "4px 5px" }}>
+                        ADD USER 
+                      </button>
+                    </> : null
+                  }
 
                   <button className="btn btn-warning btn-xs" onClick={() => { this.props.history.goBack() }} style={{ padding: "4px 5px" }}>
                     Back
@@ -719,7 +781,7 @@ export default class Master extends Component {
                     //////////////////////////////////// MODAL FOR ADD USER /////////////////////////////////////////
                   }
 
-                  <div className="modal fade" id="exampleModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+                  <div className="modal fade" id="exampleModalForAddMaster" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
                     <div className="modal-dialog" role="document">
                       <div className="modal-content">
                         <div className="modal-header">
@@ -731,11 +793,11 @@ export default class Master extends Component {
                           </button>
                         </div>
                         <div class="modal-body">
-                          <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                          {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                           <div class="row">
                             <div class="col-md-4 col-xs-6">
                               <label> Name</label>
-                              <input type="text" name="name" required onChange={this.handleChange} class="form-control" id="left_master_name" autocomplete="off" />
+                              <input type="text" name="name" value={this.state.name} required onChange={this.handleChange} class="form-control" id="left_master_name" autocomplete="off" />
                               <span id="left_master_nameN" class="errmsg" >{this.state.reqMsg ? "*" + this.state.reqMsg : null}</span>
                             </div>
                             <div class="col-md-4 col-xs-6">
@@ -745,18 +807,18 @@ export default class Master extends Component {
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label> User ID </label>
-                              <input type="text" required name="userName" onChange={this.handleChange} class="form-control" id="left_username" />
+                              <input type="text" required name="userName" value={this.state.userName} onChange={this.handleChange} class="form-control" id="left_username" />
                               <span id="left_usernameN" class="errmsg">{this.state.reqID ? "*" + this.state.reqID : null}</span>
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label> Password</label>
-                              <input type="password" required name="password" onChange={this.handleChange} class="form-control" id="left_password" autocomplete="off" />
+                              <input type="password" required name="password" value={this.state.password} onChange={this.handleChange} class="form-control" id="left_password" autocomplete="off" />
                               <span id="left_passwordN" class="errmsg">{this.state.reqPwd ? "*" + this.state.reqPwd : null}</span>
                             </div>
                             <div class="col-md-4 col-xs-6">
                               <label id="partnerMAx">Commission</label>&nbsp;&nbsp;&nbsp;&nbsp;
                               <span id="less-partnership"></span>
-                              <input type="number" name="partner"  onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
+                              <input type="number" name="partner" value={this.state.partner}  onChange={this.handleChange} class="form-control" id="left_partner" placeholder="%" max="100" min="0" autocomplete="off" />
                               <span id="left_partnerN" class="errmsg"></span>
                             </div>
                             {/* <div class="col-md-4 col-xs-6">
@@ -772,7 +834,7 @@ export default class Master extends Component {
                               <span id="left_partnerLiveTennPattiN" class="errmsg" ></span>
                             </div> */}
                             <div class="col-md-12 col-xs-6 modal-footer">
-                              <button type="button" class="blue_button Addsuper1" onClick={this.save} id="child_player_add" >
+                              <button type="button" class="blue_button Addsuper1" onClick={()=>this.save("superAddMaster")} id="child_player_add" >
                                 Add
                               </button>
                               <button data-dismiss="modal" type="button" class="red_button" >
@@ -921,12 +983,12 @@ export default class Master extends Component {
                     </div>
                     <div className="content_popup">
                       <div className="popup_form_row">
-                        <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                        {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                         <div className="modal-body">
                           <div className="row">
                             <div className="col-md-4 col-xs-6">
                               <label> Name</label>
-                              <input type="text" name="name" onChange={this.handleChange} className="form-control" id="left_master_name" autocomplete="off" />
+                              <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" id="left_master_name" autocomplete="off" />
                               <span id="left_master_nameN" className="errmsg">{this.state.reqMsg ? "*" + this.state.reqMsg : null}</span>
                             </div>
                             <div className="col-md-4 col-xs-6">
@@ -936,16 +998,19 @@ export default class Master extends Component {
                             </div>
                             <div className="col-md-4 col-xs-6">
                               <label> User ID </label>
-                              <input type="text" name="userName" onChange={this.handleChange} className="form-control" id="left_username" />
+                              <input type="text" name="userName" value={this.state.userName}  onChange={this.handleChange} className="form-control" id="left_username" />
                               <span id="left_usernameN" className="errmsg">{this.state.reqID ? "*" + this.state.reqID : null}</span>
                             </div>
                             <div className="col-md-4 col-xs-6">
                               <label> Password</label>
-                              <input type="password" name="password" onChange={this.handleChange} className="form-control" id="left_password" autocomplete="off" />
+                              <input type="password" name="password" value={this.state.password}  onChange={this.handleChange} className="form-control" id="left_password" autocomplete="off" />
                               <span id="left_passwordN" className="errmsg" >{this.state.reqPwd ? "*" + this.state.reqPwd : null}</span>
                             </div>
                             <div className="col-md-12 col-xs-6 modal-footer">
-                              <button type="button" className="blue_button Addsuper1" onClick={this.save} id="child_player_add" >Add </button>
+                            <span id="superAddUser" data-dismiss="modal"></span>
+                              <button type="button" className="blue_button Addsuper1" onClick={()=>this.save("superAddUser")} id="child_player_add" >
+                                Add 
+                              </button>
                               <button data-dismiss="modal" type="button" className="red_button" >
                                 Cancel
                               </button>
@@ -971,7 +1036,7 @@ export default class Master extends Component {
                       <button type="button" class="close" onClick={this.closePasswordpopup} data-dismiss="modal" > × </button>
                       <h4 class="modal-title">Change Password</h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div id="PassUserMsg"></div>
                       <div class="row">
@@ -982,12 +1047,12 @@ export default class Master extends Component {
                           <input type="hidden" name="userId" value="155374" />
                           <div class="col-md-6 col-xs-6">
                             <label>New Password</label>
-                            <input type="password" name="newPassword" class="form-control" onChange={this.handleChange} id="newPassword" autocomplete="off" />
+                            <input type="password" value={this.state.newPassword} name="newPassword" class="form-control" onChange={this.handleChange} id="newPassword" autocomplete="off" />
                             <span id="newPasswordN" class="errmsg">{this.state.reqNewPwd ? "*" + this.state.reqNewPwd : null}</span>
                           </div>
                           <div class="col-md-6 col-xs-6">
                             <label>Confirm Password</label>
-                            <input type="password" name="confirm_password" class="form-control" onChange={this.handleChange} id="confirm_password" autocomplete="off" />
+                            <input type="password" value={this.state.confirm_password} name="confirm_password" class="form-control" onChange={this.handleChange} id="confirm_password" autocomplete="off" />
                             <span id="confirm_passwordN" class="errmsg">{this.state.reqConfirmPwd ? "*" + this.state.reqConfirmPwd : null}</span>
                           </div>
                           <div style={{ marginLeft: '20px ', color: 'red' }}>{this.state.notEqualMsg ? "*" + this.state.notEqualMsg : null}</div>
@@ -995,6 +1060,7 @@ export default class Master extends Component {
                             <button type="button" class="blue_button" onClick={this.updatePass} id="change_pass" >
                               Change
                             </button>
+
                             <button data-dismiss="modal" onClick={this.closePasswordpopup} type="button" class="red_button" >
                               Cancel
                             </button>
@@ -1021,7 +1087,7 @@ export default class Master extends Component {
                         <span id="tital_change">Free Chips In/Out {this.state.username}</span>
                       </h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div class="row">
                         <div id="UpdateChipsMsg"></div>
@@ -1030,7 +1096,7 @@ export default class Master extends Component {
                           <span id="errmsg"></span>
                           <div class="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" class="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" value={this.state.Chips} class="form-control" onChange={this.handleChange} required="" />
                             <span id="ChipsN" class="errmsg"></span>
                           </div>
                           <div class="col-md-12">
@@ -1082,7 +1148,7 @@ export default class Master extends Component {
                       <button type="button" class="close" data-dismiss="modal" onClick={this.closechipWithdrawalpopup}>×</button>
                       <h4 class="modal-title"><span id="tital_change">Free Chips In/Out {this.state.username}</span></h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div class="modal-body">
                       <div class="row">
                         <div id="UpdateChipsMsg"></div>
@@ -1092,7 +1158,7 @@ export default class Master extends Component {
                           <span id="errmsg"></span>
                           <div class="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" class="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" value={this.state.Chips} class="form-control" onChange={this.handleChange} required="" />
                             <span id="ChipsN" class="errmsg"></span>
                           </div>
                           <div class="col-md-12">
