@@ -916,8 +916,8 @@ export default class SideBet extends Component {
     }
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
-    const fcurrentPosts = this.state.fbetHistroy?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
 
     return (
     <div className="col-md-4 col-xs-12">
