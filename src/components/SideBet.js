@@ -206,7 +206,7 @@ export default class SideBet extends Component {
     if(this.state.isTab)
     device = 3;
     e.preventDefault();
-    if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
+    if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
     else if(this.stackInput.value > this.state.balance){
