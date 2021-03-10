@@ -285,7 +285,6 @@ export default class BetBox extends Component {
             });
           }
           else{
-            // console.log("XXXXXXXXX",this.state.runnderData)
             this.state.expoData = this.state.runnderData.map(item=>{
               let updatedRunners ={};
               if(item.selectionId == this.props.betData.pData.selectionId){

@@ -16,6 +16,7 @@ export default class Liveevents extends Component {
       notifyMsg:'',
       msgBox:'none',
       resdata:[],
+      newResData:[],
       eventName:'',
       eventID:'',
       showModal: false,
@@ -37,11 +38,20 @@ export default class Liveevents extends Component {
       let allEvents = data.data.data.filter(newdata=>{
         return newdata.active===true;
       })
+      let typeEvents = data.data.data.filter(ele=>ele.eventType === 4)
       this.setState({
-        resdata:allEvents,
+        resdata:typeEvents,
+        newResData:allEvents,
         load: false
       })
     });
+  }
+
+  handleTabFilter = (eventType) => {
+    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
+    this.setState({
+      resdata:betHistoryFilter
+    })
   }
 
   render(){
@@ -73,6 +83,16 @@ export default class Liveevents extends Component {
                   </div>
                 </div>
 
+                <div className="col-md-12 col-sm-12 col-xs-12" style={{marginTop:'1rem'}}>
+                <div className="tab_bets get-mchlist">
+                 <ul id="betsalltab" className="nav nav-pills match-lists">
+                     <li><Link onClick={()=>this.handleTabFilter(2)}>Tennis</Link></li>
+                     <li><Link onClick={()=>this.handleTabFilter(4)}>Cricket</Link></li>
+                     <li><Link onClick={()=>this.handleTabFilter(1)}>Soccer</Link></li>
+                  </ul>
+                </div>
+              </div>
+
                 {/* <div className="col-md-12">
                   <button className="btn_common"style={{margin:25}} onClick={() => {this.addmarketevents()}}>import Market</button>
                   <br></br>
@@ -103,7 +123,7 @@ export default class Liveevents extends Component {
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.eventId}</td>
                                   <td className="text-center green">{item.eventName}</td>
-                                  <td className="text-center red">{item.OpenDate}</td>
+                                  <td className="text-center red">{new Date(item.OpenDate).toLocaleString()}</td>
                                   {
                                     item.settlementStatus ? 
                                     <td className="text-center text-danger" style={{fontSize:'15px',fontWeight:'400'}}><i>Settled</i></td>:

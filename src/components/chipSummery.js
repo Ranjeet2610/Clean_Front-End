@@ -180,9 +180,9 @@ export default class ChipSummary extends Component {
     });
   }
 
-  handleSearchFilter = () => {
-    console.log(this.state.data);
-  };
+  // handleSearchFilter = () => {
+  //   console.log(this.state.data);
+  // };
 
   render() {
     let totalPlus = 0;

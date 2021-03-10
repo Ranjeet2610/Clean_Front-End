@@ -107,7 +107,6 @@ paginate = (pageNumber) => {
 }
 
 render(){
-  console.log(this.state.newResData);
   const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
   const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
   const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);

@@ -72,7 +72,7 @@ export default class news extends Component{
             id:id
         }
         this.users.deleteNews(obj,(data)=>{
-            console.log("DELETE",data);
+            // console.log("DELETE",data);
         })
     }
 

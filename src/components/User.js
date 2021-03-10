@@ -99,7 +99,6 @@ export default class User extends Component {
           load:true
         })
         this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
-          console.log("VVVV",data.data.data);
           this.setState({
             data: data.data.data,
             searchFilter: data.data,

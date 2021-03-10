@@ -83,7 +83,6 @@ export default class ProfitLoss extends Component {
           data: data.data,
           newResData: data.data
         });
-        console.log(data.data);
       });
     }
     else {
