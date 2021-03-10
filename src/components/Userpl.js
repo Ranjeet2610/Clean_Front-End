@@ -381,7 +381,7 @@ export default class Userpl extends Component {
                             tTotal=tTotal+item.tennisProfit;
                             sTotal=sTotal+item.soccerProfit;
                             fTotal=fTotal+item.fancyProfitLoss;
-                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0 && item.cricketProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -394,7 +394,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0 && item.tennisProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -407,7 +407,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0 && item.soccerProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -420,7 +420,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0 && item.fancyProfitLoss!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -441,7 +441,7 @@ export default class Userpl extends Component {
                             tTotal=tTotal+item.tennisProfit;
                             sTotal=sTotal+item.soccerProfit;
                             fTotal=fTotal+item.fancyProfitLoss;
-                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0 && item.cricketProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -454,7 +454,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0 && item.tennisProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -467,7 +467,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0 && item.soccerProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -480,7 +480,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0 && item.fancyProfitLoss!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -501,7 +501,7 @@ export default class Userpl extends Component {
                             tTotal=tTotal+item.tennisProfit;
                             sTotal=sTotal+item.soccerProfit;
                             fTotal=fTotal+item.fancyProfitLoss;
-                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0){
+                            if(this.state.filter_sport_pos==="cricket" && cTotal!=0 && item.cricketProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -514,7 +514,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0){
+                            }else if(this.state.filter_sport_pos==="tennis" && tTotal!=0 && item.tennisProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -527,7 +527,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0){
+                            }else if(this.state.filter_sport_pos==="soccer" && sTotal!=0 && item.soccerProfit!=0){
                               numRecord++
                               return (
                                 <tr>
@@ -540,7 +540,7 @@ export default class Userpl extends Component {
                                   <td className="text-center inplay_txt">0.00</td>
                                 </tr>
                               )
-                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0){
+                            }else if(this.state.filter_sport_pos==="fancy" && fTotal!=0 && item.fancyProfitLoss!=0){
                               numRecord++
                               return (
                                 <tr>

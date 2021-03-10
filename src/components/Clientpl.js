@@ -211,7 +211,12 @@ getUserPLData = () => {
                           this.state.data.length > 0 ?
                             this.state.data.map((item) => {
                               let clientPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss)+parseFloat(item.mCommision);
-                              let userPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss);
+                              let userPl;
+                              if(item.ProfitLoss>0){
+                                userPl = parseFloat(item.fancyProfitLoss)+(parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss);
+                              }
                               cTotal=cTotal+clientPl;
                               uTotal=uTotal+userPl;
                               return (
@@ -231,7 +236,13 @@ getUserPLData = () => {
                           this.state.masterData.length > 0 ?
                             this.state.masterData.map((item) => {
                               let clientPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision);
-                              let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              let userPl;
+                              if(item.ProfitLoss>0){
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              }
+                              //let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
                               cTotal=cTotal+clientPl;
                               uTotal=uTotal+userPl;
                               return (
@@ -255,7 +266,13 @@ getUserPLData = () => {
                           this.state.adminData.length > 0 ?
                             this.state.adminData.map((item) => {
                               let clientPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision);
-                              let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              let userPl;
+                              if(item.profitLoss>0){
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              }
+                              //let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
                               cTotal=cTotal+clientPl;
                               uTotal=uTotal+userPl;
                               return (
