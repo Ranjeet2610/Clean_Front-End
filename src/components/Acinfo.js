@@ -9,7 +9,7 @@ export default class Acinfo extends Component {
     super(props);
     this.state = {
       accInfoData:'',
-      tableHead:["Chips","Free Chips","Liability","Wallet","Up","Down"],
+      tableHead:["Chips","Free Chips","Liability","Wallet"],
       data: "",
       userDetails: "",
       upsDownDetails: "",
@@ -27,12 +27,11 @@ export default class Acinfo extends Component {
       this.setState({
         accInfoData:data.data.data
       })
-      console.log(this.state.accInfoData);
     })
   }
 
-  componentDidMount() {
-    this.setState({
+  componentDidMount = async () => {
+    await this.setState({
       userDetails: JSON.parse(localStorage.getItem("data")),
     });
     if (JSON.parse(localStorage.getItem("data")).superAdmin) {
@@ -51,7 +50,7 @@ export default class Acinfo extends Component {
       const obj={
         adminName: JSON.parse(localStorage.getItem("data")).userName 
       }
-      this.getUserData(obj.userName);
+      this.getUserData(obj.adminName);
       this.account.adminUpDown(obj,(data) => {
           this.setState({
             upsDownDetails: data.data,
@@ -59,6 +58,7 @@ export default class Acinfo extends Component {
         }
       );
     }
+    this.getUserData(this.state.userDetails.userName);
   }
 
   render() {
@@ -113,8 +113,8 @@ export default class Acinfo extends Component {
                           <td className="text-center">{this.state.accInfoData.freeChips}</td>
                           <td className="text-center">{this.state.accInfoData.exposure}</td>
                           <td className="text-center">{this.state.accInfoData.walletBalance}</td>
-                          <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td>
+                          {/* <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td> */}
                         </tr>
                         }
                       </tbody>

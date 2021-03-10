@@ -645,7 +645,6 @@ export default class Master extends Component {
     }
     this.users.updateMyprofile(obj, (data) => {
       // alert("updated");
-      // console.log(data);
       switch ('success') {
         case 'success':
           NotificationManager.success("updated","Success");

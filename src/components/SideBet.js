@@ -192,7 +192,6 @@ export default class SideBet extends Component {
         balance:data.data.data.walletBalance,
         exposure:data.data.data.exposure,
       })
-      console.log(this.state.balance,"-",this.state.exposure);
     })
   }
 
