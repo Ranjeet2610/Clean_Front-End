@@ -9,7 +9,7 @@ export default class Acinfo extends Component {
     super(props);
     this.state = {
       accInfoData:'',
-      tableHead:["Chips","Free Chips","Liability","Wallet"],
+      tableHead:["Chips","Free Chips","Liability","Wallet","Up","Down"],
       data: "",
       userDetails: "",
       upsDownDetails: "",
@@ -113,8 +113,8 @@ export default class Acinfo extends Component {
                           <td className="text-center">{this.state.accInfoData.freeChips}</td>
                           <td className="text-center">{this.state.accInfoData.exposure}</td>
                           <td className="text-center">{this.state.accInfoData.walletBalance}</td>
-                          {/* <td className="text-center">0.00</td>
-                          <td className="text-center">0.00</td> */}
+                          <td className="text-center">0.00</td>
+                          <td className="text-center">0.00</td>
                         </tr>
                         }
                       </tbody>
