@@ -39,10 +39,10 @@ export default class User extends Component {
       masterDetails: "",
       userInfo: "",
       Name: "",
-      max_stake: "",
-      min_stake: "",
-      max_profit: "",
-      max_loss: "",
+      max_stake: 0,
+      min_stake: 0,
+      max_profit: 0,
+      max_loss: 0,
       PIP: "",
       PIS: "",
       min_odds: "",
@@ -99,21 +99,28 @@ export default class User extends Component {
           load:true
         })
         this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
-          console.log("VVVV",data.data.data);
+          //console.log("SM",data.data.data);
+          //console.log("SM",this.props.match.params.username ? this.props.match.params.username : infoDetails.userName);
+          let filterUser = this.props.match.params.username ? this.props.match.params.username : infoDetails.userName;
+          let filtermdata = data.data.data.filter(ele=>{ 
+            return ele.master === filterUser;
+          });
+          console.log(filtermdata);
           this.setState({
-            data: data.data.data,
+            data: filtermdata,
             searchFilter: data.data,
           });
           let totalBalance = 0;
           this.state.data.map((ele) => totalBalance += ele.walletBalance);
           this.setState({
             totalBalance,
-          load:false
+            load:false
           });
         });
         const obj = {
           userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
         }
+        console.log("userNameSM",obj);
         this.users.getMyprofile(obj, (data) => {
           this.setState({
             masterDetails: data.data,
@@ -125,6 +132,7 @@ export default class User extends Component {
           load:true
         })
         this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+          console.log("M",data.data);
           this.setState({
             data: data.data,
             searchFilter: data.data,
@@ -139,6 +147,7 @@ export default class User extends Component {
         const obj = {
           userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
         }
+        console.log("userNameM",obj);
         this.users.getMyprofile(obj, (data) => {
           this.setState({
             masterDetails: data.data,
@@ -150,6 +159,7 @@ export default class User extends Component {
           load:true
         })
         this.users.getAllusers((data) => {
+          console.log("U",data.data);
           this.setState({
             data: data.data,
             searchFilter: data.data,
@@ -503,13 +513,14 @@ export default class User extends Component {
   }
 
   view_account = (user) => {
+    console.log(user);
     this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
-      id: this.state.userdetails.id
+      id: user.id
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({

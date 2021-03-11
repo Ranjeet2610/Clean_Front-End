@@ -174,18 +174,14 @@ render(){
                     </div>
                   </div>
                 </div>
-
                 <div className="col-md-12"/>
-
                 <div className="col-md-12">
                   <div className="filter_page  data-background">
                     <form id="formSubmit" style={{color: '#000'}}>
                       <input type="hidden" name="compute" defaultValue="fe6602731bf3d65605f0d8f6552a1c9f" />
-
                       {
                         //////////////////////// FILTERED TAB CHECKBOX  /////////////////////////////////////////
                       }
-
                       {/* <div className="col-md-12 custom-check">
                         <input type="hidden" name="user_id" id="user_id" defaultValue={145315} />
                         <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="CacStatement" />
