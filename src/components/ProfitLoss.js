@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Pagination from './Pagination';
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Utilities from './utilities'
@@ -140,6 +141,12 @@ export default class ProfitLoss extends Component {
     }
   }
 
+  paginate = (pageNumber) => {
+    this.setState({
+      currentPage:pageNumber
+    })
+  }
+
 
   render() {
     let color = this.state.color;
@@ -152,6 +159,7 @@ export default class ProfitLoss extends Component {
     let eventType;
     let mTotal=0;
     let totalPL = 0;
+    let totalMC=0;
     return (
       <div>
         <Navbar />
@@ -330,16 +338,24 @@ export default class ProfitLoss extends Component {
                             }else{
                               sportType = "Event";
                             }
-                            mTotal=mTotal+item.ProfitLoss.toFixed(2);
+                            //item.data[0].marketType=match odds //Fancy
+                            let userPl;
+                            if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
+                              totalMC += (parseFloat(item.ProfitLoss)*item.Commission/100);
+                              userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                            }else{
+                              userPl = parseFloat(item.ProfitLoss);
+                            }
+                            //mTotal=mTotal+item.ProfitLoss.toFixed(2);
                             let eventName = JSON.parse(item.data[0].description);
-                              totalPL += item.ProfitLoss.toFixed(2);
+                              totalPL += userPl;
                               (item.ProfitLoss<0) ? (color='#eb8295') : (color='#6ad0f1')
                               return (
                                 <tr style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   <td className="text-center">{item.data[0].marketType}</td>
-                                  <td className="text-center">{item.ProfitLoss.toFixed(2)}</td>
+                                  <td className="text-center">{userPl.toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString().replace(" ","")} </td>
                                   <td className="text-center">
@@ -355,6 +371,17 @@ export default class ProfitLoss extends Component {
                             </tr>
                         }
                       </tbody>
+                      {
+                      currentdataPosts.length > 0?
+                      <tfoot>
+                      <tr>
+                        <td colSpan={16}>
+                            <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
+                        </td>  
+                      </tr>  
+                    </tfoot>:
+                      null
+                    }
                     </table>
                     
 {
@@ -364,8 +391,8 @@ export default class ProfitLoss extends Component {
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
                         <tr style={{backgroundColor:"#95335c",color:'white'}}>
-                          <th>(Total P &amp; L ) {totalPL}</th>
-                          <th>(Total Commition) 0</th>
+                          <th>(Total P &amp; L ) {totalPL.toFixed(2)}</th>
+                          <th>(Total Commition) {totalMC.toFixed(2)}</th>
                         </tr>
                       </thead>
                     </table>
