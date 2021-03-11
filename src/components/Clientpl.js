@@ -261,6 +261,8 @@ getUserPLData = () => {
                           this.state.data.length > 0 ?
                             this.state.data.map((item) => {
                               let clientPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss)+parseFloat(item.mCommision);
+                              //let mCom;
+                              //if(item.mCommission){ mCom = item.mCommission;}else{ mCom = item.Commission;}
                               let userPl;
                               if(item.ProfitLoss>0){
                                 userPl = parseFloat(item.fancyProfitLoss)+(parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));

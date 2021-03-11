@@ -210,14 +210,21 @@ export default class Marketpl extends Component {
                               }else{
                                 sportType = "Event";
                               }
-                              mTotal=mTotal+item.ProfitLoss;
                               let eventName = JSON.parse(item.data[0].description);
-                            return (  
+                              //item.data[0].marketType=match odds //Fancy
+                              let userPl;
+                              if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
+                                userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.ProfitLoss);
+                              }
+                              mTotal=mTotal+userPl;
+                              return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
-                                  <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss.toFixed(2):Math.abs(item.ProfitLoss).toFixed(2)}</td>
+                                  <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
@@ -238,14 +245,21 @@ export default class Marketpl extends Component {
                               }else{
                                 sportType = "Event";
                               }
-                              mTotal=mTotal+item.ProfitLoss;
                               let eventName = JSON.parse(item.data[0].description);
-                            return (  
+                              //item.data[0].marketType=match odds //Fancy
+                              let userPl;
+                              if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
+                                userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.ProfitLoss);
+                              }
+                              mTotal=mTotal+userPl;
+                              return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
-                                  <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss.toFixed(2):Math.abs(item.ProfitLoss).toFixed(2)}</td>
+                                  <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
@@ -266,14 +280,21 @@ export default class Marketpl extends Component {
                                 }else{
                                   sportType = "Event";
                                 }
-                                mTotal=mTotal+item.ProfitLoss;
                                 let eventName = JSON.parse(item.data[0].description);
+                                //item.data[0].marketType=match odds //Fancy
+                                let userPl;
+                                if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
+                                  userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                                }else{
+                                  userPl = parseFloat(item.ProfitLoss);
+                                }
+                                mTotal=mTotal+userPl;
                                 return (  
                                   <tr>
                                     <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()}</td>
-                                    <td className="text-center">{sportType}/{eventName.name}/Selection{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                    <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                     {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
-                                    <td class={item.ProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.ProfitLoss>0?"-"+item.ProfitLoss.toFixed(2):Math.abs(item.ProfitLoss).toFixed(2)}</td>
+                                    <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                     <td className="text-center inplay_txt">0.00</td>
                                     <td className="text-center inplay_txt">0.00</td>
                                     <td className="text-center inplay_txt">0.00</td>
