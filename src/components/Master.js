@@ -77,58 +77,54 @@ export default class Master extends Component {
     });
   }
 
-  getmasterforSupermaster = () => {
-    const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
-        this.users.getmasterforSupermaster(obj, (data) => {
-          this.setState({
-            data: data.data,
-            searchFilter: data.data,
-            walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-            load:false
-          });
-          let totalBalance = 0;
-          this.state.data.map((ele) => {
-            totalBalance += ele.walletBalance;
-          });
-          this.setState({ totalBalance });
-        })
-  }
-
   componentDidMount() {
     let infoDetails = JSON.parse(localStorage.getItem('data'));
     if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
       this.props.history.push('/dashboard')
     }
     else{
-      if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
-        this.setState({
-          load:true
-        })
-        this.getmasterforSupermaster();
-      }
-      else {
-        this.setState({
-          load:true
-        })
-        this.getMastersforAdmin();
-      }
+      this.supervisorBasedData();
     }
   }
 
-  getMastersforAdmin = () => {
-    this.users.getMastersforAdmin((data) => {
+  supervisorBasedData = () => {
+    if (this.props.match.params.username != undefined || JSON.parse(localStorage.getItem("data")).Admin) {
       this.setState({
-        data: data.data,
-        searchFilter: data.data,
-        walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
-        load:false
+        load:true
+      })
+      const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
+      this.users.getmasterforSupermaster(obj, (data) => {
+        this.setState({
+          data: data.data,
+          searchFilter: data.data,
+          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+          load:false
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => {
+          totalBalance += ele.walletBalance;
+        });
+        this.setState({ totalBalance });
+      })
+    }
+    else {
+      this.setState({
+        load:true
+      })
+      this.users.getMastersforAdmin((data) => {
+        this.setState({
+          data: data.data,
+          searchFilter: data.data,
+          walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
+          load:false
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => {
+          totalBalance += ele.walletBalance;
+        });
+        this.setState({ totalBalance });
       });
-      let totalBalance = 0;
-      this.state.data.map((ele) => {
-        totalBalance += ele.walletBalance;
-      });
-      this.setState({ totalBalance });
-    });
+    }
   }
 
   update_free_chips = () => {

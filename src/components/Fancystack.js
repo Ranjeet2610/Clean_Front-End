@@ -14,10 +14,13 @@ class FancyStack extends Component{
       from_date:'',
       to_date:'',
       currentDate:'',
-      fancyStakeData:[]
+      fancyStakeData:[],
+      fancyStack:[],
+      currUserAccess:''
     }
 
     this.users =new Users();
+    this.userDetails = JSON.parse(localStorage.getItem('data'))
   }
 
   handleClear = () =>{
@@ -31,50 +34,14 @@ class FancyStack extends Component{
   handleFilter = async () => {
     let fD = await new Date(this.state.from_date).toISOString();
     let tD = await new Date(this.state.to_date).toISOString();
-    const obj ={
-      startDate:fD,
-      endDate: tD
+    if(fD<=tD){
+      this.getAllFancyStack(fD,tD);
     }
-      if(fD<=tD){
-        let arr = []
-        this.users.getAllFancyStack(obj, (data)=>{
-          data.data.data.map(ele=>{
-            let itemName = ele.userInfo[0].admin[0]
-            // if(!arr.includes(itemName)){
-              debugger
-            if(arr.every((ele) => ele.userInfo[0].admin[0] !== itemName)){
-              arr.push({clientName:itemName,stake:ele.stack})
-            }
-            else{
-              let indx = arr.findIndex(itemName)
-              arr[indx].stake=arr[indx].stake+ele.stack;
-            }
-          })
-        }) 
-        console.log(arr);
-        // this.setState({
-        //   fancyStakeData:data.data.data
-        // })
-      }
-    }
-
-  getAllFancyStack = (Scurr,Ecurr) => {
-    let fromDate = new Date(Scurr).toISOString();
-    let toDate =  new Date(Ecurr).toISOString();
-    const obj ={
-      startDate:fromDate,
-      endDate: toDate
-    }
-    this.users.getAllFancyStack(obj, (data)=>{
-      this.setState({
-        fancyStakeData:data.data.data
-      })
-      // console.log(data.data);
-    })
   }
 
   componentDidMount(){
     let infoDetails = JSON.parse(localStorage.getItem('data'));
+    this.handleCurrUser(infoDetails);
     if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
       this.props.history.push('/dashboard')
     }
@@ -89,13 +56,139 @@ class FancyStack extends Component{
       from_date:Scurr,
       to_date:Ecurr,
     })
-    console.log(Scurr,Ecurr);
+  }
+
+  getAllFancyStack = async (Scurr,Ecurr) => {
+    let fromDate = new Date(Scurr);
+    let toDate =  new Date(Ecurr);
+    const obj ={
+      startDate:fromDate,
+      endDate: toDate
+    }
+    this.users.getAllFancyStack(obj, (data)=>{
+      this.setState({
+        fancyStack:data
+      })
+    })
+    if(this.state.currUserAccess==="Admin"){
+      this.AdminBasedFancyStack(this.state.fancyStack);
+    }
+    else if(this.state.currUserAccess==="SuperMaster"){
+      this.SM_BasedFancyStack(this.state.fancyStack);
+    }
+    else{
+      this.MasterBasedFancyStack(this.state.fancyStack);
+    }
+  }
+
+  AdminBasedFancyStack = (data) => {
+    let arr = []
+    let itemName;
+    data.data.data.map(element=>{
+      itemName=element?.userInfo[0]?.admin[0]
+      if(arr.every((item) => item.name !== itemName)){
+        arr.push({
+          name:element?.userInfo[0]?.admin[0],
+          stack: 0,
+        })
+      }
+      else{
+        let indx = arr.findIndex(element => element.name === itemName);
+        arr[indx].stack += element.stack 
+      }
+    })
+    this.setState({
+      fancyStakeData:arr
+    })
+  }
+
+  SM_BasedFancyStack = (data) =>{
+    let arr = []
+    let itemName;
+    data.data.data.map(element=>{
+      itemName=element?.userInfo[0]?.master[0]
+      if(arr.every((item) => item.name !== itemName)){
+        arr.push({
+          name:element?.userInfo[0]?.master[0],
+          stack: 0,
+        })
+      }
+      else{
+        let indx = arr.findIndex(element => element.name === itemName);
+        arr[indx].stack += element.stack 
+      }
+    })
+    this.setState({
+      fancyStakeData:arr
+    })
+  }
+
+  MasterBasedFancyStack = (data) => {
+    let arr = []
+    let itemName;
+    data.data.data.map(element=>{
+      itemName=element?.clientName
+      if(arr.every((item) => item.name !== itemName)){
+        arr.push({
+          name:element?.clientName,
+          stack: 0,
+        })
+      }
+      else{
+        let indx = arr.findIndex(element => element.name === itemName);
+        arr[indx].stack += element.stack 
+      }
+    })
+    this.setState({
+      fancyStakeData:arr
+    })
+  }
+
+  handleCurrUser = (infoDetails) => {
+    let fD = new Date(this.state.from_date);
+    let tD = new Date(this.state.to_date);
+    if(infoDetails.superAdmin){
+      this.setState({
+        currUserAccess:'Admin'
+      })
+    }
+    else if(infoDetails.Admin){
+      this.setState({
+        currUserAccess:'SuperMaster'
+      })
+    }
+    else{
+      this.setState({
+        currUserAccess:'Master'
+      })
+    }
+    this.getAllFancyStack(fD,tD);
   }
 
   handleChange = (event) => {
     this.setState({
       [event.target.name]:[event.target.value]
     })
+  }
+
+  handleFancyData = (user) => {
+    if(user==="Admin"){
+      this.setState({
+        currUserAccess:'SuperMaster'
+      })
+      this.SM_BasedFancyStack(this.state.fancyStack );
+    }
+    else if(user==="SuperMaster"){
+      this.setState({
+        currUserAccess:'Master'
+      })
+      this.MasterBasedFancyStack(this.state.fancyStack  );
+    }
+    else{
+      this.setState({
+        currUserAccess:'User'
+      })
+    }
   }
 
   render(){
@@ -155,8 +248,8 @@ class FancyStack extends Component{
                     <thead>
                       <tr className="headings" style={{background:'#95335c',color:'white'}}>
                         <th className="text-center">S.No.</th>
-                        <th className="text-center">Master</th>
-                        <th className="text-center">Total Bet</th>
+                        <th className="text-center">Client</th>
+                        <th className="text-center">Total Bets</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -165,7 +258,7 @@ class FancyStack extends Component{
                         this.state.fancyStakeData.map((ele,index)=>
                           <tr>
                             <td className="text-center">{index+1}</td>
-                            <td className="text-center">{ele.clientName}</td>
+                            <td className="text-center"><Link role="button" onClick={()=>this.handleFancyData(this.state.currUserAccess)}>{ele.name}</Link></td>
                             <td className="text-center">{ele.stack}</td>
                           </tr>
                           )
