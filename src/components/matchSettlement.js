@@ -16,6 +16,9 @@ export default class EventMatchOdds extends Component {
       liveodds:'',
       runnersdata:[],
       winnerTeam:'',
+      selectionOne:'',
+      selectionTwo:'',
+      selectionThree:'',
       settledisabled:false
     };
     this.events = new Livevents();
@@ -59,16 +62,19 @@ export default class EventMatchOdds extends Component {
     })
   }
 
-  handleSettlement = (selectionId,marketId,winnerTeam) => {
+  handleSettlement = (selectionId,marketId,winnerTeam,selectionOne,selectionTwo,selectionThree) => {
     if(selectionId !== ""){
       const obj = {
-        selectionId : selectionId,
-        marketId: marketId,
+        selectionId:selectionId,
+        marketId:marketId,
         eventId:this.props.match.params.id,
-        winnerTeam: winnerTeam
+        winnerTeam:winnerTeam,
+        selectionOne:selectionOne,
+        selectionTwo:selectionTwo,
+        selectionThree:selectionThree
       }
-      this.users.matchSettlement(obj,(data)=>{
-        // console.log("DDDDDDDDD",data);
+      console.log(obj);
+     this.users.matchSettlement(obj,(data)=>{
         this.getMatchOdds();
       })
     }
@@ -80,11 +86,78 @@ export default class EventMatchOdds extends Component {
   handleMatchSettle = (event) => {
       this.setState({
           [event.target.name]:event.target.value.split("||")[0],
-          winnerTeam:event.target.value.split("||")[1]
+          winnerTeam:event.target.value.split("||")[1],
+          selectionOne:event.target.value.split("||")[2],
+          selectionTwo:event.target.value.split("||")[3],
+          selectionThree:event.target.value.split("||")[4]
       })
   }
-
+  getTeamselection = (sel) => {
+    let getTeam;
+    let teams = this.props.location.state.eventname.split(" v ");
+    if(sel==2){
+      this.state.runnersdata.length > 0 &&
+      this.state.runnersdata.map((item,index) => {
+        if(item.runnerName==="The Draw"){
+          getTeam = item.selectionId;
+        }
+      })
+    }else{
+      let teamsel = teams[sel].split(" ");
+      this.state.runnersdata.length > 0 &&
+      this.state.runnersdata.map((item,index) => {
+          let team1str = item.runnerName.split(" ");
+          if(team1str.length>=1){
+            if(teams[sel]===item.runnerName){
+              getTeam = item.selectionId;
+            }else if(teams[sel]===team1str[0] || teams[sel]===team1str[1]){
+              getTeam = item.selectionId;
+            }else if((teamsel[0].slice(0, 1)+' '+teamsel[1])===(team1str[0].slice(0, 1)+' '+team1str[1])){
+              getTeam = item.selectionId;
+            }else if(item.runnerName.includes(teams[sel])){
+              getTeam = item.selectionId;
+            }
+            if(getTeam==="" && teamsel.length>1){
+              if(item.runnerName.includes(teamsel[0])){
+                getTeam = item.selectionId;
+              }else if(item.runnerName.includes(teamsel[1])){
+                getTeam = item.selectionId;
+              }
+            }
+            if(getTeam==="" && team1str.length>2){
+              if(teams[sel]===team1str[2]){
+                getTeam = item.selectionId;
+              }else if(teams[sel]===(team1str[0].slice(0, 1)+' '+team1str[1]+' '+team1str[2]) || teams[sel]===(team1str[0].slice(0, 1)+' '+team1str[1].slice(0, 1)+' '+team1str[2])){
+                getTeam = item.selectionId;
+              }
+            }
+          }else{
+            getTeam = item.selectionId;
+          }
+      })
+    }
+    return getTeam;
+  }
   render(){
+    let team1  = this.getTeamselection(0);
+    let team2  = this.getTeamselection(1);
+    let team3  = this.getTeamselection(2);
+    let teamSelectionsID = team1+'||'+team2+'||'+team3;
+    let teamselectionsIds;
+    let showSettlement = false;
+    if(this.state.runnersdata.length==2){
+      if(team1!="undefined" || team2!="undefined"){
+        showSettlement = true;
+      }else{
+        showSettlement = false;
+      }
+    }else if(this.state.runnersdata.length==3){
+      if(team1!="undefined" || team2!="undefined" || team3!="undefined"){
+        showSettlement = true;
+      }else{
+        showSettlement = false;
+      }
+    }
     return (
         <div>
           <Navbar />
@@ -126,12 +199,12 @@ export default class EventMatchOdds extends Component {
                               {
                                 this.state.runnersdata.length > 0 &&
                                 this.state.runnersdata.map((item,index) => {
-                                   
-                                  return (
-                                        <div key={index}>
-                                            <p>Runner Name : {item.runnerName} </p>,
-                                            <p>Selection Id : {item.selectionId}</p><br/>
-                                        </div>
+                                teamselectionsIds = item.selectionId+'||'+teamselectionsIds;
+                                return (
+                                      <div key={index}>
+                                          <p>Runner Name : {item.runnerName} </p>,
+                                          <p>Selection Id : {item.selectionId}</p><br/>
+                                      </div>
                                     )
                                 })
                               }
@@ -140,25 +213,41 @@ export default class EventMatchOdds extends Component {
                               <input type="checkbox"  checked={this.state.marketata.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e)}  style={{height: '20px',width: '20px'}}/>
                             </td> 					    */}
                             <td className="text-center">
-                                {/*
+                                {
+                                /*
                                   this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i> : null
                                 */}
                                 {
                                 this.props.location.state.status!==undefined ? <i style={{fontSize:'25px',fontWeight:'400',color:'red'}}>Settled!</i>:
                                 new Date(this.state.marketata.marketStartTime).getTime()<new Date().getTime() && this.state.liveodds.length===0 ?
+                                showSettlement?
                                 <form>
                                     <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled" || this.state.disabled } style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
                                     <option value="">Select Winner</option>
                                         {
                                             this.state.runnersdata.length > 0 &&
                                             this.state.runnersdata.map((item,index) => {
-                                            return(
-                                                <option key={index} value={item.selectionId+'||'+item.runnerName}>{item.runnerName}</option>
-                                            )}
+                                              return(
+                                                  <option key={index} value={item.selectionId+'||'+item.runnerName+'||'+teamSelectionsID}>{item.runnerName}</option>
+                                              )}
                                             )
                                         }
                                     </select>
-                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam)} className="SettleButton" disabled={this.props.location.state.status==="settled" || this.state.disabled} style={this.props.location.state.status==="settled" || this.state.disabled ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+                                    <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam, this.state.selectionOne, this.state.selectionTwo, this.state.selectionThree)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
+                                </form>
+                                : <form>
+                                  <select name="runnerID" value={this.props.location.state.statusValue} onChange={this.handleMatchSettle} disabled={this.props.location.state.status==="settled"} style={{borderColor:'gray',borderRadius:'3px',width:'auto'}}> 
+                                  <option value="">Select Winner</option>
+                                      {
+                                          this.state.runnersdata.length > 0 &&
+                                          this.state.runnersdata.map((item,index) => {
+                                          return(
+                                              <option key={index} value={item.selectionId+'||'+item.runnerName+'||'+teamselectionsIds}>{item.runnerName}</option>
+                                          )}
+                                          )
+                                      }
+                                  </select>
+                                  <input type="button" value="Settle" onClick={()=>this.handleSettlement(this.state.runnerID, this.state.marketata.marketId, this.state.winnerTeam, this.state.selectionOne, this.state.selectionTwo, this.state.selectionThree)} className="SettleButton" disabled={this.props.location.state.status==="settled"} style={this.props.location.state.status==="settled" ? {backgroundColor:'rgb(149 51 92 / 48%)'} : {backgroundColor:'#95335c'}}/>
                                 </form>
                                 :"In-Play"
                                 }

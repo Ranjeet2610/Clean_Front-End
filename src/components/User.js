@@ -39,10 +39,10 @@ export default class User extends Component {
       masterDetails: "",
       userInfo: "",
       Name: "",
-      max_stake: "",
-      min_stake: "",
-      max_profit: "",
-      max_loss: "",
+      max_stake: 0,
+      min_stake: 0,
+      max_profit: 0,
+      max_loss: 0,
       PIP: "",
       PIS: "",
       min_odds: "",
@@ -99,6 +99,7 @@ export default class User extends Component {
       })
       this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
         this.setState({
+<<<<<<< HEAD
           data: data.data.data,
           searchFilter: data.data,
         });
@@ -107,6 +108,37 @@ export default class User extends Component {
         this.setState({
           totalBalance,
         load:false
+=======
+          load:true
+        })
+        this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
+          //console.log("SM",data.data.data);
+          //console.log("SM",this.props.match.params.username ? this.props.match.params.username : infoDetails.userName);
+          let filterUser = this.props.match.params.username ? this.props.match.params.username : infoDetails.userName;
+          let filtermdata = data.data.data.filter(ele=>{ 
+            return ele.master === filterUser;
+          });
+          console.log(filtermdata);
+          this.setState({
+            data: filtermdata,
+            searchFilter: data.data,
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => totalBalance += ele.walletBalance);
+          this.setState({
+            totalBalance,
+            load:false
+          });
+        });
+        const obj = {
+          userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+        }
+        console.log("userNameSM",obj);
+        this.users.getMyprofile(obj, (data) => {
+          this.setState({
+            masterDetails: data.data,
+          })
+>>>>>>> 8fbeb9ee67234d0b1abdef519abbae1b3fe11251
         });
       });
       const obj = {
@@ -116,6 +148,7 @@ export default class User extends Component {
         this.setState({
           masterDetails: data.data,
         })
+<<<<<<< HEAD
       });
     }
     else if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
@@ -132,6 +165,29 @@ export default class User extends Component {
         this.setState({
           totalBalance,
         load:false
+=======
+        this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+          console.log("M",data.data);
+          this.setState({
+            data: data.data,
+            searchFilter: data.data,
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => totalBalance += ele.walletBalance);
+          this.setState({
+            totalBalance,
+          load:false
+          });
+        });
+        const obj = {
+          userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+        }
+        console.log("userNameM",obj);
+        this.users.getMyprofile(obj, (data) => {
+          this.setState({
+            masterDetails: data.data,
+          })
+>>>>>>> 8fbeb9ee67234d0b1abdef519abbae1b3fe11251
         });
       });
       const obj = {
@@ -141,6 +197,7 @@ export default class User extends Component {
         this.setState({
           masterDetails: data.data,
         })
+<<<<<<< HEAD
       });
     }
     else {
@@ -151,6 +208,20 @@ export default class User extends Component {
         this.setState({
           data: data.data,
           searchFilter: data.data,
+=======
+        this.users.getAllusers((data) => {
+          console.log("U",data.data);
+          this.setState({
+            data: data.data,
+            searchFilter: data.data,
+          });
+          let totalBalance = 0;
+          this.state.data.map((ele) => totalBalance += ele.walletBalance);
+          this.setState({
+            totalBalance,
+            load:false
+          });
+>>>>>>> 8fbeb9ee67234d0b1abdef519abbae1b3fe11251
         });
         let totalBalance = 0;
         this.state.data.map((ele) => totalBalance += ele.walletBalance);
@@ -536,13 +607,14 @@ export default class User extends Component {
   }
 
   view_account = (user) => {
+    console.log(user);
     this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
-      id: this.state.userdetails.id
+      id: user.id
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({

@@ -385,11 +385,17 @@ export default class SideBet extends Component {
 
   handleCurrentPosition = async (data,userName) => {
     let getRunner = this.state.matchRunner.length;
-    let Teamone = this.state.matchRunner[0].runnerName;
+    let teams = this.props.matchName.split(" v ");
+    let Teamone = teams[0];//this.state.data[0].runnerName;
+    let Teamtwo = teams[1];//this.state.data[1].runnerName;
+    if(getRunner==3){
+      var Teamthree = "The Draw";//this.state.data[2].runnerName;
+    }
+    /*let Teamone = this.state.matchRunner[0].runnerName;
     let Teamtwo = this.state.matchRunner[1].runnerName;
     if(getRunner==3){
       var Teamthree = this.state.matchRunner[2].runnerName;
-    }
+    }*/
     if(this.state.curPoAcc === 'Admin'){
       let arr = [];
       data.map(item => {

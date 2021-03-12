@@ -221,7 +221,7 @@ export default class Clientpl extends Component {
                         <button type="button" id="submit_form_button" onClick={this.handleFilter} style={{marginRight:'5px'}} className="blue_button">
                           <i className="fa fa-filter"/> Filter
                         </button>
-                        <button type="button" className="red_button" onChange={this.handleClear}>
+                        <button type="button" className="red_button" onClick={this.handleClear}>
                           <i className="fa fa-eraser"/>Clear
                         </button>
                       </div>
@@ -251,20 +251,26 @@ export default class Clientpl extends Component {
                         {
                           this.state.data.length>0 ?
                             this.state.data.map((item,index)=>{
-                            let userPl = (parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss));
-                            cTotal=cTotal+item.cricketProfit.toFixed(2);
-                            tTotal=tTotal+item.tennisProfit.toFixed(2);
-                            sTotal=sTotal+item.soccerProfit.toFixed(2);
-                            fTotal=fTotal+item.fancyProfitLoss.toFixed(2);
+                            let userPl;
+                            if(item.ProfitLoss>0){
+                              userPl = parseFloat(item.fancyProfitLoss)+(parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                            }else{
+                              userPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss);
+                            }
+                            //let userPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss);
+                            cTotal=cTotal+item.cricketProfit;
+                            tTotal=tTotal+item.tennisProfit;
+                            sTotal=sTotal+item.soccerProfit;
+                            fTotal=fTotal+item.fancyProfitLoss;
                             subTotal=subTotal+userPl;
                             return ( 
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{item.userName}</td>
-                                  <td class={item.cricketProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit>0?"-"+item.cricketProfit.toFixed(2):-parseFloat(item.cricketProfit)}</td>
-                                  <td class={item.tennisProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit>0?"-"+item.tennisProfit.toFixed(2):-parseFloat(item.tennisProfit)}</td>
-                                  <td class={item.soccerProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit>0?"-"+item.soccerProfit.toFixed(2):-parseFloat(item.soccerProfit)}</td>
-                                  <td class={item.fancyProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss>0?"-"+item.fancyProfitLoss.toFixed(2):-parseFloat(item.fancyProfitLoss)}</td>
+                                  <td class={item.cricketProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketProfit>0?"-"+item.cricketProfit.toFixed(2):Math.abs(item.cricketProfit).toFixed(2)}</td>
+                                  <td class={item.tennisProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisProfit>0?"-"+item.tennisProfit.toFixed(2):Math.abs(item.tennisProfit).toFixed(2)}</td>
+                                  <td class={item.soccerProfit>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerProfit>0?"-"+item.soccerProfit.toFixed(2):Math.abs(item.soccerProfit).toFixed(2)}</td>
+                                  <td class={item.fancyProfitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyProfitLoss>0?"-"+item.fancyProfitLoss.toFixed(2):Math.abs(item.fancyProfitLoss).toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
@@ -272,11 +278,17 @@ export default class Clientpl extends Component {
                             }):
                           this.state.masterData.length>0 ?
                             this.state.masterData.map((item,index)=>{
-                              let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
-                              cTotal=cTotal+item.cricketPL.toFixed(2);
-                              tTotal=tTotal+item.tennisPL.toFixed(2);
-                              sTotal=sTotal+item.soccerPL.toFixed(2);
-                              fTotal=fTotal+item.fancyprofitLoss.toFixed(2);
+                              let userPl;
+                              if(item.profitLoss>0){
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              }
+                              //let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision);
+                              cTotal=cTotal+item.cricketPL;
+                              tTotal=tTotal+item.tennisPL;
+                              sTotal=sTotal+item.soccerPL;
+                              fTotal=fTotal+item.fancyprofitLoss;
                               subTotal=subTotal+userPl;
                               return (  
                                 <tr>
@@ -286,10 +298,10 @@ export default class Clientpl extends Component {
                                       {item.master}
                                     </Link>
                                   </td>
-                                  <td class={item.cricketPL>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketPL>0?"-"+item.cricketPL.toFixed(2):-parseFloat(item.cricketPL)}</td>
-                                  <td class={item.tennisPL>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisPL>0?"-"+item.tennisPL.toFixed(2):-parseFloat(item.tennisPL)}</td>
-                                  <td class={item.soccerPL>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerPL>0?"-"+item.soccerPL.toFixed(2):-parseFloat(item.soccerPL)}</td>
-                                  <td class={item.fancyprofitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyprofitLoss>0?"-"+item.fancyprofitLoss.toFixed(2):-parseFloat(item.fancyprofitLoss)}</td>
+                                  <td class={item.cricketPL>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketPL>0?"-"+item.cricketPL.toFixed(2):Math.abs(item.cricketPL).toFixed(2)}</td>
+                                  <td class={item.tennisPL>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisPL>0?"-"+item.tennisPL.toFixed(2):Math.abs(item.tennisPL).toFixed(2)}</td>
+                                  <td class={item.soccerPL>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerPL>0?"-"+item.soccerPL.toFixed(2):Math.abs(item.soccerPL).toFixed(2)}</td>
+                                  <td class={item.fancyprofitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyprofitLoss>0?"-"+item.fancyprofitLoss.toFixed(2):Math.abs(item.fancyprofitLoss).toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
@@ -297,20 +309,26 @@ export default class Clientpl extends Component {
                             }):
                           this.state.adminData.length>0 ?
                             this.state.adminData.map((item,index)=>{
-                              let userPl = (parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision));
-                              cTotal=cTotal+item.cricketPL.toFixed(2);
-                              tTotal=tTotal+item.tennisPL.toFixed(2);
-                              sTotal=sTotal+item.soccerPL.toFixed(2);
-                              fTotal=fTotal+item.fancyprofitLoss.toFixed(2);
+                              let userPl;
+                              if(item.profitLoss>0){
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                              }else{
+                                userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
+                              }
+                              //let userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss)+parseFloat(item.mCommision);
+                              cTotal=cTotal+item.cricketPL;
+                              tTotal=tTotal+item.tennisPL;
+                              sTotal=sTotal+item.soccerPL;
+                              fTotal=fTotal+item.fancyprofitLoss;
                               subTotal=subTotal+userPl;
                               return (  
                                 <tr>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center"><a style={{cursor:'pointer'}} onClick={()=>this.adminData(item.admin)}>{item.admin}</a></td>
-                                  <td class={item.cricketPL>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketPL>0?"-"+item.cricketPL.toFixed(2):-parseFloat(item.cricketPL)}</td>
-                                  <td class={item.tennisPL>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisPL>0?"-"+item.tennisPL.toFixed(2):-parseFloat(item.tennisPL)}</td>
-                                  <td class={item.soccerPL>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerPL>0?"-"+item.soccerPL.toFixed(2):-parseFloat(item.soccerPL)}</td>
-                                  <td class={item.fancyprofitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyprofitLoss>0?"-"+item.fancyprofitLoss.toFixed(2):-parseFloat(item.fancyprofitLoss)}</td>
+                                  <td class={item.cricketPL>0?"text-center color_red":"text-center inplay_txt"}>{item.cricketPL>0?"-"+item.cricketPL.toFixed(2):Math.abs(item.cricketPL).toFixed(2)}</td>
+                                  <td class={item.tennisPL>0?"text-center color_red":"text-center inplay_txt"}>{item.tennisPL>0?"-"+item.tennisPL.toFixed(2):Math.abs(item.tennisPL).toFixed(2)}</td>
+                                  <td class={item.soccerPL>0?"text-center color_red":"text-center inplay_txt"}>{item.soccerPL>0?"-"+item.soccerPL.toFixed(2):Math.abs(item.soccerPL).toFixed(2)}</td>
+                                  <td class={item.fancyprofitLoss>0?"text-center color_red":"text-center inplay_txt"}>{item.fancyprofitLoss>0?"-"+item.fancyprofitLoss.toFixed(2):Math.abs(item.fancyprofitLoss).toFixed(2)}</td>
                                   <td className="text-center inplay_txt">0.00</td>
                                   <td class={userPl>0?"text-center inplay_txt":"text-center color_red"}>{userPl.toFixed(2)}</td>
                                 </tr>
@@ -321,33 +339,33 @@ export default class Clientpl extends Component {
                           </tr>
                         }
                         {
-                           this.state.data.length > 0 ?
-                            <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
-                            <td colSpan="2" className="text-center">Total</td>
-                            <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                            <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal:-parseFloat(tTotal)}</td>
-                            <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal:-parseFloat(sTotal)}</td>
-                            <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+cTotal:-parseFloat(fTotal)}</td>
-                            <td className="text-center inplay_txt">0.00</td>
-                            <td class={subTotal>0?"text-center inplay_txt":"text-center color_red"}>{subTotal.toFixed(2)}</td>
+                          this.state.data.length > 0 ?
+                          <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                          <td colSpan="2" className="text-center">Total</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal.toFixed(2):Math.abs(cTotal).toFixed(2)}</td>
+                          <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal.toFixed(2):Math.abs(tTotal).toFixed(2)}</td>
+                          <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal.toFixed(2):Math.abs(sTotal).toFixed(2)}</td>
+                          <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+fTotal.toFixed(2):Math.abs(fTotal).toFixed(2)}</td>
+                          <td className="text-center inplay_txt">0.00</td>
+                          <td class={subTotal>0?"text-center inplay_txt":"text-center color_red"}>{subTotal.toFixed(2)}</td>
                           </tr>:
                           this.state.masterData.length > 0 ?
                           <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
                           <td colSpan="2" className="text-center">Total</td>
-                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal:-parseFloat(tTotal)}</td>
-                          <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal:-parseFloat(sTotal)}</td>
-                          <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+cTotal:-parseFloat(fTotal)}</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal.toFixed(2):Math.abs(cTotal).toFixed(2)}</td>
+                          <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal.toFixed(2):Math.abs(tTotal).toFixed(2)}</td>
+                          <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal.toFixed(2):Math.abs(sTotal).toFixed(2)}</td>
+                          <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+fTotal.toFixed(2):Math.abs(fTotal).toFixed(2)}</td>
                           <td className="text-center inplay_txt">0.00</td>
                           <td class={subTotal>0?"text-center inplay_txt":"text-center color_red"}>{subTotal.toFixed(2)}</td>
                         </tr>                          :
                           this.state.adminData.length > 0 ?
                           <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
                           <td colSpan="2" className="text-center">Total</td>
-                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal:-parseFloat(cTotal)}</td>
-                          <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal:-parseFloat(tTotal)}</td>
-                          <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal:-parseFloat(sTotal)}</td>
-                          <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+cTotal:-parseFloat(fTotal)}</td>
+                          <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal>0?"-"+cTotal.toFixed(2):Math.abs(cTotal).toFixed(2)}</td>
+                          <td class={tTotal>0?"text-center color_red":"text-center inplay_txt"}>{tTotal>0?"-"+tTotal.toFixed(2):Math.abs(tTotal).toFixed(2)}</td>
+                          <td class={sTotal>0?"text-center color_red":"text-center inplay_txt"}>{sTotal>0?"-"+sTotal.toFixed(2):Math.abs(sTotal).toFixed(2)}</td>
+                          <td class={fTotal>0?"text-center color_red":"text-center inplay_txt"}>{fTotal>0?"-"+fTotal.toFixed(2):Math.abs(fTotal).toFixed(2)}</td>
                           <td className="text-center inplay_txt">0.00</td>
                           <td class={subTotal>0?"text-center inplay_txt":"text-center color_red"}>{subTotal.toFixed(2)}</td>
                         </tr>:null
