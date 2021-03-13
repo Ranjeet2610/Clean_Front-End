@@ -26,36 +26,131 @@ export default class Bethistory extends Component {
       color:'lightblue',
       hover:false,
       newResData:[],
-      historyType:'open'
+      newData:[],
+      historyType:'All'
      }
     this.service = new Service();
     this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
 
+  }
+  
+  componentDidMount() {   
+    let currD = new Date().toISOString().substr(0,10);
+      //let currT = Utilities.datetime(new Date()).slice(11,16)
+      let Scurr = currD+"T00:00:01"
+      let Ecurr = currD+"T23:59:59"
+      this.setState({
+        currentStart:currD+"T00:00:01",
+        currentend:currD+"T23:59:59",
+        from_date:Scurr,
+        to_date:Ecurr,
+        load:true
+      }) 
+    this.getBetData(Scurr,Ecurr);
+  }
+  
+  getBetData = async (Scurr,Ecurr) => {
+    let propName = this.props?.location?.state?.betHistory?this.props?.location?.state?.betHistory:undefined
+    if(propName===undefined){
+    if(this.userDetails.superAdmin){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
+        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        this.setState({
+          betHistory:datafilter,
+          newResData:data,
+          newData:datafilter,
+          load:false
+        });      
+      });
+    }
+    else if(this.userDetails.Admin){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
+        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        this.setState({
+          betHistory:datafilter,
+          newResData:data,
+          newData:datafilter,
+          load:false
+        });             
+      }); 
+    }
+    else if(this.userDetails.Master){
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
+        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        this.setState({
+          betHistory:datafilter,
+          newResData:data,
+          newData:datafilter,
+          load:false
+        });             
+      });
+    }
+    else{
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
+        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        this.setState({
+          betHistory:datafilter,
+          newResData:data,
+          newData:datafilter,
+          load:false
+        });             
+      });
+    }
+    }
+    else{
+      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:propName},'getUserOpenBetHistory',(data)=>{
+        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        this.setState({
+          betHistory:datafilter,
+          newResData:data,
+          newData:datafilter,
+          load:false
+        });             
+      });
+    }
   }
 
   handleFilter= async () => {
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
-      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-      const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
-      await this.setState({
-          betHistory:updateList
+      if(this.state.historyType!=="All"){
+        let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+        const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
+        await this.setState({
+            betHistory:updateList,
+            newData:updateList
         })
       }
+      else{
+        let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+        await this.setState({
+            betHistory:betHistoryFilter,
+            newData:betHistoryFilter
+        })
+      }
+    }
    }
 
-handleTabFilter = (eventType) => {
-  if(eventType!==""){
-    let betHistoryFilter = this.state.newResData.filter(ele => ele.eventType === eventType )
-    this.setState({
-      betHistory:betHistoryFilter
-    })
+  handleTabFilter = (eventType) => {
+    let data = [...this.state.newData]
+    if(eventType!==""){
+      let betHistoryFilter = data.filter(ele => ele.eventType === eventType )
+      this.setState({
+        betHistory:betHistoryFilter
+      })
+    }
+    else{
+      this.setState({
+        betHistory:this.state.newResData
+      })
+    }
   }
-  else{
-    this.getBetData();
-  }
-}
 
 
   changeBackground = (e,type) =>{
@@ -86,93 +181,18 @@ handleTabFilter = (eventType) => {
     this.setState({
       from_date:this.state.currentStart,
       to_date:this.state.currentend,
-      searchTearm:""
-    }) 
-    this.setState({
+      searchTearm:"",
+      historyType:'All',
       load:true
     })
-    this.getBetData();
+    this.getBetData(this.state.from_date, this.state.to_date);
   }
-
-  getBetData = () => {
-  if(this.userDetails.superAdmin){
-    this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
-      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-      this.setState({
-        betHistory:datafilter,
-        newResData:data,
-        load:false
-      });            
-    });
-   }
-   else if(this.userDetails.Admin){
-    this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
-      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-      this.setState({
-        betHistory:datafilter,
-        newResData:data,
-        load:false
-      });             
-    }); 
-   }
-   else if(this.userDetails.Master){
-    this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
-      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-      this.setState({
-        betHistory:datafilter,
-        newResData:data,
-        load:false
-      });             
-    });
-   }
-   else{
-    this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
-      let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-      this.setState({
-        betHistory:datafilter,
-        newResData:data,
-        load:false
-      });             
-    });
-   }
-}
-
-componentDidMount() {   
-  let currD = new Date().toISOString().substr(0,10);
-    //let currT = Utilities.datetime(new Date()).slice(11,16)
-    let Scurr = currD+"T00:00:01"
-    let Ecurr = currD+"T23:59:59"
-    this.setState({
-      currentStart:currD+"T00:00:01",
-      currentend:currD+"T23:59:59",
-      from_date:Scurr,
-      to_date:Ecurr,
-      load:true
-    }) 
-   this.getBetData();
-}
-
+  
   paginate = (pageNumber) => {
     this.setState({
       currentPage:pageNumber
     })
   }
-
-//   handleFilterByDropdown = async(e) => {
-//     let dataArray = [...this.state.newResData]
-//     let searchUser = e.target.value.toLowerCase();
-//     const updateList = dataArray.filter(ele => ele.status===searchUser)
-//     if(searchUser!==""){
-//         await this.setState({
-//           betHistory:updateList
-//         })
-//     }
-//     else{
-//         await this.setState({
-//           betHistory:this.state.newResData
-//         })
-//     }
-// }
 
   render(){
     let color= this.state.color;
@@ -234,9 +254,9 @@ componentDidMount() {
                     </div> */}
                     <div className="popup_col_2">
                       <select className="form-control" onChange={this.handleChange}  name="historyType">
-                        {/* <option value="">Select All</option> */}
-                        <option >open</option>
-                        <option >settled</option>
+                        <option>All</option>
+                        <option>open</option>
+                        <option>settled</option>
                       </select>
                     </div>
                     <div className="popup_col_3">

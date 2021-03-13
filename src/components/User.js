@@ -39,10 +39,10 @@ export default class User extends Component {
       masterDetails: "",
       userInfo: "",
       Name: "",
-      max_stake: "",
-      min_stake: "",
-      max_profit: "",
-      max_loss: "",
+      max_stake: 0,
+      min_stake: 0,
+      max_profit: 0,
+      max_loss: 0,
       PIP: "",
       PIS: "",
       min_odds: "",
@@ -88,42 +88,57 @@ export default class User extends Component {
     })
   };
 
-  componentDidMount() {
-    let infoDetails = JSON.parse(localStorage.getItem('data'));
-    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
-      this.props.history.push('/dashboard')
-    }
-    else{
-      if(infoDetails.Admin){
+  supervisorBasedUser = () => {
+    let info = JSON.parse(localStorage.getItem('data'))
+    let propName = this.props?.match?.params?.username?this.props?.match?.params?.username:undefined
+    // console.log("pppppp",propName);
+    if(propName===undefined){
+    if(this.props.match.params.username ? this.props.match.params.username : info.Admin){
+      this.setState({
+        load:true
+      })
+      this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
         this.setState({
           load:true
         })
-        this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
+        this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
+          //console.log("SM",data.data.data);
+          //console.log("SM",this.props.match.params.username ? this.props.match.params.username : infoDetails.userName);
+          let filterUser = this.props.match.params.username ? this.props.match.params.username : info.userName;
+          let filtermdata = data.data.data.filter(ele=>{ 
+            return ele.master === filterUser;
+          });
+          console.log(filtermdata);
           this.setState({
-            data: data.data.data,
+            data: filtermdata,
             searchFilter: data.data,
           });
           let totalBalance = 0;
           this.state.data.map((ele) => totalBalance += ele.walletBalance);
           this.setState({
             totalBalance,
-          load:false
+            load:false
           });
         });
         const obj = {
           userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
         }
+        console.log("userNameSM",obj);
         this.users.getMyprofile(obj, (data) => {
           this.setState({
             masterDetails: data.data,
           })
         });
+      });
+      const obj = {
+        userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
       }
-      else if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
+      this.users.getMyprofile(obj, (data) => {
         this.setState({
-          load:true
+          masterDetails: data.data,
         })
         this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+          console.log("M",data.data);
           this.setState({
             data: data.data,
             searchFilter: data.data,
@@ -138,17 +153,22 @@ export default class User extends Component {
         const obj = {
           userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
         }
+        console.log("userNameM",obj);
         this.users.getMyprofile(obj, (data) => {
           this.setState({
             masterDetails: data.data,
           })
         });
+      });
+      obj = {
+        userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
       }
-      else {
+      this.users.getMyprofile(obj, (data) => {
         this.setState({
-          load:true
+          masterDetails: data.data,
         })
         this.users.getAllusers((data) => {
+          console.log("U",data.data);
           this.setState({
             data: data.data,
             searchFilter: data.data,
@@ -160,7 +180,49 @@ export default class User extends Component {
             load:false
           });
         });
-      }
+        let totalBalance = 0;
+        this.state.data.map((ele) => totalBalance += ele.walletBalance);
+        this.setState({
+          totalBalance,
+          load:false
+        });
+      });
+    }
+  }
+  else{
+    this.setState({
+      load:true
+    })
+    this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+      this.setState({
+        data: data.data,
+        searchFilter: data.data,
+      });
+      let totalBalance = 0;
+      this.state.data.map((ele) => totalBalance += ele.walletBalance);
+      this.setState({
+        totalBalance,
+      load:false
+      });
+    });
+    const obj = {
+      userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+    }
+    this.users.getMyprofile(obj, (data) => {
+      this.setState({
+        masterDetails: data.data,
+      })
+    });
+  }
+  }
+
+  componentDidMount() {
+    let infoDetails = JSON.parse(localStorage.getItem('data'));
+    if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
+      this.props.history.push('/dashboard')
+    }
+    else{
+      this.supervisorBasedUser();
     }
   }
 
@@ -502,13 +564,14 @@ export default class User extends Component {
   }
 
   view_account = (user) => {
+    console.log(user);
     this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
-      id: this.state.userdetails.id
+      id: user.id
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({
@@ -733,7 +796,7 @@ export default class User extends Component {
                                   <td className="text-center">{item.profitLossChips}</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">
-                                    <Link to="#" className="btn btn-success btn-xs">{item.exposure}</Link>
+                                    <Link to={{pathname:"/bethistory", state:{betHistory:item.userName}}} className="btn btn-success btn-xs">{item?.exposure>0?-item.exposure:item.exposure}</Link>
                                   </td>
                                   <td className="text-center">{item.walletBalance} </td>
                                   <td className="text-center">0.00</td>
