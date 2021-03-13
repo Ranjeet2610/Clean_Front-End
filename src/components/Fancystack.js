@@ -39,9 +39,8 @@ class FancyStack extends Component{
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     let infoDetails = JSON.parse(localStorage.getItem('data'));
-    this.handleCurrUser(infoDetails);
     if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
       this.props.history.push('/dashboard')
     }
@@ -50,24 +49,47 @@ class FancyStack extends Component{
     let Scurr = currD+"T00:00:01"
     let Ecurr = currD+"T23:59:59"
     this.getAllFancyStack(Scurr,Ecurr);
-    this.setState({
+    await this.setState({
       currentStart:currD+"T00:00:01",
       currentend:currD+"T23:59:59",
       from_date:Scurr,
       to_date:Ecurr,
     })
+    this.handleCurrUser(infoDetails);
   }
 
-  getAllFancyStack = async (Scurr,Ecurr) => {
-    let fromDate = new Date(Scurr);
-    let toDate =  new Date(Ecurr);
+  handleCurrUser = (infoDetails) => {
+    let fD = new Date(this.state.from_date).toISOString();
+    let tD = new Date(this.state.to_date).toISOString();
+    if(infoDetails.superAdmin){
+      this.setState({
+        currUserAccess:'Admin'
+      })
+    }
+    else if(infoDetails.Admin){
+      this.setState({
+        currUserAccess:'SuperMaster'
+      })
+    }
+    else{
+      this.setState({
+        currUserAccess:'Master'
+      })
+    }
+    this.getAllFancyStack(fD,tD);
+  }
+
+  getAllFancyStack = (Scurr,Ecurr) => {
+    // debugger
+    // let fromDate = await new Date(Scurr).toISOString();
+    // let toDate =  await new Date(Ecurr).toISOString();
     const obj ={
-      startDate:fromDate,
-      endDate: toDate
+      startDate: new Date(Scurr).toISOString(),
+      endDate: new Date(Ecurr).toISOString()
     }
     this.users.getAllFancyStack(obj, (data)=>{
       this.setState({
-        fancyStack:data
+        fancyStack:data.data.data
       })
     })
     if(this.state.currUserAccess==="Admin"){
@@ -84,7 +106,7 @@ class FancyStack extends Component{
   AdminBasedFancyStack = (data) => {
     let arr = []
     let itemName;
-    data.data.data.map(element=>{
+    data.map(element=>{
       itemName=element?.userInfo[0]?.admin[0]
       if(arr.every((item) => item.name !== itemName)){
         arr.push({
@@ -103,9 +125,10 @@ class FancyStack extends Component{
   }
 
   SM_BasedFancyStack = (data) =>{
+    // debugger
     let arr = []
     let itemName;
-    data.data.data.map(element=>{
+    data.map(element=>{
       itemName=element?.userInfo[0]?.master[0]
       if(arr.every((item) => item.name !== itemName)){
         arr.push({
@@ -126,7 +149,7 @@ class FancyStack extends Component{
   MasterBasedFancyStack = (data) => {
     let arr = []
     let itemName;
-    data.data.data.map(element=>{
+    data.map(element=>{
       itemName=element?.clientName
       if(arr.every((item) => item.name !== itemName)){
         arr.push({
@@ -142,27 +165,6 @@ class FancyStack extends Component{
     this.setState({
       fancyStakeData:arr
     })
-  }
-
-  handleCurrUser = (infoDetails) => {
-    let fD = new Date(this.state.from_date);
-    let tD = new Date(this.state.to_date);
-    if(infoDetails.superAdmin){
-      this.setState({
-        currUserAccess:'Admin'
-      })
-    }
-    else if(infoDetails.Admin){
-      this.setState({
-        currUserAccess:'SuperMaster'
-      })
-    }
-    else{
-      this.setState({
-        currUserAccess:'Master'
-      })
-    }
-    this.getAllFancyStack(fD,tD);
   }
 
   handleChange = (event) => {
