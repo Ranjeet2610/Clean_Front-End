@@ -617,7 +617,7 @@ showchildMenu=(e)=>{
               <ul>
                 <li className="belance-top">
                   <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance}</span></Link>
-                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{this.state?.exposure?this.state?.exposure:0}</span></Link>
+                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
                   
                   <Link to="#" className="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <i className="fa fa-user-circle-o" />&nbsp;
