@@ -97,10 +97,10 @@ export default class User extends Component {
       this.setState({
         load:true
       })
-      this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
-        this.setState({
-          load:true
-        })
+      // this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
+      //   this.setState({
+      //     load:true
+      //   })
         this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
           //console.log("SM",data.data.data);
           //console.log("SM",this.props.match.params.username ? this.props.match.params.username : infoDetails.userName);
@@ -129,8 +129,8 @@ export default class User extends Component {
             masterDetails: data.data,
           })
         });
-      });
-      const obj = {
+      //});
+       obj = {
         userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
       }
       this.users.getMyprofile(obj, (data) => {
