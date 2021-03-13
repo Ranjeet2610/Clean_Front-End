@@ -740,12 +740,12 @@ export default class User extends Component {
                                         <i className="fa fa-lock fa_custom fa-2x" title="Betting Locked" aria-hidden="true" style={{ color: "red" }} ></i> : ""}
                                     </span>
                                   </td>
-                                  <td className="text-center">BETFUN360</td>
+                                  <td className="text-center">LORDSEXCH2</td>
                                   <td className="text-center">{item.master}</td>
                                   <td className="text-center">{item.profitLossChips}</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">
-                                    <Link to="#" className="btn btn-success btn-xs">{item.exposure}</Link>
+                                    <Link to={{pathname:"/bethistory", state:{betHistory:item.userName}}} className="btn btn-success btn-xs">{item?.exposure>0?-item.exposure:item.exposure}</Link>
                                   </td>
                                   <td className="text-center">{item.walletBalance} </td>
                                   <td className="text-center">0.00</td>
