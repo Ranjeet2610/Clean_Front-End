@@ -402,7 +402,7 @@ export default class SuperMaster extends Component {
           password: this.state.password,
           admin: this.state.masterUName,
           Master: true,
-          Commission: this.state.partner,
+          Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
         path = "master/" + this.state.masterUName;
@@ -414,7 +414,7 @@ export default class SuperMaster extends Component {
           password: this.state.password,
           superadmin: JSON.parse(localStorage.getItem("data")).userName,
           Admin: true,
-          Commission: this.state.partner,
+          Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Super Master Added Successfully";
         path = "supermaster";
@@ -862,10 +862,10 @@ export default class SuperMaster extends Component {
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>
+                                  <td className="text-center">0%</td>
+                                  <td className="text-center">0%</td>
+                                  <td className="text-center">0%</td>
                                   <td className="text-center">{item.Commission}</td>
-                                  <td className="text-center">0%</td>
-                                  <td className="text-center">0%</td>
-                                  <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="last">
                                     <span className="dropdown">
