@@ -16,7 +16,7 @@ export default class Master extends Component {
       currentPage:1,
       postsPerPage:10,
       load:false,
-      tableHead: ["S.No.", "User_ID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Partnership", "Partnership_Cacino", "Partnership_TeenPatti", "M.comm", "S.comm", "View More"],
+      tableHead: ["S.No.", "User_ID", "Website", "Credit_Limit", "Credit_Given", "Balance", "Commission", "M.comm", "S.comm", "View More"],
       msgBox: 'none',
       Cpwd: '',
       Npwd: '',
@@ -418,7 +418,7 @@ export default class Master extends Component {
           password: this.state.password,
           admin: JSON.parse(localStorage.getItem("data")).userName,
           Master: true,
-          Commission:this.state.partner,
+          Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
         path = "master";
@@ -891,10 +891,10 @@ export default class Master extends Component {
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>
+                                  <td className="text-center">0%</td>
+                                  {/* <td className="text-center">0%</td>
+                                  <td className="text-center">0%</td> */}
                                   <td className="text-center">{item.Commission}</td>
-                                  <td className="text-center">0%</td>
-                                  <td className="text-center">0%</td>
-                                  <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="last text-center">
                                     <span className="dropdown">
