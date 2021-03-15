@@ -28,7 +28,7 @@ export default class Liveevents extends Component {
   }
 
   async componentDidMount() {
-    if(JSON.parse(localStorage.getItem('data')).superAdmin === false){
+    if(JSON.parse(localStorage.getItem('data')).superAdmin === false && JSON.parse(localStorage.getItem('data')).userName !== "AdminO"){
       this.props.history.push('/dashboard')
     }
     await this.setState({

@@ -378,9 +378,9 @@ showchildMenu=(e)=>{
         {/* <li>
           <Link to="/liveevents">Live Events </Link> 
         </li> */}
-        <li>
+        {/* <li>
           <Link to="/Settlement">Settlement</Link> 
-        </li>
+        </li> */}
         <li>
           <Link to="/clientpl">Client P L</Link> 
         </li>
