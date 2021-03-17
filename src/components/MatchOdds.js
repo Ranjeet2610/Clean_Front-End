@@ -1,4 +1,6 @@
 import BetBox from "./Betbox";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -591,12 +593,20 @@ export default class MatchOdds extends Component {
     })
     switch (notfyStatus) {
       case 'success':
-        NotificationManager.success(notfyMsg,"Success");
+        // NotificationManager.success(notfyMsg,"Success");
+        toast.success(notfyMsg,{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
         const audioEl = document.getElementsByClassName("audio_element")[0]
         audioEl.play()
         break;
       case 'error':
-        NotificationManager.error(notfyMsg,"Error");
+        toast.error(notfyMsg,{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+        // NotificationManager.error(notfyMsg,"Error");
         break;
     }
   }
@@ -728,7 +738,7 @@ export default class MatchOdds extends Component {
       <div>
         <Navbar />
         <Sidebar />
-        <NotificationContainer/>
+        <ToastContainer/>
         <audio className="audio_element">
           <source src={Sound} />
         </audio>

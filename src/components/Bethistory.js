@@ -116,6 +116,9 @@ export default class Bethistory extends Component {
   }
 
   handleFilter= async () => {
+    this.setState({
+      load:true
+    })
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
@@ -134,10 +137,18 @@ export default class Bethistory extends Component {
             newData:betHistoryFilter
         })
       }
+      setTimeout(()=>
+        this.setState({
+          load:false
+        }),2000
+      )
     }
    }
 
-  handleTabFilter = (eventType) => {
+  handleTabFilter = async (eventType) => {
+    await this.setState({
+      load:true
+    })
     let data = [...this.state.newData]
     if(eventType!==""){
       let betHistoryFilter = data.filter(ele => ele.eventType === eventType )
@@ -150,6 +161,11 @@ export default class Bethistory extends Component {
         betHistory:this.state.newResData
       })
     }
+    setTimeout(()=>
+      this.setState({
+        load:false
+      }),2000
+    )
   }
 
 
@@ -206,11 +222,8 @@ export default class Bethistory extends Component {
           <Navbar />
           <Sidebar />
           <div className="forModal" />
-        {
-        this.state.load ?
-          <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-              <Loader type="Grid" color="#6c1945" height={100} width={100} />
-          </div> :
+        {/* { */}
+        
           <div className="container body">
             <div className="main_container" id="sticky">
               <div className="right_col" role="main">
@@ -286,17 +299,32 @@ export default class Bethistory extends Component {
 
 {
   //////////////////////// BET HISTORY TABLE /////////////////////////////////////////
+
+  // .fixed_header tbody{
+  //   display:block;
+  //   overflow:auto;
+  //   height:200px;
+  //   width:100%;
+  // }
+  // .fixed_header thead tr{
+  //   display:block;
+  // }
 }
 
                 <div className="custom-scroll appendAjaxTbl">
-                   <table className="table table-striped jambo_table bulk_action" id="datatables">
+                   <table className="table table-striped jambo_table bulk_action fixed_header" id="datatables">
                     <thead>
                       <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
                         {
                           this.state.betHistoryTableHead.map((item,index)=><th key={index} className="text-center"><b>{item}</b></th>)
                         }
                       </tr>
-                    </thead>  
+                    </thead> 
+                    {
+                    this.state.load ?
+                      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                          <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                      </div> : 
                     <tbody>
                       {
                         currentPosts.length > 0 ?
@@ -335,7 +363,8 @@ export default class Bethistory extends Component {
                             <td colSpan={16} className="text-center">No Records Found...</td>
                           </tr>
                       }
-                    </tbody>    
+                    </tbody>
+                    }    
                     {
                       currentPosts.length > 0 ?
                       <tfoot>
@@ -353,7 +382,7 @@ export default class Bethistory extends Component {
             </div>
           </div>
         </div>
-        }
+        {/* } */}
       <Footer />
       </div>
     )

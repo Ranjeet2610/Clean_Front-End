@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Navbar from './Navbar'
 import Users from '../Services/users';
@@ -93,7 +95,11 @@ export default class news extends Component{
                 // this.getNews();
                 switch ('success') {
                     case 'success':
-                        NotificationManager.success('News Activated Successfully !',"Success");
+                        toast.success('News Activated Successfully !',{
+                            position:"bottom-right",
+                            hideProgressBar:true
+                          });
+                        // NotificationManager.success(,"Success");
                         break;
                 }
             })
@@ -118,7 +124,11 @@ export default class news extends Component{
                 this.getNewsData();
                 switch ('success') {
                     case 'success':
-                        NotificationManager.success('News Updated Successfully !',"Success");
+                        toast.success("News Updated Successfully !",{
+                            position:"bottom-right",
+                            hideProgressBar: true,
+                          });
+                        // NotificationManager.success('',"Success");
                         break;
                 }
             })
@@ -132,7 +142,7 @@ export default class news extends Component{
         return(
             <div>
                 <Navbar news={this.state.newsControl} />
-                <NotificationContainer/>
+                <ToastContainer/>
                 <div style={this.state.newsBox}>
                     <div style={this.state.newsHead}>
                         <h1 className="text-center"> News List</h1>

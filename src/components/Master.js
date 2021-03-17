@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Pagination from './Pagination'
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Loader from 'react-loader-spinner';
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -142,7 +144,11 @@ export default class Master extends Component {
             this.getmasterforSupermaster();
             switch ('success') {
               case 'success':
-                NotificationManager.success(pdata.data.message,"Success");
+                toast.success(pdata.data.message,{
+                  position:"bottom-right",
+                  hideProgressBar:true
+                });
+                // NotificationManager.success(pdata.data.message,"Success");
               break;
             }
           });
@@ -164,7 +170,11 @@ export default class Master extends Component {
             this.getmasterforSupermaster();
             switch ('success') {
               case 'success':
-                NotificationManager.success(pdata.data.message,"Success");
+                toast.success(pdata.data.message,{
+                  position:"bottom-right",
+                  hideProgressBar:true
+                });
+                // NotificationManager.success(pdata.data.message,"Success");
               break;
             }
           })
@@ -414,7 +424,7 @@ export default class Master extends Component {
           password: this.state.password,
           admin: JSON.parse(localStorage.getItem("data")).userName,
           Master: true,
-          Commission:this.state.partner,
+          Commission:this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
         path = "master";
@@ -422,11 +432,15 @@ export default class Master extends Component {
       this.users.createUser(data, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success(message,"Success");
+            toast.success(message,{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success(message,"Success");
           break;
       }
     });
-    this.getMastersforAdmin();
+    this.supervisorBasedData();
     if(userType==="superAddMaster"){
       document.getElementById('superAddMaster').click();
     }
@@ -445,7 +459,11 @@ export default class Master extends Component {
       this.users.lockunlock(obj, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success("Master locked successfully","Success");
+            toast.success("Master locked successfully",{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success("Master locked successfully","Success");
           break;
         }
         this.getMastersforAdmin();
@@ -458,7 +476,11 @@ export default class Master extends Component {
       this.users.lockunlock(obj1, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success("Master unlocked successfully","Success");
+            toast.success("Master unlocked successfully",{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success("Master unlocked successfully","Success");
           break;
         }
         this.getMastersforAdmin();
@@ -471,7 +493,11 @@ export default class Master extends Component {
       this.users.closeuser(obj2, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success("Master close successfully","Success");
+            toast.success("Master close successfully",{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success("Master close successfully","Success");
           break;
         }
         this.getMastersforAdmin();
@@ -484,7 +510,11 @@ export default class Master extends Component {
       this.users.lockingUnlockingBetting(obj3, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success("Betting locked successfully","Success");
+            toast.success("Betting locked successfully",{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success("Betting locked successfully","Success");
           break;
         }
         this.getMastersforAdmin();
@@ -494,7 +524,11 @@ export default class Master extends Component {
       this.users.lockingUnlockingBetting({ userName: this.state.mName }, (data) => {
         switch ('success') {
           case 'success':
-            NotificationManager.success("Betting unlocked successfully","Success");
+            toast.success("Betting unlocked successfully",{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+            // NotificationManager.success("Betting unlocked successfully","Success");
           break;
         }
         this.getMastersforAdmin();
@@ -603,7 +637,11 @@ export default class Master extends Component {
           document.getElementById("confirm_password").value = "";
           switch ('success') {
             case 'success':
-                NotificationManager.success(data.data.message,"Success");
+              toast.success(data.data.message,{
+                position:"bottom-right",
+                hideProgressBar:true
+              });
+                // NotificationManager.success(data.data.message,"Success");
                 break;
         }
         this.closePasswordpopup();
@@ -628,7 +666,11 @@ export default class Master extends Component {
       // alert("updated");
       switch ('success') {
         case 'success':
-          NotificationManager.success("updated","Success");
+          toast.success("updated",{
+            position:"bottom-right",
+            hideProgressBar:true
+          });
+          // NotificationManager.success("updated","Success");
         break;
       }
       this.closeviewinfo();
@@ -643,7 +685,11 @@ export default class Master extends Component {
       // alert("updated");
       switch ('success') {
         case 'success':
-          NotificationManager.success("updated","Success");
+          toast.success("updated",{
+            position:"bottom-right",
+            hideProgressBar:true
+          });
+          // NotificationManager.success("updated","Success");
         break;
       }
       this.closeviewinfo();
@@ -709,13 +755,9 @@ export default class Master extends Component {
       <div>
         <Navbar />
         <Sidebar />
-        <NotificationContainer/>
+        <ToastContainer/>
         <div className="forModal" />
-      {
-        this.state.load ?
-        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-            <Loader type="Grid" color="#6c1945" height={100} width={100} />
-        </div> :
+      
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -852,7 +894,11 @@ export default class Master extends Component {
                   {
                     ///////////////////////////// TABLE OF MASTER ///////////////////////////////////////
                   }
-
+                  {
+                    this.state.load ?
+                    <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                        <Loader type="Grid" color="#6c1945" height={100} width={100} />
+                    </div> :
                   <div className="custom-scroll appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action" id="datatabless" >
                       <thead>
@@ -956,7 +1002,8 @@ export default class Master extends Component {
                     </table>
                     <p id="paginateClick" className="pull-right pagination-row dataTables_paginate paging_simple_numbers" />
                   </div>
-                </div>
+                  }
+                  </div>
               </div>
             </div>
 

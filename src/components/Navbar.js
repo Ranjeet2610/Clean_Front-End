@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import  mainLogo from '../betfun-logo.png';
 import Users from '../Services/users';
@@ -259,7 +261,11 @@ handleAddBetTime = () => {
     // console.log(data.message);
     switch ('success') {
       case 'success':
-        NotificationManager.success('Time Set Successfully !',"Success");
+        toast.success('Time Set Successfully !',{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+        // NotificationManager.success('Time Set Successfully !',"Success");
         break;
     }
   })
@@ -576,7 +582,7 @@ showchildMenu=(e)=>{
     
   return  (
     <>
-    <NotificationContainer/>
+    <ToastContainer/>
     <span onClick={this.getNews} id="news"></span>
     <div className="header-section">
       <div className="top_nav">
@@ -778,9 +784,9 @@ showchildMenu=(e)=>{
                         <div className="add-funds-dialog-current-amount">
                           <select name="game" className="form-control col-md-7 col-xs-12" onChange={this.handleChange} style={{width:'64%'}}>
                             <option value="0">For All</option>
-                            <option value="1">Cricket</option>
-                            {/* <option value="2">Tennis</option>
-                            <option value="3">Soccer</option> */}
+                            <option value="4">Cricket</option>
+                            <option value="2">Tennis</option>
+                            <option value="1">Soccer</option>
                           </select>
                         </div>
                       </div>

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Loader from 'react-loader-spinner'
@@ -58,21 +60,26 @@ export default class Liveevents extends Component {
     if(JSON.parse(localStorage.getItem('data')).superAdmin === false){
       this.props.history.push('/dashboard')
     }
-    await this.setState({
-      load: true
-    })
-  this.events.getLiveEvents('',data=>{
-    let allEvents = data.data.data;
-    let isEventlive = allEvents.map(item => {
-      this.setState(prevState => ({ 
-        checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
-      }));
+    else{
+      if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+        this.props.history.push('/dashboard')
+      }
+      await this.setState({
+        load: true
+      })
+    this.events.getLiveEvents('',data=>{
+      let allEvents = data.data.data;
+      let isEventlive = allEvents.map(item => {
+        this.setState(prevState => ({ 
+          checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
+        }));
+      });
+      this.setState({
+        resdata:allEvents,
+        load: false
+      })
     });
-    this.setState({
-      resdata:allEvents,
-      load: false
-    })
-  });
+  }
   }
 
   handleChange = (e) => {
@@ -111,7 +118,11 @@ export default class Liveevents extends Component {
     });
     switch ('success') {
       case 'success':
-        NotificationManager.success(this.state.notifyMsg,"Success");
+        toast.success(this.state.notifyMsg,{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+        // NotificationManager.success(this.state.notifyMsg,"Success");
         break;
     }
     this.reloadData()
@@ -145,7 +156,7 @@ export default class Liveevents extends Component {
     return (
       <div>
         <Navbar />
-        <NotificationContainer/>
+        <ToastContainer/>
     {
       this.state.load ?
       <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>

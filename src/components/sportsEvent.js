@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Loader from 'react-loader-spinner'
 import Utilities from "./utilities";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Navbar from './Navbar';
@@ -12,7 +14,8 @@ export default class Liveevents extends Component {
   constructor(props){
     super(props);
     this.state = {
-        sportName:this.props.location.state.name,
+      access:true ,
+      sportName:this.props.location.state.name,
       load:false,
       tableHead:["S.No.","Event_Id","Event_Name","Event_Date","Status","Action"],
       notifyMsg:'',
@@ -53,10 +56,15 @@ export default class Liveevents extends Component {
         this.props.history.push('/dashboard')
         }
         else{
-            await this.setState({
-            load: true
+          if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+            this.setState({
+              access:false
             })
-            await this.reloadData();
+          }
+          await this.setState({
+          load: true
+          })
+          await this.reloadData();
         }
     }
 
@@ -69,6 +77,7 @@ export default class Liveevents extends Component {
     }
 
   render(){
+    const usrlog="lords11"
     return (
       <div>
         <Navbar />
@@ -139,6 +148,10 @@ export default class Liveevents extends Component {
                                         this.props.location.state.eventType===4 ?
                                         <Link to={'/eventfancyodds/' + item.eventId}>&nbsp;|&nbsp;Fancy Odds</Link>:null
                                     } 
+                                    {
+                                      this.state.access?
+                                      <Link to={'/manualfancyodds/' + item.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
+                                    }
                                   </td>
                                 </tr>
                               )

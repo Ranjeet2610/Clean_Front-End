@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Pagination from './Pagination'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
@@ -108,6 +110,7 @@ export default class SuperMaster extends Component {
   }
 
   update_free_chips = () => {
+    debugger
     if (this.state.isDeposit) {
       const obj = {
         userid: this.state.userdetails.id,
@@ -122,11 +125,15 @@ export default class SuperMaster extends Component {
           localStorage.setItem("data", JSON.stringify(data.data));
         });
         this.getAllAdmin();
-        switch ('success') {
-          case 'success':
-            NotificationManager.success(pdata.data.message,"Success");
-          break;
-      }
+        toast.success(pdata.data.message,{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+      //   switch ('success') {
+      //     case 'success':
+      //       NotificationManager.success(pdata.data.message,"Success");
+      //     break;
+      // }
       });
       this.closechipDepositpopup();
     }
@@ -144,11 +151,15 @@ export default class SuperMaster extends Component {
         this.users.getMyprofile(obj, (data) => {
           localStorage.setItem("data", JSON.stringify(data.data));
           this.getAllAdmin();
-          switch ('success') {
-            case 'success':
-              NotificationManager.success(pdata.data.message,"Success");
-            break;
-          }
+          toast.success(pdata.data.message,{
+            position:"bottom-right",
+            hideProgressBar:true
+          });
+          // switch ('success') {
+          //   case 'success':
+          //     NotificationManager.success(pdata.data.message,"Success");
+          //   break;
+          // }
         });
       });
       this.closechipWithdrawalpopup();
@@ -196,12 +207,16 @@ export default class SuperMaster extends Component {
       cricketminOdds: this.state.min_odds,
     }
     this.users.updateUserSportsInfo(obj, (data) => {
+      toast.success("updated",{
+        position:"bottom-right",
+        hideProgressBar:true
+      });
       // alert("updated");
-      switch ('success') {
-        case 'success':
-          NotificationManager.success("updated","Success");
-        break;
-      }
+      // switch ('success') {
+      //   case 'success':
+      //     NotificationManager.success("updated","Success");
+      //   break;
+      // }
       this.closeviewinfo();
     });
   }
@@ -213,11 +228,15 @@ export default class SuperMaster extends Component {
     }
     this.users.updateMyprofile(obj, (data) => {
       // alert("updated");
-      switch ('success') {
-        case 'success':
-          NotificationManager.success("updated","Success");
-        break;
-    }
+      toast.success("updated",{
+        position:"bottom-right",
+        hideProgressBar:true
+      });
+    //   switch ('success') {
+    //     case 'success':
+    //       NotificationManager.success("updated","Success");
+    //     break;
+    // }
     this.closeviewinfo();
     });
   }
@@ -402,7 +421,7 @@ export default class SuperMaster extends Component {
           password: this.state.password,
           admin: this.state.masterUName,
           Master: true,
-          Commission: this.state.partner,
+          Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
         path = "master/" + this.state.masterUName;
@@ -414,27 +433,26 @@ export default class SuperMaster extends Component {
           password: this.state.password,
           superadmin: JSON.parse(localStorage.getItem("data")).userName,
           Admin: true,
-          Commission: this.state.partner,
+          Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Super Master Added Successfully";
         path = "supermaster";
       }
 
-      this.users.createUser(data, (data) => {
-        switch ('success') {
-          case 'success':
-            NotificationManager.success(message,"Success");
-          break;
+      this.users.createUser(data, (data) => { 
+            toast.success(message,{
+              position:"bottom-right",
+              hideProgressBar:true
+            });
+        this.getAllAdmin();
+      });
+      if(userType==="superAddMaster"){
+        document.getElementById('superAddUser').click();
       }
-    });
-    this.getAllAdmin();
-    if(userType==="superAddMaster"){
-      document.getElementById('superAddUser').click();
-    }
-    else{
-      window.location.href = path
-      document.getElementById("addMaster").click();
-    }
+      else{
+        window.location.href = path
+        document.getElementById("addMaster").click();
+      }
     }
   }
 
@@ -444,11 +462,10 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockunlock(obj, (data) => {
-        switch ('success') {
-          case 'success':
-            NotificationManager.success("Supermaster Locked !","Success");
-          break;
-        }
+        toast.success("Supermaster Locked !",{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
         this.getAllAdmin();
       });
       this.setState({
@@ -460,11 +477,15 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockunlock(obj1, (data) => {
-        switch ('success') {
-          case 'success':
-              NotificationManager.success("Supermaster Unlocked !","Success");
-              break;
-      }
+        toast.success("Supermaster Unlocked !",{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+      //   switch ('success') {
+      //     case 'success':
+      //         NotificationManager.success("Supermaster Unlocked !","Success");
+      //         break;
+      // }
         this.getAllAdmin();
       });
       this.setState({
@@ -476,11 +497,15 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockingUnlockingBetting(obj2, (data) => {
-        switch ('success') {
-          case 'success':
-              NotificationManager.success("Betting locked !","Success");
-              break;
-      }
+        toast.success("Betting locked !",{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+      //   switch ('success') {
+      //     case 'success':
+      //         NotificationManager.success("Betting locked !","Success");
+      //         break;
+      // }
         this.getAllAdmin();
         });
         this.setState({
@@ -492,11 +517,15 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.lockingUnlockingBetting(obj2, (data) => {
-        switch ('success') {
-          case 'success':
-              NotificationManager.success("Betting Unlocked !","Success");
-              break;
-      }
+        toast.success("Betting Unlocked !",{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+      //   switch ('success') {
+      //     case 'success':
+      //         NotificationManager.success("Betting Unlocked !","Success");
+      //         break;
+      // }
         this.getAllAdmin();
         });
         this.setState({
@@ -508,11 +537,15 @@ export default class SuperMaster extends Component {
         userName: this.state.mName
       }
       this.users.closeuser(obj2, (data) => {
-        switch ('success') {
-          case 'success':
-              NotificationManager.success("User Account Close !","Success");
-              break;
-      }
+        toast.success("User Account Close !",{
+          position:"bottom-right",
+          hideProgressBar:true
+        });
+      //   switch ('success') {
+      //     case 'success':
+      //         NotificationManager.success("User Account Close !","Success");
+      //         break;
+      // }
         this.getAllAdmin();
         });
         this.setState({
@@ -622,11 +655,15 @@ export default class SuperMaster extends Component {
         this.users.changePassword(obj, (data) => {
           document.getElementById("newPassword").value = "";
           document.getElementById("confirm_password").value = "";
-          switch ('success') {
-            case 'success':
-                NotificationManager.success(data.data.message,"Success");
-                break;
-        }
+          toast.success(data.data.message,{
+            position:"bottom-right",
+            hideProgressBar:true
+          });
+        //   switch ('success') {
+        //     case 'success':
+        //         NotificationManager.success(data.data.message,"Success");
+        //         break;
+        // }
         this.closePasswordpopup();
           });
           this.setState({
@@ -695,13 +732,10 @@ export default class SuperMaster extends Component {
       <div>
         <Navbar />
         <Sidebar />
-        <NotificationContainer/>
+        <ToastContainer/>
+        {/* <NotificationContainer/> */}
         <div className="forModal" />
-      {
-        this.state.load ?
-        <div style={{height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-            <Loader type="Grid" color="#6c1945" height={100} width={100} />
-        </div> :
+      
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -831,7 +865,11 @@ export default class SuperMaster extends Component {
                   {
                     /////////////////////////////// TABLE OF SUPER MASTER //////////////////////////////////////////// 
                   }
-
+                {
+                  this.state.load ?
+                  <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                      <Loader type="Grid" color="#6c1945" height={100} width={100} />
+                  </div> :
                   <div className="custom-scroll appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action" id="datatabless">
                       <thead>
@@ -931,6 +969,7 @@ export default class SuperMaster extends Component {
                     </table>
                     <p id="paginateClick" className="pull-right pagination-row dataTables_paginate paging_simple_numbers" />
                   </div>
+                }
                 </div>
               </div>
             </div>

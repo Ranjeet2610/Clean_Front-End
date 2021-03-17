@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 import Pagination from './Pagination'
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -12,6 +13,7 @@ export default class Marketpl extends Component {
   constructor(props){
     super(props);
     this.state = {
+      load:false,
       currentPage:1,
       postsPerPage:10,
       tableHead:["Date","Market","Admin","SuperMaster","Total","Amount","M_comm","S_comm","Net_Amount"],
@@ -43,7 +45,8 @@ export default class Marketpl extends Component {
       this.account.superAdminProfitAndLoss(obj,data=>{
         this.setState({
           adminData: data.data,
-          newResData:data.data
+          newResData:data.data,
+          load:false
         });
       });
     }
@@ -54,7 +57,8 @@ export default class Marketpl extends Component {
       this.account.adminProfitAndLoss(obj,data=>{
         this.setState({
           masterData: data.data,
-          newResData:data.data
+          newResData:data.data,
+          load:false
           });
       }); 
     }
@@ -66,13 +70,17 @@ export default class Marketpl extends Component {
         this.setState({
           data: data.data,
           newResData:data.data,
-          ispl: false
+          ispl: false,
+          load:false
         })
       }); 
     }
   }
 
   componentDidMount(){
+    this.setState({
+      load:true
+    })
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"
@@ -87,6 +95,9 @@ export default class Marketpl extends Component {
   }
 
   handleFilter = async () => {
+    this.setState({
+      load:true
+    })
     let fD = await new Date(this.state.from_date);
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
@@ -109,6 +120,10 @@ export default class Marketpl extends Component {
         })
       }
     }
+    setTimeout(()=>
+    this.setState({
+      load:false
+    }),2000)
   }
 
   paginate = (pageNumber) => {
@@ -188,6 +203,11 @@ export default class Marketpl extends Component {
 }
 
                   <div className="custom-scroll data-background appendAjaxTbl">
+                  {
+                    this.state.load ?
+                      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                          <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                      </div> : 
                     <table className="table table-striped jambo_table bulk_action" id="Marketdatatable">
                       <thead>				
                         <tr style={{backgroundColor:'#95335c',color:'white'}}>
@@ -351,6 +371,7 @@ export default class Marketpl extends Component {
                       null
                     }
                     </table>
+                  }
                   </div>
                 </div>
               </div>

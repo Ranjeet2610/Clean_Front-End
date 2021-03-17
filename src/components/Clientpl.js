@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from 'react-loader-spinner'
 import {Link} from 'react-router-dom'
 import Navbar from "./Navbar";
 import Utilities from './utilities'
@@ -9,6 +10,7 @@ export default class Clientpl extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       tableHead:["Super Master","Master","Total","Amount","M-comm","S-comm","Net-Amount","User PL"],
       data: [],
       masterData: [],
@@ -54,8 +56,10 @@ getUserPLData = () => {
         this.setState({
           adminData: data.data.adminPL.reverse(),
         });
-      }
-    );
+      });
+      this.setState({
+        load:false,
+      })
   } 
   else if (this.userDetails.Admin) {
     const obj = {
@@ -70,6 +74,9 @@ getUserPLData = () => {
         });
       }
     );
+    this.setState({
+      load:false,
+    })
   } 
   else if (this.userDetails.Master) {
     const obj = {
@@ -81,13 +88,20 @@ getUserPLData = () => {
         this.setState({
           data: data.data.reverse(),
           ispl: false,
+          load:false,
         })
       }
     );
+    this.setState({
+      load:false,
+    })
   }
 }
 
   masterData =  async (data) => {
+    this.setState({
+      load:true,
+    })
     const obj = { 
       masterName: data,
       startDate:this.state.from_date,
@@ -97,11 +111,15 @@ getUserPLData = () => {
       this.setState({
         data: data.data.reverse(),
         ispl: false,
+        load:false,
       })
     });
   }
 
   adminData =  async (data) =>  {
+    this.setState({
+      load:true,
+    })
     const obj = { 
       adminName: data,
       startDate:this.state.from_date,
@@ -111,6 +129,7 @@ getUserPLData = () => {
       this.setState({
         masterData: data.data.masterPL.reverse(),
         ispl: false,
+          load:false,
       });
     });
   }
@@ -119,7 +138,8 @@ getUserPLData = () => {
     await this.setState({
       masterData:'',
       data:'',
-      ispl: true
+      ispl: true,
+      load:true,
     });
     await this.getUserPLData();
   }
@@ -137,7 +157,8 @@ getUserPLData = () => {
       adminData:'',
       masterData:'',
       data:'',
-      ispl: true
+      ispl: true,
+      load:true
     });
     await this.getUserPLData();
   };
@@ -194,6 +215,11 @@ getUserPLData = () => {
 }
 
                   <div className="custom-scroll data-background appendAjaxTbl">
+                  {
+                    this.state.load ?
+                      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                          <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                      </div> : 
                     <table className="table table-striped jambo_table bulk_action full-table-clint" id="datatable" >
                       <thead>
                         <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>
@@ -322,6 +348,7 @@ getUserPLData = () => {
                          }
                       </tbody>
                     </table>
+                  }
                   </div>
                 </div>
               </div>

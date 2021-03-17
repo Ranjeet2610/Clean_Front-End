@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Loader from 'react-loader-spinner'
 import {Link} from 'react-router-dom'
 import Utilities from './utilities'
 import Navbar from './Navbar';
@@ -10,6 +11,7 @@ export default class Clientpl extends Component {
   constructor(props){
     super(props);
     this.state = {
+      load:false,
       tableHead:["Cricket","Tennis","Soccer","Fancy","Teenpatti","Total Userpl"],
       data:[],
       masterData:[],
@@ -28,6 +30,9 @@ export default class Clientpl extends Component {
   }
 
   getSportsplData = (Scurr,Ecurr) => {
+    this.setState({
+      load:true
+    })
     if(this.userDetails.superAdmin){
       const obj ={
         startDate:"2021-01-02T08:37:21.702Z",
@@ -61,6 +66,9 @@ export default class Clientpl extends Component {
         });
       }); 
     }
+    this.setState({
+      load:false
+    })
   }
 
   componentDidMount(){
@@ -236,6 +244,11 @@ export default class Clientpl extends Component {
     }
 
                     <div className="custom-scroll data-background appendAjaxTbl">
+                  {
+                    this.state.load ?
+                      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                          <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                      </div> : 
                       <table className="table table-striped jambo_table bulk_action full-table-clint" id="datatable">
                         <thead>	
                           <tr className="headings" style={{backgroundColor:'#95335c',color:'white'}}>	
@@ -354,6 +367,7 @@ export default class Clientpl extends Component {
                          }
                         </tbody>
                       </table>
+                        }
                     </div>
                   </div>
                 </div>

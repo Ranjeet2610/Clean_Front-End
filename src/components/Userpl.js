@@ -228,6 +228,9 @@ export default class Userpl extends Component {
         }
       });
     }
+    this.setState({
+      load:false
+    })
   }
 
   paginate = (pageNumber) => {
@@ -246,6 +249,9 @@ export default class Userpl extends Component {
     await this.setState({
       postsPerPage:this.state.filter_value
     })
+    this.setState({
+      load:true
+    })
     await this.getUserPLData();
   }
 
@@ -362,6 +368,11 @@ export default class Userpl extends Component {
   ////////////////////////////// USER PL TABLE ////////////////////////////////////
 }
 
+            {
+              this.state.load ?
+                <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                    <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                </div> : 
                 <div className="custom-scroll data-background appendAjaxTbl">
                   <table className="table table-striped jambo_table bulk_action full-table-clint">
                     <thead>
@@ -603,6 +614,7 @@ export default class Userpl extends Component {
                     }
                   </table>
                 </div>
+            }
               </div>
             </div>
           </div>

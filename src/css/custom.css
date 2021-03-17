@@ -1402,3 +1402,12 @@ input[type="range"]{margin-top:14px!important;}
   color:white;
   outline:none;
 }
+.fixed_header tbody{
+  display:block;
+  overflow-y:auto;
+  height:200px;
+  width:100%;
+}
+.fixed_header thead tr{
+  display:block;
+}

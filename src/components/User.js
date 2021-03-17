@@ -457,7 +457,7 @@ export default class User extends Component {
         notifyMsg: "User Added Successfully"
       });
       setTimeout(() => {
-        window.location.href = path;
+        window.location.reload();
       }, 1000)
     });
   }
@@ -598,11 +598,7 @@ export default class User extends Component {
         <Navbar />
         <Sidebar />
         <div className="forModal" />
-      {
-        this.state.load ?
-        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-            <Loader type="Grid" color="#6c1945" height={100} width={100} />
-        </div> :
+      
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -735,6 +731,11 @@ export default class User extends Component {
               <div className="row">
                 <div className="col-md-12 col-sm-12 col-xs-12">
                   <div id="divLoading" />
+                  {
+        this.state.load ?
+        <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
                   <div className="custom-scroll appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action" id="myTable" >
                       <thead>
@@ -831,7 +832,7 @@ export default class User extends Component {
                       }
                     </table>
                   </div>
-                </div>
+  }</div>
               </div>
             </div>
 

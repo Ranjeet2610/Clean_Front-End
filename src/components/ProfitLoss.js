@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Loader from 'react-loader-spinner'
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Utilities from './utilities'
@@ -12,6 +13,7 @@ export default class ProfitLoss extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       currentPage:1,
       postsPerPage:10,
       profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
@@ -65,7 +67,8 @@ export default class ProfitLoss extends Component {
         
         this.setState({
           data: data.data,
-          newResData: data.data
+          newResData: data.data,
+          load:false
         });
       });
     }
@@ -73,7 +76,8 @@ export default class ProfitLoss extends Component {
       this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
         this.setState({
           data: data.data,
-          newResData: data.data
+          newResData: data.data,
+          load:false
         });
       });
     }
@@ -81,7 +85,8 @@ export default class ProfitLoss extends Component {
       this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
         this.setState({
           data: data.data,
-          newResData: data.data
+          newResData: data.data,
+          load:false
         });
       });
     }
@@ -89,13 +94,17 @@ export default class ProfitLoss extends Component {
       this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
         this.setState({
           data: data.data,
-          newResData: data.data
+          newResData: data.data,
+          load:false
         });
       });
     }
   }
     
     async componentDidMount() {
+      this.setState({
+        load:true
+      })
     await this.getprofitlossData();
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
@@ -309,6 +318,11 @@ export default class ProfitLoss extends Component {
   ////////////////////////// TABLE OF PROFIT AND LOSS ///////////////////////////////////
 }
 
+                  {
+                    this.state.load ?
+                      <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+                          <Loader type="Grid" color="#6c1945" height={35} width={35} />
+                      </div> : 
                     <table className="table table-striped jambo_table bulk_action">
                       <thead>
                         <tr className="headings" style={{backgroundColor:"#95335c",color:'white'}}>
@@ -356,7 +370,7 @@ export default class ProfitLoss extends Component {
                         }
                       </tbody>
                     </table>
-                    
+                  }  
 {
   //////////////////////////// 2nd PROFIT LOSS TABLE ////////////////////////////////////////
 }
