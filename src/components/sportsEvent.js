@@ -12,6 +12,7 @@ export default class Liveevents extends Component {
   constructor(props){
     super(props);
     this.state = {
+      access:true ,
         sportName:this.props.location.state.name,
       load:false,
       tableHead:["S.No.","Event_Id","Event_Name","Event_Date","Status","Action"],
@@ -53,6 +54,11 @@ export default class Liveevents extends Component {
         this.props.history.push('/dashboard')
         }
         else{
+          if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+            this.setState({
+              access:false
+            })
+          }
             await this.setState({
             load: true
             })
@@ -69,6 +75,7 @@ export default class Liveevents extends Component {
     }
 
   render(){
+    const usrlog="lords11"
     return (
       <div>
         <Navbar />
@@ -139,6 +146,10 @@ export default class Liveevents extends Component {
                                         this.props.location.state.eventType===4 ?
                                         <Link to={'/eventfancyodds/' + item.eventId}>&nbsp;|&nbsp;Fancy Odds</Link>:null
                                     } 
+                                    {
+                                      this.state.access?
+                                      <Link to={'/manualfancyodds/' + item.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
+                                    }
                                   </td>
                                 </tr>
                               )

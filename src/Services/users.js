@@ -412,4 +412,9 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    updateManualOdds = (data,cb) => {
+        axios.put(Constants.APIURL+'updateManualOdds',data).then((res)=>{
+            cb(res);
+        })
+    }
 }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Loader from 'react-loader-spinner'
@@ -28,23 +30,28 @@ export default class Liveevents extends Component {
   }
 
   async componentDidMount() {
-    if(JSON.parse(localStorage.getItem('data')).superAdmin === false && JSON.parse(localStorage.getItem('data')).userName !== "AdminO"){
+    if(JSON.parse(localStorage.getItem('data')).superAdmin===false){
       this.props.history.push('/dashboard')
     }
-    await this.setState({
-      load: true
-    })
-    this.events.getLiveEvents('',data=>{
-      let allEvents = data.data.data.filter(newdata=>{
-        return newdata.active===true;
+    else{
+      if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+        this.props.history.push('/dashboard')
+      }
+      await this.setState({
+        load: true
       })
-      let typeEvents = data.data.data.filter(ele=>ele.eventType === 4)
-      this.setState({
-        resdata:typeEvents,
-        newResData:allEvents,
-        load: false
-      })
-    });
+      this.events.getLiveEvents('',data=>{
+        let allEvents = data.data.data.filter(newdata=>{
+          return newdata.active===true;
+        })
+        let typeEvents = allEvents.filter(ele=>ele.eventType === 4)
+        this.setState({
+          resdata:typeEvents,
+          newResData:allEvents,
+          load: false
+        })
+      });
+    }
   }
 
   handleTabFilter = (eventType) => {
@@ -132,12 +139,12 @@ export default class Liveevents extends Component {
                                   {
                                     item.eventType === 4 ?
                                     <td className="text-center red">
-                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{eventname:item.eventName,status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
                                       &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
                                     </td>
                                     :
                                     <td className="text-center red">
-                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{eventname:item.eventName,status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
                                     </td>
                                   }
                                 </tr>

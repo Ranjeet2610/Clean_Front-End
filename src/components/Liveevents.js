@@ -58,6 +58,10 @@ export default class Liveevents extends Component {
     if(JSON.parse(localStorage.getItem('data')).superAdmin === false && JSON.parse(localStorage.getItem('data')).userName !== "AdminO"){
       this.props.history.push('/dashboard')
     }
+    else{
+    if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+      this.props.history.push('/dashboard')
+    }
     await this.setState({
       load: true
     })
@@ -73,7 +77,7 @@ export default class Liveevents extends Component {
       load: false
     })
   });
-  }
+  }}
 
   handleChange = (e) => {
   const item = e.target.value;

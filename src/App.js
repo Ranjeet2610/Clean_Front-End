@@ -34,6 +34,7 @@ import FancySettlement from './components/fancySettlement';
 import MatchSettlement from './components/matchSettlement';
 import SportsEvent from './components/sportsEvent';
 import  './config/axiosConfig'
+import ManualFancyOdds from './components/ManualFancyOdds';
 const App = () => {
   return (
      <Router>
@@ -77,6 +78,7 @@ const App = () => {
            <Route exact path="/fancySettlement/:id" component={FancySettlement} /> 
            <Route exact path="/matchSettlement/:id" component={MatchSettlement} /> 
            <Route exact path="/sportsevent" component={SportsEvent} /> 
+           <Route exact path="/manualfancyodds/:id" component={ManualFancyOdds} />
            </Switch> 
        </section>
          
