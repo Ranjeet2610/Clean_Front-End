@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Loader from 'react-loader-spinner'
 import Utilities from "./utilities";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import {Link} from 'react-router-dom'
 import Navbar from './Navbar';
@@ -147,7 +149,7 @@ export default class Liveevents extends Component {
                                         <Link to={'/eventfancyodds/' + item.eventId}>&nbsp;|&nbsp;Fancy Odds</Link>:null
                                     } 
                                     {
-                                      this.state.access?
+                                      (this.state.access&&this.props.location.state.eventType===4)?
                                       <Link to={'/manualfancyodds/' + item.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
                                     }
                                   </td>

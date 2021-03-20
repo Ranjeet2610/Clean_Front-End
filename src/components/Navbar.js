@@ -375,12 +375,15 @@ showchildMenu=(e)=>{
         <li>
           <Link to="/chipsummary">Chip Summary </Link> 
         </li>
-        {/* <li>
+        {
+          this.state.userName === "AdminO" ?
+          <><li>
           <Link to="/liveevents">Live Events </Link> 
-        </li> */}
-        {/* <li>
+        </li>
+        <li>
           <Link to="/Settlement">Settlement</Link> 
-        </li> */}
+        </li></>:null
+        }
         <li>
           <Link to="/clientpl">Client P L</Link> 
         </li>

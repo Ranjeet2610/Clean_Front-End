@@ -139,12 +139,12 @@ export default class Liveevents extends Component {
                                   {
                                     item.eventType === 4 ?
                                     <td className="text-center red">
-                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{eventname:item.eventName,status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
                                       &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; <Link to={'/fancySettlement/' + item.eventId}><i>Fancy&nbsp;Settlement</i></Link>
                                     </td>
                                     :
                                     <td className="text-center red">
-                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
+                                      <Link to={{pathname:'/matchSettlement/' + item.eventId,state:{eventname:item.eventName,status:item.settlementStatus,statusValue:item.settledValue}}}><i>Match&nbsp;Settlement</i></Link>
                                     </td>
                                   }
                                 </tr>

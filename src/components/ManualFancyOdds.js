@@ -11,7 +11,7 @@ export default class ManualFancyOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["S.No.","Market_Id","Market_Name","isEnable","isVisiable","ManualLayOdds","ManualBackOdds","ManualPriceKey","Action"],
+      tableHead:["S.No.","Market_Id","Market_Name","isEnable","isVisiable","ManualLayOdds","ManualBackOdds","ManualPriceKey"],
       marketata:[],
       runnersdata:'',
       ManualLayPrice:0,
@@ -65,26 +65,31 @@ export default class ManualFancyOdds extends Component {
     //         indx:marketId
     //     })
     // }
-    else{
-        if(parseInt(event.target.value)>=0){
-            await this.setState({
-                [event.target.name]:event.target.value,
-                indx:marketId
-            })
-        }
-    }
+    // else{
+    //     if(parseInt(event.target.value)>=0){
+    //         await this.setState({
+    //             [event.target.name]:event.target.value,
+    //             indx:marketId
+    //         })
+    //     }
+    // }
   }
 
   handlemanualFancyOdds = (event,id) =>{
     let manualkey=event.target.checked
-    if(manualkey){
-      let lay=this.state.ManualLayPrice
-      let back=this.state.ManualBackPrice
-      if(lay && back){
+    // if(manualkey){
+      let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
+      let laysize=document.getElementById("laysize"+id).value
+      let backprice=document.getElementById("backprice"+id).value//this.state.ManualBackPrice
+      let backsize=document.getElementById("backsize"+id).value
+      
+      if(layprice&&laysize&&backprice&&backsize){
         const obj = {
           id: id,
-          ManualLayPrice: parseInt(this.state.ManualLayPrice)===""?0:this.state.ManualLayPrice,
-          ManualBackPrice: parseInt(this.state.ManualBackPrice)===""?0:this.state.ManualBackPrice,
+          ManualLayPrice: parseInt(layprice)===""?0:layprice,
+          ManualLaySize:parseInt(laysize)===""?0:laysize,
+          ManualBackPrice: parseInt(backprice)===""?0:backprice,
+          ManualBackSize:parseInt(backsize)===""?0:backsize,
           ManualPriceKey: manualkey
         }
         this.users.updateManualOdds(obj,data=>{
@@ -94,7 +99,7 @@ export default class ManualFancyOdds extends Component {
             hideProgressBar:true
           });
           this.getFancyMarketType();
-          document.getElementById("asdf").value=""
+          // document.getElementById("asdf").value=""
           this.setState({
             ManualLayPrice:"",
             ManualBackPrice:"",
@@ -109,7 +114,7 @@ export default class ManualFancyOdds extends Component {
         });
         // alert("Please...Enter number");
       }
-    }
+    // }
   }
 
   render(){
@@ -144,7 +149,7 @@ export default class ManualFancyOdds extends Component {
                         {
                           this.state.marketata.length > 0 ?
                             this.state.marketata.map((item,index) => {
-                                console.log(item.marketData);
+                                // console.log(item.marketData);
                               return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
@@ -157,23 +162,24 @@ export default class ManualFancyOdds extends Component {
                                         <input type="checkbox"  checked={item.marketData.isVisible} name ="isVisible" onChange={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
-                                        <label>Price:&nbsp;<input type="text" name ="ManualLayPrice" value={this.state.indx===index?this.state.ManualLayPrice:""} onChange={(e)=>this.handleChange(e,index,4)}  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
-                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="text" readonly="" name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LaySize}
+                                    <label>Price:&nbsp;<input type="number" id={"layprice"+item.marketData._id} name ="ManualLayPrice" /*value={this.state.indx===index?this.state.ManualLayPrice:""} onChange={(e)=>this.handleChange(e,index,4)}*/  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
+                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="number" id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LaySize}
                                     </td> 					   
                                     <td className="red text-center">
-                                        <label>Price:&nbsp;<input id="asdf" type="text" name ="ManualBackPrice" value={this.state.indx===index?this.state.ManualBackPrice:null} onChange={(e)=>this.handleChange(e,index,4)}  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
-                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="text" readonly="" name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackSize}
+                                    <label>Price:&nbsp;<input type="number" id={"backprice"+item.marketData._id} name ="ManualBackPrice" /*value={this.state.indx===index?this.state.ManualBackPrice:null} onChange={(e)=>this.handleChange(e,index,4)}*/  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
+                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="number" id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackSize}
                                     </td> 					   
                                     <td className="red text-center">
                                         <input type="checkbox"  name ="ManualPriceKey" onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     {/* <td className="red text-center">
                                         <input type="button" value="submit" onClick={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} style={{background:"#95335c",color:'white',outline:'none'}}/>
-                                    </td> */}
+                                    </td> 
                                     <td className="red text-center">
                                         <Link to={'/managefrunners/'+this.props.match.params.id+'?marketid='+item.marketData.marketId} >Manage Runners</Link> | 
                                         <Link to="#">Action 2</Link>
                                     </td>
+                                    */}
                                 </tr>
                               )
                             }):
