@@ -39,10 +39,10 @@ export default class User extends Component {
       masterDetails: "",
       userInfo: "",
       Name: "",
-      max_stake: 0,
-      min_stake: 0,
-      max_profit: 0,
-      max_loss: 0,
+      max_stake: "",
+      min_stake: "",
+      max_profit: "",
+      max_loss: "",
       PIP: "",
       PIS: "",
       min_odds: "",
@@ -88,90 +88,113 @@ export default class User extends Component {
     })
   };
 
+  supervisorBasedUser = () => {
+    let info = JSON.parse(localStorage.getItem('data'))
+    let propName = this.props?.match?.params?.username?this.props?.match?.params?.username:undefined
+    // console.log("pppppp",propName);
+    if(propName===undefined){
+    if(this.props.match.params.username ? this.props.match.params.username : info.Admin){
+      this.setState({
+        load:true
+      })
+      this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
+        this.setState({
+          data: data.data.data,
+          searchFilter: data.data,
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => totalBalance += ele.walletBalance);
+        this.setState({
+          totalBalance,
+        load:false
+        });
+      });
+      const obj = {
+        userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      }
+      this.users.getMyprofile(obj, (data) => {
+        this.setState({
+          masterDetails: data.data,
+        })
+      });
+    }
+    else if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
+      this.setState({
+        load:true
+      })
+      this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+        this.setState({
+          data: data.data,
+          searchFilter: data.data,
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => totalBalance += ele.walletBalance);
+        this.setState({
+          totalBalance,
+        load:false
+        });
+      });
+      const obj = {
+        userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+      }
+      this.users.getMyprofile(obj, (data) => {
+        this.setState({
+          masterDetails: data.data,
+        })
+      });
+    }
+    else {
+      this.setState({
+        load:true
+      })
+      this.users.getAllusers((data) => {
+        this.setState({
+          data: data.data,
+          searchFilter: data.data,
+        });
+        let totalBalance = 0;
+        this.state.data.map((ele) => totalBalance += ele.walletBalance);
+        this.setState({
+          totalBalance,
+          load:false
+        });
+      });
+    }
+  }
+  else{
+    this.setState({
+      load:true
+    })
+    this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+      this.setState({
+        data: data.data,
+        searchFilter: data.data,
+      });
+      let totalBalance = 0;
+      this.state.data.map((ele) => totalBalance += ele.walletBalance);
+      this.setState({
+        totalBalance,
+      load:false
+      });
+    });
+    const obj = {
+      userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
+    }
+    this.users.getMyprofile(obj, (data) => {
+      this.setState({
+        masterDetails: data.data,
+      })
+    });
+  }
+  }
+
   componentDidMount() {
     let infoDetails = JSON.parse(localStorage.getItem('data'));
     if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
       this.props.history.push('/dashboard')
     }
     else{
-      if(infoDetails.Admin){
-        this.setState({
-          load:true
-        })
-        this.users.getAllUserBasedOnSuperMaster(infoDetails.userName, (data) => {
-          //console.log("SM",data.data.data);
-          //console.log("SM",this.props.match.params.username ? this.props.match.params.username : infoDetails.userName);
-          let filterUser = this.props.match.params.username ? this.props.match.params.username : infoDetails.userName;
-          let filtermdata = data.data.data.filter(ele=>{ 
-            return ele.master === filterUser;
-          });
-          console.log(filtermdata);
-          this.setState({
-            data: filtermdata,
-            searchFilter: data.data,
-          });
-          let totalBalance = 0;
-          this.state.data.map((ele) => totalBalance += ele.walletBalance);
-          this.setState({
-            totalBalance,
-            load:false
-          });
-        });
-        const obj = {
-          userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
-        }
-        console.log("userNameSM",obj);
-        this.users.getMyprofile(obj, (data) => {
-          this.setState({
-            masterDetails: data.data,
-          })
-        });
-      }
-      else if (this.props.match.params.username || JSON.parse(localStorage.getItem("data")).Master) {
-        this.setState({
-          load:true
-        })
-        this.users.getUsersforMaster(this.props.match.params.username, (data) => {
-          console.log("M",data.data);
-          this.setState({
-            data: data.data,
-            searchFilter: data.data,
-          });
-          let totalBalance = 0;
-          this.state.data.map((ele) => totalBalance += ele.walletBalance);
-          this.setState({
-            totalBalance,
-          load:false
-          });
-        });
-        const obj = {
-          userName: this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName,
-        }
-        console.log("userNameM",obj);
-        this.users.getMyprofile(obj, (data) => {
-          this.setState({
-            masterDetails: data.data,
-          })
-        });
-      }
-      else {
-        this.setState({
-          load:true
-        })
-        this.users.getAllusers((data) => {
-          console.log("U",data.data);
-          this.setState({
-            data: data.data,
-            searchFilter: data.data,
-          });
-          let totalBalance = 0;
-          this.state.data.map((ele) => totalBalance += ele.walletBalance);
-          this.setState({
-            totalBalance,
-            load:false
-          });
-        });
-      }
+      this.supervisorBasedUser();
     }
   }
 
@@ -434,7 +457,7 @@ export default class User extends Component {
         notifyMsg: "User Added Successfully"
       });
       setTimeout(() => {
-        window.location.href = path;
+        window.location.reload();
       }, 1000)
     });
   }
@@ -513,14 +536,13 @@ export default class User extends Component {
   }
 
   view_account = (user) => {
-    console.log(user);
     this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
-      id: user.id
+      id: this.state.userdetails.id
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({
@@ -570,17 +592,13 @@ export default class User extends Component {
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />
         <Sidebar />
         <div className="forModal" />
-      {
-        this.state.load ?
-        <div style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
-            <Loader type="Grid" color="#6c1945" height={100} width={100} />
-        </div> :
+      
         <div className="container body">
           <div className="main_container" id="sticky">
             <div id="userModal" className="modal fade" role="dialog">
@@ -713,6 +731,11 @@ export default class User extends Component {
               <div className="row">
                 <div className="col-md-12 col-sm-12 col-xs-12">
                   <div id="divLoading" />
+                  {
+        this.state.load ?
+        <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
                   <div className="custom-scroll appendAjaxTbl">
                     <table className="table table-striped jambo_table bulk_action" id="myTable" >
                       <thead>
@@ -740,7 +763,7 @@ export default class User extends Component {
                                         <i className="fa fa-lock fa_custom fa-2x" title="Betting Locked" aria-hidden="true" style={{ color: "red" }} ></i> : ""}
                                     </span>
                                   </td>
-                                  <td className="text-center">LORDSEXCH2</td>
+                                  <td className="text-center">BETFUN360</td>
                                   <td className="text-center">{item.master}</td>
                                   <td className="text-center">{item.profitLossChips}</td>
                                   <td className="text-center">{item.freeChips}</td>
@@ -809,7 +832,7 @@ export default class User extends Component {
                       }
                     </table>
                   </div>
-                </div>
+  }</div>
               </div>
             </div>
 
@@ -1091,7 +1114,6 @@ export default class User extends Component {
             </div>
           </div>
         </div>
-      }  
         <Footer />
       </div>
     );

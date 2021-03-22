@@ -11,7 +11,7 @@ export default class ManualFancyOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["S.No.","Market_Id","Market_Name","isEnable","isVisiable","ManualLayOdds","ManualBackOdds","ManualPriceKey"],
+      tableHead:["S.No.","Market_Id","Market_Name","Enable","Visiable","ManualFancyLayOdds","ManualFancyBackOdds","ManualPriceKey"],
       marketata:[],
       runnersdata:'',
       ManualLayPrice:0,
@@ -77,21 +77,35 @@ export default class ManualFancyOdds extends Component {
 
   handlemanualFancyOdds = (event,id) =>{
     let manualkey=event.target.checked
-    // if(manualkey){
-      let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
-      let laysize=document.getElementById("laysize"+id).value
-      let backprice=document.getElementById("backprice"+id).value//this.state.ManualBackPrice
-      let backsize=document.getElementById("backsize"+id).value
-      
-      if(layprice&&laysize&&backprice&&backsize){
-        const obj = {
-          id: id,
-          ManualLayPrice: parseInt(layprice)===""?0:layprice,
-          ManualLaySize:parseInt(laysize)===""?0:laysize,
-          ManualBackPrice: parseInt(backprice)===""?0:backprice,
-          ManualBackSize:parseInt(backsize)===""?0:backsize,
-          ManualPriceKey: manualkey
-        }
+    const obj = {
+      id:id,
+      ManualPriceKey: manualkey
+    }
+    let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
+    let laysize=document.getElementById("laysize"+id).value
+    let backprice=document.getElementById("backprice"+id).value//this.state.ManualBackPrice
+    let backsize=document.getElementById("backsize"+id).value
+    if(layprice!==""){
+      obj.ManualLayPrice=layprice
+    }
+    if(laysize!==""){
+      obj.ManualLaySize=laysize
+    }
+    if(backprice!==""){
+      obj.ManualBackPrice=backprice
+    }
+    if(backsize!==""){
+      obj.ManualBackSize=backsize
+    }
+    console.log(obj);
+        // const obj = {
+        //   id: id,
+        //   ManualLayPrice: parseInt(layprice)===""?0:layprice,
+        //   ManualLaySize:parseInt(laysize)===""?0:laysize,
+        //   ManualBackPrice: parseInt(backprice)===""?0:backprice,
+        //   ManualBackSize:parseInt(backsize)===""?0:backsize,
+        //   ManualPriceKey: manualkey
+        // }
         this.users.updateManualOdds(obj,data=>{
           // alert(data.data.message);
           toast.success(data.data.message,{
@@ -106,14 +120,15 @@ export default class ManualFancyOdds extends Component {
             indx:""
           })
         })
-      }
-      else{
-        toast.success("Please...Enter number",{
-          position:"bottom-right",
-          hideProgressBar:true
-        });
-        // alert("Please...Enter number");
-      }
+
+      // }
+      // else{
+      //   toast.success("Please...Enter number",{
+      //     position:"bottom-right",
+      //     hideProgressBar:true
+      //   });
+      //   // alert("Please...Enter number");
+      // }
     // }
   }
 
@@ -162,13 +177,19 @@ export default class ManualFancyOdds extends Component {
                                         <input type="checkbox"  checked={item.marketData.isVisible} name ="isVisible" onChange={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
-                                    <label>Price:&nbsp;<input type="number" id={"layprice"+item.marketData._id} name ="ManualLayPrice" /*value={this.state.indx===index?this.state.ManualLayPrice:""} onChange={(e)=>this.handleChange(e,index,4)}*/  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
-                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="number" id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.LaySize}
-                                    </td> 					   
+                                        <label>Price:
+                                          <input type="number" id={"layprice"+item.marketData._id} name ="ManualLayPrice" style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
+                                        <label>Size:&nbsp;&nbsp;
+                                          <input type="number" id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LaySize}
+                                    </td> 
+
                                     <td className="red text-center">
-                                    <label>Price:&nbsp;<input type="number" id={"backprice"+item.marketData._id} name ="ManualBackPrice" /*value={this.state.indx===index?this.state.ManualBackPrice:null} onChange={(e)=>this.handleChange(e,index,4)}*/  style={{height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
-                                        <label>Size:&nbsp;&nbsp;&nbsp;<input type="number" id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'30px'}}/></label>&nbsp;{item.marketData.BackSize}
-                                    </td> 					   
+                                        <label>Price:
+                                          <input type="number" id={"backprice"+item.marketData._id} name ="ManualBackPrice"  style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
+                                        <label>Size:&nbsp;&nbsp;
+                                          <input type="number" id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackSize}
+                                    </td> 
+
                                     <td className="red text-center">
                                         <input type="checkbox"  name ="ManualPriceKey" onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
