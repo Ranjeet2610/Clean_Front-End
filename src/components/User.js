@@ -535,8 +535,8 @@ export default class User extends Component {
     }
   }
 
-  view_account = (user) => {
-    this.setState({
+  view_account = async (user) => {
+    await this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
@@ -552,17 +552,19 @@ export default class User extends Component {
   }
 
   submit_info = () => {
+    console.log(document.getElementById("4_min_stake").defaultValue)
     const obj = {
       id: this.state.userdetails.id,
-      cricketmaxStacks: this.state.max_stake,
-      cricketminStacks: this.state.min_stake,
-      cricketmaxProfit: this.state.max_profit,
-      cricketmaxLoss: this.state.max_loss,
-      cricketPreInplayProfit: this.state.PIP,
-      cricketPreInplayStack: this.state.PIS,
-      cricketmaxOdds: this.state.max_odds,
-      cricketminOdds: this.state.min_odds,
+      cricketmaxStacks: this.state.max_stake===""?this.state.userInfo.cricketminStacks:this.state.max_stake,
+      cricketminStacks: this.state.min_stake===""?this.state.userInfo.cricketmaxStacks:this.state.min_stake,
+      cricketmaxProfit: this.state.max_profit===""?this.state.userInfo.cricketmaxProfit:this.state.max_profit,
+      cricketmaxLoss: this.state.max_loss===""?this.state.userInfo.cricketmaxLoss:this.state.max_loss,
+      cricketPreInplayProfit: this.state.PIP===""?this.state.userInfo.cricketPreInplayProfit:this.state.PIP,
+      cricketPreInplayStack: this.state.PIS===""?this.state.userInfo.cricketPreInplayStack:this.state.PIS,
+      cricketmaxOdds: this.state.max_odds===""?this.state.userInfo.cricketminOdds:this.state.max_odds,
+      cricketminOdds: this.state.min_odds===""?this.state.userInfo.cricketmaxOdds:this.state.min_odds,
     }
+    console.log(obj)
     this.users.updateUserSportsInfo(obj, (data) => {
       alert("updated");
     });
@@ -1018,7 +1020,7 @@ export default class User extends Component {
             <div id="viewinfo" className="modal fade" role="dialog" style={{ display: "none" }} >
               <div className="modal-dialog modal-lg">
                 <div className="modal-content">
-                  <div className="modal-header">
+                  <div className="modal-header" style={{background:'#6c1945'}}>
                     <button type="button" className="close" onClick={() => this.closeviewinfo()} data-dismiss="modal" >×</button>
                     <h4 className="modal-title">
                       <span id="tital_change">
@@ -1052,8 +1054,18 @@ export default class User extends Component {
                         </div>
                       </form>
                     </div>
+                    <div className="tab_bets get-mchlist">
+                      <ul id="betsalltab" className="nav nav-pills match-lists">
+                          <li><Link to="#">Fancy</Link></li>
+                          <li><Link to="#">Tennis</Link></li>
+                          <li><Link to="#">Soccer</Link></li>
+                          <li><Link to="#">Cricket</Link></li>
+                        </ul>
+                      </div>
                     <div className="sub_heading">
                       <span id="tital_change">Cricket </span>
+                    </div>
+                    <div className="col-md-12 col-sm-12 col-xs-12">
                     </div>
                     <div className="row">
                       <form>

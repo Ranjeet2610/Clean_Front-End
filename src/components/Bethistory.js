@@ -392,7 +392,7 @@ handleFilter= async () => {
                           </tr>
                       }
                     </tbody>   
-                    } 
+                    
                     {
                       currentPosts.length > 0 ?
                       <tfoot>

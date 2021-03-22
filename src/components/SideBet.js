@@ -209,6 +209,9 @@ export default class SideBet extends Component {
     if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
+    if(this.state.profit < 100 || this.state.profit > 500000 ){
+      this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
+    }
     else if(this.stackInput.value > this.state.balance){
       this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
     }
@@ -399,15 +402,15 @@ export default class SideBet extends Component {
     if(this.state.curPoAcc === 'Admin'){
       let arr = [];
       data.map(item => {
-        let itemName = item.userInfo[0].superAdmin[0]
+        let itemName = item?.userInfo[0]?.superAdmin[0]
         if(arr.every((item) => item.name !== itemName)){
           arr.push({
-            name:item.userInfo[0].superAdmin[0],
+            name:item?.userInfo[0]?.superAdmin[0],
             T1TotalPL: 0,
             T2TotalPL : 0,
             T3TotalPL : 0,
-            bettype: item.bettype,
-            selection: item.selection
+            bettype: item?.bettype,
+            selection: item?.selection
           })
         }
           let indx = arr.findIndex(e => e.name === itemName);
