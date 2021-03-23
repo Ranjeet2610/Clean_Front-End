@@ -93,13 +93,13 @@ class Dashboard extends Component {
     let team;
     let team1 = await this.getTeam(0,eventName,runners);
     let team2 = await this.getTeam(1,eventName,runners);
-    if(team1!="undefined" || team2!="undefined"){
+    if(team1!="undefined" && team2!="undefined"){
       team = team1+" v "+team2;
     }else{
       team = eventName;
     }
     window.location.href = window.location.protocol + "//" + window.location.host + "/matchodds/" + txt;
-    localStorage.setItem("matchname", JSON.stringify({name:team,date:date,sport:sportType}));
+    localStorage.setItem("matchname", JSON.stringify({name:eventName,date:date,sport:sportType}));
     this.setState({
       load:true
     })
