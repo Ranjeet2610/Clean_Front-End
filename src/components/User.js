@@ -50,6 +50,7 @@ export default class User extends Component {
       parentdetails: "",
       searchFilter: [],
       totalBalance: 0,
+      tabOn:'C'
     };
     this.users = new Users();
     this.currentDate = Utilities.formatDate(new Date());
@@ -591,6 +592,12 @@ export default class User extends Component {
     })
   }
 
+  handleTabs = (tabtype) => {
+    this.setState({
+      tabOn:tabtype
+    })
+  }
+
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
@@ -1054,72 +1061,149 @@ export default class User extends Component {
                         </div>
                       </form>
                     </div>
-                    <div className="tab_bets get-mchlist">
+                    <div className="tab_bets get-mchlist" style={{marginTop:'1rem',marginBottom:'1rem'}}>
                       <ul id="betsalltab" className="nav nav-pills match-lists">
-                          <li><Link to="#">Fancy</Link></li>
-                          <li><Link to="#">Tennis</Link></li>
-                          <li><Link to="#">Soccer</Link></li>
-                          <li><Link to="#">Cricket</Link></li>
-                        </ul>
-                      </div>
+                        <li><Link to="#" onClick={()=>this.handleTabs("F")} role="button">Fancy</Link></li>
+                        <li><Link to="#" onClick={()=>this.handleTabs("T")} role="button">Tennis</Link></li>
+                        <li><Link to="#" onClick={()=>this.handleTabs("S")} role="button">Soccer</Link></li>
+                        <li><Link to="#" onClick={()=>this.handleTabs("C")} role="button">Cricket</Link></li>
+                      </ul>
+                    </div>
                     <div className="sub_heading">
-                      <span id="tital_change">Cricket </span>
+                      {this.state.tabOn==="C"?<span id="tital_change">Cricket</span>:null}
+                      {this.state.tabOn==="S"?<span id="tital_change">Soccer</span>:null}
+                      {this.state.tabOn==="T"?<span id="tital_change">Tennis</span>:null}
+                      {this.state.tabOn==="F"?<span id="tital_change">Fancy</span>:null}
                     </div>
                     <div className="col-md-12 col-sm-12 col-xs-12">
                     </div>
-                    <div className="row">
-                      <form>
-                        <div className="col-md-4 col-xs-6">
-                          <label> MIN STAKE</label>
-                          <input type="text" name="min_stake" defaultValue={this.state.userInfo.cricketminStacks} onChange={this.handleChange} className="form-control" id="4_min_stake" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> Max STAKE </label>
-                          <input type="text" name="max_stake" defaultValue={this.state.userInfo.cricketmaxStacks} onChange={this.handleChange} className="form-control" id="4_max_stake" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> MAX PROFIT </label>
-                          <input type="text" name="max_profit" defaultValue={this.state.userInfo.cricketmaxProfit} onChange={this.handleChange} className="form-control" id="4_max_profit" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> Max Loss </label>
-                          <input type="text" name="max_loss" defaultValue={this.state.userInfo.cricketmaxLoss} onChange={this.handleChange} className="form-control" id="4_max_loss"
-                          />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> PRE INPLAY PROFIT</label>
-                          <input type="text" name="PIP" defaultValue={this.state.userInfo.cricketPreInplayProfit} onChange={this.handleChange} className="form-control" id="4_pre_innplay_profit" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> PRE INPLAY STAKE</label>
-                          <input type="text" name="PIS" defaultValue={this.state.userInfo.cricketPreInplayStack} onChange={this.handleChange} className="form-control" id="4_pre_inplay_stake" />
-                        </div>
+                    {
+                      (this.state.tabOn==="C"||this.state.tabOn==="S"||this.state.tabOn==="T")?
+                      <div className="row">
+                        <form>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MIN STAKE</label>
+                            <input type="text" name="min_stake" defaultValue={this.state.userInfo.cricketminStacks} onChange={this.handleChange} className="form-control" id="4_min_stake" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> Max STAKE </label>
+                            <input type="text" name="max_stake" defaultValue={this.state.userInfo.cricketmaxStacks} onChange={this.handleChange} className="form-control" id="4_max_stake" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MAX PROFIT </label>
+                            <input type="text" name="max_profit" defaultValue={this.state.userInfo.cricketmaxProfit} onChange={this.handleChange} className="form-control" id="4_max_profit" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> Max Loss </label>
+                            <input type="text" name="max_loss" defaultValue={this.state.userInfo.cricketmaxLoss} onChange={this.handleChange} className="form-control" id="4_max_loss"
+                            />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> PRE INPLAY PROFIT</label>
+                            <input type="text" name="PIP" defaultValue={this.state.userInfo.cricketPreInplayProfit} onChange={this.handleChange} className="form-control" id="4_pre_innplay_profit" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> PRE INPLAY STAKE</label>
+                            <input type="text" name="PIS" defaultValue={this.state.userInfo.cricketPreInplayStack} onChange={this.handleChange} className="form-control" id="4_pre_inplay_stake" />
+                          </div>
 
-                        <div className="col-md-4 col-xs-6">
-                          <label> MIN ODDS</label>
-                          <input type="text" name="min_odds" defaultValue={this.state.userInfo.cricketminOdds} onChange={this.handleChange} className="form-control" id="4_min_odds" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label> MAX ODDS</label>
-                          <input type="text" name="max_odds" defaultValue={this.state.userInfo.cricketmaxOdds} onChange={this.handleChange} className="form-control" id="4_max_odds" />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label>UNMATCH BET</label>
-                          <input type="checkbox" name="sport[is_unmatch_bet]" />
-                          <br />
-                        </div>
-                        <div className="col-md-4 col-xs-6">
-                          <label>LOCK BET</label>
-                          <input type="checkbox" name="sport[lock_bet]" />{" "}
-                          <br />
-                        </div>
-                        <div className="col-md-12 col-xs-12 modal-footer">
-                          <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info()} >
-                            Update
-                          </button>
-                        </div>
-                      </form>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MIN ODDS</label>
+                            <input type="text" name="min_odds" defaultValue={this.state.userInfo.cricketminOdds} onChange={this.handleChange} className="form-control" id="4_min_odds" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MAX ODDS</label>
+                            <input type="text" name="max_odds" defaultValue={this.state.userInfo.cricketmaxOdds} onChange={this.handleChange} className="form-control" id="4_max_odds" />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>UNMATCH BET</label>
+                            <input type="checkbox" name="sport[is_unmatch_bet]" />
+                            <br />
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>LOCK BET</label>
+                            <input type="checkbox" name="sport[lock_bet]" />{" "}
+                            <br />
+                          </div>
+                          <div className="col-md-12 col-xs-12 modal-footer">
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info()} >
+                              Update
+                            </button>
+                          </div>
+                        </form>
+                      </div>:
+                      <>
+                      <div className="row">
+                        <form>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MIN STAKE
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> Max STAKE 
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MAX PROFIT 
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> BET DELAY
+                            <input type="text"  className="form-control"/></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>Click to update for all users&nbsp;
+                            <input type="checkbox" name="sport[is_unmatch_bet]" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>LOCK BET&nbsp;
+                            <input type="checkbox" name="sport[lock_bet]" /></label>
+                          </div>
+                          <div className="col-md-12 col-xs-12 modal-footer">
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" >
+                              Update
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                      <div className="sub_heading">
+                      <span id="tital_change">Manual Fancy</span>
                     </div>
+                    <div className="row">
+                        <form>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MIN STAKE
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> Max STAKE 
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> MAX PROFIT 
+                            <input type="text" className="form-control" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label> BET DELAY
+                            <input type="text"  className="form-control"/></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>Click to update for all users&nbsp;
+                            <input type="checkbox" name="sport[is_unmatch_bet]" /></label>
+                          </div>
+                          <div className="col-md-4 col-xs-6">
+                            <label>LOCK BET&nbsp;
+                            <input type="checkbox" name="sport[lock_bet]" /></label>
+                          </div>
+                          <div className="col-md-12 col-xs-12 modal-footer">
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" >
+                              Update
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </>
+                    }
                   </div>
                 </div>
               </div>

@@ -409,7 +409,7 @@ export default class Master extends Component {
           master: this.state.masterUName,
         };
         message = "User Added Successfully";
-        path = "user/"+this.state.masterUName
+        path = "/user/"+this.state.masterUName
       }
       else {
         data = {
