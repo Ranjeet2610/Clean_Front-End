@@ -30,13 +30,11 @@ export default class Liveevents extends Component {
   }
 
   async componentDidMount() {
-    if(JSON.parse(localStorage.getItem('data')).superAdmin===false){
+    if(JSON.parse(localStorage.getItem('data')).userName!=="lords11"&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO222"){
       this.props.history.push('/dashboard')
     }
     else{
-      if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
-        this.props.history.push('/dashboard')
-      }
+      if(JSON.parse(localStorage.getItem('data')).superAdmin===false&&JSON.parse(localStorage.getItem('data')).userName==="AdminO222"){
       await this.setState({
         load: true
       })
@@ -51,6 +49,7 @@ export default class Liveevents extends Component {
           load: false
         })
       });
+    }
     }
   }
 

@@ -55,11 +55,11 @@ export default class Liveevents extends Component {
   }
 
   async componentDidMount() {
-    if(JSON.parse(localStorage.getItem('data')).superAdmin === false && JSON.parse(localStorage.getItem('data')).userName !== "AdminO"){
+    if(JSON.parse(localStorage.getItem('data')).userName!=="lords11"&&JSON.parse(localStorage.getItem('data')).userName !== "AdminO222"){
       this.props.history.push('/dashboard')
     }
     else{
-    if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO"){
+    if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO222"){
       this.props.history.push('/dashboard')
     }
     await this.setState({

@@ -430,7 +430,7 @@ export default class Master extends Component {
           break;
       }
     });
-    this.getMastersforAdmin();
+    this.getmasterforSupermaster();
     if(userType==="superAddMaster"){
       document.getElementById('superAddMaster').click();
     }

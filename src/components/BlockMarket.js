@@ -31,7 +31,7 @@ export default class BlockMarket extends React.Component {
   }
 
   componentDidMount = () => {
-    if(this.userDetails.superAdmin === false){
+    if(this.userDetails.userName!=="lords11"&&this.userDetails.userName!=="AdminO222"){
       this.props.history.push('/dashboard')
     }
     else{

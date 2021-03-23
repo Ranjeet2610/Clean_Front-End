@@ -375,15 +375,12 @@ showchildMenu=(e)=>{
         <li>
           <Link to="/chipsummary">Chip Summary </Link> 
         </li>
-        {
-          this.state.userName === "AdminO" ?
-          <><li>
+        {/* <li>
           <Link to="/liveevents">Live Events </Link> 
         </li>
         <li>
           <Link to="/Settlement">Settlement</Link> 
-        </li></>:null
-        }
+        </li> */}
         <li>
           <Link to="/clientpl">Client P L</Link> 
         </li>
@@ -556,6 +553,18 @@ showchildMenu=(e)=>{
         <Link to="#">Report</Link>
         <span className="submenu-button" onClick={(e)=>this.showchildMenu(e)}></span>
         <ul style={{display: this.menduDisplay}}>
+        {
+          this.state.userName === "AdminO222" ?
+          <><li>
+            <Link to="/blockmarket">Block Market</Link>
+          </li>
+          <li>
+            <Link to="/liveevents">Live Events </Link> 
+          </li>
+          <li>
+            <Link to="/Settlement">Settlement</Link> 
+          </li></>:null
+        }
           <li>
             <Link to="/acinfo">Account Info </Link>
           </li>
