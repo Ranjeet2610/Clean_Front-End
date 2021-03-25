@@ -6,7 +6,6 @@ import Users from '../Services/users';
 // import Modal from 'react-bootstrap/Modal'
 import e from 'cors';
 
-
 class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -257,6 +256,7 @@ handleAddBetTime = () => {
   if(this.state.game !== 0 || this.state.betTime !== "")
   this.users.addbetplacetime(obj,data=>{
     // console.log(data.message);
+    alert(obj.gameId)
     switch ('success') {
       case 'success':
         NotificationManager.success('Time Set Successfully !',"Success");
@@ -275,9 +275,21 @@ async componentDidMount(){
       localStorage.clear();
       window.location.href ='/'; 
     }
-    this.setState({
-        balance : (JSON.parse(localStorage.getItem("data"))).walletBalance 
-    })
+    // this.setState({
+    //     balance : (JSON.parse(localStorage.getItem("data"))).walletBalance 
+    // })
+    const user = {
+      userName: JSON.parse(localStorage.getItem('data')).userName,
+      password: JSON.parse(localStorage.getItem('data')).passwordString
+    };
+    setInterval(()=>{
+      this.users.getUserInfo(user.userName, (data)=>{
+        this.setState({
+          balance:data.data.data.walletBalance,
+          exposure:data.data.data.exposure,
+        })
+      })
+    },1000)
   }
   else{
     const user = {
@@ -790,9 +802,10 @@ showchildMenu=(e)=>{
                         <div className="add-funds-dialog-current-amount">
                           <select name="game" className="form-control col-md-7 col-xs-12" onChange={this.handleChange} style={{width:'64%'}}>
                             <option value="0">For All</option>
-                            <option value="1">Cricket</option>
-                            {/* <option value="2">Tennis</option>
-                            <option value="3">Soccer</option> */}
+                            <option value="4">Cricket</option>
+                            <option value="2">Tennis</option>
+                            <option value="1">Soccer</option>
+                            <option value="5">Fancy</option>
                           </select>
                         </div>
                       </div>

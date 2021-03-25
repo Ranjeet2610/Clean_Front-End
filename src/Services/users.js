@@ -417,4 +417,9 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    addmanualfancy = (data,cb) => {
+        axios.put(Constants.APIURL+'addmanualfancy',data).then((res)=>{
+            cb(res);
+        })
+    }
 }

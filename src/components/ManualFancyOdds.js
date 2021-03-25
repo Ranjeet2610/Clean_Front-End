@@ -11,13 +11,26 @@ export default class ManualFancyOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["S.No.","Market_Id","Market_Name","Enable","Visiable","ManualFancyLayOdds","ManualFancyBackOdds","ManualPriceKey"],
+      tableHead:["S.No.","Market_Id","Market_Name","Enable","Visiable","ManualFancyLayOdds","ManualFancyBackOdds","ManualPriceKey","isItManual"],
       marketata:[],
       runnersdata:'',
       ManualLayPrice:0,
       ManualBackPrice:0,
       ManualPriceKey:false,
-      indx:''
+      indx:'',
+      addFancy:"",
+      addmarketId:"",
+      addmarketName:'',
+      addEnable:"",
+      addVisible:"",
+      LayPrice:"",
+      LaySize:'',
+      BackPrice:'',
+      BackSize:'',
+      PriceKey:"",
+      eventId:"",
+      msg:"All fields are required !",
+      msgshow:false
     };
     this.events = new Livevents();
     this.users = new Users();
@@ -27,6 +40,7 @@ export default class ManualFancyOdds extends Component {
     this.events.getFancyMarketType(this.props.match.params.id,data=>{ 
       this.setState({
         marketata:data.fancymarket,
+        eventId:data.fancymarket[0].marketData.eventId,
       });
     });
     await this.setState({
@@ -75,8 +89,18 @@ export default class ManualFancyOdds extends Component {
     // }
   }
 
-  handlemanualFancyOdds = (event,id) =>{
+  handlemanualPriceKey = (event,id) =>{
     let manualkey=event.target.checked
+        const obj = {
+          id: id,
+          ManualPriceKey: manualkey
+        }
+        this.users.updateManualOdds(obj,data=>{
+          this.getFancyMarketType();
+        })
+      }
+
+  handlemanualFancyOdds = (event,id) =>{
     let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
     let laysize=document.getElementById("laysize"+id).value
     let backprice=document.getElementById("backprice"+id).value//this.state.ManualBackPrice
@@ -87,7 +111,6 @@ export default class ManualFancyOdds extends Component {
           ManualLaySize:parseInt(laysize)===""?0:laysize,
           ManualBackPrice: parseInt(backprice)===""?0:backprice,
           ManualBackSize:parseInt(backsize)===""?0:backsize,
-          ManualPriceKey: manualkey
         }
         this.users.updateManualOdds(obj,data=>{
           this.getFancyMarketType();
@@ -97,6 +120,83 @@ export default class ManualFancyOdds extends Component {
             indx:""
           })
         })
+      }
+
+      handlemanualSatus = (event,id) =>{
+        let status=event.target.value
+            const obj = {
+              id: id,
+              status:status,
+            }
+            this.users.updateManualOdds(obj,data=>{
+              this.getFancyMarketType();
+            })
+          }
+
+  handleSubmitManualFancies = (eventId) => {
+    const obj = { 
+      selectionI:this.state.addmarketId,
+      runnerName:this.state.addmarketName,
+      eventId:eventId,
+      marketId:this.state.addmarketId,
+      marketName:this.state.addmarketName,
+      ManualLayPrice:this.state.LayPrice,
+      ManualLaySize:this.state.LaySize,
+      ManualBackPrice:this.state.BackPrice,
+      ManualBackSize:this.state.BackSize,
+      status:this.state.status,
+      ManualPriceKey:this.state.PriceKey,
+      isEnabled:this.state.addEnable,
+      isVisible:this.state.addVisible, 
+    }
+    if(this.state.addmarketId!==""&&this.state.addmarketName!==""){
+      this.users.addmanualfancy(obj,data=>{
+        this.getFancyMarketType();
+        this.setState({
+          ManualLayPrice:"",
+          ManualBackPrice:"",
+          indx:""
+        })
+        console.log(data);
+      })
+      this.setState({
+        addmarketId:"",
+        addmarketName:'',
+        addEnable:"",
+        addVisible:"",
+        LayPrice:"",
+        LaySize:"",
+        BackPrice:"",
+        BackSize:"",
+        PriceKey:"",
+        eventId:""
+      })
+      document.getElementById("cancel").click();
+    }
+    else{
+      this.setState({
+        msgshow:true
+      })
+    }
+  }
+
+  methodOnChange = (event,check) => {
+    if(check==="Check"){
+      this.setState({
+        [event.target.name]:event.target.checked
+      })
+    }
+    else{
+      this.setState({
+        [event.target.name]:event.target.value
+      })
+    }
+  }
+
+  handleManualFancies=()=>{
+    this.setState({
+      addFancy:!this.state.addFancy
+    })
   }
 
   render(){
@@ -114,7 +214,9 @@ export default class ManualFancyOdds extends Component {
                     <div className="pull-right"><button className="btn_common" onClick={() => this.props.history.goBack()}>Back</button> </div>
                   </div>
                 </div>
-                <div className="col-md-12"><br></br>
+                <div className="col-md-12"><br></br></div>
+                <div className="col-md-12" style={{paddingLeft:'5rem', marginBottom:"1rem"}}>
+                  <button className="btn_common"style={{padding:'5px',fontSize:'15px'}} data-toggle="modal" data-target="#addManualFancy">Add Manual Fancy</button>
                 </div>
                 <div className="col-md-12 col-sm-12 col-xs-12">
                   <div id="divLoading"> </div>
@@ -138,36 +240,45 @@ export default class ManualFancyOdds extends Component {
                                     <td className="">{item.marketData.marketId}</td>
                                     <td className="">{item.marketData.marketName}</td>
                                     <td className="red text-left">
-                                        <input type="checkbox"  checked={item.marketData.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e,item.marketData.marketId,1)}  style={{height: '20px',width: '20px'}}/>
+                                        <input type="checkbox"  checked={item.marketData.isEnabled?item.marketData.isEnabled:false} name ="isEnable" onChange={(e)=>this.handleChange(e,item.marketData.marketId,1)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
-                                        <input type="checkbox"  checked={item.marketData.isVisible} name ="isVisible" onChange={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
+                                        <input type="checkbox"  checked={item.marketData.isVisible?item.marketData.isVisible:false} name ="isVisible" onChange={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
                                         <label>Price:
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} type="number" id={"layprice"+item.marketData._id} name ="ManualLayPrice" style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
+                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualLayPrice} type="number" required id={"layprice"+item.marketData._id} name ="ManualLayPrice" style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
                                         <label>Size:&nbsp;&nbsp;
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} type="number" id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LaySize}
+                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualLaySize} type="number" required id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LaySize}
                                     </td> 
 
                                     <td className="red text-center">
                                         <label>Price:
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} type="number" id={"backprice"+item.marketData._id} name ="ManualBackPrice"  style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
+                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualBackPrice} type="number" required id={"backprice"+item.marketData._id} name ="ManualBackPrice"  style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
                                         <label>Size:&nbsp;&nbsp;
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} type="number" id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackSize}
+                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualBackSize} type="number" required id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackSize}
                                     </td> 
 
                                     <td className="red text-center">
-                                        <input type="checkbox" checked={item.marketData.ManualPriceKey===true?true:false}  name ="ManualPriceKey" onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)}  style={{height: '20px',width: '20px'}}/>
+                                        <input type="checkbox" checked={item.marketData.ManualPriceKey===true?true:false}  name ="ManualPriceKey" onChange={(e)=>this.handlemanualPriceKey(e,item.marketData._id)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
-                                    {/* <td className="red text-center">
-                                        <input type="button" value="submit" onClick={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} style={{background:"#95335c",color:'white',outline:'none'}}/>
-                                    </td> 
+                                    
                                     <td className="red text-center">
-                                        <Link to={'/managefrunners/'+this.props.match.params.id+'?marketid='+item.marketData.marketId} >Manage Runners</Link> | 
-                                        <Link to="#">Action 2</Link>
-                                    </td>
-                                    */}
+                                    {/* <label>Status:</label>&nbsp; */}
+                                    {
+                                      item.marketData.isItManual ?
+                                      <div style={{display:'flex'}}>
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="Ball Running" checked={item.marketData.status==="Ball Running"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        &nbsp;<label for="BallRunning">Ball&nbsp;Running</label>&nbsp;
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="SUSPENDED" checked={item.marketData.status==="SUSPENDED"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        &nbsp;<label for="SUSPENDED">SUSPENDED</label>&nbsp;
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="CLOSED" checked={item.marketData.status==="CLOSED"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        &nbsp;<label for="CLOSED">CLOSED</label>&nbsp;
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="" checked={item.marketData.status===""} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        &nbsp;<label for="CLOSED">OPEN</label>&nbsp;
+                                      </div>:"---"
+                                    }
+                                    </td> 
                                 </tr>
                               )
                             }):
@@ -184,6 +295,101 @@ export default class ManualFancyOdds extends Component {
             </div>
           </div>
         </div>
+
+{
+  /////////////////////////////// ADD MANUAL FANCY ////////////////////////////////////
+}
+
+<div id="addManualFancy" className="modal fade" role="dialog">
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="popup_form">
+                    <div className="title_popup">
+                      <span>Add Manual Fancy</span>
+                      <button type="button" className="close" data-dismiss="modal" >
+                        <div className="close_new"><i className="fa fa-ties-circle" /></div>
+                      </button>
+                    </div>
+                    <div className="text-center" style={{ color: 'red', fontSize: '20px' }}>{this.state.msgshow&&this.state.msg}</div>
+                    <div className="content_popup">
+                      <div className="popup_form_row">
+                        <div className="modal-body">
+                          <div className="row">
+                            <div className="col-md-4 col-xs-6">
+                              <label> MarketId*</label>
+                              <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.addmarketId} name="addmarketId" className="form-control" autocomplete="off" />
+                            </div>
+
+                            <div className="col-md-4 col-xs-6">
+                              <label> MarketName</label>
+                              <input type="text" onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.addmarketName} name="addmarketName" className="form-control" autocomplete="off" />
+                            </div>
+
+                            <div className="col-md-4 col-xs-6">
+                              <label>LayPrice</label>
+                              <input  type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.LayPrice} name ="LayPrice" className="form-control" />
+                            </div>
+
+                            <div className="col-md-4 col-xs-6">
+                              <label>LaySize</label>
+                              <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.LaySize} name="LaySize" className="form-control"  />
+                            </div>
+
+                            <div className="col-md-4 col-xs-6">
+                              <label>BackPrice</label>
+                              <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.BackPrice} name="BackPrice" className="form-control" />
+                            </div>
+
+                            <div className="col-md-4 col-xs-6">
+                              <label>BackSize</label>
+                              <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.BackSize} name="BackSize" className="form-control" />
+                            </div>
+
+                            <div class="col-md-4 col-xs-4" style={{display:'flex'}}>
+                              <label>PriceKey</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                              <input type="checkbox" onChange={(event)=>this.methodOnChange(event,"Check")} value={this.state.PriceKey} name="PriceKey" style={{height: '20px',width: '20px'}} class="form-control" />
+                            </div>
+                            <div class="col-md-4 col-xs-4" style={{display:'flex'}}>
+                              <label>Enable</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                              <input type="checkbox" onChange={(event)=>this.methodOnChange(event,"Check")} value={this.state.addEnable} name="addEnable" style={{height: '20px',width: '20px'}} class="form-control" />
+                            </div>
+                            <div class="col-md-4 col-xs-4" style={{display:'flex'}}>
+                              <label>Visible</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                              <input type="checkbox" onChange={(event)=>this.methodOnChange(event,"Check")} value={this.state.addVisible} name="addVisible" style={{height: '20px',width: '20px'}} class="form-control" />
+                            </div>
+
+                            <div className="col-md-4 col-xs-12" style={{display:'flex'}}>
+                              <label>Status:</label>&nbsp;
+                              <div style={{display:'flex'}}>
+                                <input type="radio" onChange={(event)=>this.methodOnChange(event,"notCheck")} value="Ball Running" name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                &nbsp;<label for="BallRunning">Ball&nbsp;Running</label>&nbsp;
+                                <input type="radio" onChange={(event)=>this.methodOnChange(event,"notCheck")} value="SUSPENDED" name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                &nbsp;<label for="SUSPENDED">SUSPENDED</label>&nbsp;
+                                <input type="radio" onChange={(event)=>this.methodOnChange(event,"notCheck")} value="CLOSED" name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                &nbsp;<label for="CLOSED">CLOSED</label>&nbsp;
+                                <input type="radio" onChange={(event)=>this.methodOnChange(event,"notCheck")} value="" name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                &nbsp;<label for="CLOSED">OPEN</label>&nbsp;
+                              </div>
+                            </div>
+
+                            <div className="col-md-12 col-xs-6 modal-footer">
+                              <button type="button" className="blue_button Addsuper1" onClick={()=>this.handleSubmitManualFancies(this.state.eventId)} id="child_player_add" >
+                               Submit
+                              </button>
+                              <button id="cancel" data-dismiss="modal" type="button" className="red_button" >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
         <Footer />
       </div>
     )
