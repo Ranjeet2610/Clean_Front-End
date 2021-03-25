@@ -47,10 +47,20 @@ export default class User extends Component {
       PIS: "",
       min_odds: "",
       max_odds: "",
+      unmatch_bet:"",
+      lock_bet:"",
       parentdetails: "",
       searchFilter: [],
       totalBalance: 0,
-      tabOn:'C'
+      tabOn:'C',
+      fancymaxStacks:"",
+      fancyminStacks:"",
+      fancymaxProfit:"",
+      fancyBetDelay:"",
+      manualfancymaxStacks:"",
+      manualfancyminStacks:"",
+      manualfancymaxProfit:"",
+      manualfancyBetDelay:"",
     };
     this.users = new Users();
     this.currentDate = Utilities.formatDate(new Date());
@@ -552,23 +562,88 @@ export default class User extends Component {
     });
   }
 
-  submit_info = () => {
-    console.log(document.getElementById("4_min_stake").defaultValue)
-    const obj = {
-      id: this.state.userdetails.id,
-      cricketmaxStacks: this.state.max_stake===""?this.state.userInfo.cricketminStacks:this.state.max_stake,
-      cricketminStacks: this.state.min_stake===""?this.state.userInfo.cricketmaxStacks:this.state.min_stake,
-      cricketmaxProfit: this.state.max_profit===""?this.state.userInfo.cricketmaxProfit:this.state.max_profit,
-      cricketmaxLoss: this.state.max_loss===""?this.state.userInfo.cricketmaxLoss:this.state.max_loss,
-      cricketPreInplayProfit: this.state.PIP===""?this.state.userInfo.cricketPreInplayProfit:this.state.PIP,
-      cricketPreInplayStack: this.state.PIS===""?this.state.userInfo.cricketPreInplayStack:this.state.PIS,
-      cricketmaxOdds: this.state.max_odds===""?this.state.userInfo.cricketminOdds:this.state.max_odds,
-      cricketminOdds: this.state.min_odds===""?this.state.userInfo.cricketmaxOdds:this.state.min_odds,
-    }
-    console.log(obj)
-    this.users.updateUserSportsInfo(obj, (data) => {
-      alert("updated");
-    });
+  submit_info = (fancyType) => {
+    console.log(this.state.userdetails);
+    const obj={
+      "userId":  this.state.userdetails.userName,
+        "id": this.state.userdetails.id
+    };
+      if(this.state.tabOn==="C" || this.state.tabOn==="S" || this.state.tabOn==="T"){
+        obj.type=this.state.tabOn
+        if(this.state.tabOn==="C"){
+          obj.type="cricket"
+        }
+        if(this.state.tabOn==="S"){
+          obj.type="soccer"
+        }
+        if(this.state.tabOn==="T"){
+          obj.type="tennis"
+        }
+        if(this.state.max_stake!==""){
+          obj.maxStacks=this.state.max_stake
+        }
+        if(this.state.min_stake!==""){
+          obj.minStacks=this.state.min_stake
+        }
+        if(this.state.max_profit!==""){
+          obj.maxProfit=this.state.max_profit
+        }
+        if(this.state.max_loss!==""){
+          obj.maxLoss=this.state.max_loss
+        }
+        if(this.state.PIP!==""){
+          obj.PreInplayProfit=this.state.PIP
+        }
+        if(this.state.PIS!==""){
+          obj.PreInplayStack=this.state.PIS
+        }
+        if(this.state.min_odds!==""){
+          obj.minOdds=this.state.min_odds
+        }
+        if(this.state.max_odds!==""){
+          obj.maxOdds=this.state.max_odds
+        }
+        if(this.state.unmatch_bet!==""){
+          obj.unmatchBet=this.state.unmatch_bet
+        }
+        if(this.state.lock_bet!==""){
+          obj.lockBet=this.state.lock_bet
+        }
+      }
+      else{
+        if(fancyType!=="manual"){
+          if(this.state.fancymaxStacks!==""){
+            obj.fancymaxStacks=this.state.fancymaxStacks
+          }
+          if(this.state.fancyminStacks!==""){
+            obj.fancyminStacks=this.state.fancyminStacks
+          }
+          if(this.state.fancymaxProfit!==""){
+            obj.fancymaxProfit=this.state.fancymaxProfit
+          }
+          if(this.state.fancyBetDelay!==""){
+            obj.fancyBetDelay=this.state.fancyBetDelay
+          }
+        }
+        else{
+          if(this.state.manualfancymaxStacks!==""){
+            obj.manualfancymaxStacks=this.state.manualfancymaxStacks
+          }
+          if(this.state.manualfancyminStacks!==""){
+            obj.manualfancyminStacks=this.state.manualfancyminStacks
+          }
+          if(this.state.manualfancymaxProfit!==""){
+            obj.manualfancymaxProfit=this.state.manualfancymaxProfit
+          }
+          if(this.state.manualfancyBetDelay!==""){
+            obj.manualfancyBetDelay=this.state.manualfancyBetDelay
+          }
+        }
+      }
+    console.log(obj);
+    // this.users.updateUserSportsInfo(obj, (data) => {
+    //   alert("updated");
+    // });
   }
 
   submit_userInfo() {
@@ -596,6 +671,26 @@ export default class User extends Component {
     this.setState({
       tabOn:tabtype
     })
+  }
+
+  handleCheckbox = (event) => {
+    this.setState({
+      [event.target.name]:event.target.checked
+    })
+  }
+
+  handleFancyTabFields = (event,check) => {
+    if(check==="check"){
+      this.setState({
+        [event.target.name]:event.target.checked
+      })
+    }
+    else{
+      this.setState({
+        [event.target.name]:event.target.value
+      })
+    }
+    console.log(event.target.name,"=>",event.target.value);
   }
 
   render() {
@@ -1117,16 +1212,16 @@ export default class User extends Component {
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>UNMATCH BET</label>
-                            <input type="checkbox" name="sport[is_unmatch_bet]" />
+                            <input type="checkbox" name="unmatch_bet" onChange={this.handleCheckbox} />
                             <br />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>LOCK BET</label>
-                            <input type="checkbox" name="sport[lock_bet]" />{" "}
+                            <input type="checkbox" name="lock_bet" onChange={this.handleCheckbox} />
                             <br />
                           </div>
                           <div className="col-md-12 col-xs-12 modal-footer">
-                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info()} >
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info("")} >
                               Update
                             </button>
                           </div>
@@ -1137,30 +1232,26 @@ export default class User extends Component {
                         <form>
                           <div className="col-md-4 col-xs-6">
                             <label> MIN STAKE
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="fancymaxStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max STAKE 
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="fancyminStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX PROFIT 
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="fancymaxProfit" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> BET DELAY
-                            <input type="text"  className="form-control"/></label>
-                          </div>
-                          <div className="col-md-4 col-xs-6">
-                            <label>Click to update for all users&nbsp;
-                            <input type="checkbox" name="sport[is_unmatch_bet]" /></label>
+                            <input type="text" name="fancyBetDelay" onChange={(e)=>this.handleFancyTabFields(e,"")}  className="form-control"/></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>LOCK BET&nbsp;
-                            <input type="checkbox" name="sport[lock_bet]" /></label>
+                            <input type="checkbox" name="lock_bet" onChange={(e)=>this.handleFancyTabFields(e,"check")} /></label>
                           </div>
                           <div className="col-md-12 col-xs-12 modal-footer">
-                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" >
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info("fancy")} >
                               Update
                             </button>
                           </div>
@@ -1173,30 +1264,26 @@ export default class User extends Component {
                         <form>
                           <div className="col-md-4 col-xs-6">
                             <label> MIN STAKE
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="manualfancyminStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max STAKE 
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="manualfancymaxStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX PROFIT 
-                            <input type="text" className="form-control" /></label>
+                            <input type="text" name="manualfancymaxProfit" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> BET DELAY
-                            <input type="text"  className="form-control"/></label>
-                          </div>
-                          <div className="col-md-4 col-xs-6">
-                            <label>Click to update for all users&nbsp;
-                            <input type="checkbox" name="sport[is_unmatch_bet]" /></label>
+                            <input type="text" name="manualfancyBetDelay"  onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control"/></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>LOCK BET&nbsp;
-                            <input type="checkbox" name="sport[lock_bet]" /></label>
+                            <input type="checkbox" name="lock_bet" onChange={(e)=>this.handleFancyTabFields(e,"check")} /></label>
                           </div>
                           <div className="col-md-12 col-xs-12 modal-footer">
-                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" >
+                            <button type="button" className="blue_button submit_user_setting" id="update-4-setting" onClick={() => this.submit_info("manual")} >
                               Update
                             </button>
                           </div>
