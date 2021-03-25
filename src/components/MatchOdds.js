@@ -363,8 +363,8 @@ export default class MatchOdds extends Component {
           data: data.pdata,
           oddsload:false
         });
-        console.log("marketOdds",this.state.marketOdds);
-        console.log("data",this.state.data);
+        // console.log("marketOdds",this.state.marketOdds);
+        // console.log("data",this.state.data);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -818,7 +818,7 @@ export default class MatchOdds extends Component {
                             <table className={`table table-striped  bulk_actions matchTable1171389306 ${this.state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
                               <tbody>
                                 <tr className="headings mobile_heading">
-                                  <th className="fix_heading color_red">Min stake:100 Max stake:50000</th>
+                                  <th className="fix_heading color_red">Min stake:100 Max stake:500000</th>
                                   <th> </th>
                                   <th> </th>
                                   <th className="back_heading_color">Back</th>
@@ -923,6 +923,7 @@ export default class MatchOdds extends Component {
                                         <td colSpan="7">
                                           <div className="mobileBetBox">
                                             <BetBox
+                                            eventType={this.state.sportType}
                                             matchName={this.state.matchName}
                                             index={index}
                                             stake={0}
@@ -1080,7 +1081,7 @@ export default class MatchOdds extends Component {
                             }
 
                             <div className="fancy-heads">
-                              <div className="event-sports">&nbsp;&nbsp; </div>
+                              <div className="event-sports"style={{color:'red'}} >Min stake:100 Max stake:500000 </div>
                               <div className="fancy_buttons">
                                 <div className="fancy-backs head-no" style={{ backgroundColor: '#fa93a9' }}>
                                   <strong>NO</strong>
@@ -1150,6 +1151,7 @@ export default class MatchOdds extends Component {
                                       </div>
                                       <div className="mobileBetBox">
                                       <BetBox
+                                      eventType={this.state.sportType}
                                         matchName={this.state.matchName}
                                         stake={0}
                                         index={index+this.state.data.length}
@@ -1264,6 +1266,7 @@ export default class MatchOdds extends Component {
                   :null
                   }
                 <Sidebet
+                  eventType={this.state.sportType}
                   matchName={this.state.matchName}
                   stake={0}
                   betData={this.state.betData}

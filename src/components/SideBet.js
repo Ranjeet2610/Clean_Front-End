@@ -156,12 +156,27 @@ export default class SideBet extends Component {
     }
   }
 
-  getBetTime = () =>{
-    this.event.getbetplacetime(1,data=>{
-      this.setState({
+  getBetTime = async () =>{
+    console.log(this.props);
+    console.log(this.props.betData.betType,this.props.eventType);
+    if(this.props.betData.betType==="Fancy"){
+      this.event.getbetplacetime(5,async data=>{
+        await this.setState({
+          timeDuration:data.data.data.timeDuration
+        })
+      })
+      await new Promise((resolve, reject) => setTimeout(resolve, 500));
+      alert(this.state.timeDuration)
+  }
+  else{
+    this.event.getbetplacetime(this.props.eventType,async data=>{
+      await this.setState({
         timeDuration:data.data.data.timeDuration
       })
     })
+    await new Promise((resolve, reject) => setTimeout(resolve, 500));
+    alert(this.state.timeDuration)
+  }
   }
 
   changeBackground = (e,type) =>{
@@ -364,7 +379,6 @@ export default class SideBet extends Component {
 }
 
   BackhandleUserAccess = async (item,userName) =>{
-    debugger
     await this.setState({
       curPoAcc:item
     })
@@ -372,7 +386,6 @@ export default class SideBet extends Component {
   }
 
   handleUserAccess = async (item,userName) =>{
-    debugger
     if(item === 'Admin'){
       await this.setState({
         curPoAcc:'Master'
@@ -664,7 +677,7 @@ export default class SideBet extends Component {
 }
 
   componentDidMount() {
-    this.getBetTime();
+    // this.getBetTime(this.props.betData.betType);
     this.getUserInfo();
     this.handlecurrentPositionAccess();
     document.getElementById('tital_change').focus();
