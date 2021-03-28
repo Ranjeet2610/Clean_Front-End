@@ -93,7 +93,7 @@ class Dashboard extends Component {
     let team;
     let team1 = await this.getTeam(0,eventName,runners);
     let team2 = await this.getTeam(1,eventName,runners);
-    if(team1!="undefined" && team2!="undefined"){
+    if(typeof(team1) !== 'undefined' && typeof(team2) !== 'undefined'){
       team = team1+" v "+team2;
     }else{
       team = eventName;
