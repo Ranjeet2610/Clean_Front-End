@@ -272,7 +272,7 @@ ul.quick-list li i{padding-right:10px;color:#757679;}
 .block_box_btn{float:right;}
 #placeBetSilp{padding:10px;margin-bottom:5px;position:relative;background:#f9f9f9!important;
 border: solid 2px #c99d1e;}
-.modal-body{padding:5px 0px!important}
+.modal-body{padding: 5px 0!important; overflow-x: scroll; height: 490px;}
 .modal-footer{padding:5px 9px;text-align:right;border-top:transparent;}
 .match-name{font-size:13px;margin-top:3px;display:inline-block;}
 .mod-header{margin:0px;background:#95335c;color:#fff;padding:7px 5px;border-bottom:transparent;}

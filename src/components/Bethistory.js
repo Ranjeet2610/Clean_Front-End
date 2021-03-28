@@ -52,6 +52,7 @@ export default class Bethistory extends Component {
   getBetData = async (Scurr,Ecurr) => {
     let propName = this.props?.location?.state?.betHistory?this.props?.location?.state?.betHistory:undefined
     if(propName===undefined){
+      
     if(this.userDetails.superAdmin){
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
