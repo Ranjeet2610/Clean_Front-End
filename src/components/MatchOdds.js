@@ -802,7 +802,7 @@ export default class MatchOdds extends Component {
                           <div className="match-odds-sec">
                             <div className="item match-status match-odds"><span class="match-odd-top">Match Odds</span> <img src="https://bxawscf.skyexchange.com/images/transparent.gif" class="sid-image"></img></div>
                             <div className="item match-status-odds">
-                              <span className="going_inplay"> {inplay} </span>
+                              <span className="going_inplay green"> {inplay} </span>
                               <span className="click-tv">
                                 <img className="tv-icons" src={tv} alt="Live Games" />
                               </span>
