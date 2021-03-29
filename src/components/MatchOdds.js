@@ -363,8 +363,8 @@ export default class MatchOdds extends Component {
           data: data.pdata,
           oddsload:false
         });
-        // console.log("marketOdds",this.state.marketOdds);
-        // console.log("data",this.state.data);
+        //console.log("marketOdds",this.state.marketOdds);
+        //console.log("data",this.state.data);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
