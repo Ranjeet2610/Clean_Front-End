@@ -99,6 +99,7 @@ export default class MatchOdds extends Component {
       sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
       timer: "",
       redirectToReferrer: false,
+      Mteams:[],
     };
     this.service = new Service();
     this.userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
@@ -141,12 +142,11 @@ export default class MatchOdds extends Component {
     this.getselOdds(index, ods, type, teamSelection);
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     setTimeout(()=> {
-    let getRunner = this.state.data.length;
-    let teams = this.state.matchName.split(" v ");
-    let Team1 = teams[0];//this.state.data[0].runnerName;
-    let Team2 = teams[1];//this.state.data[1].runnerName;
+    let getRunner = this.state.Mteams.length;
+    let Team1 = this.state.Mteams[0];
+    let Team2 = this.state.Mteams[1];
     if(getRunner==3){
-      var Team3 = "The Draw";//this.state.data[2].runnerName;
+      var Team3 = this.state.Mteams[2];
     }
     if(val!=0){
       if(type=='Back'){
@@ -431,21 +431,21 @@ export default class MatchOdds extends Component {
       });
     });
     service.getListMarketType(this.props.match.params.id, (data) => {
-      // this.setState({
-      //   data: data.pdata,
-      // });
-        let getRunner = data.pdata.length;
-        // console.log("DDDD",data.pdata);
-        /*let Teamone = data.pdata[0].runnerName;
-        let Teamtwo = data.pdata[1].runnerName;
+        data.pdata.map((item, index) => {
+          let fRunners = data.pdata.filter(newdata=>{
+            return newdata.selectionId===data.odsData[0].runners[index].selectionId;
+          })
+          this.setState({ Mteams: [...this.state.Mteams, fRunners[0]?.runnerName] })
+        })
+        this.setState({
+          matchName: this.state.Mteams[0]+" v "+this.state.Mteams[1]
+        });
+        //console.log(this.state.Mteams);
+        let getRunner = this.state.Mteams.length;
+        let Teamone = this.state.Mteams[0];
+        let Teamtwo = this.state.Mteams[1];
         if(getRunner==3){
-          var Teamthree = data.pdata[2].runnerName;
-        }*/
-        let teams = this.state.matchName.split(" v ");
-        let Teamone = teams[0];//this.state.data[0].runnerName;
-        let Teamtwo = teams[1];//this.state.data[1].runnerName;
-        if(getRunner==3){
-          var Teamthree = "The Draw";//this.state.data[2].runnerName;
+          var Teamthree = this.state.Mteams[2];
         }
         let T1TotalPL = 0;
         let T2TotalPL = 0;
@@ -619,19 +619,20 @@ export default class MatchOdds extends Component {
     })
     setTimeout(()=> {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
-    let getRunner = this.state.data.length;
-    /*let Team1 = this.state.data[0].runnerName;
-    let Team2 = this.state.data[1].runnerName;
+    let getRunner = this.state.Mteams.length;
+    let Team1 = this.state.Mteams[0];
+    let Team2 = this.state.Mteams[1];
     if(getRunner==3){
-      var Team3 = this.state.data[2].runnerName;
-    }*/
-    let teams = this.state.matchName.split(" v ");
+      var Team3 = this.state.Mteams[2];
+    }
+    /*let teams = this.state.matchName.split(" v ");
     let Team1 = teams[0];//this.state.data[0].runnerName;
     let Team2 = teams[1];//this.state.data[1].runnerName;
     if(getRunner==3){
       var Team3 = "The Draw";//this.state.data[2].runnerName;
     }
-    if(betType=='Back'){
+    */
+   if(betType=='Back'){
       if(teamSelection==Team1){
         this.setState({
           TonePL: parseFloat(this.state.DTonePL)+parseFloat(profit),

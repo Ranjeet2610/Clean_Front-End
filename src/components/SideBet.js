@@ -65,12 +65,12 @@ export default class SideBet extends Component {
 
   handleChange=(e)=>{
     let teamSelection = this.props.betData.pData.runnerName;
-    let teamBetType = this.state.betData.type;
+    let teamBetType = this.props.betData.type;
     let stack = e.target.value;
     e.preventDefault();
     if(this.props.betData.betType==="Fancy"){
       let fancysize = this.props.betData.data.size;
-      if(this.state.betData.type === 'Back'){
+      if(this.props.betData.type === 'Back'){
        this.setState({
         profit:((fancysize/100)*stack).toFixed(2),
         loss:stack?stack:0.0
@@ -83,8 +83,8 @@ export default class SideBet extends Component {
        })
      }
    }else{
-       let odds = this.state.betData.odds-1;
-       if(this.state.betData.type === 'Back'){
+       let odds = this.props.betData.odds-1;
+       if(this.props.betData.type === 'Back'){
         this.setState({
           profit:(odds*e.target.value).toFixed(2),
           loss:e.target.value?e.target.value:0.0
