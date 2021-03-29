@@ -263,7 +263,7 @@ ul.quick-list li i{padding-right:10px;color:#757679;}
 .lay_heading_color {background-color:#F77791!important;line-height:25px!important;font-size:11px;text-align:center;color:#000;font-weight:normal;}
 .back_lay_color td{background:#fff;}
 .back_lay_color td span{font-size:14px;width:100%;display:inline-block;text-align:center;font-weight: 500;}
-.back_lay_color td span:last-child{font-size:8px;font-weight:normal;}
+.back_lay_color td span:last-child{font-size:8px;font-weight:500;}
 .back_lay_color td span:nth-child(2){font-size:8px;}
 .runner_amount{font-size:12px!important;}
 .back_lay_color td:nth-child(4){background:#b5e0ff;}
