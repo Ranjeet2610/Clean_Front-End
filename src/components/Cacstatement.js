@@ -231,11 +231,11 @@ render(){
                         {statements}
                       </tbody>
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.resdata.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>
                     </table>
                   </div>

@@ -52,6 +52,18 @@ export default class SideBet extends Component {
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
         isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
+        ChipName1:"",
+        ChipName2:"",
+        ChipName3:"",
+        ChipName4:"",
+        ChipName5:"",
+        ChipName6:"",
+        ChipValue1:"",
+        ChipValue2:"",
+        ChipValue3:"",
+        ChipValue4:"",
+        ChipValue5:"",
+        ChipValue6:"",
       }
     this.service = new Service();
     this.users = new Users();
@@ -157,8 +169,6 @@ export default class SideBet extends Component {
   }
 
   getBetTime = async () =>{
-    console.log(this.props);
-    console.log(this.props.betData.betType,this.props.eventType);
     if(this.props.betData.betType==="Fancy"){
       this.event.getbetplacetime(5,async data=>{
         await this.setState({
@@ -166,8 +176,7 @@ export default class SideBet extends Component {
         })
       })
       await new Promise((resolve, reject) => setTimeout(resolve, 500));
-      alert(this.state.timeDuration)
-  }
+    }
   else{
     this.event.getbetplacetime(this.props.eventType,async data=>{
       await this.setState({
@@ -175,8 +184,7 @@ export default class SideBet extends Component {
       })
     })
     await new Promise((resolve, reject) => setTimeout(resolve, 500));
-    alert(this.state.timeDuration)
-  }
+    }
   }
 
   changeBackground = (e,type) =>{
@@ -212,6 +220,7 @@ export default class SideBet extends Component {
 
   placeBet=async(e)=>{
     this.getBetTime();
+    let disableBetting = localStorage.getItem("data").enableBetting
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -221,6 +230,7 @@ export default class SideBet extends Component {
     if(this.state.isTab)
     device = 3;
     e.preventDefault();
+    if(disableBetting===true){
     if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
@@ -353,6 +363,10 @@ export default class SideBet extends Component {
          })
         }
       }
+      }
+    }
+    else{
+      this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
     }
   this.closeWindow();
   }
@@ -906,9 +920,32 @@ export default class SideBet extends Component {
     this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection");
   }
 
-  handleSubmit=(event)=> {
-    event.preventDefault();
-    const data = new FormData(event.target);
+  handleEditStake=(event)=> {
+    this.setState({
+      [event.target.name]:event.target.value
+    })
+    // console.log(event.target.name,"=>",event.target.value);
+  }
+
+  handleSubmit = () => {
+    const obj = {
+      chipName1:this.state.ChipName1,
+      chipName2:this.state.ChipName2,
+      chipName3:this.state.ChipName3,
+      chipName4:this.state.ChipName4,
+      chipName5:this.state.ChipName5,
+      chipName6:this.state.ChipName6,
+      uchipvalue1:this.state.ChipValue1,
+      uchipvalue2:this.state.ChipValue2,
+      uchipvalue3:this.state.ChipValue3,
+      uchipvalue4:this.state.ChipValue4,
+      uchipvalue5:this.state.ChipValue5,
+      uchipvalue6:this.state.ChipValue6
+    }
+    console.log(obj);
+    this.users.updateUserChipsInfo(obj,data=>{
+      console.log(data);
+    })
   }
 
   closeWindow = () =>{
@@ -974,7 +1011,7 @@ export default class SideBet extends Component {
         <div className="modal fade" id="exampleModalForEditStake" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
-              <form onSubmit={(e)=>this.handleSubmit(e)}>
+              {/* <form onSubmit={(e)=>this.handleSubmit(e)} name="myForm"> */}
                 <div className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel" style={{fontSize:'20px'}}>Chip Setting</h5>
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close">
@@ -989,7 +1026,7 @@ export default class SideBet extends Component {
                           return(
                             <>
                               <label>Chips Name {`${index+1}:`}</label>
-                              <input type="text" className="form-control" defaultValue={item} />
+                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipName"+(index+1)} />
                             </>
                           )
                         })
@@ -1001,7 +1038,7 @@ export default class SideBet extends Component {
                           return(
                             <>
                               <label>Chips Value {`${index+1}:`}</label>
-                              <input type="text" className="form-control" defaultValue={item} />
+                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipValue"+(index+1)} />
                             </>
                           )
                         })
@@ -1010,9 +1047,9 @@ export default class SideBet extends Component {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button type="submit" className="btn btn-primary text-center">Update ChipSetting</button>
+                  <button type="button" onClick={this.handleSubmit} className="btn btn-primary text-center">Update ChipSetting</button>
                 </div>
-              </form>
+              {/* </form> */}
             </div>
           </div>
         </div>
@@ -1222,11 +1259,11 @@ export default class SideBet extends Component {
                       }
                       </tbody>
                       <tfoot>
-                        <tr>
+                        {/* <tr>
                           <td colSpan={16}>
                               <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.openTab==='fancyBets' ? this.state.fbetHistroy.length : this.state.betHistroy.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                           </td>  
-                        </tr>  
+                        </tr>   */}
                       </tfoot>    
                     </table>
                   </div>

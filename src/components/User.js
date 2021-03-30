@@ -925,11 +925,11 @@ export default class User extends Component {
                             <tr>
                               <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                               <td colSpan={11}>
                                   <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                               </td>  
-                            </tr>  
+                            </tr>   */}
                         </tfoot> : null  
                       }
                     </table>

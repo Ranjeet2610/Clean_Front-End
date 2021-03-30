@@ -415,11 +415,11 @@ export default class ProfitLoss extends Component {
                       {
                       currentdataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       null
                     }

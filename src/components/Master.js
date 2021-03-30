@@ -950,11 +950,11 @@ export default class Master extends Component {
                           <tr>
                             <td colSpan={12} className="text-center">Total Balance:{this.state.totalBalance}</td>
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td colSpan={12}>
                                 <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                             </td>  
-                          </tr> 
+                          </tr>  */}
                         </tfoot>:null
                       }
                     </table>
