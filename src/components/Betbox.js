@@ -57,7 +57,7 @@ export default class BetBox extends Component {
             timeDuration:data.data.data.timeDuration
           })
         })
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
       }
       else{
         this.event.getbetplacetime(this.props.eventType,async data=>{
@@ -65,7 +65,7 @@ export default class BetBox extends Component {
             timeDuration:data.data.data.timeDuration
           })
         })
-        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+        await new Promise((resolve, reject) => setTimeout(resolve, 1000));
       }
     }
 
@@ -83,7 +83,6 @@ export default class BetBox extends Component {
     }
 
     placeBet=async(e)=>{
-      this.getBetTime();
       // device 1 for desktop,2 for mobile,3 for tab
       let device;
       if(this.state.isMobile)
@@ -112,6 +111,7 @@ export default class BetBox extends Component {
         this.setState({
           showLoader:true
         });
+        await this.getBetTime();
         await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
         if(this.props.betData.betType !=undefined){
           let fancysizeval;
