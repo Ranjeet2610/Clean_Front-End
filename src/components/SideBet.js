@@ -157,8 +157,6 @@ export default class SideBet extends Component {
   }
 
   getBetTime = async () =>{
-    console.log(this.props);
-    console.log(this.props.betData.betType,this.props.eventType);
     if(this.props.betData.betType==="Fancy"){
       this.event.getbetplacetime(5,async data=>{
         await this.setState({
@@ -166,7 +164,6 @@ export default class SideBet extends Component {
         })
       })
       await new Promise((resolve, reject) => setTimeout(resolve, 500));
-      alert(this.state.timeDuration)
   }
   else{
     this.event.getbetplacetime(this.props.eventType,async data=>{
@@ -175,7 +172,6 @@ export default class SideBet extends Component {
       })
     })
     await new Promise((resolve, reject) => setTimeout(resolve, 500));
-    alert(this.state.timeDuration)
   }
   }
 

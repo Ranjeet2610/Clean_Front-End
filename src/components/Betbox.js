@@ -50,12 +50,23 @@ export default class BetBox extends Component {
           IP:this.props.IP
       });
     }
-    getBetTime = () =>{
-      this.event.getbetplacetime(1,data=>{
-        this.setState({
-          timeDuration:data.data.data.timeDuration
+    getBetTime = async () =>{
+      if(this.props.betData.betType==="Fancy"){
+        this.event.getbetplacetime(5,async data=>{
+          await this.setState({
+            timeDuration:data.data.data.timeDuration
+          })
         })
-      })
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+      }
+      else{
+        this.event.getbetplacetime(this.props.eventType,async data=>{
+          await this.setState({
+            timeDuration:data.data.data.timeDuration
+          })
+        })
+        await new Promise((resolve, reject) => setTimeout(resolve, 500));
+      }
     }
 
     getUserInfo = () => {

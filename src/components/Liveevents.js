@@ -59,25 +59,23 @@ export default class Liveevents extends Component {
       this.props.history.push('/dashboard')
     }
     else{
-    if(JSON.parse(localStorage.getItem('data')).superAdmin&&JSON.parse(localStorage.getItem('data')).userName!=="AdminO222"){
-      this.props.history.push('/dashboard')
-    }
     await this.setState({
       load: true
     })
-  this.events.getLiveEvents('',data=>{
-    let allEvents = data.data.data;
-    let isEventlive = allEvents.map(item => {
-      this.setState(prevState => ({ 
-        checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
-      }));
+    this.events.getLiveEvents('',data=>{
+      let allEvents = data.data.data;
+      let isEventlive = allEvents.map(item => {
+        this.setState(prevState => ({ 
+          checkedItems: prevState.checkedItems.set(item.eventId, item.active) 
+        }));
+      });
+      this.setState({
+        resdata:allEvents,
+        load: false
+      })
     });
-    this.setState({
-      resdata:allEvents,
-      load: false
-    })
-  });
-  }}
+   }
+  }
 
   handleChange = (e) => {
   const item = e.target.value;

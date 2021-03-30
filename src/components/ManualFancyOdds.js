@@ -268,15 +268,20 @@ export default class ManualFancyOdds extends Component {
                                     {
                                       item.marketData.isItManual ?
                                       <div style={{display:'flex'}}>
-                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="Ball Running" checked={item.marketData.status==="Ball Running"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="Ball Running" checked={item.marketData.status==="Ball Running"} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="BallRunning">Ball&nbsp;Running</label>&nbsp;
-                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="SUSPENDED" checked={item.marketData.status==="SUSPENDED"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="SUSPENDED" checked={item.marketData.status==="SUSPENDED"} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="SUSPENDED">SUSPENDED</label>&nbsp;
-                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="CLOSED" checked={item.marketData.status==="CLOSED"} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="CLOSED" checked={item.marketData.status==="CLOSED"} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="CLOSED">CLOSED</label>&nbsp;
-                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="" checked={item.marketData.status===""} name="status" style={{height: '20px',width: '20px'}} className="form-control" />
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="" checked={item.marketData.status===""} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="CLOSED">OPEN</label>&nbsp;
-                                      </div>:"---"
+                                      </div>:
+                                      new Date(item.marketData.marketStartTime).getTime()<new Date().getTime()?
+                                      <div style={{display:'flex'}}>
+                                        <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="CLOSED" checked={item.marketData.status==="CLOSED"} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
+                                        &nbsp;<label for="CLOSED">CLOSED</label>&nbsp;
+                                      </div>:'---'                                    
                                     }
                                     </td> 
                                 </tr>
