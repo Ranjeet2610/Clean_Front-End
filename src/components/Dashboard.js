@@ -104,7 +104,7 @@ class Dashboard extends Component {
       load:true
     })
   }
-  getTeam = (sel,eventName,runners) => {
+ /* getTeam = (sel,eventName,runners) => {
     let getTeam;
     let teams = eventName.split(" v ");
     let teamsel = teams[sel].split(" ");
@@ -140,7 +140,7 @@ class Dashboard extends Component {
         }
     })
     return getTeam;
-  }
+  }*/
   render() {
     return (
       <div>

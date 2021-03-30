@@ -11,6 +11,7 @@ import Sidebet from "./SideBet";
 import "../App.css";
 import Service from "../Services/Service";
 import LiveEvents from "../Services/livevents";
+import Users from "../Services/users";
 import Footer from "./footer";
 
 export default class MatchOdds extends Component {
@@ -95,6 +96,7 @@ export default class MatchOdds extends Component {
       filterbookdata:'',
       IP:'',
       scoreId:'',
+      userInfo:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
       timer: "",
@@ -102,6 +104,7 @@ export default class MatchOdds extends Component {
       Mteams:[],
     };
     this.service = new Service();
+    this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
   }
 
@@ -355,6 +358,12 @@ export default class MatchOdds extends Component {
     this.setState({
       load:true
     })
+    this.users.userSportsInfo({id: this.userDetails.id}, (data) => {
+      this.setState({
+        userInfo: data.data,
+      });
+    });
+    console.log("userinfo:",this.state.userInfo)
     this.interval = setInterval(() => {
       service.getListMarketType(this.props.match.params.id, (data) => {
         this.setState({
