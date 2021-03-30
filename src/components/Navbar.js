@@ -256,13 +256,13 @@ handleAddBetTime = () => {
   if(this.state.game !== 0 || this.state.betTime !== "")
   this.users.addbetplacetime(obj,data=>{
     // console.log(data.message);
-    alert(obj.gameId)
     switch ('success') {
       case 'success':
         NotificationManager.success('Time Set Successfully !',"Success");
         break;
     }
   })
+  this.closeAddBetPlaceingTime();
 }
 
 async componentDidMount(){
@@ -307,20 +307,9 @@ async componentDidMount(){
   }
 }
 
-// componentDidUpdate(prevProps,prevState){
-//   if(prevProps.news !== this.state.news){
-//     this.setState({
-//       news:prevProps.news
-//     })
-//   }
-//   console.log("XXXXXXXXXXXX",prevProps);
-//   console.log("CCCCCCCc",this.state.news);
-// }
-
 getNews = () => {
   this.users.getActiveNews(data=>{
       if(data.data.data.length>=1){
-        // debugger
           this.setState({
               news:data.data.data[0].newsTitle
           })

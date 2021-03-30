@@ -64,6 +64,7 @@ const App = () => {
           <Route exact path="/userpl/:username" component={Userpl} />
           <Route exact path="/profitloss/:username" component={ProfitLoss} />
           <Route exact path="/profitloss" component={ProfitLoss} />
+          <Route exact path="/profitloss/:id" component={ProfitLoss} />
           <Route exact path="/livegame" component={Livegame} />
           <Route exact path="/fancystack" component={Fancystack} />
           <Route exact path="/sidebet" component={SideBet} />
