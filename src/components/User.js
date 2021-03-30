@@ -689,7 +689,6 @@ export default class User extends Component {
         [event.target.name]:event.target.value
       })
     }
-    console.log(event.target.name,"=>",event.target.value);
   }
 
   render() {
