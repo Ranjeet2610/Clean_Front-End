@@ -92,17 +92,19 @@ export default class BetBox extends Component {
       device = 1;
       if(this.state.isTab)
       device = 3;
-      
       e.preventDefault();
-      if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
+      if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
+      }
+      if(this.state.profit < 0 || this.state.profit > 500000 ){
+        this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
+      }
+      else if(this.stackInput.value > this.state.balance){
+        this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
       }
       // else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
       //   this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
       // }
-      else if(this.stackInput.value > this.state.balance){
-        this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      }
       else if(this.state.loss > this.state.balance){
         this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
       }

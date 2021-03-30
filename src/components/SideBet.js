@@ -220,7 +220,7 @@ export default class SideBet extends Component {
     if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
-    if(this.state.profit < 100 || this.state.profit > 500000 ){
+    if(this.state.profit < 0 || this.state.profit > 500000 ){
       this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
     }
     else if(this.stackInput.value > this.state.balance){
