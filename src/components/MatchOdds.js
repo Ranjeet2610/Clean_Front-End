@@ -640,8 +640,7 @@ export default class MatchOdds extends Component {
     let Team2 = teams[1];//this.state.data[1].runnerName;
     if(getRunner==3){
       var Team3 = "The Draw";//this.state.data[2].runnerName;
-    }
-    */
+    }*/
    if(betType=='Back'){
       if(teamSelection==Team1){
         this.setState({
@@ -691,12 +690,6 @@ export default class MatchOdds extends Component {
         }
       }
     }
-    if(facFrom==="placeBet"){
-      this.setState({
-        DTonePL:this.state.TonePL,
-        DTtwoPL:this.state.TtwoPL
-      });
-    }
    if(this.state.TonePL>=0){
       this.setState({
         ToneColor: "blue-odds",
@@ -715,12 +708,15 @@ export default class MatchOdds extends Component {
         TtwoColor: "color_red",
       });
     }
+    if(facFrom==="placeBet"){
+      this.setState({
+        DTonePL:this.state.TonePL,
+        DTtwoPL:this.state.TtwoPL,
+        DToneColor:this.state.ToneColor,
+        DTtwoColor:this.state.TtwoColor,
+      });
+    }
     if(getRunner==3){
-      if(facFrom==="placeBet"){
-        this.setState({
-          DTthreePL:this.state.TthreePL
-        });
-      }
       if(this.state.TthreePL>=0){
         this.setState({
           TthreeColor: "blue-odds",
@@ -728,6 +724,12 @@ export default class MatchOdds extends Component {
       }else{
         this.setState({
           TthreeColor: "color_red",
+        });
+      }
+      if(facFrom==="placeBet"){
+        this.setState({
+          DTthreePL:this.state.TthreePL,
+          DTthreeColor:this.state.TthreeColor
         });
       }
     }

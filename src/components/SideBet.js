@@ -48,6 +48,7 @@ export default class SideBet extends Component {
         getselfancyOdds:'',
         getselfancySize:'',
         showLoader:false,
+        UsM:'',
         sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
         isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
@@ -160,7 +161,7 @@ export default class SideBet extends Component {
     if(this.props.betData.betType==="Fancy"){
       this.event.getbetplacetime(5,async data=>{
         await this.setState({
-          timeDuration:data.data.data.timeDuration
+          timeDuration:(data.data.data.timeDuration-1000)
         })
       })
       await new Promise((resolve, reject) => setTimeout(resolve, 1000));
@@ -168,7 +169,7 @@ export default class SideBet extends Component {
   else{
     this.event.getbetplacetime(this.props.eventType,async data=>{
       await this.setState({
-        timeDuration:data.data.data.timeDuration
+        timeDuration:(data.data.data.timeDuration-1000)
       })
     })
     await new Promise((resolve, reject) => setTimeout(resolve, 1000));
@@ -295,7 +296,7 @@ export default class SideBet extends Component {
                 this.getBetData();
               })
             });
-           })
+          })
          })
         }
       }
@@ -530,7 +531,7 @@ export default class SideBet extends Component {
       }
     else if(this.state.curPoAcc === 'User'){
       let arr = [];
-      let strUM = userName;
+      let strUM;
       let filterdata = data.filter(newdata=>{
         return newdata.userInfo[0].admin[0]===userName;
       })
@@ -589,7 +590,8 @@ export default class SideBet extends Component {
       this.setState({
         SoM:arr,
         backPoAcc:'Master',
-        selUserName:strUM
+        selUserName:userName,
+        UsM:strUM
       })
     }
   }
@@ -1232,7 +1234,7 @@ export default class SideBet extends Component {
 }
 
                   <div style={{display:this.state.showCurrPosition}}>
-                  {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right',margin:'5px',fontSize:'15px', paddingRight:'10px',paddingLeft:'10px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.selUserName)}>Back</button>:'' }
+                  {this.state.DfPoAcc!==this.state.curPoAcc ? <button style={{float:'right',margin:'5px',fontSize:'15px', paddingRight:'10px',paddingLeft:'10px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', color:'#FFF'}} onClick={() => this.BackhandleUserAccess(this.state.backPoAcc,this.state.backPoAcc==='Master'?this.state.UsM:this.state.selUserName)}>Back</button>:'' }
                     <table className="table table-striped jambo_table bulk_action" style={{marginBottom:'5rem'}}>
                       <thead>
                         <tr className="headings">
@@ -1256,7 +1258,9 @@ export default class SideBet extends Component {
                             parent_team3 = parseFloat(parent_team3) + parseFloat(item.T3TotalPL);
                             total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
                           }
-                              return(
+                          console.log("data:",this.state.SoM)
+                          console.log("User:",this.state.curPoAcc)
+                            return(
                               <tr key={index}>
                                 <td className="text-center">
                                   {this.state.curPoAcc==="User" ? item.name

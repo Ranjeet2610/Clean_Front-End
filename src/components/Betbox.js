@@ -54,7 +54,7 @@ export default class BetBox extends Component {
       if(this.props.betData.betType==="Fancy"){
         this.event.getbetplacetime(5,async data=>{
           await this.setState({
-            timeDuration:data.data.data.timeDuration
+            timeDuration:(data.data.data.timeDuration-1000)
           })
         })
         await new Promise((resolve, reject) => setTimeout(resolve, 1000));
@@ -62,7 +62,7 @@ export default class BetBox extends Component {
       else{
         this.event.getbetplacetime(this.props.eventType,async data=>{
           await this.setState({
-            timeDuration:data.data.data.timeDuration
+            timeDuration:(data.data.data.timeDuration-1000)
           })
         })
         await new Promise((resolve, reject) => setTimeout(resolve, 1000));
