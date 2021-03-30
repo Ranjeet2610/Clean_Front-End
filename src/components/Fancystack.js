@@ -305,7 +305,7 @@ class FancyStack extends Component{
                       <button type="reset" onClick={this.handleClear} className="red_button" style={{marginRight:'5px'}}>
                         <i className="fa fa-eraser"/> Clear
                       </button>
-                      <Link to="/profitloss" className="blue_button" style={{textDecoration:'none',color:'white'}}>View Match Bets</Link>
+                      <Link to={"/profitloss/"+"Fancy"} className="blue_button" style={{textDecoration:'none',color:'white'}}>View Match Bets</Link>
                     </div>
                   </form>	
                 </div>

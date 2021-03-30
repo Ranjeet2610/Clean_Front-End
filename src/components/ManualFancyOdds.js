@@ -91,47 +91,47 @@ export default class ManualFancyOdds extends Component {
 
   handlemanualPriceKey = (event,id) =>{
     let manualkey=event.target.checked
-        const obj = {
-          id: id,
-          ManualPriceKey: manualkey
-        }
-        this.users.updateManualOdds(obj,data=>{
-          this.getFancyMarketType();
-        })
-      }
+    const obj = {
+      id: id,
+      ManualPriceKey: manualkey
+    }
+    this.users.updateManualOdds(obj,data=>{
+      this.getFancyMarketType();
+    })
+  }
 
   handlemanualFancyOdds = (event,id) =>{
     let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
     let laysize=document.getElementById("laysize"+id).value
     let backprice=document.getElementById("backprice"+id).value//this.state.ManualBackPrice
     let backsize=document.getElementById("backsize"+id).value
-        const obj = {
-          id: id,
-          ManualLayPrice: parseInt(layprice)===""?0:layprice,
-          ManualLaySize:parseInt(laysize)===""?0:laysize,
-          ManualBackPrice: parseInt(backprice)===""?0:backprice,
-          ManualBackSize:parseInt(backsize)===""?0:backsize,
-        }
-        this.users.updateManualOdds(obj,data=>{
-          this.getFancyMarketType();
-          this.setState({
-            ManualLayPrice:"",
-            ManualBackPrice:"",
-            indx:""
-          })
-        })
-      }
+    const obj = {
+      id: id,
+      ManualLayPrice: parseInt(layprice)===""?0:layprice,
+      ManualLaySize:parseInt(laysize)===""?0:laysize,
+      ManualBackPrice: parseInt(backprice)===""?0:backprice,
+      ManualBackSize:parseInt(backsize)===""?0:backsize,
+    }
+    this.users.updateManualOdds(obj,data=>{
+      this.getFancyMarketType();
+      this.setState({
+        ManualLayPrice:"",
+        ManualBackPrice:"",
+        indx:""
+      })
+    })
+  }
 
-      handlemanualSatus = (event,id) =>{
-        let status=event.target.value
-            const obj = {
-              id: id,
-              status:status,
-            }
-            this.users.updateManualOdds(obj,data=>{
-              this.getFancyMarketType();
-            })
-          }
+  handlemanualSatus = (event,id) =>{
+      let status=event.target.value
+      const obj = {
+        id: id,
+        status:status,
+      }
+      this.users.updateManualOdds(obj,data=>{
+        this.getFancyMarketType();
+      })
+  }
 
   handleSubmitManualFancies = (eventId) => {
     const obj = { 
@@ -157,7 +157,6 @@ export default class ManualFancyOdds extends Component {
           ManualBackPrice:"",
           indx:""
         })
-        console.log(data);
       })
       this.setState({
         addmarketId:"",
@@ -233,7 +232,6 @@ export default class ManualFancyOdds extends Component {
                         {
                           this.state.marketata.length > 0 ?
                             this.state.marketata.map((item,index) => {
-                                // console.log(item.marketData);
                               return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
