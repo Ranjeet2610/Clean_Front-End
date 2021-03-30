@@ -264,7 +264,9 @@ export default class ManualFancyOdds extends Component {
                                     </td> 					   
                                     
                                     <td className="red text-center">
-                                    {/* <label>Status:</label>&nbsp; */}
+                                    {/* <label>Status:</label>&nbsp; */
+                                    console.log(new Date(item.marketData.updatedAt).getTime(),new Date().getTime())
+                                    }
                                     {
                                       item.marketData.isItManual ?
                                       <div style={{display:'flex'}}>
@@ -277,11 +279,12 @@ export default class ManualFancyOdds extends Component {
                                         <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="" checked={item.marketData.status===""} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="CLOSED">OPEN</label>&nbsp;
                                       </div>:
-                                      new Date(item.marketData.marketStartTime).getTime()<new Date().getTime()?
+                                      new Date(item.marketData.updatedAt).getTime()<new Date().getTime()?
                                       <div style={{display:'flex'}}>
                                         <input type="radio" onChange={(e)=>this.handlemanualSatus(e,item.marketData._id)} id={"status"+item.marketData._id} value="CLOSED" checked={item.marketData.status==="CLOSED"} name={"status"+item.marketData._id} style={{height: '20px',width: '20px'}} className="form-control" />
                                         &nbsp;<label for="CLOSED">CLOSED</label>&nbsp;
-                                      </div>:'---'                                    
+                                      </div>
+                                      :'---'
                                     }
                                     </td> 
                                 </tr>
