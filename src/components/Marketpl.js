@@ -347,27 +347,27 @@ export default class Marketpl extends Component {
                       {
                       currentdataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       currentmasterDataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.masterData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       currentadminDataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.adminData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       null
                     }

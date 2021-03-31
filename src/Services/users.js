@@ -422,4 +422,9 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    updateUserChipsInfo = (data,cb) => {
+        axios.post(Constants.APIURL+'updateUserChipsInfo',data).then((res)=>{
+            cb(res);
+        })
+    }
 }

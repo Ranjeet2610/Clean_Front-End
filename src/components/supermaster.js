@@ -921,11 +921,11 @@ export default class SuperMaster extends Component {
                           <tr>
                             <td className="text-center" colSpan={12}>Total Balance: {this.state.totalBalance}</td>
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td colSpan={12}>
                                 <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                             </td>  
-                          </tr> 
+                          </tr>  */}
                         </tfoot>:null
                       }
                     </table>

@@ -615,7 +615,7 @@ showchildMenu=(e)=>{
                     { cond }
                     {blockmarket}
                     <li><Link to="#">Favorite</Link></li>
-                    <li><Link to="#">My Market</Link></li>
+                    <li><Link to="/mymarket">My Market</Link></li>
                     {report}
                   </ul>
                 </nav>
