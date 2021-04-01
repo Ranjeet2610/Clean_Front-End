@@ -248,6 +248,16 @@ closeAddBetPlaceingTime=()=>{
   document.getElementById('addBetTimeModal').classList.remove("in");
 }
 
+expoModal = () => {
+  document.getElementById('myModal').classList.add("in");
+  document.getElementById('myModal').style.display = 'block';
+}
+
+closeExpoModal=()=>{
+  document.getElementById('myModal').style.display = 'none';
+  document.getElementById('myModal').classList.remove("in");
+}
+
 handleAddBetTime = () => {
   const obj = {
       gameId:this.state.game,
@@ -630,7 +640,7 @@ showchildMenu=(e)=>{
               <ul>
                 <li className="belance-top">
                   <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance}</span></Link>
-                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
+                  <Link role="button" id="UserLiability" onClick={this.expoModal}>Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
                   
                   <Link to="#" className="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <i className="fa fa-user-circle-o" />&nbsp;
@@ -769,9 +779,9 @@ showchildMenu=(e)=>{
           </div>
         </div>
 
-      {
-        ///////////////////////////////// MODAL FOR ADD BET TIME //////////////////////////
-      }
+{
+  ///////////////////////////////// MODAL FOR ADD BET TIME //////////////////////////
+}
 
       <div className="modal fade" id="addBetTimeModal">
         <div className="modal-dialog" role="document">
@@ -818,56 +828,91 @@ showchildMenu=(e)=>{
         </div>
 
 {
-  //////////////////// MODAL FOR ADDING NEWS /////////////////////////////////////
+  //////////////////// MODAL FOR EXPOSURE /////////////////////////////////////
 }
 
-        <div className="modal fade bd-example-modal-lg" tabIndex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addNewsModal">
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header" style={{background:'#6c1945'}}>
-                <button type="button" className="close" onClick={this.closeAddNews}>
-                  <span aria-hidden="true">×</span>
-                </button>
-                <h5 className="modal-title" id="addNewsLabel">Add News</h5>
-              </div>
-              <div className="modal-body">
-                <div className="row">
-                  <div className="col-md-12 col-sm-12 col-xs-12 table-responsive">
-                    <form  className="form-horizontal form-label-left">
-                      <div className="form-group">
-                        <button type="button" className="btn btn-defaut" onClick={this.saveNews} style={{backgroundColor:'#6c1945',color:'white',margin:'1rem'}}>Add New</button>
-                        <button type="button" className="btn btn-defaut" style={{backgroundColor:'#6c1945',color:'white',margin:'1rem'}}>Delete</button>
-                        <span style={{float:'right',marginRight:'3rem', marginTop:'3rem',color:'black',fontSize:'15px'}}>Total Records : {this.state.NewsList.length}</span>
-                      </div>                          
-                      <div className="item form-group">
-                        <div className="col-md-6 col-sm-6 col-xs-12 col-lg-12">
-                          <input type="text" style={{width:'100%'}} name="addNews" value={this.state.addNews} className="form-control col-md-7 col-xs-12" onChange={this.handleChange} placeholder="News" label=""  required="required" autoComplete="off"/>
-                        </div>
-                      </div>
-                      <div>
-                      </div>
-                    </form>
-                    <table className="table table-bordered table-hover">
+    <div className="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div className="modal-dialog" role="document">
+      <div className="modal-content">
+        <div className="modal-header" style={{background:"#6c1945"}}>
+          <button type="button" className="close" onClick={this.closeExpoModal} aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 className="modal-title" id="myModalLabel">Exposure</h4>
+        </div>
+        <div className="modal-body">
+            <div className="col-md-12 col-sm-12 col-xs-12">
+                <div className="table-scroll  table-responsive" id="filterdata" style={{marginTop:"1rem"}}>
+                   <table className="table table-bordered table-striped jambo_table bulk_action">
                       <thead>
-                        <tr>
-                          <th className="text-center"><input type="checkbox" /></th>
-                          <th className="text-center">Edit</th>
-                          <th className="text-center">ID</th>
-                          <th className="text-center">Tittle</th>
-                          <th className="text-center">Active</th>
-                        </tr>
+                         <tr className="headings" style={{background: "rgb(149, 51, 92)",color: "white"}}>
+                            <th className="text-center">Event </th>
+                            <th className="text-center">Market </th>
+                            <th className="text-center">Exposure</th>
+                            <th className="text-center">Sport</th>
+                         </tr>
                       </thead>
                       <tbody>
-                        
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
+                         <tr>
+                            <td >Afghanistan v Zimbabwe </td>
+                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
+                            <td >100</td>
+                            <td > cricket</td>
+                         </tr>
                       </tbody>
-                    </table>
-                  </div>
+                   </table>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>         
+             </div>
+        </div>
+        <div className="modal-footer">
+          <button type="button" style={{background:"#95335c",color:'white',outline:'none'}} className="btn btn-default" onClick={this.closeExpoModal}>Close</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  </div>
   </>
   )}
 }

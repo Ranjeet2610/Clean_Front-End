@@ -52,92 +52,76 @@ export default class Bethistory extends Component {
   getBetData = async (Scurr,Ecurr) => {
     let propName = this.props?.location?.state?.betHistory?this.props?.location?.state?.betHistory:undefined
     if(propName===undefined){
-    if(this.userDetails.superAdmin){
-      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
-        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
-        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-        this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
-          load:false
-        },()=>{
-          console.log(this.state.load);
-        });      
-      });
-    }
-    else if(this.userDetails.Admin){
-      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
-        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
-        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-        this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
-          load:false
-        });             
-      }); 
-    }
-    else if(this.userDetails.Master){
-      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
-        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
-        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-        this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
-          load:false
-        });             
-      });
-    }
-    else{
-      this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
-        let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
-        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
-        this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
-          load:false
-        });             
-      });
-    }
+      if(this.userDetails.superAdmin){
+        this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
+          let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+          let sortData = datafilter.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
+          this.setState({
+            betHistory:sortData,
+            newResData:data,
+            newData:sortData,
+            load:false
+          });      
+        });
+      }
+      else if(this.userDetails.Admin){
+        this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
+          let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+          let sortData = datafilter.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
+          this.setState({
+            betHistory:sortData,
+            // betHistory:datafilter,
+            newResData:data,
+            newData:sortData,
+            // newData:datafilter,
+            load:false
+          });             
+        }); 
+      }
+      else if(this.userDetails.Master){
+        this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
+          let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+          let sortData = datafilter.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
+          this.setState({
+            betHistory:sortData,
+            // betHistory:datafilter,
+            newResData:data,
+            newData:sortData,
+            // newData:datafilter,
+            load:false
+          });             
+        });
+      }
+      else{
+        this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
+          let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
+          let sortData = datafilter.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
+          this.setState({
+            betHistory:sortData,
+            // betHistory:datafilter,
+            newResData:data,
+            newData:sortData,
+            // newData:datafilter,
+            load:false
+          });             
+        });
+      }
     }
     else{
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:propName},'getUserOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
-        // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let sortData = datafilter.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
         this.setState({
-          betHistory:datafilter,
+          betHistory:sortData,
+          // betHistory:datafilter,
           newResData:data,
-          newData:datafilter,
+          newData:sortData,
+          // newData:datafilter,
           load:false
         });             
       });
     }
   }
-
-//   handleFilter= async () => {
-//     let fD = await new Date(this.state.from_date);
-//     let tD = await new Date(this.state.to_date);
-//     if(fD <= tD){
-//       if(this.state.historyType!=="All"){
-//         let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-//         const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
-//         await this.setState({
-//             betHistory:updateList,
-//             newData:updateList
-//         })
-//       }
-//       else{
-//         let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-//         await this.setState({
-//             betHistory:betHistoryFilter,
-//             newData:betHistoryFilter
-//         })
-//       }
-//     }
-//    }
 
 handleFilter= async () => {
   this.setState({
@@ -149,16 +133,22 @@ handleFilter= async () => {
     if(this.state.historyType!=="All"){
       let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
       const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
+      let sortData = updateList.sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
       await this.setState({
-          betHistory:updateList,
-          newData:updateList
+          betHistory:sortData,
+//           betHistory:updateList,
+          newData:sortData
+          // newData:updateList
         })
       }
     else{
       let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+      let sortData = betHistoryFilter .sort((a,b)=>{ return new Date(b.createdDate) - new Date(a.createdDate)})
       await this.setState({
-          betHistory:betHistoryFilter,
-          newData:betHistoryFilter
+          betHistory:sortData,
+//           betHistory:betHistoryFilter,
+          newData:sortData
+          // newData:betHistoryFilter
         })
     }
     setTimeout(()=>
@@ -168,21 +158,6 @@ handleFilter= async () => {
     )
   }
    }
-
-  // handleTabFilter = (eventType) => {
-  //   let data = [...this.state.newData]
-  //   if(eventType!==""){
-  //     let betHistoryFilter = data.filter(ele => ele.eventType === eventType )
-  //     this.setState({
-  //       betHistory:betHistoryFilter
-  //     })
-  //   }
-  //   else{
-  //     this.setState({
-  //       betHistory:this.state.newResData
-  //     })
-  //   }
-  // }
 
   handleTabFilter = async (eventType) => {
     await this.setState({
@@ -255,7 +230,7 @@ handleFilter= async () => {
 
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistory?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistory?.slice(indexOfFirstPost, indexOfLastPost);
     return (
         <div>
           <Navbar />

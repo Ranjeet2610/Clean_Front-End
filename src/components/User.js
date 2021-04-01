@@ -547,15 +547,33 @@ export default class User extends Component {
   }
 
   view_account = async (user) => {
+    console.log(user);
     await this.setState({
       userdetails: user,
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
     const obj = {
-      id: this.state.userdetails.id
+      userId:user.userName,
+      id: this.state.userdetails.id,
+      type:"cricket"
     }
     this.users.userSportsInfo(obj, (data) => {
+      this.setState({
+        userInfo: data.data,
+      });
+    });
+  }
+  
+  sportsTabData = (tab) => {
+    const obj = {
+      id: this.state.userdetails.id,
+      userId: this.state.userdetails.userName,
+      type:tab
+    }
+    console.log(obj);
+    this.users.userSportsInfo(obj, (data) => {
+      console.log(data.data);
       this.setState({
         userInfo: data.data,
       });
@@ -564,8 +582,9 @@ export default class User extends Component {
 
   submit_info = (fancyType) => {
     const obj={
-      "userId":  this.state.userdetails.userName,
-        "id": this.state.userdetails.id
+      userId:  this.state.userdetails.userName,
+        id: this.state.userdetails.id,
+        // type:'cricket'
     };
       if(this.state.tabOn==="C" || this.state.tabOn==="S" || this.state.tabOn==="T"){
         obj.type=this.state.tabOn
@@ -610,6 +629,7 @@ export default class User extends Component {
         }
       }
       else{
+        obj.type="fancy"
         if(fancyType!=="manual"){
           if(this.state.fancymaxStacks!==""){
             obj.fancymaxStacks=this.state.fancymaxStacks
@@ -622,6 +642,9 @@ export default class User extends Component {
           }
           if(this.state.fancyBetDelay!==""){
             obj.fancyBetDelay=this.state.fancyBetDelay
+          }
+          if(this.state.lock_bet!==""){
+            obj.lockBet=this.state.lock_bet
           }
         }
         else{
@@ -637,10 +660,14 @@ export default class User extends Component {
           if(this.state.manualfancyBetDelay!==""){
             obj.manualfancyBetDelay=this.state.manualfancyBetDelay
           }
+          if(this.state.lock_bet!==""){
+            obj.lockBet=this.state.lock_bet
+          }
         }
       }
       this.users.updateUserSportsInfo(obj, (data) => {
         alert("updated");
+        // console.log(data);
       });
       console.log(obj);
   }
@@ -670,6 +697,10 @@ export default class User extends Component {
     this.setState({
       tabOn:tabtype
     })
+    if(tabtype==="C")this.sportsTabData("cricket");
+    if(tabtype==="F")this.sportsTabData("fancy");
+    if(tabtype==="S")this.sportsTabData("soccer");
+    if(tabtype==="T")this.sportsTabData("tennis");
   }
 
   handleCheckbox = (event) => {
@@ -1176,37 +1207,37 @@ export default class User extends Component {
                         <form>
                           <div className="col-md-4 col-xs-6">
                             <label> MIN STAKE</label>
-                            <input type="text" name="min_stake" defaultValue={this.state.userInfo.cricketminStacks} onChange={this.handleChange} className="form-control" id="4_min_stake" />
+                            <input type="text" name="min_stake" defaultValue={this.state.userInfo.minStacks} onChange={this.handleChange} className="form-control" id="4_min_stake" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max STAKE </label>
-                            <input type="text" name="max_stake" defaultValue={this.state.userInfo.cricketmaxStacks} onChange={this.handleChange} className="form-control" id="4_max_stake" />
+                            <input type="text" name="max_stake" defaultValue={this.state.userInfo.maxStacks} onChange={this.handleChange} className="form-control" id="4_max_stake" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX PROFIT </label>
-                            <input type="text" name="max_profit" defaultValue={this.state.userInfo.cricketmaxProfit} onChange={this.handleChange} className="form-control" id="4_max_profit" />
+                            <input type="text" name="max_profit" defaultValue={this.state.userInfo.maxProfit} onChange={this.handleChange} className="form-control" id="4_max_profit" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max Loss </label>
-                            <input type="text" name="max_loss" defaultValue={this.state.userInfo.cricketmaxLoss} onChange={this.handleChange} className="form-control" id="4_max_loss"
+                            <input type="text" name="max_loss" defaultValue={this.state.userInfo.maxLoss} onChange={this.handleChange} className="form-control" id="4_max_loss"
                             />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> PRE INPLAY PROFIT</label>
-                            <input type="text" name="PIP" defaultValue={this.state.userInfo.cricketPreInplayProfit} onChange={this.handleChange} className="form-control" id="4_pre_innplay_profit" />
+                            <input type="text" name="PIP" defaultValue={this.state.userInfo.PreInplayProfit} onChange={this.handleChange} className="form-control" id="4_pre_innplay_profit" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> PRE INPLAY STAKE</label>
-                            <input type="text" name="PIS" defaultValue={this.state.userInfo.cricketPreInplayStack} onChange={this.handleChange} className="form-control" id="4_pre_inplay_stake" />
+                            <input type="text" name="PIS" defaultValue={this.state.userInfo.PreInplayStack} onChange={this.handleChange} className="form-control" id="4_pre_inplay_stake" />
                           </div>
 
                           <div className="col-md-4 col-xs-6">
                             <label> MIN ODDS</label>
-                            <input type="text" name="min_odds" defaultValue={this.state.userInfo.cricketminOdds} onChange={this.handleChange} className="form-control" id="4_min_odds" />
+                            <input type="text" name="min_odds" defaultValue={this.state.userInfo.minOdds} onChange={this.handleChange} className="form-control" id="4_min_odds" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX ODDS</label>
-                            <input type="text" name="max_odds" defaultValue={this.state.userInfo.cricketmaxOdds} onChange={this.handleChange} className="form-control" id="4_max_odds" />
+                            <input type="text" name="max_odds" defaultValue={this.state.userInfo.maxOdds} onChange={this.handleChange} className="form-control" id="4_max_odds" />
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>UNMATCH BET</label>
@@ -1230,15 +1261,15 @@ export default class User extends Component {
                         <form>
                           <div className="col-md-4 col-xs-6">
                             <label> MIN STAKE
-                            <input type="text" name="fancymaxStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="fancyminStacks" defaultValue={this.state.userInfo.fancyminStacks} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max STAKE 
-                            <input type="text" name="fancyminStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="fancymaxStacks" defaultValue={this.state.userInfo.fancymaxStacks} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX PROFIT 
-                            <input type="text" name="fancymaxProfit" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="fancymaxProfit" defaultValue={this.state.userInfo.fancymaxProfit} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> BET DELAY
@@ -1262,19 +1293,19 @@ export default class User extends Component {
                         <form>
                           <div className="col-md-4 col-xs-6">
                             <label> MIN STAKE
-                            <input type="text" name="manualfancyminStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="manualfancyminStacks" defaultValue={this.state.userInfo.manualfancyminStacks} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> Max STAKE 
-                            <input type="text" name="manualfancymaxStacks" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="manualfancymaxStacks" defaultValue={this.state.userInfo.manualfancymaxStacks} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> MAX PROFIT 
-                            <input type="text" name="manualfancymaxProfit" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
+                            <input type="text" name="manualfancymaxProfit" defaultValue={this.state.userInfo.manualfancymaxProfit} onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control" /></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label> BET DELAY
-                            <input type="text" name="manualfancyBetDelay"  onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control"/></label>
+                            <input type="text" name="manualfancyBetDelay" onChange={(e)=>this.handleFancyTabFields(e,"")} className="form-control"/></label>
                           </div>
                           <div className="col-md-4 col-xs-6">
                             <label>LOCK BET&nbsp;

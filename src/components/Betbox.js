@@ -73,7 +73,7 @@ export default class BetBox extends Component {
 
     placeBet=async(e)=>{
       this.getBetTime();
-      let disableBetting = localStorage.getItem("data").enableBetting
+      let disableBetting = JSON.parse(localStorage.getItem('data')).enableBetting
       // device 1 for desktop,2 for mobile,3 for tab
       let device;
       if(this.state.isMobile)
@@ -84,7 +84,7 @@ export default class BetBox extends Component {
       device = 3;
       
       e.preventDefault();
-      if(disableBetting===true){
+      if(!disableBetting){
       if(this.stackInput.value < 99 || this.stackInput.value > 50000 ){
         this.props.handleBetPlaceBox("Choose Stack...",'red','error')
       }
