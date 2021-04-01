@@ -427,4 +427,9 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    getAllEvents = (name,cb) => {
+        axios.get(Constants.APIURL+'getAllEvents?userName='+name).then((res)=>{
+            cb(res);
+        })
+    }
 }

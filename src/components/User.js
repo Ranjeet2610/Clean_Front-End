@@ -37,8 +37,12 @@ export default class User extends Component {
       isDeposit: false,
       Chips: "",
       masterDetails: "",
+      parentdetails: "",
+      searchFilter: [],
+      totalBalance: 0,
       userInfo: "",
       Name: "",
+      tabOn:'C',
       max_stake: "",
       min_stake: "",
       max_profit: "",
@@ -49,10 +53,6 @@ export default class User extends Component {
       max_odds: "",
       unmatch_bet:"",
       lock_bet:"",
-      parentdetails: "",
-      searchFilter: [],
-      totalBalance: 0,
-      tabOn:'C',
       fancymaxStacks:"",
       fancyminStacks:"",
       fancymaxProfit:"",
@@ -61,6 +61,7 @@ export default class User extends Component {
       manualfancyminStacks:"",
       manualfancymaxProfit:"",
       manualfancyBetDelay:"",
+      objID:""
     };
     this.users = new Users();
     this.currentDate = Utilities.formatDate(new Date());
@@ -561,6 +562,7 @@ export default class User extends Component {
     this.users.userSportsInfo(obj, (data) => {
       this.setState({
         userInfo: data.data,
+        objID:data.data._id
       });
     });
   }
@@ -576,6 +578,7 @@ export default class User extends Component {
       console.log(data.data);
       this.setState({
         userInfo: data.data,
+        objID:data.data._id
       });
     });
   }
@@ -583,7 +586,7 @@ export default class User extends Component {
   submit_info = (fancyType) => {
     const obj={
       userId:  this.state.userdetails.userName,
-        id: this.state.userdetails.id,
+        id: this.state.objID
         // type:'cricket'
     };
       if(this.state.tabOn==="C" || this.state.tabOn==="S" || this.state.tabOn==="T"){
@@ -669,7 +672,8 @@ export default class User extends Component {
         alert("updated");
         // console.log(data);
       });
-      console.log(obj);
+      // this.closeviewinfo();
+      window.location.reload();
   }
 
   submit_userInfo() {
