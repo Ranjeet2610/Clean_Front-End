@@ -7,7 +7,7 @@ class MyMarket extends React.Component{
   constructor(props){
     super(props);
     this.state={
-      data:""
+      data:[]
     }
     this.users = new Users();
   }
@@ -67,9 +67,9 @@ class MyMarket extends React.Component{
                           {element?.eventType===2?<th className="text-center">Tennis</th>:null}
                           {element?.eventType===1?<th className="text-center">Soccer</th>:null}
                           <th className="text-center">{element.marketType}</th>
-                          <th className="text-center">{element?.current_Position?.runnerNameOne}</th>
-                          <th className="text-center">{element?.current_Position?.runnerNameTwo}</th>
-                          <th className="text-center">{element?.current_Position?.runnerNameThree?element?.current_Position?.runnerNameThree:"---"}</th>
+                          <th className="text-center">{element?.current_Position?.runnerNameOne+"("+element?.current_Position?.Teamone+")"}</th>
+                          <th className="text-center">{element?.current_Position?.runnerNameTwo+"("+element?.current_Position?.Teamtwo+")"}</th>
+                          <th className="text-center">{element?.current_Position?.runnerNameThree?element?.current_Position?.runnerNameThree+"("+element?.current_Position?.Teamthree+")":"---"}</th>
                         </tr>)
                       :
                       <tr><th colSpan={8}>No record found</th></tr>	

@@ -432,4 +432,9 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    exposureDistribution = (name,cb) => {
+        axios.get(Constants.APIURL+'exposureDistribution?userName='+name).then((res)=>{
+            cb(res);
+        })
+    }
 }

@@ -26,7 +26,8 @@ class Navbar extends Component {
       reqMsg:'',
       op:'',
       np:'',
-      rp:''
+      rp:'',
+      expoData:[]
     };
     this.users =new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : "";  
@@ -179,22 +180,6 @@ const obj = {
   });
 }
 
-// saveNews = (e)=>{
-//   e.preventDefault();
-//   this.users.addNews(this.state.addNews,(data,methodType) => {
-//     if(methodType==='get'){
-//     this.setState({
-//       NewsList:data.data.data
-//     })
-//   } 
-//     else
-//       {
-//         console.log("waala",data.data.data);
-//       }
-//     // this.closeAddNews();
-//   })
-// }
-
 openNav=()=>{
     document.getElementById("lefttSidenav").style.width = "250px";
 }
@@ -275,7 +260,17 @@ handleAddBetTime = () => {
   this.closeAddBetPlaceingTime();
 }
 
+exposureDistribution = () => {
+  let name = JSON.parse(localStorage.getItem('data')).userName
+  this.users.exposureDistribution(name, (data)=>{
+    this.setState({
+      expoData:data.data.data
+    })
+  })
+}
+
 async componentDidMount(){
+  this.exposureDistribution();
   await this.getNews();
   if( JSON.parse(localStorage.getItem('data')).superAdmin){
     if(localStorage.getItem('data') !=undefined){
@@ -343,6 +338,7 @@ showchildMenu=(e)=>{
 }
 
   render() {
+    console.log(this.state.expoData);
     let cond =''; 
     let report ='';
     let blockmarket ='';
@@ -852,54 +848,20 @@ showchildMenu=(e)=>{
                          </tr>
                       </thead>
                       <tbody>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
-                         <tr>
-                            <td >Afghanistan v Zimbabwe </td>
-                            <td >Fall of 1st wky ENG(IND vs ENG)adv</td>
-                            <td >100</td>
-                            <td > cricket</td>
-                         </tr>
+                         {
+                           this.state?.expoData?.length>0?
+                           this.state.expoData.map((item)=>
+                              <tr>
+                                <td className="text-center">{item?.event}</td>
+                                <td className="text-center">{item?.fancyName}</td>
+                                <td className="text-center">{item?.exposure}</td>
+                                {item?.eventType===4?<td className="text-center">Cricket</td>:null}
+                                {item?.eventType===1?<td className="text-center">Soccer</td>:null}
+                                {item?.eventType===2?<td className="text-center">Tennis</td>:null}
+                              </tr>
+                            ):null
+                         }
+                         
                       </tbody>
                    </table>
                 </div>
