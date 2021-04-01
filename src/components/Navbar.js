@@ -26,7 +26,8 @@ class Navbar extends Component {
       reqMsg:'',
       op:'',
       np:'',
-      rp:''
+      rp:'',
+      expoData:[]
     };
     this.users =new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : "";  
@@ -195,6 +196,15 @@ const obj = {
 //   })
 // }
 
+exposureDistribution = () => {
+  let name = JSON.parse(localStorage.getItem('data')).userName
+  this.users.exposureDistribution(name, (data)=>{
+    this.setState({
+      expoData:data.data.data
+    })
+  })
+}
+
 openNav=()=>{
     document.getElementById("lefttSidenav").style.width = "250px";
 }
@@ -248,6 +258,16 @@ closeAddBetPlaceingTime=()=>{
   document.getElementById('addBetTimeModal').classList.remove("in");
 }
 
+expoModal = () => {
+  document.getElementById('myModal').classList.add("in");
+  document.getElementById('myModal').style.display = 'block';
+}
+
+closeExpoModal=()=>{
+  document.getElementById('myModal').style.display = 'none';
+  document.getElementById('myModal').classList.remove("in");
+}
+
 handleAddBetTime = () => {
   const obj = {
       gameId:this.state.game,
@@ -266,6 +286,7 @@ handleAddBetTime = () => {
 }
 
 async componentDidMount(){
+  this.exposureDistribution();
   await this.getNews();
   if( JSON.parse(localStorage.getItem('data')).superAdmin){
     if(localStorage.getItem('data') !=undefined){
@@ -630,7 +651,7 @@ showchildMenu=(e)=>{
               <ul>
                 <li className="belance-top">
                   <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance}</span></Link>
-                  <Link to="#" id="UserLiability">Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
+                  <Link role="button" id="UserLiability" onClick={this.expoModal}>Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
                   
                   <Link to="#" className="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <i className="fa fa-user-circle-o" />&nbsp;
@@ -866,7 +887,60 @@ showchildMenu=(e)=>{
               </div>
             </div>
           </div>
-        </div>         
+        </div>  
+
+        {
+  //////////////////// MODAL FOR EXPOSURE /////////////////////////////////////
+}
+
+    <div className="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div className="modal-dialog" role="document">
+      <div className="modal-content">
+        <div className="modal-header" style={{background:"#6c1945"}}>
+          <button type="button" className="close" onClick={this.closeExpoModal} aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 className="modal-title" id="myModalLabel">Exposure</h4>
+        </div>
+        <div className="modal-body">
+            <div className="col-md-12 col-sm-12 col-xs-12">
+                <div className="table-scroll  table-responsive" id="filterdata" style={{marginTop:"1rem"}}>
+                   <table className="table table-bordered table-striped jambo_table bulk_action">
+                      <thead>
+                         <tr className="headings" style={{background: "rgb(149, 51, 92)",color: "white"}}>
+                            <th className="text-center">Event </th>
+                            <th className="text-center">Market </th>
+                            <th className="text-center">Exposure</th>
+                            <th className="text-center">Sport</th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         {
+                           this.state?.expoData?.length>0?
+                           this.state.expoData.map((item)=>
+                              <tr>
+                                <td className="text-center">{item?.event}</td>
+                                <td className="text-center">{item?.fancyName}</td>
+                                <td className="text-center">{item?.exposure}</td>
+                                {item?.eventType===4?<td className="text-center">Cricket</td>:null}
+                                {item?.eventType===1?<td className="text-center">Soccer</td>:null}
+                                {item?.eventType===2?<td className="text-center">Tennis</td>:null}
+                              </tr>
+                            ):null
+                         }
+                         
+                      </tbody>
+                   </table>
+                </div>
+             </div>
+        </div>
+        <div className="modal-footer">
+          <button type="button" style={{background:"#95335c",color:'white',outline:'none'}} className="btn btn-default" onClick={this.closeExpoModal}>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
     </div>
   </>
   )}

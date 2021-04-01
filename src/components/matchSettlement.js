@@ -146,13 +146,13 @@ export default class EventMatchOdds extends Component {
     let teamselectionsIds;
     let showSettlement = false;
     if(this.state.runnersdata.length==2){
-      if(typeof(team1)!="undefined" || typeof(team1)!="undefined"){
+      if(typeof(team1)!=="undefined" && typeof(team2)!=="undefined"){
         showSettlement = true;
       }else{
         showSettlement = false;
       }
     }else if(this.state.runnersdata.length==3){
-      if(typeof(team1)!="undefined" || typeof(team1)!="undefined" || typeof(team1)!="undefined"){
+      if(typeof(team1)!=="undefined" && typeof(team2)!=="undefined" && typeof(team3)!=="undefined"){
         showSettlement = true;
       }else{
         showSettlement = false;

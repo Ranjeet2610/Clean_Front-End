@@ -221,7 +221,7 @@ export default class SideBet extends Component {
 
   placeBet=async(e)=>{
     this.getBetTime();
-    // let disableBetting = localStorage.getItem("data").enableBetting
+    let disableBetting = JSON.parse(localStorage.getItem('data')).enableBetting
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -231,7 +231,7 @@ export default class SideBet extends Component {
     if(this.state.isTab)
     device = 3;
     e.preventDefault();
-    // if(disableBetting===true){
+    if(!disableBetting){
     if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
@@ -366,10 +366,10 @@ export default class SideBet extends Component {
         }
       }
       }
-    // }
-    // else{
-    //   this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
-    // }
+    }
+    else{
+      this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
+    }
   this.closeWindow();
   }
 
@@ -931,21 +931,45 @@ export default class SideBet extends Component {
   }
 
   handleSubmit = () => {
-    const obj = {
-      chipName1:this.state.ChipName1,
-      chipName2:this.state.ChipName2,
-      chipName3:this.state.ChipName3,
-      chipName4:this.state.ChipName4,
-      chipName5:this.state.ChipName5,
-      chipName6:this.state.ChipName6,
-      uchipvalue1:this.state.ChipValue1,
-      uchipvalue2:this.state.ChipValue2,
-      uchipvalue3:this.state.ChipValue3,
-      uchipvalue4:this.state.ChipValue4,
-      uchipvalue5:this.state.ChipValue5,
-      uchipvalue6:this.state.ChipValue6
+    let userId = this.userDetails.id
+    const obj = {id:userId}
+    if(this.state.ChipName1!==""){
+      obj.chipName1=this.state.ChipName1
     }
-    console.log(obj);
+    if(this.state.ChipName2!==""){
+      obj.chipName2=this.state.ChipName2
+    }
+    if(this.state.ChipName3!==""){
+      obj.chipName3=this.state.ChipName3
+    }
+    if(this.state.ChipName4!==""){
+      obj.chipName4=this.state.ChipName4
+    }
+    if(this.state.ChipName5!==""){
+      obj.chipName5=this.state.ChipName5
+    }
+    if(this.state.ChipName6!==""){
+      obj.chipName6=this.state.ChipName6
+    }
+    if(this.state.ChipValue1!==""){
+      obj.ChipValue1=this.state.ChipValue1
+    }
+    if(this.state.ChipName2!==""){
+      obj.ChipValue2=this.state.ChipValue2
+    }
+    if(this.state.ChipValue3!==""){
+      obj.ChipValue3=this.state.ChipValue3
+    }
+    if(this.state.ChipValue4!==""){
+      obj.ChipValue4=this.state.ChipValue4
+    }
+    if(this.state.ChipValue5!==""){
+      obj.ChipValue5=this.state.ChipValue5
+    }
+    if(this.state.ChipValue6!==""){
+      obj.ChipValue6=this.state.ChipValue6
+    }
+    // console.log(obj);
     this.users.updateUserChipsInfo(obj,data=>{
       console.log(data);
     })
