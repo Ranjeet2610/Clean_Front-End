@@ -86,7 +86,8 @@ class FancyStack extends Component{
       currentend:currD+"T23:59:59",
       from_date:Scurr,
       to_date:Ecurr,
-      info:infoDetails
+      info:infoDetails,
+      currUserAccess:"Admin"
     })
     this.handleCurrUser(infoDetails);
   }
@@ -158,7 +159,7 @@ class FancyStack extends Component{
         fancyStack:data.data.data
       })
     })
-    await new Promise((resolve, reject) => setTimeout(resolve, 500));
+    await new Promise((resolve, reject) => setTimeout(resolve, 1000));
 
     if(this.state.currUserAccess==="Admin"){
       this.AdminBasedFancyStack(this.state.fancyStack);
@@ -176,44 +177,45 @@ class FancyStack extends Component{
     let itemName;
     data.map(element=>{
       itemName=element?.userInfo[0]?.admin[0]
-      if(arr.every((item) => item.name !== itemName)){
+      if(arr.every((item) => item?.name !== itemName)){
         arr.push({
           name:element?.userInfo[0]?.admin[0],
-          stack: 0,
+          stack: element?.stack,
         })
       }
       else{
-        let indx = arr.findIndex(element => element.name === itemName);
-        arr[indx].stack += element.stack 
+        let indx = arr.findIndex(element => element?.name === itemName);
+        arr[indx].stack += element?.stack 
       }
     })
     this.setState({
       fancyStakeData:arr
     })
-    console.log(data);
-    console.log(arr);
+    // console.log(arr);
   }
 
   SM_BasedFancyStack = (data,usrlog) =>{
     let arr = []
     let itemName;
-    data.map(element=>{
+    let drr = this.state.fancyStack.filter(e=>e?.userInfo[0]?.admin[0]===usrlog)
+    drr.map(element=>{
       itemName=element?.userInfo[0]?.master[0]
-      if(arr.every((item) => item.name !== itemName)){
+      if(arr.every((item) => item?.name !== itemName)){
         arr.push({
           name:element?.userInfo[0]?.master[0],
-          stack: 0,
+          stack: element?.stack,
         })
       }
       else{
-        let indx = arr.findIndex(element => element.name === itemName);
-        arr[indx].stack += element.stack 
+        let indx = arr.findIndex(element => element?.name === itemName);
+        arr[indx].stack += element?.stack 
       }
     })
-    let drr = this.state.fancyStack.filter(e=>e?.userInfo[0]?.admin[0]===usrlog)
+    // let drr = this.state.fancyStack.filter(e=>e?.userInfo[0]?.admin[0]===usrlog)
     this.setState({
-      fancyStakeData:drr//arr
+      fancyStakeData:arr
     })
+    // console.log(arr);
   }
 
   MasterBasedFancyStack = (data) => {
@@ -221,20 +223,21 @@ class FancyStack extends Component{
     let itemName;
     data.map(element=>{
       itemName=element?.clientName
-      if(arr.every((item) => item.name !== itemName)){
+      if(arr.every((item) => item?.name !== itemName)){
         arr.push({
           name:element?.clientName,
-          stack: 0,
+          stack: element?.stack,
         })
       }
       else{
-        let indx = arr.findIndex(element => element.name === itemName);
-        arr[indx].stack += element.stack 
+        let indx = arr.findIndex(element => element?.name === itemName);
+        arr[indx].stack += element?.stack 
       }
     })
     this.setState({
       fancyStakeData:arr
     })
+    // console.log(arr);
   }
 
   handleChange = (event) => {
@@ -302,7 +305,7 @@ class FancyStack extends Component{
                       <button type="reset" onClick={this.handleClear} className="red_button" style={{marginRight:'5px'}}>
                         <i className="fa fa-eraser"/> Clear
                       </button>
-                      <Link to="#" className="blue_button" style={{textDecoration:'none',color:'white'}}>View Match Bets</Link>
+                      <Link to={"/profitloss/"+"Fancy"} className="blue_button" style={{textDecoration:'none',color:'white'}}>View Match Bets</Link>
                     </div>
                   </form>	
                 </div>
@@ -330,7 +333,13 @@ class FancyStack extends Component{
                         this.state.fancyStakeData.map((ele,index)=>
                           <tr>
                             <td className="text-center">{index+1}</td>
-                            <td className="text-center"><Link role="button" onClick={()=>this.handleFancyData(this.state.currUserAccess,ele.name)}>{ele.name}</Link></td>
+                            <td className="text-center">
+                              {
+                                this.state.currUserAccess==="Master"?
+                                <span>{ele.name}</span>:
+                                <Link role="button" onClick={()=>this.handleFancyData(this.state.currUserAccess,ele.name)}>{ele.name}</Link>
+                              }
+                            </td>
                             <td className="text-center">{ele.stack}</td>
                           </tr>
                           )

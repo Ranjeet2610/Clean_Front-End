@@ -61,43 +61,84 @@ export default class ProfitLoss extends Component {
 
   getprofitlossData = () =>{
     this.userDetails = JSON.parse(localStorage.getItem('data'));
-    if (this.userDetails.superAdmin) {
-      this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-        
-        this.setState({
-          data: data.data,
-          newResData: data.data
+    if(this.props.match.params.username===undefined){
+      if (this.userDetails.superAdmin) {
+        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          
+          this.setState({
+            data: data.data,
+            newResData: data.data
+          });
         });
-      });
+      }
+      else if (this.userDetails.Admin) {
+        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          this.setState({
+            data: data.data,
+            newResData: data.data
+          });
+        });
+      }
+      else if (this.userDetails.Master) {
+        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          this.setState({
+            data: data.data,
+            newResData: data.data
+          });
+        });
+      }
+      else {
+        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          this.setState({
+            data: data.data,
+            newResData: data.data
+          });
+        });
+      }
     }
-    else if (this.userDetails.Admin) {
-      this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-        this.setState({
-          data: data.data,
-          newResData: data.data
+    else{
+      if (this.userDetails.superAdmin) {
+        this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          this.setState({
+            data: dataFilter,
+            newResData: data.data
+          });
         });
-      });
-    }
-    else if (this.userDetails.Master) {
-      this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-        this.setState({
-          data: data.data,
-          newResData: data.data
+      }
+      else if (this.userDetails.Admin) {
+        this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          this.setState({
+            data: dataFilter,
+            newResData: data.data
+          });
         });
-      });
-    }
-    else {
-      this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-        this.setState({
-          data: data.data,
-          newResData: data.data
+      }
+      else if (this.userDetails.Master) {
+        this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          this.setState({
+            data: dataFilter,
+            newResData: data.data
+          });
         });
-      });
+      }
+      else {
+        this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          this.setState({
+            data: dataFilter,
+            newResData: data.data
+          });
+        });
+      }
     }
   }
     
     async componentDidMount() {
     await this.getprofitlossData();
+    console.log(this.props);
     let currD = new Date().toISOString().substr(0,10);
     //let currT = Utilities.datetime(new Date()).slice(11,16)
     let Scurr = currD+"T00:00:01"

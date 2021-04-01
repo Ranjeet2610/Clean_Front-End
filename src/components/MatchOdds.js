@@ -1,4 +1,5 @@
 import BetBox from "./Betbox";
+
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -372,8 +373,8 @@ export default class MatchOdds extends Component {
           data: data.pdata,
           oddsload:false
         });
-        // console.log("marketOdds",this.state.marketOdds);
-        // console.log("data",this.state.data);
+        //console.log("marketOdds",this.state.marketOdds);
+        //console.log("data",this.state.data);
         if(this.state.selbetType !== "" && this.state.selOdds!==""){
           let getUodds = "";
           if(this.state.selbetType==="Back"){
@@ -812,7 +813,7 @@ export default class MatchOdds extends Component {
                         }
                         <div className="sportrow-4 matchOpenBox_1171389306">
                           <div className="match-odds-sec">
-                            <div className="item match-status match-odds"><span class="match-odd-top">Match Odds</span> <img src="https://bxawscf.skyexchange.com/images/transparent.gif" class="sid-image"></img></div>
+                            <div className="item match-status match-odds"><span class="match-odd-top">Match Odds</span> <span class="sid-image"></span></div>
                             <div className="item match-status-odds">
                               <span className="going_inplay green"> {inplay} </span>
                               <span className="click-tv">

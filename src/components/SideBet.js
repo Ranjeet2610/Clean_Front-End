@@ -87,17 +87,17 @@ export default class SideBet extends Component {
        let odds = this.props.betData.odds-1;
        if(this.props.betData.type === 'Back'){
         this.setState({
-          profit:(odds*e.target.value).toFixed(2),
-          loss:e.target.value?e.target.value:0.0
+          profit:(odds*stack).toFixed(2),
+          loss:stack?stack:0.0
         });
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
             let updatedRunners ={};
             if(item.runnerId == this.props.betData.pData.selectionId){
-              updatedRunners.exposure =item.exposure + parseFloat((odds*e.target.value).toFixed(2))
+              updatedRunners.exposure =item.exposure + parseFloat((odds*stack).toFixed(2))
             }
             else{
-              updatedRunners.exposure = item.exposure +(- parseFloat(e.target.value))
+              updatedRunners.exposure = item.exposure +(- parseFloat(stack))
             }
             updatedRunners.runnerId = item.runnerId;
             return updatedRunners;
@@ -107,10 +107,10 @@ export default class SideBet extends Component {
           this.state.expoData = this.state.runnderData.map(item=>{
             let updatedRunners ={};
             if(item.selectionId == this.props.betData.pData.selectionId){
-              updatedRunners.exposure = parseFloat((odds*e.target.value).toFixed(2))
+              updatedRunners.exposure = parseFloat((odds*stack).toFixed(2))
             }
             else{
-              updatedRunners.exposure = - parseFloat(e.target.value)
+              updatedRunners.exposure = - parseFloat(stack)
             }
           updatedRunners.runnerId = item.selectionId;
           return updatedRunners;
@@ -119,17 +119,17 @@ export default class SideBet extends Component {
       }
       else{
         this.setState({
-          profit:e.target.value,
-          loss:(odds*e.target.value).toFixed(2)
+          profit:stack,
+          loss:(odds*stack).toFixed(2)
         });
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
             let updatedRunners ={};
             if(item.runnerId == this.props.betData.pData.selectionId){
-              updatedRunners.exposure =item.exposure + (- parseFloat((odds*e.target.value).toFixed(2)))
+              updatedRunners.exposure =item.exposure + (- parseFloat((odds*stack).toFixed(2)))
             }
             else{
-              updatedRunners.exposure = item.exposure + parseFloat(e.target.value)
+              updatedRunners.exposure = item.exposure + parseFloat(stack)
             } 
             updatedRunners.runnerId = item.runnerId;
             return updatedRunners;
@@ -140,10 +140,10 @@ export default class SideBet extends Component {
           this.state.expoData = this.state.runnderData.map(item=>{
             let updatedRunners ={};
             if(item.selectionId == this.props.betData.pData.selectionId){
-              updatedRunners.exposure = - parseFloat((odds*e.target.value).toFixed(2))
+              updatedRunners.exposure = - parseFloat((odds*stack).toFixed(2))
             }
             else{
-              updatedRunners.exposure = parseFloat(e.target.value)
+              updatedRunners.exposure = parseFloat(stack)
             }
           updatedRunners.runnerId = item.selectionId;
           return updatedRunners;
@@ -153,7 +153,7 @@ export default class SideBet extends Component {
      setTimeout(()=> {
       this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true","handleChange");
      }, 500)
-     this.props.handleInput(e.target.value);
+     this.props.handleInput(stack);
     }
   }
 

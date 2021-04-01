@@ -82,7 +82,9 @@ button:focus {outline:none;}
 .btn-danger:hover{border-color: #60b4bc;}
 .blue_button{background:linear-gradient(to bottom, #6c1945 0%, #6c1945 100%);border:transparent;padding:7px 10px;border:solid 1px #853395;text-decoration:none;border-radius:3px;color:#fff;}
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover{    background-color:#33b85f;border-color:#33b85f;text-decoration:none;}
-.red_button{padding:7px 10px;color:#fff;display:inline-block;text-align:center;background: #76c7ce;background: -moz-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -webkit-gradient(left top, left bottom, color-stop(0%, #76c7ce), color-stop(100%, #12717c));background: -webkit-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -o-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -ms-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: linear-gradient(to bottom, #76c7ce 0%, #12717c 100%);text-decoration:none;border-radius:5px;border: solid 1px #217e89;}
+.red_button{padding:7px 10px;color:#fff;display:inline-block;text-align:center;background: #76c7ce;background: -moz-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -webkit-gradient(left top, left bottom, color-stop(0%, #76c7ce), color-stop(100%, #12717c));background: -webkit-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -o-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: -ms-linear-gradient(top, #76c7ce 0%, #12717c 100%);background: linear-gradient(to bottom, #76c7ce 0%, #12717c 100%);text-decoration:none;border-radius:5px;border: solid 1px #217e89;background: linear-gradient( 
+  180deg
+   ,#6c1945 0,#2d0b1d);}
 .right_col{min-height:auto!important;}
 .betting-disabled{position:relative;}
 .betting-disabled:after{position:absolute;background:rgba(255,255,255,0.5);content: '';width: 100%;height: 100%;left:0;top:0;border:solid 1px #dbdbdb;cursor: not-allowed;z-index: 11;}
@@ -277,7 +279,7 @@ ul.quick-list li i{padding-right:10px;color:#757679;}
 .lay_heading_color {background-color:#fa93a9!important;line-height:25px!important;font-size:11px;text-align:center;color:#000;font-weight:normal;}
 .back_lay_color td{background:#fff;}
 .back_lay_color td span{font-size:14px;width:100%;display:inline-block;text-align:center;font-weight: 500;}
-.back_lay_color td span:last-child{font-size:8px;font-weight:normal;}
+.back_lay_color td span:last-child{font-size:8px;font-weight:500;}
 .back_lay_color td span:nth-child(2){font-size:8px;}
 .runner_amount{font-size:12px!important;}
 .back_lay_color td:nth-child(4){background:#72bbef;}
@@ -327,7 +329,7 @@ border: solid 2px #c99d1e;}
 .betFooter .btn-success{background:#0b7d36;}
 .betFooter button.btn:last-child{margin-right:0px;}
 .betPriceBox button{padding:2px 7px;margin-right:2px;}
-.back_lay_color td{width:60px;border:1px solid #dbdbdb;padding:3px 0px!important;text-align:center;border-top:1px solid #dbdbdb;cursor:pointer;position: relative;}
+.back_lay_color td{width:60px;border:1px solid #696969;padding:3px 0px!important;text-align:center;border-top:1px solid #696969;cursor:pointer;position: relative;}
 .back_lay_color td:first-child{width:40%;}
 .fancy_th_width th:first-child{width:60%;}
 .session_content td:first-child{width:60%;}
@@ -357,7 +359,7 @@ span.runner_amount{display:inline-block;width:auto!important;padding:5px;width: 
 .modal-dialog .modal-content label{font-weight:normal;padding:5px 0px;margin-bottom:0px;}
 .cur-back {float:right;margin-right:25px;}
 #delete_all_match {display:inline-block;float:right;}
-.table-striped.table>tbody>tr>th{padding:3px;border:solid 1px #dbdbdb;}
+.table-striped.table>tbody>tr>th{padding:3px;border:solid 1px #696969;}
 .liability {color: #ff3d47;}
 .match_tv .form-title{padding:5px;font-size:13px;background:#1e466c;color:#fff;position:relative;}
 .unmatch_heading .form-title,
@@ -430,7 +432,7 @@ a.ancor_link {position:absolute;left:0;right:0;top:0;bottom:0;cursor:pointer;z-i
 .match-odds-sec{background-color:#fff;width:100%;float:left;display:flex;border:solid 1px #dbdbdb;
 border-bottom: transparent}
 .match-odds-sec .item{flex:1;text-align:center;padding:10px 0px;border-radius:0px;font-size:12px;}
-.match-odds-sec .item:last-child{border-right:transparent;}
+.match-odds-sec .item:last-child{border-right:transparent; font-weight: 600;}
 .match-odds-sec .item .going_inplay{color:#000;}
 .BetFor {display: inline-block;width: 30%;font-weight:normal;}
 .pagination-row strong.paginate_button{background:#e2a521;}
@@ -1152,7 +1154,7 @@ body{padding-bottom:0px;}
 .righttogalhide{display:block;}
 .nav.side-menu>li>a span{float:right;}
 .righttogal span{cursor:pointer;top:1px;position:absolute;color:#fff;left:5px;font-size:35px;z-index: 1;}
-.sidenav{height:100%;width:0;position:fixed;z-index:1000;top:0;left:0;background:#333;overflow-x:hidden;transition:0.5s;padding-top:60px;padding-bottom: 60px;text-align:left!important;}
+.sidenav{height:100%;width:0;position:fixed;z-index:1000;top:0;left:0;background:#6c1945;overflow-x:hidden;transition:0.5s;padding-top:60px;padding-bottom: 60px;text-align:left!important;}
 .sidenav .dropdown-menu{position:inherit;}
 .usersech.block_2{width:61%!important;padding-top:0!important;}
 .tdwidth {max-width:100%!important;}
@@ -1431,10 +1433,10 @@ input[type="range"]{margin-top:14px!important;}
 .match-odds{
   height: 38px;
     line-height: 30px;
-    color: #243A48;
+    color: #fff;
     font-weight: bold;
     padding-left: 10px;
-    background-color: #C5D0D7;
+    background-color: #95335c;
     position:relative;
 }
 
@@ -1443,8 +1445,9 @@ input[type="range"]{margin-top:14px!important;}
   right: -15px;
   top: 4px;
   width: 30px;
-  z-index: 99999999;
+  z-index: 9;
   background: #fff;
+  height:30px;
   transform: rotate(
 45deg
 );
@@ -1457,4 +1460,26 @@ input[type="range"]{margin-top:14px!important;}
 
 .green {
   color: #508D0E !important;
+  font-weight: 700;
+}
+
+
+.runner_text {  
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.session_content td span {
+  font-weight: 700;
+}
+
+
+.back_heading_color {
+  background: #72bbef!important;
+  font-weight:700;
+}
+
+.lay_heading_color {
+  background: #fa93a9!important;
+  font-weight:700;
 }

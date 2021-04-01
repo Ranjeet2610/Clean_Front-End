@@ -565,7 +565,6 @@ export default class User extends Component {
   }
 
   submit_info = (fancyType) => {
-    console.log(this.state.userdetails);
     const obj={
       "userId":  this.state.userdetails.userName,
         "id": this.state.userdetails.id
@@ -642,10 +641,10 @@ export default class User extends Component {
           }
         }
       }
-    console.log(obj);
-    // this.users.updateUserSportsInfo(obj, (data) => {
-    //   alert("updated");
-    // });
+      this.users.updateUserSportsInfo(obj, (data) => {
+        alert("updated");
+      });
+      console.log(obj);
   }
 
   submit_userInfo() {
