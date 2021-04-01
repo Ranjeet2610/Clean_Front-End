@@ -1,11 +1,11 @@
 .bg_login{
-    background-image: url("../src/images/BackGround_Login_copy.jpg");
+    background-image: linear-gradient(#fff7fb8c, #230c1661),url("../src/images/BackGround_Login_copy.jpg");
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
 }
 .logo{
-    background-image: url("../src/images/BackGround_Login_copy.jpg");
+    background-image: linear-gradient(#fff7fb8c, #230c1661),url("../src/images/BackGround_Login_copy.jpg");
     border-radius: 10px;
 }
 .casinobg{

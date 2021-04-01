@@ -176,8 +176,8 @@ export default class SideBet extends Component {
           timeDuration:(data.data.data.timeDuration-1000)
         })
       })
-      await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-  }
+      await new Promise((resolve, reject) => setTimeout(resolve, 500));
+    }
   else{
     this.event.getbetplacetime(this.props.eventType,async data=>{
       await this.setState({
@@ -221,7 +221,7 @@ export default class SideBet extends Component {
 
   placeBet=async(e)=>{
     this.getBetTime();
-    let disableBetting = localStorage.getItem("data").enableBetting
+    // let disableBetting = localStorage.getItem("data").enableBetting
     // device 1 for desktop,2 for mobile,3 for tab
     let device;
     if(this.state.isMobile)
@@ -231,7 +231,7 @@ export default class SideBet extends Component {
     if(this.state.isTab)
     device = 3;
     e.preventDefault();
-    if(disableBetting===true){
+    // if(disableBetting===true){
     if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
       this.props.handleBetPlaceBox("Choose Stack...",'red','error')
     }
@@ -366,10 +366,10 @@ export default class SideBet extends Component {
         }
       }
       }
-    }
-    else{
-      this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
-    }
+    // }
+    // else{
+    //   this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
+    // }
   this.closeWindow();
   }
 

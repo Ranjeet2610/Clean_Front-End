@@ -1483,3 +1483,10 @@ input[type="range"]{margin-top:14px!important;}
   background: #fa93a9!important;
   font-weight:700;
 }
+
+.custom-scroll{
+  height:400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background:#fff !important;
+}
