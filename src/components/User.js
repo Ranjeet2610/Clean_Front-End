@@ -552,12 +552,14 @@ export default class User extends Component {
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
+    //cricket,fancy,tennis,soccer
     const obj = {
-      id: this.state.userdetails.id
+      id:this.state.userdetails.id,
+      type:"cricket"
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({
-        userInfo: data.data,
+        userInfo:data.data,
       });
     });
   }

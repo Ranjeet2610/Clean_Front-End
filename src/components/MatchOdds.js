@@ -358,12 +358,12 @@ export default class MatchOdds extends Component {
     this.setState({
       load:true
     })
-    this.users.userSportsInfo({id: this.userDetails.id}, (data) => {
+    //cricket,fancy,tennis,soccer
+    this.users.userSportsInfo({id: this.userDetails.id,type:"cricket"}, (data) => {
       this.setState({
         userInfo: data.data,
       });
     });
-    console.log("userinfo:",this.state.userInfo)
     this.interval = setInterval(() => {
       service.getListMarketType(this.props.match.params.id, (data) => {
         this.setState({
