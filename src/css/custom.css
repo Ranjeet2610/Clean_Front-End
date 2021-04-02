@@ -1486,7 +1486,7 @@ input[type="range"]{margin-top:14px!important;}
 
 .custom-scroll{
   height:400px;
-  overflow-x: hidden;
+  overflow-x: scroll;
   overflow-y: scroll;
   background:#fff !important;
 }
