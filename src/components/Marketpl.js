@@ -201,28 +201,21 @@ export default class Marketpl extends Component {
                         {
                           currentdataPosts.length>0 ?
                             currentdataPosts.map((item)=>{
-                              if(item.data[0].eventType === 4){
+                              if(item.eventType === 4){
                                 sportType = "Cricket";
-                              }else if(item.data[0].eventType === 1){
+                              }else if(item.eventType === 1){
                                 sportType = "Tennis";
-                              }else if(item.data[0].eventType === 2){
+                              }else if(item.eventType === 2){
                                 sportType = "Soccer";
                               }else{
                                 sportType = "Event";
                               }
-                              let eventName = JSON.parse(item.data[0].description);
-                              //item.data[0].marketType=match odds //Fancy
-                              let userPl;
-                              if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
-                                userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
-                              }else{
-                                userPl = parseFloat(item.ProfitLoss);
-                              }
+                              let userPl = parseFloat(item.ProfitLoss);
                               mTotal=mTotal+userPl;
-                              return (
+                                return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  <td className="text-center">{sportType}/{item.eventName}/Selection:{item.data[0].selection}/Match Odds:{item.marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
                                   <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
@@ -236,28 +229,21 @@ export default class Marketpl extends Component {
                             }):
                           currentmasterDataPosts.length>0  ?
                             currentmasterDataPosts.map((item)=>{
-                              if(item.data[0].eventType === 4){
-                                sportType = "Cricket";
-                              }else if(item.data[0].eventType === 1){
-                                sportType = "Tennis";
-                              }else if(item.data[0].eventType === 2){
-                                sportType = "Soccer";
-                              }else{
-                                sportType = "Event";
-                              }
-                              let eventName = JSON.parse(item.data[0].description);
-                              //item.data[0].marketType=match odds //Fancy
-                              let userPl;
-                              if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
-                                userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
-                              }else{
-                                userPl = parseFloat(item.ProfitLoss);
-                              }
-                              mTotal=mTotal+userPl;
-                              return (
+                            if(item.eventType === 4){
+                              sportType = "Cricket";
+                            }else if(item.eventType === 1){
+                              sportType = "Tennis";
+                            }else if(item.eventType === 2){
+                              sportType = "Soccer";
+                            }else{
+                              sportType = "Event";
+                            }
+                            let userPl = parseFloat(item.ProfitLoss);
+                            mTotal=mTotal+userPl;
+                            return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
-                                  <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                  <td className="text-center">{sportType}/{item.eventName}/Selection:{item.data[0].selection}/Match Odds:{item.marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                   {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
                                   <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
@@ -271,28 +257,21 @@ export default class Marketpl extends Component {
                             }):
                           currentadminDataPosts.length>0 ?
                             currentadminDataPosts.map((item)=>{
-                                if(item.data[0].eventType === 4){
+                                if(item.eventType === 4){
                                   sportType = "Cricket";
-                                }else if(item.data[0].eventType === 1){
+                                }else if(item.eventType === 1){
                                   sportType = "Tennis";
-                                }else if(item.data[0].eventType === 2){
+                                }else if(item.eventType === 2){
                                   sportType = "Soccer";
                                 }else{
                                   sportType = "Event";
                                 }
-                                let eventName = JSON.parse(item.data[0].description);
-                                //item.data[0].marketType=match odds //Fancy
-                                let userPl;
-                                if(item.ProfitLoss>0 && item.data[0].marketType=="match odds"){
-                                  userPl = (parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
-                                }else{
-                                  userPl = parseFloat(item.ProfitLoss);
-                                }
+                                let userPl = parseFloat(item.ProfitLoss);
                                 mTotal=mTotal+userPl;
                                 return (  
                                   <tr>
                                     <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()}</td>
-                                    <td className="text-center">{sportType}/{eventName.name}/Selection:{item.data[0].selection}/Match Odds:{item.data[0].marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
+                                    <td className="text-center">{sportType}/{item.eventName}/Selection:{item.data[0].selection}/Match Odds:{item.marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
                                     {/*<td class={item.ProfitLoss>0?"text-center inplay_txt":"text-center color_red"}>{item.ProfitLoss}</td>*/}
                                     <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                     <td className="text-center inplay_txt">0.00</td>
@@ -347,27 +326,27 @@ export default class Marketpl extends Component {
                       {
                       currentdataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       currentmasterDataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.masterData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       currentadminDataPosts.length > 0?
                       <tfoot>
-                      <tr>
+                      {/* <tr>
                         <td colSpan={16}>
                             <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.adminData.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                         </td>  
-                      </tr>  
+                      </tr>   */}
                     </tfoot>:
                       null
                     }

@@ -555,7 +555,7 @@ export default class User extends Component {
     //cricket,fancy,tennis,soccer
     const obj = {
       id:this.state.userdetails.id,
-      type:"cricket"
+      type:"fancy"
     }
     this.users.userSportsInfo(obj, (data) => {
       this.setState({
@@ -565,10 +565,9 @@ export default class User extends Component {
   }
 
   submit_info = (fancyType) => {
-    const obj={
-      "userId":  this.state.userdetails.userName,
-        "id": this.state.userdetails.id
-    };
+      const obj={
+          id: this.state.userdetails.id
+      };
       if(this.state.tabOn==="C" || this.state.tabOn==="S" || this.state.tabOn==="T"){
         obj.type=this.state.tabOn
         if(this.state.tabOn==="C"){
@@ -612,6 +611,7 @@ export default class User extends Component {
         }
       }
       else{
+          obj.type="fancy"
         if(fancyType!=="manual"){
           if(this.state.fancymaxStacks!==""){
             obj.fancymaxStacks=this.state.fancymaxStacks
@@ -691,7 +691,6 @@ export default class User extends Component {
         [event.target.name]:event.target.value
       })
     }
-    console.log(event.target.name,"=>",event.target.value);
   }
 
   render() {
@@ -928,11 +927,11 @@ export default class User extends Component {
                             <tr>
                               <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
                             </tr>
-                            <tr>
+                            {/* <tr>
                               <td colSpan={11}>
                                   <Pagination postsPerPage={this.state.postsPerPage} totalPosts={this.state.data.length} paginate={(pageNumber) => this.paginate(pageNumber)}/>
                               </td>  
-                            </tr>  
+                            </tr>   */}
                         </tfoot> : null  
                       }
                     </table>

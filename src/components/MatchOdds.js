@@ -97,7 +97,8 @@ export default class MatchOdds extends Component {
       filterbookdata:'',
       IP:'',
       scoreId:'',
-      userInfo:'',
+      sportInfo:'',
+      fancyInfo:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
       timer: "",
@@ -359,10 +360,23 @@ export default class MatchOdds extends Component {
     this.setState({
       load:true
     })
+    let sportName;
     //cricket,fancy,tennis,soccer
-    this.users.userSportsInfo({id: this.userDetails.id,type:"cricket"}, (data) => {
+    if(this.state.sportType===1){
+      sportName="tennis";
+    }else if(this.state.sportType===2){
+      sportName="soccer";
+    }else if(this.state.sportType===4){
+      sportName="cricket";
+      this.users.userSportsInfo({id: this.userDetails.id,type:"fancy"}, (data) => {
+        this.setState({
+          fancyInfo: data.data,
+        });
+      });
+    }
+    this.users.userSportsInfo({id: this.userDetails.id,type:sportName}, (data) => {
       this.setState({
-        userInfo: data.data,
+        sportInfo: data.data,
       });
     });
     this.interval = setInterval(() => {
@@ -389,17 +403,19 @@ export default class MatchOdds extends Component {
         this.setState({
           fancymarket: data.fancymarket,
         });
-        if(this.state.selbetType !== "" && this.state.selOdds!==""){
-          let getUodds = "";
-          let getUsize = "";
-          if(this.state.selbetType==="Back"){
-            getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
-            getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
-          }else{
-            getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
-            getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+        if(this.state.fancymarket.length!==0){
+          if(this.state.selbetType !== "" && this.state.selOdds!==""){
+            let getUodds = "";
+            let getUsize = "";
+            if(this.state.selbetType==="Back"){
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+            }else{
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+            }
+            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
           }
-          this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
         }
       });
     }, 1000);
@@ -738,6 +754,8 @@ export default class MatchOdds extends Component {
   }
 
   render() {
+    console.log("UsInfo:",this.state.sportInfo);
+    console.log("UfInfo:",this.state.fancyInfo);
     let inplay;
     let runners = this.state.data;
     let filterrunners = [];
@@ -831,7 +849,8 @@ export default class MatchOdds extends Component {
                             <table className={`table table-striped  bulk_actions matchTable1171389306 ${this.state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
                               <tbody>
                                 <tr className="headings mobile_heading">
-                                  <th className="fix_heading color_red">Min stake:100 Max stake:500000</th>
+                                  <th className="fix_heading color_red">Min stake:{this.state.sportInfo.minStacks} Max stake:{this.state.sportInfo.maxStacks}<br></br>
+                                  Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds}</th>
                                   <th> </th>
                                   <th> </th>
                                   <th className="back_heading_color">Back</th>
@@ -961,6 +980,8 @@ export default class MatchOdds extends Component {
                                             selfancyOdds={this.state.selfancyOdds} 
                                             selfancySize={this.state.selfancySize}
                                             IP = {this.state.IP}
+                                            sportInfo={this.state.sportInfo}
+                                            fancyInfo={this.state.fancyInfo}
                                             />
                                           </div>
                                         </td>
@@ -1094,7 +1115,7 @@ export default class MatchOdds extends Component {
                             }
 
                             <div className="fancy-heads">
-                              <div className="event-sports"style={{color:'red'}} >Min stake:100 Max stake:500000 </div>
+                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo.fancyminStacks} Max stake:{this.state.fancyInfo.fancymaxProfit} </div>
                               <div className="fancy_buttons">
                                 <div className="fancy-backs head-no" style={{ backgroundColor: '#fa93a9' }}>
                                   <strong>NO</strong>
@@ -1189,7 +1210,9 @@ export default class MatchOdds extends Component {
                                         selfancyOdds={this.state.selfancyOdds} 
                                         selfancySize={this.state.selfancySize}
                                         IP = {this.state.IP}
-                                        />
+                                        sportInfo={this.state.sportInfo}
+                                        fancyInfo={this.state.fancyInfo}
+                                      />
                                      </div>
                                     </div>
                                   );
@@ -1309,7 +1332,9 @@ export default class MatchOdds extends Component {
                   selfancyOdds={this.state.selfancyOdds} 
                   selfancySize={this.state.selfancySize}
                   IP = {this.state.IP}
-                            />
+                  sportInfo={this.state.sportInfo}
+                  fancyInfo={this.state.fancyInfo}
+                  />
                 <Footer />
               </div>
             </div>
