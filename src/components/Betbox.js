@@ -14,6 +14,7 @@ export default class BetBox extends Component {
           timeDuration:'',
           chipName:["500","2000","5000","25000","50000","100000"],
           chipStake:["500","2000","5000","25000","50000"],
+          chips:["200000","500000","1000000","2500000"],
           color:'lightblue',
           load:false,
           betData:'',
@@ -552,6 +553,16 @@ export default class BetBox extends Component {
                         <div className="betPriceBox">
                             {
                                 this.state.chipStake.map((item) => {
+                                    return (
+                                        <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={() => this.StaKeAmount(item,ods,fancysize,type,this.props.index,"StaKeAmount")}>{item}</button>
+                                    )
+                                })
+                            }
+                            {/* <button style={{ backgroundColor: 'red' }} className="btn btn-success CommanBtn " type="button" onClick={() => this.ClearAllSelection()}>Clear</button> */}
+                        </div>
+                        <div className="betPriceBox" style={{marginTop:"1rem"}}>
+                            {
+                                this.state.chips.map((item) => {
                                     return (
                                         <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={() => this.StaKeAmount(item,ods,fancysize,type,this.props.index,"StaKeAmount")}>{item}</button>
                                     )

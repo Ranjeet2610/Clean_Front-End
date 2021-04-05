@@ -22,6 +22,7 @@ export default class SideBet extends Component {
         showCurrPosition:'none',
         chipName:["500","2000","5000","25000","50000","100000"],
         chipStake:["500","2000","5000","25000","50000"],
+        chips:["200000","500000","100000","2500000"],
         color:'lightblue',
         betData:'',
         profit:0.00,
@@ -1140,8 +1141,18 @@ export default class SideBet extends Component {
                       )
                     })
                   }
-                  <button style={{backgroundColor:'red'}} className="btn btn-success CommanBtn " type="button" onClick={() => this.ClearAllSelection()}>Clear</button>
+                  {/* <button style={{backgroundColor:'red'}} className="btn btn-success CommanBtn " type="button" onClick={() => this.ClearAllSelection()}>Clear</button> */}
                 </div>
+                <div className="betPriceBox" style={{marginTop:"1rem"}}>
+                            {
+                                this.state.chips.map((item) => {
+                                    return (
+                                        <button className="btn  btn-success CommanBtn  chipName1" type="button" value={item} onClick={() => this.StaKeAmount(item,ods,fancysize,type,this.props.index,"StaKeAmount")}>{item}</button>
+                                    )
+                                })
+                            }
+                            <button style={{ backgroundColor: 'red' }} className="btn btn-success CommanBtn " type="button" onClick={() => this.ClearAllSelection()}>Clear</button>
+                        </div>
                 <div className="betFooter">
                   <button className="btn btn-danger CommanBtn" type="button" onClick={this.closeWindow}>Close</button>
                   <button className="btn btn-success  CommanBtn placebet" type="submit">Place Bet</button>
