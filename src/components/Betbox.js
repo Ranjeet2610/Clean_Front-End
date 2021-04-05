@@ -5,7 +5,6 @@ import Users from '../Services/users'
 import Livevents from '../Services/livevents'
 
 export default class BetBox extends Component {
-
     constructor(props) {
       super(props);
       this.state = {
@@ -34,7 +33,7 @@ export default class BetBox extends Component {
           isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
           isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
           isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
-        }
+      }
       this.service = new Service();
       this.users = new Users();
       this.event = new Livevents();
@@ -50,16 +49,28 @@ export default class BetBox extends Component {
           IP:this.props.IP
       });
     }
-    getBetTime = async () =>{
+
+    getBetTime = async () => {
       if(this.props.betData.betType==="Fancy"){
+        let timeDuration;
+        if(this.props.betData.ManualPriceKey===true || this.props.betData.isItManual===true){
+          timeDuration=this.props.fancyInfo.manualbetDelay
+        }else{
+          timeDuration=this.props.fancyInfo.betDelay
+        }
         this.event.getbetplacetime(5,async data=>{
-          await this.setState({
-            timeDuration:(data.data.data.timeDuration-1000)
-          })
+          if(data.data.data.timeDuration>timeDuration){
+            await this.setState({
+              timeDuration:(data.data.data.timeDuration-1000)
+            })
+          }else{
+            await this.setState({
+              timeDuration:(timeDuration-1000)
+            })
+          }
         })
         await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-      }
-      else{
+      } else{
         this.event.getbetplacetime(this.props.eventType,async data=>{
           await this.setState({
             timeDuration:(data.data.data.timeDuration-1000)
@@ -85,6 +96,12 @@ export default class BetBox extends Component {
     placeBet=async(e)=>{
       this.getBetTime();
       let disableBetting = JSON.parse(localStorage.getItem('data')).enableBetting;
+      let inplay;
+      if (new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime() > new Date().getTime()) {
+        inplay = "GOING IN-PLAY";
+      } else {
+        inplay = "IN-PLAY";
+      }
       // device 1 for desktop,2 for mobile,3 for tab
       let device;
       if(this.state.isMobile)
@@ -94,139 +111,206 @@ export default class BetBox extends Component {
       if(this.state.isTab)
       device = 3;
       e.preventDefault();
+      let dobet=true;
+      if(this.props.betData.betType !=undefined){
+        if(this.props.betData.ManualPriceKey===true || this.props.betData.isItManual===true){
+          if(this.props.fancyInfo.manuallockBet===true){
+            this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
+            dobet=false;
+          }
+          else if(this.stackInput.value < this.props.fancyInfo.manualfancyminStacks || this.stackInput.value > this.props.fancyInfo.manualfancymaxStacks){
+            this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+            dobet=false;
+          }
+          else if(this.state.profit < 0 || this.state.profit > this.props.fancyInfo.manualfancymaxProfit){
+            this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
+            dobet=false;
+          }
+          else if(this.stackInput.value > this.state.balance){
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+            dobet=false;
+          }
+        }else{
+          if(this.props.fancyInfo.lockBet===true){
+            this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
+            dobet=false;
+          }
+          else if(this.stackInput.value < this.props.fancyInfo.fancyminStacks || this.stackInput.value > this.props.fancyInfo.fancymaxStacks ){
+            this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+            dobet=false;
+          }
+          else if(this.state.profit < 0 || this.state.profit > this.props.fancyInfo.fancymaxProfit ){
+            this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
+            dobet=false;
+          }
+          else if(this.stackInput.value > this.state.balance){
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+            dobet=false;
+          }
+        }
+      }else{
+        if(this.props.sportInfo.lockBet===true){
+          this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
+          dobet=false;
+        }
+        else if(this.stackInput.value < this.props.sportInfo.minStacks || this.stackInput.value > this.props.sportInfo.maxStacks){
+          this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+          dobet=false;
+        }
+        else if(this.state.profit < 0 || this.state.profit > this.props.sportInfo.maxProfit){
+          this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
+          dobet=false;
+        }
+        else if(this.state.loss < 0 || this.state.loss > this.props.sportInfo.maxLoss){
+          this.props.handleBetPlaceBox("Loss limit exceed",'red','error')
+          dobet=false;
+        }
+        else if(this.odsInput.value > this.props.sportInfo.maxOdds){
+          this.props.handleBetPlaceBox("Invalid Odds..",'red','error')
+          dobet=false;
+        }
+        else if(this.odsInput.value < this.props.sportInfo.minOdds){
+          this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
+          dobet=false;
+        }
+        else if(this.stackInput.value > this.state.balance){
+          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+          dobet=false;
+        }
+        if(inplay === "GOING IN-PLAY"){
+          if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
+            this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+            dobet=false;
+          }
+          else if(this.state.profit > this.props.sportInfo.PreInplayProfit){
+            this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
+            dobet=false;
+          }
+        }
+      }
       if(!disableBetting){
-      if(this.stackInput.value < 100 || this.stackInput.value > 50000 ){
-        this.props.handleBetPlaceBox("Choose Stack...",'red','error')
-      }
-      if(this.state.profit < 0 || this.state.profit > 500000 ){
-        this.props.handleBetPlaceBox("Amount limit exceed",'red','error')
-      }
-      else if(this.stackInput.value > this.state.balance){
-        this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      }
-      // else if(this.stackInput.value > JSON.parse(localStorage.getItem('data')).walletBalance){
-      //   this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-      // }
-      else if(this.state.loss > this.state.balance){
-        this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
-      }
-      else{
-        this.setState({
-          showLoader:true
-        });
-        await this.getBetTime();
-        await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
-        if(this.props.betData.betType !=undefined){
-          let fancysizeval;
-          if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
-            fancysizeval = 0;
-          }else{
-            fancysizeval = this.state.getselfancySize;
-          }
-          if(fancysizeval < this.props.betData.data.size){
-            this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
-          }else{
-            await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
-            const obj = {
-            userName:JSON.parse(localStorage.getItem('data')).userName,
-            description:localStorage.getItem('matchname'),
-            selection:this.runnerNameInput.value,
-            selectionID:this.selectionIdInput.value,
-            odds:this.state.getselfancyOdds,
-            stack:this.stackInput.value,
-            eventID:this.props.eventId,
-            status:"open",
-            marketID:this.props.betData.mid,
-            profit:this.state.profit,
-            loss:this.state.loss,
-            IP:this.props.IP,
-            device:device,
-            marketType: this.props.betData.betType,
-            bettype:this.isbackInput.value,
-            eventType:this.state.sportType
-           }
-           //console.log(obj);
-           this.service.fancyplaceBet(obj,data=>{ 
-            const obj1 = {
-              userName:JSON.parse(localStorage.getItem('data')).userName
-            }
-            /*
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-            })*/
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
-              const obj2 = {
-                userid:JSON.parse(localStorage.getItem('data')).id,
-                eventID:this.props.eventId,
-                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-                runnersData :this.state.expoData
-              }
-              this.service.updateExpo(obj2,ddata=>{
-                const obj3 = {
-                  userid:JSON.parse(localStorage.getItem('data')).id
-                }
-                this.users.getUserExposure(obj3,expodata=>{
-                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                })
-              });
-             })
-           })
-          }
+        if(dobet===true){
+        if(this.state.loss > this.state.balance){
+          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
         }
         else{
-          if(this.state.getselOdds < this.odsInput.value){
-            this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-          }else{
-            await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
-            const obj ={
-            userName:JSON.parse(localStorage.getItem('data')).userName,
-            description:localStorage.getItem('matchname'),
-            selection:this.runnerNameInput.value,
-            selectionID:this.selectionIdInput.value,
-            odds:this.state.getselOdds,
-            stack:this.stackInput.value,
-            eventID:this.props.eventId,
-            status:"open",
-            marketID:this.props.betData.mid,
-            profit:this.state.profit,
-            loss:this.state.loss,
-            IP:this.props.IP,
-            device:device,
-            marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-            bettype:this.isbackInput.value,
-            eventType:this.state.sportType
-           }
-           //console.log(obj);
-           this.service.placeBet(obj,data=>{ 
-            const obj1 = {
-              userName:JSON.parse(localStorage.getItem('data')).userName
+          this.setState({
+            showLoader:true
+          });
+          await this.getBetTime();
+          await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
+          if(this.props.betData.betType !=undefined){
+            let fancysizeval;
+            if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
+              fancysizeval = 0;
+            }else{
+              fancysizeval = this.state.getselfancySize;
             }
-            this.users.getMyprofile(obj1,data=>{
-              localStorage.setItem('data',JSON.stringify(data.data));
-              localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
-              const obj2 = {
-                userid:JSON.parse(localStorage.getItem('data')).id,
-                eventID:this.props.eventId,
-                marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
-                runnersData :this.state.expoData
+            if(fancysizeval > this.props.betData.data.size){
+              this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
+            }else{
+              await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
+              const obj = {
+              userName:JSON.parse(localStorage.getItem('data')).userName,
+              description:localStorage.getItem('matchname'),
+              selection:this.runnerNameInput.value,
+              selectionID:this.selectionIdInput.value,
+              odds:this.state.getselfancyOdds,
+              stack:this.stackInput.value,
+              eventID:this.props.eventId,
+              status:"open",
+              marketID:this.props.betData.mid,
+              profit:this.state.profit,
+              loss:this.state.loss,
+              IP:this.props.IP,
+              device:device,
+              marketType: this.props.betData.betType,
+              bettype:this.isbackInput.value,
+              eventType:this.state.sportType
+            }
+            //console.log(obj);
+            this.service.fancyplaceBet(obj,data=>{ 
+              const obj1 = {
+                userName:JSON.parse(localStorage.getItem('data')).userName
               }
-              this.service.updateExpo(obj2,ddata=>{
-                const obj3 = {
-                  userid:JSON.parse(localStorage.getItem('data')).id
+              /*
+              this.users.getMyprofile(obj1,data=>{
+                localStorage.setItem('data',JSON.stringify(data.data));
+                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+              })*/
+              this.users.getMyprofile(obj1,data=>{
+                localStorage.setItem('data',JSON.stringify(data.data));
+                localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+                const obj2 = {
+                  userid:JSON.parse(localStorage.getItem('data')).id,
+                  eventID:this.props.eventId,
+                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  runnersData :this.state.expoData
                 }
-                this.users.getUserExposure(obj3,expodata=>{
-                  this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                })
-              });
-             })
-           })
+                this.service.updateExpo(obj2,ddata=>{
+                  const obj3 = {
+                    userid:JSON.parse(localStorage.getItem('data')).id
+                  }
+                  this.users.getUserExposure(obj3,expodata=>{
+                    this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                  })
+                });
+              })
+            })
+            }
+          }
+          else{
+            if(this.state.getselOdds > this.odsInput.value){
+              this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
+            }else{
+              await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
+              const obj ={
+              userName:JSON.parse(localStorage.getItem('data')).userName,
+              description:localStorage.getItem('matchname'),
+              selection:this.runnerNameInput.value,
+              selectionID:this.selectionIdInput.value,
+              odds:this.state.getselOdds,
+              stack:this.stackInput.value,
+              eventID:this.props.eventId,
+              status:"open",
+              marketID:this.props.betData.mid,
+              profit:this.state.profit,
+              loss:this.state.loss,
+              IP:this.props.IP,
+              device:device,
+              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+              bettype:this.isbackInput.value,
+              eventType:this.state.sportType
+            }
+            //console.log(obj);
+            this.service.placeBet(obj,data=>{ 
+              const obj1 = {
+                userName:JSON.parse(localStorage.getItem('data')).userName
+              }
+              this.users.getMyprofile(obj1,data=>{
+                localStorage.setItem('data',JSON.stringify(data.data));
+                localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
+                const obj2 = {
+                  userid:JSON.parse(localStorage.getItem('data')).id,
+                  eventID:this.props.eventId,
+                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  runnersData :this.state.expoData
+                }
+                this.service.updateExpo(obj2,ddata=>{
+                  const obj3 = {
+                    userid:JSON.parse(localStorage.getItem('data')).id
+                  }
+                  this.users.getUserExposure(obj3,expodata=>{
+                    this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                  })
+                });
+              })
+            })
+            }
           }
         }
+      }
     }
-  }
     else{
       this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
     }

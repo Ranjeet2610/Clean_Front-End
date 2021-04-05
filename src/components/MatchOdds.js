@@ -312,7 +312,7 @@ export default class MatchOdds extends Component {
     }
     this.getselfancyOdds(odds, oddsize, type, fancymarketId,index);
   }
-  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width, indx) => {
+  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width, indx,MPriceKey,isManual) => {
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
       if(oddssize!=='SUSPENDED' && oddssize!=='Running'){
         let displayTest;
@@ -344,6 +344,8 @@ export default class MatchOdds extends Component {
             mid: data.marketId,
             betType: "Fancy",
             fancyType: fancyType,
+            ManualPriceKey:MPriceKey,
+            isItManual:isManual
           },
           display: displayTest,
           IP:this.state.IP
@@ -754,8 +756,6 @@ export default class MatchOdds extends Component {
   }
 
   render() {
-    console.log("UsInfo:",this.state.sportInfo);
-    console.log("UfInfo:",this.state.fancyInfo);
     let inplay;
     let runners = this.state.data;
     let filterrunners = [];
@@ -912,7 +912,6 @@ export default class MatchOdds extends Component {
                                           </td>
                                         )
                                       })
-
                                       availLay = this.state.availLay.map((itemlay) => {
                                         return (
                                           <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
@@ -1115,7 +1114,7 @@ export default class MatchOdds extends Component {
                             }
 
                             <div className="fancy-heads">
-                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo.fancyminStacks} Max stake:{this.state.fancyInfo.fancymaxProfit} </div>
+                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo.fancyminStacks} Max stake:{this.state.fancyInfo.fancymaxStacks} </div>
                               <div className="fancy_buttons">
                                 <div className="fancy-backs head-no" style={{ backgroundColor: '#fa93a9' }}>
                                   <strong>NO</strong>
@@ -1142,7 +1141,6 @@ export default class MatchOdds extends Component {
                                           <span className="matchScore" id="matchScore_29905278"></span>
                                         </div>
                                       </div>
-
                                       <div className="fancyAPI">
                                         <div className="block_box f_m_4138 fancy_5303 f_m_5303" data-id="5303" >
                                           <ul className="sport-high fancyListDiv">
@@ -1165,11 +1163,11 @@ export default class MatchOdds extends Component {
                                                       <td></td>
                                                       <div class={`${ parentitem.marketData.status==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
                                                       <div class={`${ parentitem.marketData.status==='Ball Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+this.state.data.length)}>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+this.state.data.length,parentitem.marketData.ManualPriceKey,parentitem.marketData.isItManual)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                       </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+this.state.data.length)}>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+this.state.data.length,parentitem.marketData.ManualPriceKey,parentitem.marketData.isItManual)}>
                                                         <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
                                                         <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>

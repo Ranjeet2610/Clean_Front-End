@@ -6,9 +6,7 @@ import Navbar from './Navbar';
 import Utilities from './utilities'
 import Account from '../Services/account';
 import Footer from './footer';
-
 export default class Userpl extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -300,7 +298,6 @@ export default class Userpl extends Component {
                   </div>
                 </div>
               </div>
-
               {
                 ////////////////////////////// USER PL FORM /////////////////////////////////////
               }
