@@ -127,26 +127,26 @@ export default class Footer extends Component {
                   </button>
                 </div>
                 <div className="modal-body">
-                  <div class="modal-body row">
-                    <div class="col-md-6">
+                  <div className="modal-body row">
+                    <div className="col-md-6">
                       {
                         this.state.chipName.map((item,index)=>{
                           return(
                             <>
                               <label>Chips Name {`${index+1}:`}</label>
-                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipName"+(index+1)} />
+                              <input type="text" className="form-control" defaultValue={item} onChange={(e)=>this.handleEditStake(e)} name={"ChipName"+(index+1)} />
                             </>
                           )
                         })
                       }
                     </div>
-                    <div class="col-md-6">
+                    <div className="col-md-6">
                     {
                       this.state.chipName.map((item,index)=>{
                           return(
                             <>
                               <label>Chips Value {`${index+1}:`}</label>
-                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipValue"+(index+1)} />
+                              <input type="text" className="form-control" defaultValue={item} onChange={(e)=>this.handleEditStake(e)} name={"ChipValue"+(index+1)} />
                             </>
                           )
                         })
@@ -154,7 +154,7 @@ export default class Footer extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="modal-footer" style={{border:"1px solid black"}}>
+                <div className="modal-footer">
                   <button type="button" onClick={this.handleSubmit} className="btn btn-primary text-center">Update ChipSetting</button>
                   <input type="button" onClick={this.closeModalEditStake}  value="Close" className="btn btn-primary text-center"/>
                 </div>

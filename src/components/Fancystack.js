@@ -168,7 +168,7 @@ class FancyStack extends Component{
       this.SM_BasedFancyStack(this.state.fancyStack,this.state.info.userName);
     }
     else{
-      this.MasterBasedFancyStack(this.state.fancyStack);
+      this.MasterBasedFancyStack(this.state.fancyStack,this.state.info.userName);
     }
   }
 
@@ -218,10 +218,11 @@ class FancyStack extends Component{
     // console.log(arr);
   }
 
-  MasterBasedFancyStack = (data) => {
+  MasterBasedFancyStack = (data,usrlog) => {
     let arr = []
     let itemName;
-    data.map(element=>{
+    let drr = this.state.fancyStack.filter(e=>e?.userInfo[0]?.master[0]===usrlog)
+    drr.map(element=>{
       itemName=element?.clientName
       if(arr.every((item) => item?.name !== itemName)){
         arr.push({
@@ -237,7 +238,7 @@ class FancyStack extends Component{
     this.setState({
       fancyStakeData:arr
     })
-    // console.log(arr);
+    console.log(arr);
   }
 
   handleChange = (event) => {
@@ -257,7 +258,7 @@ class FancyStack extends Component{
       this.setState({
         currUserAccess:'Master'
       })
-      this.MasterBasedFancyStack(this.state.fancyStack  );
+      this.MasterBasedFancyStack(this.state.fancyStack,naam  );
     }
     else{
       this.setState({

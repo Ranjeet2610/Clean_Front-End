@@ -679,10 +679,10 @@ export default class User extends Component {
         }
       }
       this.users.updateUserSportsInfo(obj, (data) => {
-        alert("updated");
+        // alert("updated");
+        console.log(obj);
       });
-      // console.log(obj);
-      window.location.reload();
+      // window.location.reload();
   }
 
   submit_userInfo() {

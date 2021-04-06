@@ -57,13 +57,19 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let sortdata = datafilter.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
+
         this.setState({
-          betHistory:datafilter,
+          betHistory:sortdata,
           newResData:data,
-          newData:datafilter,
+          newData:sortdata,
           load:false
         },()=>{
-          console.log(this.state.load);
+          console.log(this.state.betHistory);
         });      
       });
     }
@@ -150,25 +156,32 @@ handleFilter= async () => {
     if(this.state.historyType!=="All"){
       let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
       const updateList = betHistoryFilter.filter(ele => ele.status===this.state.historyType)
+      let sortdata = updateList.sort((a,b)=>{
+        const aDate = new Date(a.updatedAt)
+        const bDate = new Date(b.updatedAt)
+        return bDate - aDate
+      },()=>
+        console.log(sortdata)
+      )
       await this.setState({
           betHistory:updateList,
           newData:updateList
         })
       }
-    else{
-      let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
-      await this.setState({
+      else{
+        let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+        await this.setState({
           betHistory:betHistoryFilter,
           newData:betHistoryFilter
         })
+      }
+      setTimeout(()=>
+        this.setState({
+          load:false
+        }),2000
+      )
     }
-    setTimeout(()=>
-      this.setState({
-        load:false
-      }),2000
-    )
-  }
-   }
+  }
 
   // handleTabFilter = (eventType) => {
   //   let data = [...this.state.newData]

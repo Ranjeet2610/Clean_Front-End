@@ -1054,7 +1054,7 @@ export default class SideBet extends Component {
                           return(
                             <>
                               <label>Chips Name {`${index+1}:`}</label>
-                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipName"+(index+1)} />
+                              <input type="text" className="form-control" defaultValue={item} onChange={(e)=>this.handleEditStake(e)} name={"ChipName"+(index+1)} />
                             </>
                           )
                         })
@@ -1066,7 +1066,7 @@ export default class SideBet extends Component {
                           return(
                             <>
                               <label>Chips Value {`${index+1}:`}</label>
-                              <input type="text" className="form-control" onChange={(e)=>this.handleEditStake(e)} name={"ChipValue"+(index+1)} />
+                              <input type="text" className="form-control" defaultValue={item} onChange={(e)=>this.handleEditStake(e)} name={"ChipValue"+(index+1)} />
                             </>
                           )
                         })
