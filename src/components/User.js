@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Pagination from './Pagination'
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import Loader from 'react-loader-spinner'
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
@@ -226,20 +227,26 @@ export default class User extends Component {
         fillAmount: this.state.Chips
       }
       this.users.creditbyUser(obj, "creditAmountByMaster", (Data) => {
-        const obj1 = {
-          userName: JSON.parse(localStorage.getItem("data")).userName
-        }
-        this.users.getMyprofile(obj1, (data) => {
-          this.setState({
-            notifyMsg: Data.data.message
-          });
-          setTimeout(() => {
-            localStorage.setItem("data", JSON.stringify(data.data));
-            window.location.reload();
-          }, 1000)
-        }
-        );
+        // const obj1 = {
+        //   userName: JSON.parse(localStorage.getItem("data")).userName
+        // }
+        // this.users.getMyprofile(obj1, (data) => {
+        //   this.setState({
+        //     notifyMsg: Data.data.message
+        //   });
+        //   setTimeout(() => {
+        //     localStorage.setItem("data", JSON.stringify(data.data));
+        //     window.location.reload();
+        //   }, 1000)
+        // });
       });
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("Credit successfully  !","Success");
+        break;
+      }
+      this.supervisorBasedUser();
+      this.closechipDepositpopup();
     }
     else {
       const obj = {
@@ -247,21 +254,26 @@ export default class User extends Component {
         fillAmount: this.state.Chips
       }
       this.users.debitbyUser(obj, "debitAmountByMaster", (Data) => {
-        const obj1 = {
-          userName: JSON.parse(localStorage.getItem("data")).userName
-        }
-        this.users.getMyprofile(obj1, (data) => {
-          this.setState({
-            notifyMsg: Data.data.message
-          });
-          setTimeout(() => {
-            localStorage.setItem("data", JSON.stringify(data.data));
-            window.location.reload();
-          }, 1000)
-        }
-        );
+        // const obj1 = {
+        //   userName: JSON.parse(localStorage.getItem("data")).userName
+        // }
+        // this.users.getMyprofile(obj1, (data) => {
+        //   this.setState({
+        //     notifyMsg: Data.data.message
+        //   });
+        //   setTimeout(() => {
+        //     localStorage.setItem("data", JSON.stringify(data.data));
+        //     window.location.reload();
+        //   }, 1000)
+        // });
+      });
+      switch ('success') {
+        case 'success':
+          NotificationManager.success("Debited successfully...!","Success");
+        break;
       }
-      );
+      this.supervisorBasedUser();
+      this.closechipWithdrawalpopup();
     }
   }
 
@@ -299,6 +311,11 @@ export default class User extends Component {
   }
 
   closePasswordpopup = () => {
+    this.setState({
+      reqNewPwd:"",
+      reqConfirmPwd:"",
+      notEqualMsg:""
+    })
     document.getElementById("userpasswordpopup").style.display = "none";
     document.getElementById("userpasswordpopup").classList.remove("in");
   }
@@ -309,6 +326,7 @@ export default class User extends Component {
     this.setState({
       newParentChip: "",
       newCurrChip: "",
+      Chips:""
     })
   }
 
@@ -318,6 +336,7 @@ export default class User extends Component {
     this.setState({
       newParentChip: "",
       newCurrChip: "",
+      Chips:""
     })
   }
 
@@ -445,12 +464,12 @@ export default class User extends Component {
         this.users.changePassword(obj, (data) => {
           document.getElementById("newPassword").value = "";
           document.getElementById("confirm_password").value = "";
-          this.setState({
-            notifyMsg: data.data.message
-          });
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000)
+          switch ('success') {
+            case 'success':
+              NotificationManager.success(data.data.message,"Success");
+            break;
+          }
+          this.closePasswordpopup();
         });
       }
     }
@@ -480,13 +499,12 @@ export default class User extends Component {
         userName: this.state.selecteduser
       }
       this.users.lockunlock(obj, (data) => {
-        this.setState({
-          notifyMsg: "User locked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("User locked successfully...!","Success");
+          break;
+        }
+        this.supervisorBasedUser();
       });
     }
     else if (this.state.useraction == "mstrlock-1") {
@@ -494,13 +512,12 @@ export default class User extends Component {
         userName: this.state.selecteduser
       }
       this.users.lockunlock(obj, (data) => {
-        this.setState({
-          notifyMsg: "User unlocked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("User unlocked successfully...!","Success");
+          break;
+        }
+        this.supervisorBasedUser();
       });
     }
     else if (this.state.useraction == "lgnusrCloseAc-0") {
@@ -508,13 +525,12 @@ export default class User extends Component {
         userName: this.state.selecteduser
       }
       this.users.closeuser(obj, (data) => {
-        this.setState({
-          notifyMsg: "User close successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("User close successfully...!","Success");
+          break;
+        }
+        this.supervisorBasedUser();
       });
     }
     else if (this.state.useraction == "lgnusrlckbtng-0") {
@@ -522,13 +538,12 @@ export default class User extends Component {
         userName: this.state.selecteduser
       }
       this.users.lockingUnlockingBetting(obj, (data) => {
-        this.setState({
-          notifyMsg: "Betting locked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Betting locked successfully...!","Success");
+          break;
+        }
+        this.supervisorBasedUser();
       });
     }
     else if (this.state.useraction == "lgnusrlckbtng-1") {
@@ -536,13 +551,12 @@ export default class User extends Component {
         userName: this.state.selecteduser
       }
       this.users.lockingUnlockingBetting(obj, (data) => {
-        this.setState({
-          notifyMsg: "Betting unlocked successfully",
-          msgBox: "block",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 3000);
+        switch ('success') {
+          case 'success':
+            NotificationManager.success("Betting unlocked successfully...!","Success");
+          break;
+        }
+        this.supervisorBasedUser();
       });
     }
   }
@@ -729,6 +743,7 @@ export default class User extends Component {
       <div>
         <Navbar />
         <Sidebar />
+        <NotificationContainer/>
         <div className="forModal" />
       
         <div className="container body">
@@ -980,7 +995,7 @@ export default class User extends Component {
                       <button type="button" className="close" onClick={this.closePasswordpopup} data-dismiss="modal" >×</button>
                       <h4 className="modal-title">Change Password</h4>
                     </div>
-                    <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div>
+                    {/* <div className="text-center" style={{ color: 'green', fontSize: '20px' }}>{this.state.notifyMsg}</div> */}
                     <div className="modal-body">
                       <div id="PassUserMsg"></div>
                       <div className="row">
@@ -1037,7 +1052,7 @@ export default class User extends Component {
                           <span id="msg_error"></span><span id="errmsg"></span>
                           <div className="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" className="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" value={this.state.Chips} className="form-control" onChange={this.handleChange} required="" />
                             <span id="ChipsN" className="errmsg"></span>
                           </div>
                           <div className="col-md-12">
@@ -1103,7 +1118,7 @@ export default class User extends Component {
 
                           <div className="col-md-6">
                             <label> Free Chips : </label>
-                            <input type="text" name="Chips" className="form-control" onChange={this.handleChange} required="" />
+                            <input type="text" name="Chips" value={this.state.Chips} className="form-control" onChange={this.handleChange} required="" />
                             <span id="ChipsN" className="errmsg"></span>
                           </div>
                           <div className="col-md-12">

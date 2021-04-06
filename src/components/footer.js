@@ -154,8 +154,9 @@ export default class Footer extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="modal-footer">
+                <div className="modal-footer" style={{border:"1px solid black"}}>
                   <button type="button" onClick={this.handleSubmit} className="btn btn-primary text-center">Update ChipSetting</button>
+                  <input type="button" onClick={this.closeModalEditStake}  value="Close" className="btn btn-primary text-center"/>
                 </div>
               {/* </form> */}
             </div>
