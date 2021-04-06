@@ -34,6 +34,7 @@ export default class ManualFancyOdds extends Component {
     };
     this.events = new Livevents();
     this.users = new Users();
+    this.onKeyUp = this.onKeyUp.bind(this);
 }
 
   getFancyMarketType = async () => {
@@ -100,6 +101,46 @@ export default class ManualFancyOdds extends Component {
     })
   }
 
+  onKeyUp(event) {
+    if(event.target.name==="ManualLayPrice"){
+      const obj = {
+        id: event.target.alt,
+        ManualLayPrice: event.target.value
+      }
+      //console.log(obj);
+      this.users.updateManualOdds(obj,data=>{
+        this.getFancyMarketType();
+      })
+    }else if(event.target.name==="ManualLaySize"){
+        const obj = {
+          id: event.target.alt,
+          ManualLaySize: event.target.value
+        }
+        //console.log(obj);
+      this.users.updateManualOdds(obj,data=>{
+        this.getFancyMarketType();
+      })
+    }else if(event.target.name==="ManualBackPrice"){
+      const obj = {
+        id: event.target.alt,
+        ManualBackPrice: event.target.value
+      }
+      //console.log(obj);
+      this.users.updateManualOdds(obj,data=>{
+        this.getFancyMarketType();
+      })
+    }else if(event.target.name==="ManualBackSize"){
+      const obj = {
+        id: event.target.alt,
+        ManualBackSize: event.target.value
+      }
+      //console.log(obj);
+      this.users.updateManualOdds(obj,data=>{
+        this.getFancyMarketType();
+      })
+    }
+  }
+  /*
   handlemanualFancyOdds = (event,id) =>{
     let layprice=document.getElementById("layprice"+id).value//this.state.ManualLayPrice
     let laysize=document.getElementById("laysize"+id).value
@@ -120,7 +161,7 @@ export default class ManualFancyOdds extends Component {
         indx:""
       })
     })
-  }
+  }*/
 
   handlemanualSatus = (event,id) =>{
       let status=event.target.value
@@ -245,16 +286,16 @@ export default class ManualFancyOdds extends Component {
                                     </td> 					   
                                     <td className="red text-center">
                                         <label>Price:
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualLayPrice} type="number" required id={"layprice"+item.marketData._id} name ="ManualLayPrice" style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
+                                          <input onKeyUp={this.onKeyUp} defaultValue={item.marketData.ManualLayPrice} type="number" required alt={item.marketData._id} id={"layprice"+item.marketData._id} name ="ManualLayPrice" style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LayPrice}<br/>
                                         <label>Size:&nbsp;&nbsp;
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualLaySize} type="number" required id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LaySize}
+                                          <input onKeyUp={this.onKeyUp} defaultValue={item.marketData.ManualLaySize} type="number" required alt={item.marketData._id} id={"laysize"+item.marketData._id} name ="ManualLaySize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.LaySize}
                                     </td> 
 
                                     <td className="red text-center">
                                         <label>Price:
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualBackPrice} type="number" required id={"backprice"+item.marketData._id} name ="ManualBackPrice"  style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
+                                          <input onKeyUp={this.onKeyUp} defaultValue={item.marketData.ManualBackPrice} type="number" required alt={item.marketData._id} id={"backprice"+item.marketData._id} name ="ManualBackPrice"  style={{height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackPrice}<br/>
                                         <label>Size:&nbsp;&nbsp;
-                                          <input onChange={(e)=>this.handlemanualFancyOdds(e,item.marketData._id)} value={item.marketData.ManualBackSize} type="number" required id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackSize}
+                                          <input onKeyUp={this.onKeyUp} defaultValue={item.marketData.ManualBackSize} type="number" required alt={item.marketData._id} id={"backsize"+item.marketData._id} name ="ManualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>&nbsp;{item.marketData.BackSize}
                                     </td> 
 
                                     <td className="red text-center">

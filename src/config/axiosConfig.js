@@ -21,11 +21,14 @@ axios.interceptors.request.use(
 axios.interceptors.response.use((response) => {
     return response;
 }, function (error) {
+    //console.log("error",error.response.status,typeof(error.response.status))
     // Do something with response error
-    if (error.response.status === 401) {
-        console.log('unauthorized, logging out ...');
-        localStorage.clear();
-        window.location.href ='/';
+    if(typeof(error.response.status)!==undefined){
+        if (error.response.status === 401) {
+            console.log('unauthorized, logging out ...');
+            localStorage.clear();
+            window.location.href ='/';
+        }
     }
     return Promise.reject(error.response);
 });

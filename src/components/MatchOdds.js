@@ -97,7 +97,8 @@ export default class MatchOdds extends Component {
       filterbookdata:'',
       IP:'',
       scoreId:'',
-      userInfo:'',
+      sportInfo:'',
+      fancyInfo:'',
       matchName: JSON.parse(localStorage.getItem("matchname")).name !== undefined ? JSON.parse(localStorage.getItem("matchname")).name : " v ",
       sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
       timer: "",
@@ -311,7 +312,7 @@ export default class MatchOdds extends Component {
     }
     this.getselfancyOdds(odds, oddsize, type, fancymarketId,index);
   }
-  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width, indx) => {
+  betfancy = (type,oddsprice,oddssize,data,fancyType, index, width, indx,MPriceKey,isManual) => {
     if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
       if(oddssize!=='SUSPENDED' && oddssize!=='Running'){
         let displayTest;
@@ -343,6 +344,8 @@ export default class MatchOdds extends Component {
             mid: data.marketId,
             betType: "Fancy",
             fancyType: fancyType,
+            ManualPriceKey:MPriceKey,
+            isItManual:isManual
           },
           display: displayTest,
           IP:this.state.IP
@@ -359,12 +362,25 @@ export default class MatchOdds extends Component {
     this.setState({
       load:true
     })
-    this.users.userSportsInfo({id: this.userDetails.id}, (data) => {
+    let sportName;
+    //cricket,fancy,tennis,soccer
+    if(this.state.sportType===1){
+      sportName="tennis";
+    }else if(this.state.sportType===2){
+      sportName="soccer";
+    }else if(this.state.sportType===4){
+      sportName="cricket";
+      this.users.userSportsInfo({id: this.userDetails.id,type:"fancy"}, (data) => {
+        this.setState({
+          fancyInfo: data.data,
+        });
+      });
+    }
+    this.users.userSportsInfo({id: this.userDetails.id,type:sportName}, (data) => {
       this.setState({
-        userInfo: data.data,
+        sportInfo: data.data,
       });
     });
-    console.log("userinfo:",this.state.userInfo)
     this.interval = setInterval(() => {
       service.getListMarketType(this.props.match.params.id, (data) => {
         this.setState({
@@ -389,17 +405,19 @@ export default class MatchOdds extends Component {
         this.setState({
           fancymarket: data.fancymarket,
         });
-        if(this.state.selbetType !== "" && this.state.selOdds!==""){
-          let getUodds = "";
-          let getUsize = "";
-          if(this.state.selbetType==="Back"){
-            getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
-            getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
-          }else{
-            getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
-            getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+        if(this.state.fancymarket.length!==0){
+          if(this.state.selbetType !== "" && this.state.selOdds!==""){
+            let getUodds = "";
+            let getUsize = "";
+            if(this.state.selbetType==="Back"){
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+            }else{
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+            }
+            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
           }
-          this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
         }
       });
     }, 1000);
@@ -831,7 +849,8 @@ export default class MatchOdds extends Component {
                             <table className={`table table-striped  bulk_actions matchTable1171389306 ${this.state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
                               <tbody>
                                 <tr className="headings mobile_heading">
-                                  <th className="fix_heading color_red">Min stake:100 Max stake:500000</th>
+                                  <th className="fix_heading color_red">Min stake:{this.state.sportInfo.minStacks} Max stake:{this.state.sportInfo.maxStacks}<br></br>
+                                  Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds}</th>
                                   <th> </th>
                                   <th> </th>
                                   <th className="back_heading_color">Back</th>
@@ -893,7 +912,6 @@ export default class MatchOdds extends Component {
                                           </td>
                                         )
                                       })
-
                                       availLay = this.state.availLay.map((itemlay) => {
                                         return (
                                           <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata=>{return newdata.selectionId===this.state.marketOdds[0].runners[index].selectionId})[0], this.state.marketOdds, index, window.innerWidth)} >
@@ -961,6 +979,8 @@ export default class MatchOdds extends Component {
                                             selfancyOdds={this.state.selfancyOdds} 
                                             selfancySize={this.state.selfancySize}
                                             IP = {this.state.IP}
+                                            sportInfo={this.state.sportInfo}
+                                            fancyInfo={this.state.fancyInfo}
                                             />
                                           </div>
                                         </td>
@@ -1094,7 +1114,7 @@ export default class MatchOdds extends Component {
                             }
 
                             <div className="fancy-heads">
-                              <div className="event-sports"style={{color:'red'}} >Min stake:100 Max stake:500000 </div>
+                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo.fancyminStacks} Max stake:{this.state.fancyInfo.fancymaxStacks} </div>
                               <div className="fancy_buttons">
                                 <div className="fancy-backs head-no" style={{ backgroundColor: '#fa93a9' }}>
                                   <strong>NO</strong>
@@ -1121,7 +1141,6 @@ export default class MatchOdds extends Component {
                                           <span className="matchScore" id="matchScore_29905278"></span>
                                         </div>
                                       </div>
-
                                       <div className="fancyAPI">
                                         <div className="block_box f_m_4138 fancy_5303 f_m_5303" data-id="5303" >
                                           <ul className="sport-high fancyListDiv">
@@ -1144,11 +1163,11 @@ export default class MatchOdds extends Component {
                                                       <td></td>
                                                       <div class={`${ parentitem.marketData.status==='SUSPENDED' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>SUSPENDED</div>
                                                       <div class={`${ parentitem.marketData.status==='Ball Running' ? "fancyOddsSBR" : "fancyOddsSBRnone" }`}>BALL RUNNING</div>
-                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+this.state.data.length)}>
+                                                      <td class="fancy_lay" onClick={() => this.betfancy("Lay",parentitem.marketData.LayPrice,parentitem.marketData.LaySize,parentitem.marketData, "NO", index, window.innerWidth, index+this.state.data.length,parentitem.marketData.ManualPriceKey,parentitem.marketData.isItManual)}>
                                                         <button class="back-cell cell-btn" id="BackYes_5303">{parentitem.marketData.LayPrice}</button>
                                                         <button id="YesValume_5303" class="disab-btn">{parentitem.marketData.LaySize}</button>
                                                       </td>
-                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+this.state.data.length)}>
+                                                      <td class="fancy_back" onClick={() => this.betfancy("Back",parentitem.marketData.BackPrice,parentitem.marketData.BackSize,parentitem.marketData,"YES", index, window.innerWidth, index+this.state.data.length,parentitem.marketData.ManualPriceKey,parentitem.marketData.isItManual)}>
                                                         <button class="lay-cell cell-btn" id="LayNO_5303">{parentitem.marketData.BackPrice}</button>
                                                         <button id="NoValume_5303" class="disab-btn">{parentitem.marketData.BackSize}</button>
                                                       </td>
@@ -1189,7 +1208,9 @@ export default class MatchOdds extends Component {
                                         selfancyOdds={this.state.selfancyOdds} 
                                         selfancySize={this.state.selfancySize}
                                         IP = {this.state.IP}
-                                        />
+                                        sportInfo={this.state.sportInfo}
+                                        fancyInfo={this.state.fancyInfo}
+                                      />
                                      </div>
                                     </div>
                                   );
@@ -1309,7 +1330,9 @@ export default class MatchOdds extends Component {
                   selfancyOdds={this.state.selfancyOdds} 
                   selfancySize={this.state.selfancySize}
                   IP = {this.state.IP}
-                            />
+                  sportInfo={this.state.sportInfo}
+                  fancyInfo={this.state.fancyInfo}
+                  />
                 <Footer />
               </div>
             </div>
