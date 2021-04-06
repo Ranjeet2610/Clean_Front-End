@@ -850,7 +850,8 @@ export default class MatchOdds extends Component {
                               <tbody>
                                 <tr className="headings mobile_heading">
                                   <th className="fix_heading color_red">Min stake:{this.state.sportInfo.minStacks} Max stake:{this.state.sportInfo.maxStacks}<br></br>
-                                  Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds}</th>
+                                  {/* Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds} */}
+                                  </th>
                                   <th> </th>
                                   <th> </th>
                                   <th className="back_heading_color">Back</th>
