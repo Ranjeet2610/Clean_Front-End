@@ -567,6 +567,7 @@ export default class User extends Component {
     })
     document.getElementById("viewinfo").classList.add("in");
     document.getElementById("viewinfo").style.display = "block";
+    //cricket,fancy,tennis,soccer
     const obj = {
       userId:user.userName,
       id: this.state.userdetails.id,
