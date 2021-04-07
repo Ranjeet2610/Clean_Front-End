@@ -50,14 +50,29 @@ class Dashboard extends Component {
     this.getallsports();
     this.service.getLiveEvents(data=>{
       const dataFFilter = data.data.Data.filter((ele)=>ele.eventType===1)
+      let fdata = dataFFilter.sort((a,b)=>{
+        const aDate = new Date(a.OpenDate)
+        const bDate = new Date(b.OpenDate)
+        return aDate.getTime() - bDate.getTime()
+      })
       const dataTFilter = data.data.Data.filter((ele)=>ele.eventType===2)
+      let tdata = dataTFilter.sort((a,b)=>{
+        const aDate = new Date(a.OpenDate)
+        const bDate = new Date(b.OpenDate)
+        return aDate.getTime() - bDate.getTime()
+      })
       const dataCFilter = data.data.Data.filter((ele)=>ele.eventType===4)
+      let cdata = dataCFilter.sort((a,b)=>{
+        const aDate = new Date(a.OpenDate)
+        const bDate = new Date(b.OpenDate)
+        return aDate.getTime() - bDate.getTime()
+      })
       const inplayData = data.data.Data.filter((ele)=>new Date(ele.OpenDate).getTime()<new Date().getTime())
       this.setState({
         inplayEvents:inplayData,
-        soccerData:dataFFilter,
-        tenisData:dataTFilter, 
-        cricketData:dataCFilter,
+        soccerData:fdata,
+        tenisData:tdata, 
+        cricketData:cdata,
         load: false
       })
     });

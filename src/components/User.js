@@ -104,15 +104,19 @@ export default class User extends Component {
   supervisorBasedUser = () => {
     let info = JSON.parse(localStorage.getItem('data'))
     let propName = this.props?.match?.params?.username?this.props?.match?.params?.username:undefined
-    // console.log("pppppp",propName);
     if(propName===undefined){
     if(this.props.match.params.username ? this.props.match.params.username : info.Admin){
       this.setState({
         load:true
       })
       this.users.getAllUserBasedOnSuperMaster(info.userName, (data) => {
+        let sortdata = data.data.data.sort((a,b)=>{
+          const aDate = new Date(a.createdAt)
+          const bDate = new Date(b.createdAt)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          data: data.data.data,
+          data: sortdata,
           searchFilter: data.data,
         });
         let totalBalance = 0;
@@ -136,9 +140,14 @@ export default class User extends Component {
         load:true
       })
       this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+        let sortdata = data.data.sort((a,b)=>{
+          const aDate = new Date(a.createdAt)
+          const bDate = new Date(b.createdAt)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          data: data.data,
-          searchFilter: data.data,
+          data: sortdata,
+          searchFilter: sortdata,
         });
         let totalBalance = 0;
         this.state.data.map((ele) => totalBalance += ele.walletBalance);
@@ -161,9 +170,14 @@ export default class User extends Component {
         load:true
       })
       this.users.getAllusers((data) => {
+        let sortdata = data.data.sort((a,b)=>{
+          const aDate = new Date(a.createdAt)
+          const bDate = new Date(b.createdAt)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          data: data.data,
-          searchFilter: data.data,
+          data: sortdata,
+          searchFilter: sortdata,
         });
         let totalBalance = 0;
         this.state.data.map((ele) => totalBalance += ele.walletBalance);
@@ -179,9 +193,14 @@ export default class User extends Component {
       load:true
     })
     this.users.getUsersforMaster(this.props.match.params.username, (data) => {
+      let sortdata = data.data.sort((a,b)=>{
+        const aDate = new Date(a.createdAt)
+        const bDate = new Date(b.createdAt)
+        return bDate.getTime() - aDate.getTime()
+      })
       this.setState({
-        data: data.data,
-        searchFilter: data.data,
+        data: sortdata,
+        searchFilter: sortdata,
       });
       let totalBalance = 0;
       this.state.data.map((ele) => totalBalance += ele.walletBalance);
@@ -743,9 +762,12 @@ export default class User extends Component {
   }
 
   render() {
+    
+    console.log(this.state.data)
+    console.log(this.state.searchFilter)
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.data?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />

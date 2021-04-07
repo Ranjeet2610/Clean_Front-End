@@ -44,8 +44,13 @@ export default class Liveevents extends Component {
         }
         this.events.getLiveEvents(obj,data=>{
             const dataFilter = data.data.data.filter((ele)=>ele.eventType===this.props.location.state.eventType)
+            let sortdata = data.data.data.sort((a,b)=>{
+              const adate = new Date(a.OpenDate)
+              const bdate = new Date(b.OpenDate)
+              return adate.getTime() - bdate.getTime()
+            })
         this.setState({
-        resdata: dataFilter,
+        resdata: sortdata,
         load: false
         })
     });
