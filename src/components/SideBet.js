@@ -1102,10 +1102,10 @@ export default class SideBet extends Component {
     if(this.state.showLoader===true){
       display = {display:'none'};
     }
-    const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
-    const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    // const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+    // const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
+    // const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
+    // const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
 
     return (
     <div className="col-md-4 col-xs-12">
@@ -1319,11 +1319,12 @@ export default class SideBet extends Component {
                       {
                         this.state.openTab==='fancyBets' ?
                         // fcurrentPosts.length>0 &&
-                        fcurrentPosts.map((item,index)=>{
+                        this.state.fbetHistroy.map((item,index)=>{
                           (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                           return(
                             <tr style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
-                              <td className="text-center">{(this.state.fbetHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
+                              {/* <td className="text-center">{(this.state.fbetHistroy.length+1)-(indexOfFirstPost+index+1)}</td> */}
+                              <td className="text-center">{index+1}</td>
                               <td className="text-center">{item.selection}</td>
                               <td className="text-center">{item.clientName}</td>
                               <td className="text-center">{item.odds}</td>
@@ -1349,12 +1350,13 @@ export default class SideBet extends Component {
                           );
                         })
                         :
-                        currentPosts.length>0 &&
-                          currentPosts.map((item,index)=>{
+                        this.state.betHistroy.length>0 &&
+                          this.state.betHistroy.map((item,index)=>{
                             (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                             return(
                               <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
-                                <td className="text-center">{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td>
+                                {/* <td className="text-center">{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td> */}
+                                <td className="text-center">{this.state.betHistroy.length-index}</td>
                                 <td className="text-center">{item.selection}</td>
                                 <td className="text-center">{item.clientName}</td>
                                 <td className="text-center">{item.odds}</td>
@@ -1420,8 +1422,8 @@ export default class SideBet extends Component {
                             parent_team3 = parseFloat(parent_team3) + parseFloat(item.T3TotalPL);
                             total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
                           }
-                          console.log("data:",this.state.SoM)
-                          console.log("User:",this.state.curPoAcc)
+                          // console.log("data:",this.state.SoM)
+                          // console.log("User:",this.state.curPoAcc)
                             return(
                               <tr key={index}>
                                 <td className="text-center">

@@ -57,6 +57,11 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,superAdmin:this.userDetails.userName},'getSuperAdminSectionOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let alldata = data.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
         let sortdata = datafilter.sort((a,b)=>{
           const aDate = new Date(a.createdDate)
           const bDate = new Date(b.createdDate)
@@ -65,11 +70,9 @@ export default class Bethistory extends Component {
 
         this.setState({
           betHistory:sortdata,
-          newResData:data,
+          newResData:alldata,
           newData:sortdata,
           load:false
-        },()=>{
-          console.log(this.state.betHistory);
         });      
       });
     }
@@ -77,10 +80,20 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,adminName:this.userDetails.userName},'getAdminSectionOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let alldata = data.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
+        let sortdata = datafilter.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
+          betHistory:sortdata,
+          newResData:alldata,
+          newData:sortdata,
           load:false
         });             
       }); 
@@ -89,10 +102,20 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,masterName:this.userDetails.userName},'getMasterSectionOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let alldata = data.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
+        let sortdata = datafilter.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
+          betHistory:sortdata,
+          newResData:alldata,
+          newData:sortdata,
           load:false
         });             
       });
@@ -101,10 +124,20 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:this.userDetails.userName},'getUserOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let alldata = data.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
+        let sortdata = datafilter.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
+          betHistory:sortdata,
+          newResData:alldata,
+          newData:sortdata,
           load:false
         });             
       });
@@ -114,10 +147,20 @@ export default class Bethistory extends Component {
       this.service.betHistoryAsPerUser({Betstatus:this.state.historyType,userName:propName},'getUserOpenBetHistory',(data)=>{
         let datafilter = data.filter(e => new Date(Scurr) <= new Date(e.createdDate) && new Date(e.createdDate) <= new Date(Ecurr) )
         // let datafilter = data.filter(ele=>ele.status===this.state.historyType)
+        let alldata = data.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
+        let sortdata = datafilter.sort((a,b)=>{
+          const aDate = new Date(a.createdDate)
+          const bDate = new Date(b.createdDate)
+          return bDate.getTime() - aDate.getTime()
+        })
         this.setState({
-          betHistory:datafilter,
-          newResData:data,
-          newData:datafilter,
+          betHistory:sortdata,
+          newResData:alldata,
+          newData:sortdata,
           load:false
         });             
       });
@@ -160,19 +203,22 @@ handleFilter= async () => {
         const aDate = new Date(a.updatedAt)
         const bDate = new Date(b.updatedAt)
         return bDate - aDate
-      },()=>
-        console.log(sortdata)
-      )
+      })
       await this.setState({
-          betHistory:updateList,
-          newData:updateList
+          betHistory:sortdata,
+          newData:sortdata
         })
       }
       else{
         let betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.createdDate) && new Date(e.createdDate) <= tD )
+        let sortdata = betHistoryFilter.sort((a,b)=>{
+          const aDate = new Date(a.updatedAt)
+          const bDate = new Date(b.updatedAt)
+          return bDate - aDate
+        })
         await this.setState({
-          betHistory:betHistoryFilter,
-          newData:betHistoryFilter
+          betHistory:sortdata,
+          newData:sortdata
         })
       }
       setTimeout(()=>
@@ -205,8 +251,13 @@ handleFilter= async () => {
     let data = [...this.state.newData]
     if(eventType!==""){
       let betHistoryFilter = data.filter(ele => ele.eventType === eventType )
+      let sortdata = betHistoryFilter.sort((a,b)=>{
+        const aDate = new Date(a.updatedAt)
+        const bDate = new Date(b.updatedAt)
+        return bDate - aDate
+      })
       this.setState({
-        betHistory:betHistoryFilter
+        betHistory:sortdata
       })
     }
     else{
@@ -254,7 +305,7 @@ handleFilter= async () => {
       historyType:'All',
       load:true
     })
-    this.getBetData(this.state.from_date, this.state.to_date);
+    this.getBetData(this.state.currentStart, this.state.currentend);
   }
   
   paginate = (pageNumber) => {
@@ -269,7 +320,7 @@ handleFilter= async () => {
 
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.betHistory?.reverse().slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.betHistory?.slice(indexOfFirstPost, indexOfLastPost);
     return (
         <div>
           <Navbar />
@@ -288,6 +339,9 @@ handleFilter= async () => {
                       <option>25</option>
                       <option>50</option>
                       <option>100</option>
+                      {this.state.betHistory.length>100&&
+                      <option>{this.state.betHistory.length}</option>
+                    }
                     </select>
                   </div>
                 </div>

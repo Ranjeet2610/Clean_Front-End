@@ -405,7 +405,7 @@ export default class SuperMaster extends Component {
           Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
-        path = "master/" + this.state.masterUName;
+        path = "/master/" + this.state.masterUName;
       } 
       else {
         data = {
@@ -723,6 +723,9 @@ export default class SuperMaster extends Component {
                     <option>25</option>
                     <option>50</option>
                     <option>100</option>
+                    {this.state.data.length>100&&
+                      <option>{this.state.data.length}</option>
+                    }
                   </select>&nbsp;
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit">

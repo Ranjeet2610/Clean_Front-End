@@ -741,6 +741,9 @@ export default class Master extends Component {
                     <option>25</option>
                     <option>50</option>
                     <option>100</option>
+                    {this.state.data.length>100&&
+                      <option>{this.state.data.length}</option>
+                    }
                   </select>
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit" method="post" >
