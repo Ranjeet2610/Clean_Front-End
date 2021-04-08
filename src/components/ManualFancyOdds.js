@@ -74,20 +74,6 @@ export default class ManualFancyOdds extends Component {
         }); 
       })  
     }
-    // else if(type===3){
-    //     this.setState({
-    //         [event.target.name]:event.target.checked,
-    //         indx:marketId
-    //     })
-    // }
-    // else{
-    //     if(parseInt(event.target.value)>=0){
-    //         await this.setState({
-    //             [event.target.name]:event.target.value,
-    //             indx:marketId
-    //         })
-    //     }
-    // }
   }
 
   handlemanualPriceKey = (event,id) =>{
@@ -107,7 +93,6 @@ export default class ManualFancyOdds extends Component {
         id: event.target.alt,
         ManualLayPrice: event.target.value
       }
-      //console.log(obj);
       this.users.updateManualOdds(obj,data=>{
         this.getFancyMarketType();
       })
@@ -116,7 +101,6 @@ export default class ManualFancyOdds extends Component {
           id: event.target.alt,
           ManualLaySize: event.target.value
         }
-        //console.log(obj);
       this.users.updateManualOdds(obj,data=>{
         this.getFancyMarketType();
       })
@@ -125,7 +109,6 @@ export default class ManualFancyOdds extends Component {
         id: event.target.alt,
         ManualBackPrice: event.target.value
       }
-      //console.log(obj);
       this.users.updateManualOdds(obj,data=>{
         this.getFancyMarketType();
       })
@@ -134,7 +117,6 @@ export default class ManualFancyOdds extends Component {
         id: event.target.alt,
         ManualBackSize: event.target.value
       }
-      //console.log(obj);
       this.users.updateManualOdds(obj,data=>{
         this.getFancyMarketType();
       })
@@ -303,9 +285,6 @@ export default class ManualFancyOdds extends Component {
                                     </td> 					   
                                     
                                     <td className="red text-center">
-                                    {/* <label>Status:</label>&nbsp; */
-                                    console.log(new Date(item.marketData.updatedAt).getTime(),new Date().getTime())
-                                    }
                                     {
                                       item.marketData.isItManual ?
                                       <div style={{display:'flex'}}>

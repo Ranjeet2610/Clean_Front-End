@@ -180,22 +180,6 @@ const obj = {
   });
 }
 
-// saveNews = (e)=>{
-//   e.preventDefault();
-//   this.users.addNews(this.state.addNews,(data,methodType) => {
-//     if(methodType==='get'){
-//     this.setState({
-//       NewsList:data.data.data
-//     })
-//   } 
-//     else
-//       {
-//         console.log("waala",data.data.data);
-//       }
-//     // this.closeAddNews();
-//   })
-// }
-
 exposureDistribution = () => {
   let name = JSON.parse(localStorage.getItem('data')).userName
   this.users.exposureDistribution(name, (data)=>{
@@ -259,6 +243,7 @@ closeAddBetPlaceingTime=()=>{
 }
 
 expoModal = () => {
+  this.exposureDistribution();
   document.getElementById('myModal').classList.add("in");
   document.getElementById('myModal').style.display = 'block';
 }
@@ -275,7 +260,6 @@ handleAddBetTime = () => {
   }
   if(this.state.game !== 0 || this.state.betTime !== "")
   this.users.addbetplacetime(obj,data=>{
-    // console.log(data.message);
     switch ('success') {
       case 'success':
         NotificationManager.success('Time Set Successfully !',"Success");

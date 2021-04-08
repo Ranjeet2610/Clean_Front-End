@@ -212,7 +212,7 @@ class Dashboard extends Component {
                             {
                               this.state.cricketData.length <= 0 ? null :
                                 this.state.cricketData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let expEvent;
                                   // let oddsDB = {
                                   //   item:item?.runners[0]?.backOdds,
                                   //   item:item?.runners[0]?.backOdds,
@@ -224,9 +224,20 @@ class Dashboard extends Component {
                                   // console.log(item);
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
+                                    expEvent=true
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
+                                    let back0 = item?.runners[0]?.backOdds
+                                    let lay0 = item?.runners[0]?.layOdds
+                                    let back1 = item?.runners[1]?.backOdds
+                                    let lay1 = item?.runners[1]?.layOdds
+                                    if(back0&&lay0&&back1&&lay1){
+                                      expEvent=true
+                                    }
+                                    else{
+                                      expEvent=false
+                                    }
                                   }
                                   eventDate = Utilities.displayDateTime(item.OpenDate);
                                   return (
@@ -275,12 +286,23 @@ class Dashboard extends Component {
                             {
                               this.state.tenisData.length <= 0 ? null :
                                 this.state.tenisData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let expEvent;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
+                                    expEvent=true
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
+                                    let back0 = item?.runners[0]?.backOdds
+                                    let lay0 = item?.runners[0]?.layOdds
+                                    let back1 = item?.runners[1]?.backOdds
+                                    let lay1 = item?.runners[1]?.layOdds
+                                    if(back0&&lay0&&back1&&lay1){
+                                      expEvent=true
+                                    }
+                                    else{
+                                      expEvent=false
+                                    }
                                   }
                                   eventDate = Utilities.displayDateTime(item.OpenDate);
                                   return (
@@ -327,14 +349,26 @@ class Dashboard extends Component {
                             {
                               this.state.soccerData.length <= 0 ? null :
                                 this.state.soccerData.map((item,index) => {
-                                  let inplay ;let eventDate;
+                                  let inplay ;let eventDate;let expEvent;
                                   if(new Date(item.OpenDate).getTime()>new Date().getTime()){
                                     inplay ='GOING IN-PLAY';
+                                    expEvent=true
                                   }
                                   else{
                                     inplay = 'IN-PLAY';
+                                    let back0 = item?.runners[0]?.backOdds
+                                    let lay0 = item?.runners[0]?.layOdds
+                                    let back1 = item?.runners[1]?.backOdds
+                                    let lay1 = item?.runners[1]?.layOdds
+                                    if(back0&&lay0&&back1&&lay1){
+                                      expEvent=true
+                                    }
+                                    else{
+                                      expEvent=false
+                                    }
                                   }
                                   eventDate = Utilities.displayDateTime(item.OpenDate);
+                                  if(expEvent===true){
                                   return (
                                     <div key={index} id="user_row_" className="sport_row sportrow-4  matchrow-29894585" title="Match OODS" >
                                       <div className="sport_name">
@@ -361,7 +395,7 @@ class Dashboard extends Component {
                                       </div> 
                             
                                     </div>
-                                  );
+                                  )};
                                 })    
                             }
                           </div>
