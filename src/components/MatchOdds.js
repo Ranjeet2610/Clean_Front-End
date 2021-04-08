@@ -849,7 +849,7 @@ export default class MatchOdds extends Component {
                             <table className={`table table-striped  bulk_actions matchTable1171389306 ${this.state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
                               <tbody>
                                 <tr className="headings mobile_heading">
-                                  <th className="fix_heading color_red">Min stake:{this.state.sportInfo.minStacks} Max stake:{this.state.sportInfo.maxStacks}<br></br>
+                                  <th className="fix_heading color_red">Min stake:{this.state.sportInfo?.minStacks} Max stake:{this.state.sportInfo?.maxStacks}<br></br>
                                   {/* Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds} */}
                                   </th>
                                   <th> </th>
@@ -1115,7 +1115,7 @@ export default class MatchOdds extends Component {
                             }
 
                             <div className="fancy-heads">
-                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo.fancyminStacks} Max stake:{this.state.fancyInfo.fancymaxStacks} </div>
+                              <div className="event-sports"style={{color:'red'}}>Min stake:{this.state.fancyInfo?.fancyminStacks} Max stake:{this.state.fancyInfo?.fancymaxStacks} </div>
                               <div className="fancy_buttons">
                                 <div className="fancy-backs head-no" style={{ backgroundColor: '#fa93a9' }}>
                                   <strong>NO</strong>
