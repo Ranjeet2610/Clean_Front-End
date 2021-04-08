@@ -80,9 +80,14 @@ export default class Master extends Component {
   getmasterforSupermaster = () => {
     const obj = this.props.match.params.username ? this.props.match.params.username : JSON.parse(localStorage.getItem("data")).userName
         this.users.getmasterforSupermaster(obj, (data) => {
+          let sortdata = data.data.sort((a,b)=>{
+            const aDate = new Date(a.createdAt)
+            const bDate = new Date(b.createdAt)
+            return bDate.getTime() - aDate.getTime()
+          })
           this.setState({
-            data: data.data,
-            searchFilter: data.data,
+            data: sortdata,
+            searchFilter: sortdata,
             walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
             load:false
           });
@@ -117,9 +122,14 @@ export default class Master extends Component {
 
   getMastersforAdmin = () => {
     this.users.getMastersforAdmin((data) => {
+      let sortdata = data.data.sort((a,b)=>{
+        const aDate = new Date(a.createdAt)
+        const bDate = new Date(b.createdAt)
+        return bDate.getTime() - aDate.getTime()
+      })
       this.setState({
-        data: data.data,
-        searchFilter: data.data,
+        data: sortdata,
+        searchFilter: sortdata,
         walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
         load:false
       });
@@ -741,6 +751,9 @@ export default class Master extends Component {
                     <option>25</option>
                     <option>50</option>
                     <option>100</option>
+                    {this.state.data.length>100&&
+                      <option>{this.state.data.length}</option>
+                    }
                   </select>
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit" method="post" >

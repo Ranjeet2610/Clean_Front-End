@@ -93,9 +93,14 @@ export default class SuperMaster extends Component {
 
   getAllAdmin = () => {
     this.users.getAllAdmin((data) => {
+      let sortdata = data.data.sort((a,b)=>{
+        const aDate = new Date(a.createdAt)
+        const bDate = new Date(b.createdAt)
+        return bDate.getTime() - aDate.getTime()
+      })
       this.setState({
-        data: data.data,
-        searchFilter: data.data,
+        data: sortdata,
+        searchFilter: sortdata,
         walletBalance: JSON.parse(localStorage.getItem("data")).walletBalance,
         load:false
       });
@@ -405,7 +410,7 @@ export default class SuperMaster extends Component {
           Commission: this.state.partner===""?0:this.state.partner,
         };
         message = "Master Added Successfully";
-        path = "master/" + this.state.masterUName;
+        path = "/master/" + this.state.masterUName;
       } 
       else {
         data = {
@@ -690,7 +695,7 @@ export default class SuperMaster extends Component {
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-    const currentPosts = this.state.data?.reverse()?.slice(indexOfFirstPost, indexOfLastPost);
+    const currentPosts = this.state.data?.slice(indexOfFirstPost, indexOfLastPost);
     return (
       <div>
         <Navbar />
@@ -723,6 +728,9 @@ export default class SuperMaster extends Component {
                     <option>25</option>
                     <option>50</option>
                     <option>100</option>
+                    {this.state.data.length>100&&
+                      <option>{this.state.data.length}</option>
+                    }
                   </select>&nbsp;
                   <input type="hidden" name="ajaxUrl" id="ajaxUrl" defaultValue="userList" />
                   <form className="usersech user-mobile" id="formSubmit">
