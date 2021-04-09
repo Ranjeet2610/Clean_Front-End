@@ -15,7 +15,7 @@ export default class Liveevents extends Component {
     super(props);
     this.state = {
       access:false ,
-        sportName:this.props.location.state.name,
+        sportName:this.props?.location?.state?.name,
       load:false,
       tableHead:["S.No.","Event_Id","Event_Name","Event_Date","Status","Action"],
       notifyMsg:'',
@@ -140,21 +140,21 @@ export default class Liveevents extends Component {
                             return (
                               <tr key={index}>
                                   <td className="text-center">{index+1}</td>
-                                  <td className="text-center">{item.eventId}</td>
-                                  <td className="text-center green">{item.eventName}</td>
+                                  <td className="text-center">{item?.eventId}</td>
+                                  <td className="text-center green">{item?.eventName}</td>
                                   <td className="text-center red">{eventDate}</td>
                                   <td className="text-center green">
-                                    <input type="checkbox" name={item.eventId} checked={item.active} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
+                                    <input type="checkbox" name={item?.eventId} checked={item?.active} onChange={this.handleChange} value={item.eventId} style={{height: '20px',width: '20px'}} />
                                   </td>
                                   <td className="text-center red">
-                                    <Link to={'/eventmatchodds/' + item.eventId}>Match Odds</Link>
+                                    <Link to={'/eventmatchodds/' + item?.eventId}>Match Odds</Link>
                                     {
-                                        this.props.location.state.eventType===4 ?
-                                        <Link to={'/eventfancyodds/' + item.eventId}>&nbsp;|&nbsp;Fancy Odds</Link>:null
+                                        this.props?.location?.state?.eventType===4 ?
+                                        <Link to={'/eventfancyodds/' + item?.eventId}>&nbsp;|&nbsp;Fancy Odds</Link>:null
                                     } 
                                     {
-                                      (this.state.access&&this.props.location.state.eventType===4)?
-                                      <Link to={'/manualfancyodds/' + item.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
+                                      (this.state.access&&this.props?.location?.state?.eventType===4)?
+                                      <Link to={'/manualfancyodds/' + item?.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
                                     }
                                   </td>
                                 </tr>

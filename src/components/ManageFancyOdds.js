@@ -24,8 +24,12 @@ export default class ManageFancyOdds extends Component {
   }
 
   handleChange = (event,marketId,type) => {
+    const obj={
+      marketId:marketId,
+      eventId:this.props.match.params.id
+    }
     if(type==1){
-      this.events.enableFancyOdds({marketId:marketId},data=>{
+      this.events.enableFancyOdds(obj,data=>{
         this.events.getFancyMarketType(this.props.match.params.id,data=>{      
             this.setState({
               marketata:data.fancymarket
@@ -34,7 +38,7 @@ export default class ManageFancyOdds extends Component {
       })
     }
     else{
-      this.events.visiableFancyOdds({marketId:marketId},data=>{
+      this.events.visiableFancyOdds(obj,data=>{
         this.events.getFancyMarketType(this.props.match.params.id,data=>{      
           this.setState({
             marketata:data.fancymarket
