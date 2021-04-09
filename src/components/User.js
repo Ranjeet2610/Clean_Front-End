@@ -66,6 +66,7 @@ export default class User extends Component {
       manualfancymaxProfit:"",
       manualfancyBetDelay:"",
       objID:"",
+      expoData:[],
     };
     this.users = new Users();
     this.currentDate = Utilities.formatDate(new Date());
@@ -225,6 +226,7 @@ export default class User extends Component {
 
   componentDidMount() {
     let infoDetails = JSON.parse(localStorage.getItem('data'));
+    this.exposureDistribution(infoDetails.userName);
     if(infoDetails.superAdmin === infoDetails.Admin === infoDetails.Master === false){
       this.props.history.push('/dashboard')
     }
@@ -771,6 +773,26 @@ export default class User extends Component {
     }
   }
 
+  exposureDistribution = (user) => {
+    this.users.exposureDistribution(user, async(data)=>{
+      await this.setState({
+        expoData:data.data.data
+      })
+      console.log(this.state.expoData);
+    })
+  }
+
+  expoModal = async(user) => {
+    await this.exposureDistribution(user);
+    document.getElementById('yourModal').classList.add("in");
+    document.getElementById('yourModal').style.display = 'block';
+  }
+  
+  closeExpoModal=()=>{
+    document.getElementById('yourModal').style.display = 'none';
+    document.getElementById('yourModal').classList.remove("in");
+  }
+
   render() {
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
@@ -954,7 +976,7 @@ export default class User extends Component {
                                   <td className="text-center">{item.profitLossChips}</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">
-                                    <Link to={{pathname:"/bethistory", state:{betHistory:item.userName}}} className="btn btn-success btn-xs">{item?.exposure>0?-item.exposure:item.exposure}</Link>
+                                    <Link to="#" role="button" onClick={()=>this.expoModal(item.userName)} className="btn btn-success btn-xs">{item?.exposure>0?-item.exposure:item.exposure}</Link>
                                   </td>
                                   <td className="text-center">{item.walletBalance} </td>
                                   <td className="text-center">0.00</td>
@@ -1196,6 +1218,59 @@ export default class User extends Component {
                 </div>
               </div>
             </div>
+
+{
+  //////////////////////////////////// MODAL FOR EXPOSURE /////////////////////////////////////
+}
+
+            <div className="modal fade" id="yourModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header" style={{background:"#6c1945"}}>
+                    <button type="button" className="close" onClick={this.closeExpoModal} aria-label="Close">
+                      <span aria-hidden="true">&times;</span></button>
+                    <h4 className="modal-title" id="myModalLabel">Exposure</h4>
+                  </div>
+                  <div className="modal-body">
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                          <div className="table-scroll  table-responsive" id="filterdata" style={{marginTop:"1rem"}}>
+                            <table className="table table-bordered table-striped jambo_table bulk_action">
+                                <thead>
+                                  <tr className="headings" style={{background: "rgb(149, 51, 92)",color: "white"}}>
+                                      <th className="text-center">Event </th>
+                                      <th className="text-center">Market </th>
+                                      <th className="text-center">Exposure</th>
+                                      <th className="text-center">Sport</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {
+                                    this.state.expoData.length>0?
+                                    this.state.expoData.map((item)=>
+                                        <tr>
+                                          <td className="text-center">{item?.event}</td>
+                                          <td className="text-center">{item?.marketId}</td>
+                                          <td className="text-center">{item?.exposure}</td>
+                                          {item?.eventType===4&&<td className="text-center">Cricket</td>}
+                                          {item?.eventType===1&&<td className="text-center">Soccer</td>}
+                                          {item?.eventType===2&&<td className="text-center">Tennis</td>}
+                                        </tr>
+                                       ):null
+                                   }
+                                  
+                                </tbody>
+                            </table>
+                          </div>
+                      </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" style={{background:"#95335c",color:'white',outline:'none'}} className="btn btn-default" onClick={this.closeExpoModal}>Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
 
             {
               ///////////////////////////////// MODAL FOR VIEW INFO ///////////////////////////////////////
