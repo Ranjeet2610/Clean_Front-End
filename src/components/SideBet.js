@@ -345,7 +345,7 @@ export default class SideBet extends Component {
             }else{
               fancysizeval = this.state.getselfancySize;
             }
-            if(fancysizeval > this.props.betData.data.size){
+            if(fancysizeval > this.props.betData.data.size || fancysizeval===0){
               this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
             }else{
               await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,"placeBet");
