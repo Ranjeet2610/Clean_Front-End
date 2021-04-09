@@ -904,10 +904,10 @@ export default class Master extends Component {
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
                                   <td className="text-center">{item.walletBalance}</td>
-                                  <td className="text-center">0%</td>
                                   {/* <td className="text-center">0%</td>
                                   <td className="text-center">0%</td> */}
-                                  <td className="text-center">{item.Commission}</td>
+                                  <td className="text-center">{item.Commission}%</td>
+                                  <td className="text-center">0</td>
                                   <td className="text-center">0.00</td>
                                   <td className="last text-center">
                                     <span className="dropdown">

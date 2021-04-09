@@ -41,8 +41,13 @@ export default class Marketpl extends Component {
         userName:this.props.match.params.username?this.props.match.params.username:JSON.parse(localStorage.getItem('data')).userName
       }
       this.account.superAdminProfitAndLoss(obj,data=>{
+        let sortdata = data.data.sort((a,b)=>{
+          const adata = new Date(a.data[0].createdDate)
+          const bdata = new Date(b.data[0].createdDate)
+          return adata - bdata
+        })
         this.setState({
-          adminData: data.data,
+          adminData: sortdata,
           newResData:data.data
         });
       });
@@ -52,8 +57,13 @@ export default class Marketpl extends Component {
         adminName:this.props.match.params.username?this.props.match.params.username:JSON.parse(localStorage.getItem('data')).userName
       }
       this.account.adminProfitAndLoss(obj,data=>{
+        let sortdata = data.data.sort((a,b)=>{
+          const adata = new Date(a.data[0].createdDate)
+          const bdata = new Date(b.data[0].createdDate)
+          return adata - bdata
+        })
         this.setState({
-          masterData: data.data,
+          masterData: sortdata,
           newResData:data.data
           });
       }); 
@@ -63,8 +73,13 @@ export default class Marketpl extends Component {
         masterName:this.props.match.params.username?this.props.match.params.username:JSON.parse(localStorage.getItem('data')).userName
       }
       this.account.masterProfitAndLoss(obj,data=>{
+        let sortdata = data.data.sort((a,b)=>{
+          const adata = new Date(a.data[0].createdDate)
+          const bdata = new Date(b.data[0].createdDate)
+          return adata - bdata
+        })
         this.setState({
-          data: data.data,
+          data: sortdata,
           newResData:data.data,
           ispl: false
         })
@@ -199,8 +214,8 @@ export default class Marketpl extends Component {
                       <tbody>
                         {/* {displaydata}	 */}
                         {
-                          currentdataPosts.length>0 ?
-                            currentdataPosts.map((item)=>{
+                          this.state.data.length>0 ?
+                            this.state.data.map((item)=>{
                               if(item.eventType === 4){
                                 sportType = "Cricket";
                               }else if(item.eventType === 1){
@@ -227,8 +242,8 @@ export default class Marketpl extends Component {
                                 </tr>
                               );
                             }):
-                          currentmasterDataPosts.length>0  ?
-                            currentmasterDataPosts.map((item)=>{
+                          this.state.masterData.length>0  ?
+                            this.state.masterData.map((item)=>{
                             if(item.eventType === 4){
                               sportType = "Cricket";
                             }else if(item.eventType === 1){
@@ -255,8 +270,8 @@ export default class Marketpl extends Component {
                                 </tr>
                               );
                             }):
-                          currentadminDataPosts.length>0 ?
-                            currentadminDataPosts.map((item)=>{
+                          this.state.adminData.length>0 ?
+                            this.state.adminData.map((item)=>{
                                 if(item.eventType === 4){
                                   sportType = "Cricket";
                                 }else if(item.eventType === 1){
@@ -324,7 +339,7 @@ export default class Marketpl extends Component {
                          }
                       </tbody>
                       {
-                      currentdataPosts.length > 0?
+                      this.state.data.length > 0?
                       <tfoot>
                       {/* <tr>
                         <td colSpan={16}>
@@ -332,7 +347,7 @@ export default class Marketpl extends Component {
                         </td>  
                       </tr>   */}
                     </tfoot>:
-                      currentmasterDataPosts.length > 0?
+                      this.state.masterData.length > 0?
                       <tfoot>
                       {/* <tr>
                         <td colSpan={16}>
@@ -340,7 +355,7 @@ export default class Marketpl extends Component {
                         </td>  
                       </tr>   */}
                     </tfoot>:
-                      currentadminDataPosts.length > 0?
+                      this.state.adminData.length > 0?
                       <tfoot>
                       {/* <tr>
                         <td colSpan={16}>

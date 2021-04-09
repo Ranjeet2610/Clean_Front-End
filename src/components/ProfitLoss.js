@@ -6,6 +6,7 @@ import Utilities from './utilities'
 import Sidebar from "./Sidebar";
 import Account from "../Services/account";
 import Footer from './footer'
+import Loader from 'react-loader-spinner'
 
 
 export default class ProfitLoss extends Component {
@@ -13,6 +14,7 @@ export default class ProfitLoss extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      load:false,
       currentPage:1,
       postsPerPage:10,
       profitAndLossTableHead:["S.No.","EventName","Market","P_L","Commission","CreatedOn","Action"],
@@ -27,7 +29,7 @@ export default class ProfitLoss extends Component {
       searchTerm:'',
       currentDate: '',
       color:'lightblue',
-      sportid:"cricket"
+      sportid:4
     }
     this.account = new Account();
     this.userDetails = "";
@@ -44,9 +46,14 @@ export default class ProfitLoss extends Component {
     let tD = await new Date(this.state.to_date);
     if(fD <= tD){
       let  betHistoryFilter = this.state.newResData.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
-      let updateList = betHistoryFilter.filter(ele=>ele.eventType==this.state.sportid)
+      let updateList = betHistoryFilter.filter(ele=>ele.eventType===parseInt(this.state.sportid))
+      let sortdata = updateList.sort((a,b)=>{
+        const adata = new Date(a.data[0].createdDate)
+        const bdata = new Date(b.data[0].createdDate)
+        return adata - bdata
+      })
       await this.setState({
-          data:updateList
+          data:sortdata
         })
       }
   };
@@ -56,42 +63,52 @@ export default class ProfitLoss extends Component {
       from_date:this.state.currentStart,
       to_date:this.state.currentend,
     })
-    this.getprofitlossData();
+    this.getprofitlossData(this.state.currentStart,this.state.currentend);
   }
 
-  getprofitlossData = () =>{
+  getprofitlossData = async (Scurr,Ecurr) =>{
+    let fD = await new Date(Scurr);
+    let tD = await new Date(Ecurr);
+
     this.userDetails = JSON.parse(localStorage.getItem('data'));
-    if(this.props.match.params.username===undefined){
+    if(this.props.match.params.username!==undefined&&this.props.match.params.username!=="Fancy"){
       if (this.userDetails.superAdmin) {
         this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          
+          let datafilter = data.data.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
-            data: data.data,
-            newResData: data.data
+            data:datafilter,
+            newResData: data.data,
+            load:false
           });
         });
       }
       else if (this.userDetails.Admin) {
         this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let datafilter = data.data.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
-            data: data.data,
-            newResData: data.data
+            data: datafilter,
+            newResData: data.data,
+            load:false
           });
         });
       }
       else if (this.userDetails.Master) {
         this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let datafilter = data.data.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
-            data: data.data,
-            newResData: data.data
+            data: datafilter,
+            newResData: data.data,
+            load:false
           });
         });
       }
       else {
         this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
+          let datafilter = data.data.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
-            data: data.data,
-            newResData: data.data
+            data: datafilter,
+            newResData: data.data,
+            load:false
           });
         });
       }
@@ -99,37 +116,45 @@ export default class ProfitLoss extends Component {
     else{
       if (this.userDetails.superAdmin) {
         this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let fancyFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let dataFilter = fancyFilter.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
             data: dataFilter,
-            newResData: data.data
+            newResData: data.data,
+            load:false
           });
         });
       }
       else if (this.userDetails.Admin) {
         this.account.adminProfitAndLoss({ adminName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let fancyFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let dataFilter = fancyFilter.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
             data: dataFilter,
-            newResData: data.data
+            newResData: data.data,
+            load:false
           });
         });
       }
       else if (this.userDetails.Master) {
         this.account.masterProfitAndLoss({ masterName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let fancyFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let dataFilter = fancyFilter.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
             data: dataFilter,
-            newResData: data.data
+            newResData: data.data,
+            load:false
           });
         });
       }
       else {
         this.account.getprofitloss({userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          let dataFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let fancyFilter = data.data.filter(element=>element.data[0].marketType==="Fancy")
+          let dataFilter = fancyFilter.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
             data: dataFilter,
-            newResData: data.data
+            newResData: data.data,
+            load:false
           });
         });
       }
@@ -137,18 +162,18 @@ export default class ProfitLoss extends Component {
   }
     
     async componentDidMount() {
-    await this.getprofitlossData();
-    console.log(this.props);
-    let currD = new Date().toISOString().substr(0,10);
-    //let currT = Utilities.datetime(new Date()).slice(11,16)
-    let Scurr = currD+"T00:00:01"
-    let Ecurr = currD+"T23:59:59"
-    this.setState({
-      currentStart:currD+"T00:00:01",
-      currentend:currD+"T23:59:59",
-      from_date:Scurr,
-      to_date:Ecurr,
-    }) 
+      let currD = new Date().toISOString().substr(0,10);
+      //let currT = Utilities.datetime(new Date()).slice(11,16)
+      let Scurr = currD+"T00:00:01"
+      let Ecurr = currD+"T23:59:59"
+      this.setState({
+        currentStart:currD+"T00:00:01",
+        currentend:currD+"T23:59:59",
+        from_date:Scurr,
+        to_date:Ecurr,
+        load:true
+      }) 
+    await this.getprofitlossData(Scurr,Ecurr);
   }
 
   goBack = () => {
@@ -292,12 +317,15 @@ export default class ProfitLoss extends Component {
                 <div className="col-md-12">
                   <div className="title_new_at">
                     Profit Loss Listing
-                    <select style={{ color: "black", marginLeft:'2px' }} >
-                      <option value={10} active="true">10</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                      <option value={100}>100</option>
+                    <select name="postsPerPage" onChange={this.handleChange} style={{ color: "black", marginLeft:'2px' }} >
+                      <option>10</option>
+                      <option>25</option>
+                      <option>50</option>
+                      <option>100</option>
                     </select>
+                    {this.state.data.length>100&&
+                      <option>{this.state.data.length}</option>
+                    }
                     <button style={{float:'right',paddingRight:'5px',paddingLeft:'5px', backgroundColor:'#6c1945', border:'none', borderRadius:'3px', marginTop:'3px' }} onClick={()=>this.props.history.goBack()}>Back</button>
                   </div>
                 </div>
@@ -314,9 +342,9 @@ export default class ProfitLoss extends Component {
                         <input type="hidden" name="user_id" defaultValue={145315} />
                         <input type="hidden" name="perpage" id="perpage" defaultValue={10} />
                         <select className="form-control" name="sportid" onChange={this.handleChange}>
-                          <option value="4">Cricket</option>
-                          <option value="2">Tennis</option>
-                          <option value="1">Soccer</option>
+                          <option value={4}>Cricket</option>
+                          <option value={2}>Tennis</option>
+                          <option value={1}>Soccer</option>
                         </select>
                       </div>
                       <div className="col-md-2 col-xs-6">
@@ -352,6 +380,11 @@ export default class ProfitLoss extends Component {
 
                 <div className="col-md-12 col-sm-12 col-xs-12">
                   <div id="divLoading"/>
+                  {
+        this.state.load ?
+        <div style={{height:'100vh', justifyContent:'center', display:'flex' ,marginTop:'5rem'}}>
+            <Loader type="Grid" color="#6c1945" height={100} width={100} />
+        </div> :
                   <div className="custom-scroll appendAjaxTbl data-background">
                     
 {
@@ -388,7 +421,7 @@ export default class ProfitLoss extends Component {
                                 <tr style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
                                   <td className="text-center">{index+1}</td>
                                   <td className="text-center">{sportType}/{item.eventName}/Selection:{item.data[0].selection}/Match Odds:{item.marketType}({item.data[0].odds})/Result:{item.data[0].settledValue}</td>
-                                  <td className="text-center">{item.marketType}</td>
+                                  <td className="text-center">{item.marketType.replace(" ","")}</td>
                                   <td className="text-center">{userPl.toFixed(2)}</td>
                                   <td className="text-center">{masterC.toFixed(2)}</td>
                                   <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString().replace(" ","")} </td>
@@ -431,6 +464,7 @@ export default class ProfitLoss extends Component {
                       </thead>
                     </table>
                   </div>
+  }
                 </div>
               </div>
             }

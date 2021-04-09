@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import '../Login.css';
 import mainLogo from '../betfun-logo.png';
 import Users from '../Services/users';
-import Loader from 'react-loader-spinner'
+import Loader from 'react-loader-spinner';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 export default class Login extends Component {
 
@@ -48,6 +49,7 @@ export default class Login extends Component {
                         this.setState({
                             load:true
                         })
+                        NotificationManager.success("Login Succesfully...!","Success");
                         localStorage.setItem('data', JSON.stringify(data.data.data));
                         localStorage.setItem('token', data.data.token);
                         localStorage.setItem('refreshToken', data.data.refreshToken);
@@ -78,8 +80,9 @@ export default class Login extends Component {
             <div>
                 {
                     this.state.load ?
-                    <div className="bg_login" style={{opacity:"0.5", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
+                    <div className="bg_login" style={{opacity:"1", height:'100vh', justifyContent:'center', display:'flex' ,alignItems:'center'}}>
                         <Loader type="Grid" color="#6c1945" height={100} width={100} />
+                        <NotificationContainer/>
                     </div> :
                     <div className="bg_login">
                         <div id="wrapper">
