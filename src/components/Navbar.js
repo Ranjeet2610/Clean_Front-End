@@ -634,7 +634,7 @@ showchildMenu=(e)=>{
             <div className="nav navbar-nav navbar-right">
               <ul>
                 <li className="belance-top">
-                  <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance}</span></Link>
+                  <Link to="#" id="Wallet">Main: <span className="mWallet">{this.state.balance.toFixed(2)}</span></Link>
                   <Link role="button" id="UserLiability" onClick={this.expoModal}>Exposure: <span className="liability">{this.state?.exposure?-this.state?.exposure:0}</span></Link>
                   
                   <Link to="#" className="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">

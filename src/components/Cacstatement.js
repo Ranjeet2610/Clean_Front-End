@@ -107,6 +107,7 @@ paginate = (pageNumber) => {
 }
 
 render(){
+  console.log(this.state.resdata);
   const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
   const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
   const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);
@@ -116,16 +117,16 @@ render(){
   let trantype; 
   let dwuserby;
   if(currentPosts.length>0){
-    statements = currentPosts.map((item,index) => {
+    statements = this.state.resdata.map((item,index) => {
      if(item.hasOwnProperty('depositedBy')){
-        deposited = item.amount;
+        deposited = item.amount>0?item.amount:0;
         trantype = "Received From";
         dwuserby = item.depositedByName;
       }else{
         deposited = 0;
         withdraw = item.amount;
       }
-      if(item.hasOwnProperty('withdrawIn')){
+      if(item.hasOwnProperty('withdrawIn')||item.amount<0){
         withdraw = item.amount;
         trantype = "Deposit In";
         dwuserby = item.withdrawInName;
@@ -138,9 +139,9 @@ render(){
           <td className="text-center">{(this.state.resdata.length+1)-(indexOfFirstPost+index+1)}</td>
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
           <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
-          <td className="text-center">{deposited} </td>
-          <td className="text-center">{withdraw} </td> 					   
-          <td className="text-center">{item.balance} </td>
+          <td className="text-center">{deposited.toFixed(2)} </td>
+          <td className="text-center">{withdraw.toFixed(2)} </td> 					   
+          <td className="text-center">{item.balance.toFixed(2)} </td>
         </tr>
         )
     })
