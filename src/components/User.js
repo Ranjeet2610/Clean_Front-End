@@ -978,7 +978,7 @@ export default class User extends Component {
                                   <td className="text-center">
                                     <Link to="#" role="button" onClick={()=>this.expoModal(item.userName)} className="btn btn-success btn-xs">{item?.exposure>0?-item.exposure:item.exposure}</Link>
                                   </td>
-                                  <td className="text-center">{item.walletBalance} </td>
+                                  <td className="text-center">{item.walletBalance.toFixed(2)} </td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="last">
@@ -1029,7 +1029,7 @@ export default class User extends Component {
                         currentPosts.length > 0 ?
                         <tfoot>
                             <tr>
-                              <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance}</td>
+                              <td colSpan={11} className="text-center">Total Balance:{this.state.totalBalance.toFixed(2)}</td>
                             </tr>
                             {/* <tr>
                               <td colSpan={11}>

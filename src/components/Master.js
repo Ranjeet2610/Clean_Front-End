@@ -903,7 +903,7 @@ export default class Master extends Component {
                                   <td className="text-center">LordsExch2</td>
                                   <td className="text-center">{item.freeChips}</td>
                                   <td className="text-center">{item.creditGiven}</td>
-                                  <td className="text-center">{item.walletBalance}</td>
+                                  <td className="text-center">{item.walletBalance.toFixed(2)}</td>
                                   {/* <td className="text-center">0%</td>
                                   <td className="text-center">0%</td> */}
                                   <td className="text-center">{item.Commission}%</td>
@@ -961,7 +961,7 @@ export default class Master extends Component {
                         currentPosts.length > 0 ? 
                         <tfoot>
                           <tr>
-                            <td colSpan={12} className="text-center">Total Balance:{this.state.totalBalance}</td>
+                            <td colSpan={12} className="text-center">Total Balance:{this.state.totalBalance.toFixed(2)}</td>
                           </tr>
                           {/* <tr>
                             <td colSpan={12}>

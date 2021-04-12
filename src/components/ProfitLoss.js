@@ -69,12 +69,21 @@ export default class ProfitLoss extends Component {
   getprofitlossData = async (Scurr,Ecurr) =>{
     let fD = await new Date(Scurr);
     let tD = await new Date(Ecurr);
-
+// debugger
     this.userDetails = JSON.parse(localStorage.getItem('data'));
     if(this.props.match.params.username!==undefined&&this.props.match.params.username!=="Fancy"){
       if (this.userDetails.superAdmin) {
         this.account.superAdminProfitAndLoss({ userName: this.props.match.params.username ? this.props.match.params.username : this.userDetails.userName }, data => {
-          let datafilter = data.data.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
+          let fd = data.data.map(ele => {
+            let ifd = ele.data.filter(item => item.clientName === this.props.match.params.username)
+            if(ifd.length>0){
+              return ele
+            }
+          })
+          let fdd = fd.filter(Boolean)
+          // debugger
+          // console.log(fd);
+          let datafilter = fdd.filter(e => fD <= new Date(e.data[0].createdDate) && new Date(e.data[0].createdDate) <= tD )
           this.setState({
             data:datafilter,
             newResData: data.data,
