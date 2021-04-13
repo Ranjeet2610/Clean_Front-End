@@ -27,7 +27,8 @@ class Navbar extends Component {
       op:'',
       np:'',
       rp:'',
-      expoData:[]
+      expoData:[],
+      duration:1000
     };
     this.users =new Users();
     this.userDetails = JSON.parse(localStorage.getItem('data')) != undefined ? JSON.parse(localStorage.getItem('data')) : "";  
@@ -292,9 +293,10 @@ async componentDidMount(){
         this.setState({
           balance:data.data.data.walletBalance,
           exposure:data.data.data.exposure,
+          duration:20000
         })
       })
-    },20000)
+    },this.state.duration)
   }
   else{
     const user = {
@@ -306,9 +308,10 @@ async componentDidMount(){
         this.setState({
           balance:data.data.data.walletBalance,
           exposure:data.data.data.exposure,
+          duration:20000
         })
       })
-    },20000)
+    },this.state.duration)
   }
 }
 
