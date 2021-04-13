@@ -308,7 +308,7 @@ async componentDidMount(){
           exposure:data.data.data.exposure,
         })
       })
-    },1000)
+    },20000)
   }
 }
 
