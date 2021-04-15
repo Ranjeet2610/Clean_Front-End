@@ -401,26 +401,28 @@ export default class MatchOdds extends Component {
           this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
         }
       });
-      livevents.getFancyMarket(this.props.match.params.id, (data) => {
-        this.setState({
-          fancymarket: data.fancymarket,
-        });
-        if(this.state.fancymarket.length!==0){
-          if(this.state.selbetType !== "" && this.state.selOdds!==""){
-            let getUodds = "";
-            let getUsize = "";
-            if(this.state.selbetType==="Back"){
-              getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
-              getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
-            }else{
-              getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
-              getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+      if(this.state.sportType===4){
+        livevents.getFancyMarket(this.props.match.params.id, (data) => {
+          this.setState({
+            fancymarket: data.fancymarket,
+          });
+          if(this.state.fancymarket.length!==0){
+            if(this.state.selbetType !== "" && this.state.selOdds!==""){
+              let getUodds = "";
+              let getUsize = "";
+              if(this.state.selbetType==="Back"){
+                getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+                getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+              }else{
+                getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+                getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+              }
+              this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
             }
-            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
           }
-        }
-      });
-    }, 1000);
+        });
+      }  
+    }, 10000);
     
     this.setState({
       load:false
