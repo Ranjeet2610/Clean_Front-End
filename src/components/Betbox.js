@@ -82,11 +82,7 @@ export default class BetBox extends Component {
     }
 
     getUserInfo = () => {
-      const user = {
-        userName: JSON.parse(localStorage.getItem('data')).userName,
-        password: JSON.parse(localStorage.getItem('data')).passwordString
-      };
-      this.users.getUserInfo(user.userName, (data)=>{
+      this.users.getUserInfo(JSON.parse(localStorage.getItem('data')).userName, (data)=>{
         this.setState({
           balance:data.data.data.walletBalance,
           exposure:data.data.data.exposure,
@@ -253,6 +249,9 @@ export default class BetBox extends Component {
                     userid:JSON.parse(localStorage.getItem('data')).id
                   }
                   this.users.getUserExposure(obj3,expodata=>{
+                    /********************************/
+                    this.getUserInfo();
+                    /********************************/                  
                     this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
                   })
                 });
@@ -303,6 +302,9 @@ export default class BetBox extends Component {
                   }
                   this.users.getUserExposure(obj3,expodata=>{
                     this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
+                    /********************************/
+                    this.getUserInfo();
+                    /********************************/                  
                   })
                 });
               })

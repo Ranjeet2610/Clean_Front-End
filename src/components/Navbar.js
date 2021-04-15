@@ -270,8 +270,17 @@ handleAddBetTime = () => {
 }
 
 async componentDidMount(){
+  /********************************/
+  this.users.getUserInfo(JSON.parse(localStorage.getItem('data')).userName, (data)=>{
+    this.setState({
+      balance:data.data.data.walletBalance,
+      exposure:data.data.data.exposure,
+    })
+  })
+  /********************************/
   this.exposureDistribution();
   await this.getNews();
+  /********************************/
   if( JSON.parse(localStorage.getItem('data')).superAdmin){
     if(localStorage.getItem('data') !=undefined){
       this.userDetails = JSON.parse(localStorage.getItem('data'));    
@@ -287,29 +296,33 @@ async componentDidMount(){
       userName: JSON.parse(localStorage.getItem('data')).userName,
       password: JSON.parse(localStorage.getItem('data')).passwordString
     };
-    setInterval(()=>{
+    this.interval = setInterval(()=>{
       this.users.getUserInfo(user.userName, (data)=>{
         this.setState({
           balance:data.data.data.walletBalance,
           exposure:data.data.data.exposure,
         })
       })
-    },1000)
+    },60000)
   }
   else{
     const user = {
       userName: JSON.parse(localStorage.getItem('data')).userName,
       password: JSON.parse(localStorage.getItem('data')).passwordString
     };
-    setInterval(()=>{
+    this.interval = setInterval(()=>{
       this.users.getUserInfo(user.userName, (data)=>{
         this.setState({
           balance:data.data.data.walletBalance,
           exposure:data.data.data.exposure,
         })
       })
-    },1000)
+    },60000)
   }
+}
+
+componentWillUnmount() {
+  clearInterval(this.interval);
 }
 
 getNews = () => {
