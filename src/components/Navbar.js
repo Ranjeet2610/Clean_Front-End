@@ -303,7 +303,7 @@ async componentDidMount(){
           exposure:data.data.data.exposure,
         })
       })
-    },60000)
+    },10000)
   }
   else{
     const user = {
@@ -317,7 +317,7 @@ async componentDidMount(){
           exposure:data.data.data.exposure,
         })
       })
-    },60000)
+    },10000)
   }
 }
 

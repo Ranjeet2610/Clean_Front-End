@@ -422,7 +422,7 @@ export default class MatchOdds extends Component {
           }
         });
       }  
-    }, 10000);
+    }, 1000);
     
     this.setState({
       load:false
