@@ -1054,9 +1054,9 @@ export default class MatchOdds extends Component {
         this.state.SoM.map((item, index) => {
           total_team1 = parseFloat(total_team1) + parseFloat(item.T1TotalPL);
           total_team2 = parseFloat(total_team2) + parseFloat(item.T2TotalPL);
-          if (this.state.data === 3) {
+          //if (this.state.data === 3) {
             total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
-          }
+          //}
         })
     }
 
