@@ -1233,7 +1233,7 @@ export default class MatchOdds extends Component {
                                                               <span class={"runner_amount " + this.state.TtwoColor}>{this.state.TtwoPL}</span> :
                                                               <span class={"runner_amount " + this.state.TthreeColor}>{this.state.TthreePL}</span> : index == 0 ?
                                                             <span class={"runner_amount " + this.state.ToneColor}>{this.state.TonePL}</span> :
-                                                            <span class={"runner_amount " + this.state.TtwoColor}>{this.state.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team1 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team1}</div>) : index === 1 ? (<span class={`text-center ${total_team2 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team2}</span>) : (<span class={`text-center ${total_team3 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team3}</span>)}</>)
+                                                            <span class={"runner_amount " + this.state.TtwoColor}>{this.state.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team2 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team2}</div>) : index === 1 ? (<span class={`text-center ${total_team1 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team1}</span>) : (<span class={`text-center ${total_team3 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team3}</span>)}</>)
                                                         }
                                                       </p>
                                                     }
