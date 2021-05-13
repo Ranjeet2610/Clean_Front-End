@@ -15,7 +15,7 @@ import LiveEvents from "../Services/livevents";
 import Users from "../Services/users";
 import Footer from "./footer";
 // const BASE_URL = 'ws://localhost:4500';
-const BASE_URL = 'ws://65.2.115.20:4500';
+const BASE_URL = 'ws://3.108.46.86:4500';
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
