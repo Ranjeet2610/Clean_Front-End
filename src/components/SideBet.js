@@ -1348,13 +1348,13 @@ export default class SideBet extends Component {
                           );
                         })
                         :
-                        this.state.betHistroy.length>0 &&
+                        this.state.betHistroy?.length>0 &&
                           this.state.betHistroy.map((item,index)=>{
                             (item.bettype=='Lay') ? (color='#eb8295') : (color='#6ad0f1')
                             return(
                               <tr key={index} style={{backgroundColor:color}}  onMouseOver={(e)=>this.changeBackground(e,item.bettype)} onMouseOut={(e)=>this.changeBackColor(e,item.bettype)}>
                                 {/* <td className="text-center">{(this.state.betHistroy.length+1)-(indexOfFirstPost+index+1)}</td> */}
-                                <td className="text-center">{this.state.betHistroy.length-index}</td>
+                                <td className="text-center">{this.state.betHistroy?.length-index}</td>
                                 <td className="text-center">{item.selection}</td>
                                 <td className="text-center">{item.clientName}</td>
                                 <td className="text-center">{item.odds}</td>
@@ -1401,7 +1401,7 @@ export default class SideBet extends Component {
                       <thead>
                         <tr className="headings">
                             <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
-                            {this.props.runnderData.length>0 &&
+                            {this.props.runnderData?.length>0 &&
                               this.props.runnderData.map((item,index)=>{
                                 return (<th key={index} className="text-center" style={{width:'50px'}}><b>{item.runnerName}</b></th>)
                               })
@@ -1410,13 +1410,13 @@ export default class SideBet extends Component {
                       </thead>
                       <tbody>
                       {
-                        this.state.SoM.length>0 &&
+                        this.state.SoM?.length>0 &&
                         this.state.SoM.map((item,index)=>{
                           parent_team1 = parseFloat(parent_team1) + parseFloat(item.T1TotalPL);
                           parent_team2 = parseFloat(parent_team2) + parseFloat(item.T2TotalPL);
                           total_team1 = parseFloat(total_team1) + parseFloat(item.T1TotalPL);
                           total_team2 = parseFloat(total_team2) + parseFloat(item.T2TotalPL);
-                          if(this.props.runnderData.length===3){
+                          if(this.props.runnderData?.length===3){
                             parent_team3 = parseFloat(parent_team3) + parseFloat(item.T3TotalPL);
                             total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
                           }
@@ -1431,7 +1431,7 @@ export default class SideBet extends Component {
                                 </td>
                                 <td class={`text-center ${item.T1TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T1TotalPL}</td>
                                 <td class={`text-center ${item.T2TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T2TotalPL}</td>
-                                {this.props.runnderData.length===3 ? <td class={`text-center ${item.T3TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T3TotalPL}</td>:''}
+                                {this.props.runnderData?.length===3 ? <td class={`text-center ${item.T3TotalPL>=0 ? "inplay_txt" : "color_red"}`}>{item.T3TotalPL}</td>:''}
                               </tr>
                             );
                           })
@@ -1440,19 +1440,19 @@ export default class SideBet extends Component {
                           <td className="text-center"><b>OWN</b></td>
                           <td className="text-center inplay_txt">0.00</td>
                           <td className="text-center inplay_txt">0.00</td>
-                          {this.props.runnderData.length===3 ? <td className="text-center inplay_txt">0.00</td>:''}
+                          {this.props.runnderData?.length===3 ? <td className="text-center inplay_txt">0.00</td>:''}
                         </tr>
                         <tr>
                           <td className="text-center"><b>PARENT</b></td>
                           <td class={`text-center ${parent_team1>=0 ? "inplay_txt" : "color_red"}`}>{parent_team1}</td>
                           <td class={`text-center ${parent_team2>=0 ? "inplay_txt" : "color_red"}`}>{parent_team2}</td>
-                          {this.props.runnderData.length===3 ? <td class={`text-center ${parent_team3>=0 ? "inplay_txt" : "color_red"}`}>{parent_team3}</td>:''}
+                          {this.props.runnderData?.length===3 ? <td class={`text-center ${parent_team3>=0 ? "inplay_txt" : "color_red"}`}>{parent_team3}</td>:''}
                         </tr>
                         <tr>
                           <td className="text-center"><b>TOTAL</b></td>
                           <td class={`text-center ${total_team1>=0 ? "inplay_txt" : "color_red"}`}>{total_team1}</td>
                           <td class={`text-center ${total_team2>=0 ? "inplay_txt" : "color_red"}`}>{total_team2}</td>
-                          {this.props.runnderData.length===3 ? <td class={`text-center ${total_team3>=0 ? "inplay_txt" : "color_red"}`}>{total_team3}</td>:''}
+                          {this.props.runnderData?.length===3 ? <td class={`text-center ${total_team3>=0 ? "inplay_txt" : "color_red"}`}>{total_team3}</td>:''}
                         </tr>
                       </tbody>
                     </table>
