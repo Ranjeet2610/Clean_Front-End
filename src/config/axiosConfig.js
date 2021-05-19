@@ -23,8 +23,8 @@ axios.interceptors.response.use((response) => {
 }, function (error) {
     //console.log("error",error.response.status,typeof(error.response.status))
     // Do something with response error
-    if(typeof(error.response.status)!==undefined){
-        if (error.response.status === 401) {
+    if(typeof(error?.response?.status)!==undefined){
+        if (error?.response?.status === 401) {
             console.log('unauthorized, logging out ...');
             localStorage.clear();
             window.location.href ='/';
