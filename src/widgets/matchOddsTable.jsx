@@ -54,9 +54,9 @@ const MatchOddsTable = (props) => {
     useEffect(() => {
         //  Status Of the match  
         if (new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime() > new Date().getTime()) {
-            setInPlay("IN-PLAY")
-        } else {
             setInPlay("GOING IN-PLAY")
+        } else {
+            setInPlay("IN-PLAY")
         }
 
 
