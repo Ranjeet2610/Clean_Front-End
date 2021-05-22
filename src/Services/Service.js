@@ -56,7 +56,7 @@ getlistMarketOdds(mid,cb) {
 
   axios.post(Constants.APIURL+'listMarketOdds', { marketId: mid })
     .then((response) => {
-      cb(response.data.data);
+      cb(response?.data?.data);
     })
     .catch((error) => console.log(error));
 }
@@ -75,17 +75,19 @@ getListMarketType(eid,cb){
   axios.post(Constants.APIURL+'marketTypeData', { eventId: eid })
     .then((response) => {
       if(response.data.data.length !== 0){
-        let mid = response.data.data.marketData.marketId;
-        let isEnabled = response.data.data.marketData.isEnabled;
-          if (response.data.data.runners[0].length > 0) {
+        let mid = response?.data?.data[0]?.marketData?.marketId;
+        let isEnabled = response?.data?.data[0]?.marketData?.isEnabled;
+
+          if (response?.data?.data[0]?.runners[0].length > 0) {
             this.getlistMarketOdds(mid,data=>{
-              cb({pdata:response.data.data.runners[0],odsData:data,isEnabled:isEnabled})
+              console.log("reson",response?.data);
+              cb({pdata:response?.data?.data[0]?.runners[0],odsData:data,isEnabled:isEnabled},response?.data?.data)
             });
           }
       }else{
         cb({pdata:'',odsData:'',isEnabled:''})
       }
-    }).catch((error) => console.log(error));
+    }).catch((error) => console.log("Error",error));
 }
 
 placeBet(data,cb){

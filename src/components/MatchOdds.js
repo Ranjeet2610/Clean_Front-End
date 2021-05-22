@@ -14,8 +14,11 @@ import Service from "../Services/Service";
 import LiveEvents from "../Services/livevents";
 import Users from "../Services/users";
 import Footer from "./footer";
+import MatchOddsTable from '../widgets/matchOddsTable';
+import tempJson from '../widgets/temp.json'
+
 // const BASE_URL = 'ws://localhost:4500';
-const BASE_URL = 'ws://65.2.115.20:4500';
+const BASE_URL = 'ws://3.108.46.86:4500';
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
@@ -95,7 +98,6 @@ export default class MatchOdds extends Component {
       selIndex: '',
       selfancymarketId: '',
       fbetHistroyProp: '',
-      betHistroy: [],
       filterbookdata: '',
       IP: '',
       scoreId: '',
@@ -106,9 +108,8 @@ export default class MatchOdds extends Component {
       timer: "",
       redirectToReferrer: false,
       Mteams: [],
-      selUserName: '',
-      SoM: [],
-      curPoAcc: '',
+      matchOddData16: [],
+      marketData16: []
     };
     this.service = new Service();
     this.users = new Users();
@@ -390,49 +391,52 @@ export default class MatchOdds extends Component {
     wsc.onerror = (e) => {
       alert("Something Went Wrong!")
     }
-    wsc.onmessage = (e)=>{
+    wsc.onmessage = (e) => {
       let data = JSON.parse(e.data);
+       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.Data", data, data?.length)
       this.setState({
         marketOdds: data.odsData,
         isenable: data.isEnabled,
         data: data.pdata,
-        oddsload:false
+        oddsload: false,
+        matchOddData16: data //tempJson
       });
       //console.log("marketOdds",this.state.marketOdds);
       //console.log("data",this.state.data);
-      if(this.state.selbetType !== "" && this.state.selOdds!==""){
+      if (this.state.selbetType !== "" && this.state.selOdds !== "") {
         let getUodds = "";
-        if(this.state.selbetType==="Back"){
+        if (this.state.selbetType === "Back") {
           getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
-        }else{
+        } else {
           getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
         }
         this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
       }
     }
-    if(this.state.sportType===4){
+    if (this.state.sportType === 4) {
       let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
-      wsfancy.onerror = (e) =>{
+      // console.log(".....",wsfancy);
+      wsfancy.onerror = (e) => {
         alert("Something Went Wrong!!!");
       }
       wsfancy.onmessage = (e) => {
         let data = JSON.parse(e.data);
-        console.log("Data" ,data)
+        // console.log("Data", data)
         this.setState({
           fancymarket: data.fancymarket,
         });
-        if(this.state.fancymarket.length!==0){
-          if(this.state.selbetType !== "" && this.state.selOdds!==""){
+        if (this.state.fancymarket.length !== 0) {
+          if (this.state.selbetType !== "" && this.state.selOdds !== "") {
             let getUodds = "";
             let getUsize = "";
-            if(this.state.selbetType==="Back"){
+            if (this.state.selbetType === "Back") {
               getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
               getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
-            }else{
+            } else {
               getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
               getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
             }
-            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
+            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
           }
         }
       }
@@ -517,16 +521,20 @@ export default class MatchOdds extends Component {
         exporunnerdata: data.data.runnersData,
       });
     });
-    service.getListMarketType(this.props.match.params.id, (data) => {
-      data.pdata.map((item, index) => {
-        let fRunners = data.pdata.filter(newdata => {
-          return newdata.selectionId === data.odsData[0].runners[index].selectionId;
-        })
-        this.setState({ Mteams: [...this.state.Mteams, fRunners[0]?.runnerName] })
-      })
+    service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
+      // data.pdata.map((item, index) => {
+      //   let fRunners = data.pdata.filter(newdata => {
+      //     console.log(newdata.selectionId,newdata.runnerName,"====",data.odsData[0].runners[index].runnerName, data.odsData[0].runners[index].selectionId);
+      //     return newdata.selectionId === data.odsData[0].runners[index].selectionId;
+      //   })
+      //   this.setState({ Mteams: [...this.state.Mteams, fRunners[0]?.runnerName] })
+      // })
       this.setState({
-        matchName: this.state.Mteams[0] + " v " + this.state.Mteams[1]
-      });
+        // matchName: this.state.Mteams[0] + " v " + this.state.Mteams[1],
+        // matchOddData16: wholeData,
+        marketData16 : wholeData
+      })
+      //console.log(this.state.Mteams);
       let getRunner = this.state.Mteams.length;
       let Teamone = this.state.Mteams[0];
       let Teamtwo = this.state.Mteams[1];
@@ -576,6 +584,9 @@ export default class MatchOdds extends Component {
             }
           }
         })
+        //console.log(T1TotalPL);
+        //console.log(T2TotalPL);
+        //console.log(T3TotalPL);
         if (T1TotalPL >= 0) {
           this.setState({
             TonePL: T1TotalPL,
@@ -631,6 +642,7 @@ export default class MatchOdds extends Component {
         return response.json();
       }, "jsonp")
       .then(res => {
+        //console.log(res);
         this.setState({ IP: res.ip });
       })
       .catch(err => console.log(err))
@@ -644,8 +656,6 @@ export default class MatchOdds extends Component {
         this.setState({ scoreId: res.scoreId });
       })
       .catch(err => console.log(err))
-    this.handlecurrentPositionAccess();
-    this.getBetData();
   }
 
   componentWillUnmount() {
@@ -811,278 +821,6 @@ export default class MatchOdds extends Component {
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
 
-
-  // getting all bet data
-
-  getBetData = () => {
-    if (this.userDetails.superAdmin) {
-      let userName = JSON.parse(localStorage.getItem('data')).userName;
-      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
-        this.setState({
-          betHistroy: Data.data.data,
-        });
-        if (this.state.selUserName !== "") {
-          this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
-        } else {
-          this.handleCurrentPosition(this.state.betHistroy, userName);
-        }
-      });
-    }
-    else if (this.userDetails.Admin) {
-      let userName = JSON.parse(localStorage.getItem('data')).userName
-      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
-        let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0] === userName);
-        this.setState({
-          betHistroy: betFill
-        });
-        if (this.state.selUserName !== "") {
-          this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
-        } else {
-          this.handleCurrentPosition(this.state.betHistroy, userName);
-        }
-      });
-    }
-    else if (this.userDetails.Master) {
-      let userName = JSON.parse(localStorage.getItem('data')).userName;
-      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
-        let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0] === userName)
-        this.setState({
-          betHistroy: betFill
-        });
-        if (this.state.selUserName !== "") {
-          this.handleCurrentPosition(this.state.betHistroy, this.state.selUserName);
-        } else {
-          this.handleCurrentPosition(this.state.betHistroy, userName);
-        }
-      });
-    }
-    else {
-      let userName = JSON.parse(localStorage.getItem('data')).userName;
-      this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
-        let betFill = Data.data.data.filter(item => item.clientName === userName)
-        this.setState({
-          betHistroy: betFill
-        });
-      });
-    }
-  }
-
-  handleCurrentPosition = async (data, userName) => {
-    let getRunner = '';//this.state.matchRunner.length;
-    let teams = this.state.matchName.split(" v ");
-    let Teamone = teams[0];//this.state.data[0].runnerName;
-    let Teamtwo = teams[1];//this.state.data[1].runnerName;
-    if (getRunner == 3) {
-      var Teamthree = "The Draw";//this.state.data[2].runnerName;
-    }
-    if (this.state.curPoAcc === 'Admin') {
-
-      let arr = [];
-      data.map(item => {
-        let itemName = item?.userInfo[0]?.superAdmin[0]
-        if (arr.every((item) => item.name !== itemName)) {
-          arr.push({
-            name: item?.userInfo[0]?.superAdmin[0],
-            T1TotalPL: 0,
-            T2TotalPL: 0,
-            T3TotalPL: 0,
-            bettype: item?.bettype,
-            selection: item?.selection
-          })
-        }
-        let indx = arr.findIndex(e => e.name === itemName);
-        if (item.bettype == 'Back') {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            }
-          }
-        } else {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            }
-          }
-        }
-      })
-      this.setState({
-        SoM: arr,
-        selUserName: userName
-      })
-    }
-    else if (this.state.curPoAcc === 'Master') {
-
-
-      let arr = [];
-      let filterdata = data.filter(newdata => {
-        return newdata.userInfo[0].superAdmin[0] === userName;
-      })
-      filterdata.map(item => {
-        let itemName = item.userInfo[0].admin[0]
-        if (arr.every((item) => item.name !== itemName)) {
-          arr.push({
-            name: item.userInfo[0].admin[0],
-            T1TotalPL: 0,
-            T2TotalPL: 0,
-            T3TotalPL: 0,
-            bettype: item.bettype,
-            selection: item.selection
-          })
-        }
-        let indx = arr.findIndex(e => e.name === itemName);
-        if (item.bettype == 'Back') {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            }
-          }
-        } else {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            }
-          }
-        }
-      })
-      this.setState({
-        SoM: arr,
-        backPoAcc: 'Admin',
-        selUserName: userName,
-      })
-    }
-    else if (this.state.curPoAcc === 'User') {
-
-      let arr = [];
-      let strUM;
-      let filterdata = data.filter(newdata => {
-        return newdata.userInfo[0].admin[0] === userName;
-      })
-      filterdata.map(item => {
-        strUM = item.userInfo[0].superAdmin[0];
-        let itemName = item.clientName
-        if (arr.every((item) => item.name !== itemName)) {
-          arr.push({
-            name: item.clientName,
-            T1TotalPL: 0,
-            T2TotalPL: 0,
-            T3TotalPL: 0,
-            bettype: item.bettype,
-            selection: item.selection
-          })
-        }
-        let indx = arr.findIndex(e => e.name === itemName);
-        if (item.bettype == 'Back') {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
-            }
-          }
-        } else {
-          if (Teamone == item.selection) {
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (Teamtwo == item.selection) {
-            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
-            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
-          }
-          if (getRunner == 3) {
-            if (Teamthree == item.selection) {
-              arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
-              arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
-              arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
-            }
-          }
-        }
-      })
-      console.log(arr);
-      this.setState({
-        SoM: arr,
-        selUserName: userName
-      })
-    }
-  }
-
-  handlecurrentPositionAccess = async () => {
-    if (this.userDetails.superAdmin) {
-      await this.setState({
-        curPoAcc: 'Admin',
-      })
-    }
-    else if (this.userDetails.Admin) {
-      await this.setState({
-        curPoAcc: 'Master',
-      })
-    }
-    else if (this.userDetails.Master) {
-      await this.setState({
-        curPoAcc: 'User',
-      })
-    }
-  }
-
   render() {
     let total_team1 = 0;
     let total_team2 = 0;
@@ -1147,8 +885,7 @@ export default class MatchOdds extends Component {
                                 {
                                   //////////////////////// HEADER OF MATCH ODDS /////////////////////////////////
                                 }
-
-                                <div className="modal-header mod-header">
+                                {/* <div className="modal-header mod-header">
                                   <div className="block_box">
                                     <span id="tital_change">
                                       <span id="fav29905278">
@@ -1162,19 +899,17 @@ export default class MatchOdds extends Component {
                                 </button>
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
-                              {
-                                this.state.sportType === 4 && this.state.marketOdds.length > 0 ?
-                                  <>
+                              {//this.state.sportType === 4
+                                  (this.state?.matchOddData16?.length > 0 && <>
                                     <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
                                       <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
                                     </div>
-                                  </>
-                                  : null
+                                  </>)
                               }
                               <div className="sportrow-4 matchOpenBox_1171389306">
-                                <div className="match-odds-sec">
+                                {/* <div className="match-odds-sec">
                                   <div className="item match-status match-odds"><span class="match-odd-top">Match Odds</span> <span class="sid-image"></span></div>
                                   <div className="item match-status-odds">
                                     <span className="going_inplay green"> {inplay} </span>
@@ -1183,259 +918,33 @@ export default class MatchOdds extends Component {
                                     </span>
                                   </div>
                                   <div className="item match-shedule" id="demo_29905278">{this.state.timer}</div>
-                                </div>
+                                </div> */}
+                                { 
+                                
+                                  ( this.state.matchOddData16?.length > 0 &&  this.state.matchOddData16?.map((item, i) =>
+                                    <MatchOddsTable
+                                      {...item}
+                                      {...{ marketData:this.state.marketData16 } }
+                                      {...{ timer: this.state.timer }}
+                                      matchName={this.state.matchName}
+                                      handleRemove={this.handleRemove}
+                                      handleBetPlaceBox={this.handleBetPlaceBox}
+                                      getProfitandLoss={this.getProfitandLoss}
+                                      handleInputValue={this.handleInputValue}
+                                    />
+                                  ))
+                                }
 
                                 {
                                   //////////////////////// TABLE OF MATCH ODDS /////////////////////////////
                                 }
 
-                                <div className="fullrow MatchIndentB" style={{ position: "relative" }}>
-                                  <table className={`table table-striped  bulk_actions matchTable1171389306 ${this.state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
-                                    <tbody>
-                                      <tr className="headings mobile_heading">
-                                        <th className="fix_heading color_red">Min stake:{this.state.sportInfo?.minStacks} Max stake:{this.state.sportInfo?.maxStacks}<br></br>
-                                          {/* Min Odds:{this.state.sportInfo.minOdds} Max Odds:{this.state.sportInfo.maxOdds} */}
-                                        </th>
-                                        <th> </th>
-                                        <th> </th>
-                                        <th className="back_heading_color">Back</th>
-                                        <th className="lay_heading_color">Lay</th>
-                                        <th> </th>
-                                        <th> </th>
-                                      </tr>
-                                    </tbody>
-                                    {
-                                      this.state.data.length > 0 ? this.state.marketOdds.length > 0 ?
-                                        runners.map((item, index) => {
-                                          if (this.state.exporunnerdata.length > 0) {
-                                            expoProfit = this.state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
-                                          }
-                                          filterrunners = this.state.data.filter(newdata => {
-                                            return newdata.selectionId === this.state.marketOdds[0].runners[index].selectionId;
-                                          })
-                                          if (this.state.marketOdds.length > 0) {
-                                            let sordataBack = this.state.marketOdds[0].runners[index].ex.availableToBack.sort(function (a, b) {
-                                              return a.price - b.price;
-                                            })
-
-                                            if (sordataBack.length < 3) {
-                                              sordataBack.unshift({ price: 0, size: 0.0 });
-                                            }
-
-                                            avilBlack = sordataBack.map((itemback) => {
-                                              return (
-                                                <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, this.state.data.filter(newdata => { return newdata.selectionId === this.state.marketOdds[0].runners[index].selectionId })[0], this.state.marketOdds, index, window.innerWidth)} >
-                                                  <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
-                                                  <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
-                                                </td>
-                                              )
-                                            })
-
-                                            let sordataLay = this.state.marketOdds[0].runners[index].ex.availableToLay.sort(function (a, b) {
-                                              return a.price - b.price;
-                                            })
-
-                                            if (sordataLay.length < 3) {
-                                              sordataLay.push({ price: 0, size: 0.0 });
-                                            }
-
-                                            availLay = sordataLay.map((itemlay) => {
-                                              return (
-                                                <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata => { return newdata.selectionId === this.state.marketOdds[0].runners[index].selectionId })[0], this.state.marketOdds, index, window.innerWidth)} >
-                                                  <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
-                                                  <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
-                                                </td>
-                                              )
-                                            })
-                                          }
-                                          else {
-                                            avilBlack = this.state.avilBlack.map((itemback) => {
-                                              return (
-                                                <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Back", this.state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, this.state.data.filter(newdata => { return newdata.selectionId === this.state.marketOdds[0].runners[index].selectionId })[0], this.state.marketOdds, index, window.innerWidth)} >
-                                                  <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
-                                                  <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
-                                                </td>
-                                              )
-                                            })
-                                            availLay = this.state.availLay.map((itemlay) => {
-                                              return (
-                                                <td className="32047099_0availableToBack2_price_1171389306" onClick={() => this.placeBet("Lay", this.state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, this.state.data.filter(newdata => { return newdata.selectionId === this.state.marketOdds[0].runners[index].selectionId })[0], this.state.marketOdds, index, window.innerWidth)} >
-                                                  <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
-                                                  <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
-                                                </td>
-                                              )
-                                            })
-                                          }
-                                          // if(item.selectionId==this.state.marketOdds[0].runners[index].selectionId){}
-                                          if (filterrunners.length > 0) {
-                                            return (
-                                              <>
-                                                <tr id="user_row0" className="back_lay_color runner-row-32047099">
-                                                  <td>
-                                                    <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
-                                                    <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
-                                                    <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId} >
-                                                      0{/* {expoProfit} */}
-                                                    </span>
-
-                                                    {
-                                                      <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
-                                                        {
-                                                          showHide ? (this.state.data.length == 3 ? index === 0 ?
-                                                            <span class={"runner_amount " + this.state.ToneColor}>{this.state.TonePL}</span> : index == 1 ?
-                                                              <span class={"runner_amount " + this.state.TtwoColor}>{this.state.TtwoPL}</span> :
-                                                              <span class={"runner_amount " + this.state.TthreeColor}>{this.state.TthreePL}</span> : index == 0 ?
-                                                            <span class={"runner_amount " + this.state.ToneColor}>{this.state.TonePL}</span> :
-                                                            <span class={"runner_amount " + this.state.TtwoColor}>{this.state.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team2 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team2}</div>) : index === 1 ? (<span class={`text-center ${total_team1 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team1}</span>) : (<span class={`text-center ${total_team3 >= 0 ? "total_green_class" : "total_red_class"}`}>{total_team3}</span>)}</>)
-                                                        }
-                                                      </p>
-                                                    }
-                                                    <input type="hidden" className="position_1171389306" id="selection_0" data-id={32047099} defaultValue={0} />
-                                                  </td>
-                                                  {avilBlack}
-                                                  {availLay}
-                                                </tr>
-                                                <tr>
-                                                  <td colSpan="7">
-                                                    <div className="mobileBetBox">
-                                                      <BetBox
-                                                        eventType={this.state.sportType}
-                                                        matchName={this.state.matchName}
-                                                        index={index}
-                                                        stake={0}
-                                                        betData={this.state.betData}
-                                                        betProfit={this.state.betProfit}
-                                                        handleRemove={(style, num) => {
-                                                          this.handleRemove(style, num, index);
-                                                        }}
-                                                        handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
-                                                          this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
-                                                        }}
-                                                        getProfitandLoss={(profit, loss, teamSelection, betType, stack, status, facFrom) => {
-                                                          this.getProfitandLoss(profit, loss, teamSelection, betType, stack, status, facFrom);
-                                                        }}
-                                                        betLoss={this.state.betLoss}
-                                                        setdisplay={this.state.display[index]}
-                                                        eventId={this.props.match.params.id}
-                                                        handleInput={(e) => this.handleInputValue(e)}
-                                                        runnderData={this.state.data}
-                                                        expoData={this.state.exporunnerdata}
-                                                        selOdds={this.state.selOdds}
-                                                        selfancyOdds={this.state.selfancyOdds}
-                                                        selfancySize={this.state.selfancySize}
-                                                        IP={this.state.IP}
-                                                        sportInfo={this.state.sportInfo}
-                                                        fancyInfo={this.state.fancyInfo}
-                                                      />
-                                                    </div>
-                                                  </td>
-                                                </tr>
-                                              </>
-                                            )
-                                          }
-                                        })
-                                        :
-                                        inplay === "IN-PLAY" ?
-                                          <tbody>
-                                            <tr>
-                                              <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
-                                            </tr>
-                                          </tbody>
-                                          :
-                                          <tbody>
-                                            <tr>
-                                              <td colSpan="7" className="text-center"><h2>Start Soon..</h2></td>
-                                            </tr>
-                                          </tbody>
-                                        :
-                                        filterrunners.length === 0 && inplay === "IN-PLAY" ?
-                                          this.state.oddsload ?
-                                            <tbody>
-                                              <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                                <td>
-                                                  <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
-                                                  <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                                  <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                                </td>
-                                                {
-                                                  this.state.tableTd.map((item) => {
-                                                    return (
-                                                      <td class="32047099_0availableToBack2_price_1171389306">
-                                                        <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                                        <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                                      </td>
-                                                    )
-                                                  })
-                                                }
-                                              </tr>
-                                              <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                                <td>
-                                                  <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
-                                                  <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                                  <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                                </td>
-                                                {
-                                                  this.state.tableTd.map((item) => {
-                                                    return (
-                                                      <td class="32047099_0availableToBack2_price_1171389306">
-                                                        <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                                        <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                                      </td>
-                                                    )
-                                                  })
-                                                }
-                                              </tr>
-                                            </tbody>
-                                            :
-                                            <tbody>
-                                              <tr>
-                                                <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
-                                              </tr>
-                                            </tbody>
-                                          :
-                                          <tbody>
-                                            <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                              <td>
-                                                <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[0]}</p>
-                                                <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                                <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                              </td>
-                                              {
-                                                this.state.tableTd.map((item) => {
-                                                  return (
-                                                    <td class="32047099_0availableToBack2_price_1171389306">
-                                                      <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                                      <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                                    </td>
-                                                  )
-                                                })
-                                              }
-                                            </tr>
-                                            <tr id="user_row0" class="back_lay_color runner-row-32047099">
-                                              <td>
-                                                <p class="runner_text" id="runnderName0">{this.state.matchName.split(" v ")[1]}</p>
-                                                <p class="blue-odds" id="Val1-117138930632047099">0</p>
-                                                <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
-                                              </td>
-                                              {
-                                                this.state.tableTd.map((item) => {
-                                                  return (
-                                                    <td class="32047099_0availableToBack2_price_1171389306">
-                                                      <span id="32047099_0availableToBack2_price_1171389306">{item}</span>
-                                                      <span id="32047099_0availableToBack2_size_1171389306">{item}</span>
-                                                    </td>
-                                                  )
-                                                })
-                                              }
-                                            </tr>
-                                          </tbody>
-                                    }
-                                  </table>
-                                </div>
                               </div>
 
                               {
-                                this.state.sportType === 4 && this.state.fancymarket.length > 0 && this.state.marketOdds.length > 0 ?
+                                this.state.sportType === 4 
+                                && this.state.fancymarket?.length > 0 
+                                && this.state.marketOdds?.length > 0 ?
                                   <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                                     <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 
@@ -1477,7 +986,7 @@ export default class MatchOdds extends Component {
                                       }
 
                                       {
-                                        this.state.fancymarket.length > 0 ?
+                                        this.state.fancymarket?.length > 0 ?
                                           this.state.fancymarket.map((parentitem, index) => {
                                             return (
                                               <div>
