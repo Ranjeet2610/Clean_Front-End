@@ -521,12 +521,24 @@ export default class MatchOdds extends Component {
       });
     });
     service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
-
-
-      this.setState({
-        marketData16: wholeData
+      console.log("mmmmmmmmmmmmm",data.pdata);
+      
+      data.pdata.map((item, index) => {
+        let fRunners = data.pdata.filter(newdata=>{
+          return newdata.selectionId===data.odsData[0].runners[index].selectionId;
+        })
+        console.log("fRunners[0]?.runnerName",fRunners[0],data);
+        this.setState({ Mteams: [...this.state.Mteams, fRunners[0]?.runnerName] })
       })
 
+      this.setState({
+        matchName: this.state.Mteams[0]+" v "+this.state.Mteams[1],
+        marketData16: wholeData
+      },()=>{
+        console.log("ssssss",this.state.Mteams);
+      });
+
+     
       let getRunner = this.state.Mteams.length;
       let Teamone = this.state.Mteams[0];
       let Teamtwo = this.state.Mteams[1];
@@ -709,6 +721,7 @@ export default class MatchOdds extends Component {
       let getRunner = this.state.Mteams.length;
       let Team1 = this.state.Mteams[0];
       let Team2 = this.state.Mteams[1];
+      console.log("T1T2",Team1,Team2);
       if (getRunner == 3) {
         var Team3 = this.state.Mteams[2];
       }
@@ -900,6 +913,7 @@ export default class MatchOdds extends Component {
 
                                   (this.state.matchOddData16?.length > 0 && this.state.matchOddData16?.map((item, i) =>
                                     <MatchOddsTable
+                                      {...this.state}
                                       {...item}
                                       {...{ marketData: this.state.marketData16 }}
                                       {...{ timer: this.state.timer }}
@@ -911,6 +925,7 @@ export default class MatchOdds extends Component {
                                       handleInputValue={this.handleInputValue}
                                       getFancyBook={this.getFancyBook}
                                       placeBet={this.placeBet}
+                                      seqIndex={i}
                                     />
                                   ))
                                 }
@@ -1016,7 +1031,7 @@ export default class MatchOdds extends Component {
                                                   </div>
                                                 </div>
                                                 <div className="mobileBetBox">
-                                                  <BetBox
+                                                  {/* <BetBox
                                                     eventType={this.state.sportType}
                                                     matchName={this.state.matchName}
                                                     stake={0}
@@ -1044,7 +1059,7 @@ export default class MatchOdds extends Component {
                                                     IP={this.state.IP}
                                                     sportInfo={this.state.sportInfo}
                                                     fancyInfo={this.state.fancyInfo}
-                                                  />
+                                                  /> */}
                                                 </div>
                                               </div>
                                             );

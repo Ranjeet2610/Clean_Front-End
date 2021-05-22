@@ -4,16 +4,11 @@ import SideBet from '../components/SideBet';
 import tv from "../images/tv-screen.png";
 import tempJson from './temp.json'
 const MatchOddsTable = (props) => {
-    // let inplay;
     let filterrunners = [];
-    let bookitems = [];
-    let bookodds;
-    let j = 0;
     let avilBlack;
     let availLay;
-    let expoProfit;
-    let userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
     const [marketName, setMarketName] = useState("")
+    const [displayMobileBet, setdisplayMobileBet] = useState('none')
     const [inPlay, setInPlay] = useState("")
     const [timer, setTimer] = useState("")
     const [state, setstate] = useState({
@@ -77,6 +72,12 @@ const MatchOddsTable = (props) => {
         setTimer(props.timer)
     }, [props.timer])
 
+    
+     const placeBet = (type, odds, data, pdata, mid, index, width) =>{
+        (width <= 991) ? setdisplayMobileBet('block') : setdisplayMobileBet('none') 
+        props.placeBet(type, odds, data, pdata, mid, index, width)
+    }
+
     return (<div>
 
         <div className="match_score_box">
@@ -128,16 +129,14 @@ const MatchOddsTable = (props) => {
                         </tr>
                     </tbody>
                     {
-                        state?.data?.length > 0 ? state.marketOdds?.length > 0 ?
+                        (state?.data?.length > 0) ? state.marketOdds?.length > 0 ?
 
                             state.runners?.map((item, index) => {
-                            //    if (this.state.exporunnerdata.length > 0) {
-                            //         expoProfit = state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
-                            //       }
 
                                 filterrunners = state.data.filter(newdata => {
                                     return newdata.selectionId === state.marketOdds[0].runners[index]?.selectionId;
                                 })
+
                                 if (state.marketOdds?.length > 0) {
                                     let sordataBack = state.marketOdds[0].runners[index]?.ex?.availableToBack.sort(function (a, b) {
                                         return a.price - b.price;
@@ -148,7 +147,7 @@ const MatchOddsTable = (props) => {
                                     }
                                     avilBlack = sordataBack?.map((itemback) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet("Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => placeBet("Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                             </td>
@@ -165,7 +164,7 @@ const MatchOddsTable = (props) => {
 
                                     availLay = sordataLay?.map((itemlay) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet("Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => placeBet("Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                             </td>
@@ -175,7 +174,7 @@ const MatchOddsTable = (props) => {
                                 else {
                                     avilBlack = state.avilBlack?.map((itemback) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet("Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => { placeBet("Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth); }} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                             </td>
@@ -183,7 +182,7 @@ const MatchOddsTable = (props) => {
                                     })
                                     availLay = state.availLay?.map((itemlay) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet("Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => placeBet("Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index, window.innerWidth)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                             </td>
@@ -199,7 +198,7 @@ const MatchOddsTable = (props) => {
                                                     <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
                                                     <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
                                                     <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId} >
-                                                        055{/* {expoProfit} */}
+                                                        0 {/* {expoProfit} */}
                                                     </span>
 
                                                     {
@@ -221,7 +220,7 @@ const MatchOddsTable = (props) => {
                                             </tr>
                                             <tr>
                                                 <td colSpan="7">
-                                                    <div className="mobileBetBox">
+                                                    {/* <div className="mobileBetBox">
                                                         <BetBox
                                                             eventType={state.sportType}
                                                             matchName={state.matchName}
@@ -239,7 +238,7 @@ const MatchOddsTable = (props) => {
                                                                 props.getProfitandLoss(profit, loss, teamSelection, betType, stack, status, facFrom);
                                                             }}
                                                             betLoss={state.betLoss}
-                                                            setdisplay={state?.display}
+                                                            setdisplay="block" //{state.display[index + state.data.length]}
                                                             eventId={props.match?.params?.id}
                                                             handleInput={(e) => props.handleInputValue(e)}
                                                             runnderData={state.data}
@@ -251,7 +250,7 @@ const MatchOddsTable = (props) => {
                                                             sportInfo={state.sportInfo}
                                                             fancyInfo={state.fancyInfo}
                                                         />
-                                                    </div>
+                                                    </div> */}
                                                 </td>
                                             </tr>
                                         </>
@@ -356,6 +355,37 @@ const MatchOddsTable = (props) => {
                     }
                 </table>
             </div>
+        </div>
+        <div className="mobileBetBox">
+            <BetBox
+                eventType={state.sportType}
+                matchName={state.matchName}
+                index={props.seqIndex}
+                stake={0}
+                betData={state.betData}
+                betProfit={state.betProfit}
+                handleRemove={(style, num) => {
+                    props.handleRemove(style, num, props.seqIndex);
+                }}
+                handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
+                    props.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
+                }}
+                getProfitandLoss={(profit, loss, teamSelection, betType, stack, status, facFrom) => {
+                    props.getProfitandLoss(profit, loss, teamSelection, betType, stack, status, facFrom);
+                }}
+                betLoss={state.betLoss}
+                setdisplay={displayMobileBet} //{state.display[index + state.data.length]}
+                eventId={props.match?.params?.id}
+                handleInput={(e) => props.handleInputValue(e)}
+                runnderData={state.data}
+                expoData={state.exporunnerdata}
+                selOdds={state.selOdds}
+                selfancyOdds={state.selfancyOdds}
+                selfancySize={state.selfancySize}
+                IP={state.IP}
+                sportInfo={state.sportInfo}
+                fancyInfo={state.fancyInfo}
+            />
         </div>
     </div>)
 }
