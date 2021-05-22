@@ -31,9 +31,8 @@ export default class Livevents extends Component {
 
     getMatchOdds(eid,cb){
         
-        axios.post(Constants.APIURL+'marketTypeData',{
-            "eventId":eid
-        }).then((response)=>{
+        axios.post(Constants.APIURL+'marketTypeData',{ "eventId":eid }).then((response)=>{
+          console.log("response",response);
             cb(response);
         }).catch((error)=>console.log(error));
     }

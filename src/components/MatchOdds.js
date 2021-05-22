@@ -15,7 +15,7 @@ import LiveEvents from "../Services/livevents";
 import Users from "../Services/users";
 import Footer from "./footer";
 import MatchOddsTable from '../widgets/matchOddsTable';
-import tempJson from '../widgets/temp.json'
+import { sortDataByName } from '../helpers/matchOddHelper'
 
 // const BASE_URL = 'ws://localhost:4500';
 const BASE_URL = 'ws://3.108.46.86:4500';
@@ -261,10 +261,10 @@ export default class MatchOdds extends Component {
     //console.log('filterbookdata',this.state.filterbookdata)
   }
 
-  placeBet(type, odds, data, pdata, mid, index, width) {
+  placeBet = (type, odds, data, pdata, mid, index, width) => {
     // debugger
     let displayTest;
-    if (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true) {
+    if (this.userDetails?.Master !== true && this.userDetails?.Admin !== true && this.userDetails?.superAdmin !== true) {
       if (width <= 991) {
         displayTest = [...this.state.display];
         displayTest.forEach((item, i) => {
@@ -287,7 +287,7 @@ export default class MatchOdds extends Component {
         },
         display: displayTest,
         toggleMatchIndex: index,
-        IP: this.state.IP
+        IP: this.state?.IP
       });
       this.StaKeAmount(index, odds, type, pdata.runnerName);
     }
@@ -393,35 +393,34 @@ export default class MatchOdds extends Component {
     }
     wsc.onmessage = (e) => {
       let data = JSON.parse(e.data);
-       console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.Data", data, data?.length)
+      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>.Data", data)
+      const sortedList =  data.reverse(); //sortDataByName(this.state.marketData16, data)
       this.setState({
-        marketOdds: data.odsData,
-        isenable: data.isEnabled,
-        data: data.pdata,
+        marketOdds: sortedList[0].odsData,
+        isenable: sortedList[0].isEnabled,
+        data: sortedList[0].pdata,
         oddsload: false,
-        matchOddData16: data //tempJson
+        matchOddData16: sortedList //data //tempJson
       });
-      //console.log("marketOdds",this.state.marketOdds);
-      //console.log("data",this.state.data);
+
       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
         let getUodds = "";
         if (this.state.selbetType === "Back") {
-          getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
+          getUodds = this.state.marketOdds[0]?.runners[this.state.selIndex]?.ex?.availableToBack[2]?.price;
         } else {
-          getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
+          getUodds = this.state.marketOdds[0]?.runners[this.state.selIndex]?.ex.availableToLay[0]?.price;
         }
         this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
       }
     }
+
     if (this.state.sportType === 4) {
       let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
-      // console.log(".....",wsfancy);
       wsfancy.onerror = (e) => {
         alert("Something Went Wrong!!!");
       }
       wsfancy.onmessage = (e) => {
         let data = JSON.parse(e.data);
-        // console.log("Data", data)
         this.setState({
           fancymarket: data.fancymarket,
         });
@@ -522,19 +521,12 @@ export default class MatchOdds extends Component {
       });
     });
     service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
-      // data.pdata.map((item, index) => {
-      //   let fRunners = data.pdata.filter(newdata => {
-      //     console.log(newdata.selectionId,newdata.runnerName,"====",data.odsData[0].runners[index].runnerName, data.odsData[0].runners[index].selectionId);
-      //     return newdata.selectionId === data.odsData[0].runners[index].selectionId;
-      //   })
-      //   this.setState({ Mteams: [...this.state.Mteams, fRunners[0]?.runnerName] })
-      // })
+
+
       this.setState({
-        // matchName: this.state.Mteams[0] + " v " + this.state.Mteams[1],
-        // matchOddData16: wholeData,
-        marketData16 : wholeData
+        marketData16: wholeData
       })
-      //console.log(this.state.Mteams);
+
       let getRunner = this.state.Mteams.length;
       let Teamone = this.state.Mteams[0];
       let Teamtwo = this.state.Mteams[1];
@@ -887,11 +879,11 @@ export default class MatchOdds extends Component {
                                 </div> */}
                               </div>
                               {//this.state.sportType === 4
-                                  (this.state?.matchOddData16?.length > 0 && <>
-                                    <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
-                                      <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
-                                    </div>
-                                  </>)
+                                (this.state?.matchOddData16?.length > 0 && <>
+                                  <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
+                                    <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                                  </div>
+                                </>)
                               }
                               <div className="sportrow-4 matchOpenBox_1171389306">
                                 {/* <div className="match-odds-sec">
@@ -904,18 +896,21 @@ export default class MatchOdds extends Component {
                                   </div>
                                   <div className="item match-shedule" id="demo_29905278">{this.state.timer}</div>
                                 </div> */}
-                                { 
-                                
-                                  ( this.state.matchOddData16?.length > 0 &&  this.state.matchOddData16?.map((item, i) =>
+                                {
+
+                                  (this.state.matchOddData16?.length > 0 && this.state.matchOddData16?.map((item, i) =>
                                     <MatchOddsTable
                                       {...item}
-                                      {...{ marketData:this.state.marketData16 } }
+                                      {...{ marketData: this.state.marketData16 }}
                                       {...{ timer: this.state.timer }}
+                                      exporunnerdata={this.state.exporunnerdata}
                                       matchName={this.state.matchName}
                                       handleRemove={this.handleRemove}
                                       handleBetPlaceBox={this.handleBetPlaceBox}
                                       getProfitandLoss={this.getProfitandLoss}
                                       handleInputValue={this.handleInputValue}
+                                      getFancyBook={this.getFancyBook}
+                                      placeBet={this.placeBet}
                                     />
                                   ))
                                 }
@@ -927,9 +922,9 @@ export default class MatchOdds extends Component {
                               </div>
 
                               {
-                                this.state.sportType === 4 
-                                && this.state.fancymarket?.length > 0 
-                                && this.state.marketOdds?.length > 0 ?
+                                this.state.sportType === 4
+                                  && this.state.fancymarket?.length > 0
+                                  && this.state.marketOdds?.length > 0 ?
                                   <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                                     <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 
