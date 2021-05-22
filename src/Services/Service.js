@@ -80,7 +80,6 @@ getListMarketType(eid,cb){
 
           if (response?.data?.data[0]?.runners[0].length > 0) {
             this.getlistMarketOdds(mid,data=>{
-              console.log("reson",response?.data);
               cb({pdata:response?.data?.data[0]?.runners[0],odsData:data,isEnabled:isEnabled},response?.data?.data)
             });
           }
