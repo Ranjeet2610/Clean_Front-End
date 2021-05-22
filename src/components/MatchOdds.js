@@ -536,7 +536,6 @@ export default class MatchOdds extends Component {
       let T1TotalPL = 0;
       let T2TotalPL = 0;
       let T3TotalPL = 0;
-
       this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName, this.props.match.params.id, 'getUserOpenBetHistory', (data) => {
         data.map((item, index) => {
           if (item.bettype == 'Back') {
@@ -815,6 +814,9 @@ export default class MatchOdds extends Component {
   }
 
   render() {
+    let total_team1 = 0;
+    let total_team2 = 0;
+    let total_team3 = 0;
     let inplay;
     let runners = this.state.data;
     let filterrunners = [];
@@ -824,11 +826,24 @@ export default class MatchOdds extends Component {
     let j = 0;
     let avilBlack;
     let availLay;
+    let showHide = (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true);
     if (new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime() > new Date().getTime()) {
       inplay = "GOING IN-PLAY";
     } else {
       inplay = "IN-PLAY";
     }
+    {
+      this.state.SoM.length > 0 &&
+        this.state.SoM.map((item, index) => {
+          total_team1 = parseFloat(total_team1) + parseFloat(item.T1TotalPL);
+          total_team2 = parseFloat(total_team2) + parseFloat(item.T2TotalPL);
+          //if (this.state.data === 3) {
+            total_team3 = parseFloat(total_team3) + parseFloat(item.T3TotalPL);
+          //}
+        })
+    }
+
+
     return (
       <div>
         <Navbar />
