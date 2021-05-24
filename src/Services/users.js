@@ -375,6 +375,11 @@ userSportsInfo(data,cb){
             cb(res);
         })
     }
+    matchBookMakerSettlement = (data,cb) => {
+        axios.post(Constants.APIURL+'bookMakerBetSettlement',data).then((res)=>{
+            cb(res);
+        })
+    }
     getAllUserBasedOnSuperMaster = (username,cb) => {
         axios.get(Constants.APIURL+'getuserbasedOnAdmin?userName='+username).then((res)=>{
             cb(res);

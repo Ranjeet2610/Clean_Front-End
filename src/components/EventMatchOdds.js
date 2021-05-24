@@ -17,8 +17,9 @@ export default class EventMatchOdds extends Component {
 
   componentDidMount() {
     this.events.getMatchOdds(this.props.match.params.id,data=>{
-      let allMdata = data.data.data.marketData;
-      let allrunners = data.data.data.runners[0];
+      console.log(data);
+      let allMdata = data.data.data[0].marketData;
+      let allrunners = data.data.data[0].runners[0];
       this.setState({
         marketata:allMdata,
         runnersdata:allrunners
