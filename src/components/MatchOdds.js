@@ -14,6 +14,7 @@ import Service from "../Services/Service";
 import LiveEvents from "../Services/livevents";
 import Users from "../Services/users";
 import Footer from "./footer";
+const BASE_URL = 'ws://3.108.46.86:4600';
 
 export default class MatchOdds extends Component {
   constructor(props) {
@@ -385,47 +386,101 @@ export default class MatchOdds extends Component {
         sportInfo: data.data,
       });
     });
-    this.interval = setInterval(() => {
-      service.getListMarketType(this.props.match.params.id, (data) => {
-        this.setState({
-          marketOdds: data.odsData,
-          isenable: data.isEnabled,
-          data: data.pdata,
-          oddsload: false
-        });
-        //console.log("marketOdds",this.state.marketOdds);
-        //console.log("data",this.state.data);
-        if (this.state.selbetType !== "" && this.state.selOdds !== "") {
-          let getUodds = "";
-          if (this.state.selbetType === "Back") {
-            getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
-          } else {
-            getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
-          }
-          this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
-        }
+
+    let wsc = new WebSocket(`${BASE_URL}/marketTypeData/eventId/${this.props.match.params.id}`);
+    wsc.onerror = (e) => {
+      alert("Something Went Wrong!")
+    }
+    wsc.onmessage = (e)=>{
+      let data = JSON.parse(e.data);
+      this.setState({
+        marketOdds: data.odsData,
+        isenable: data.isEnabled,
+        data: data.pdata,
+        oddsload:false
       });
-      if (this.state.sportType === 4) {
-        livevents.getFancyMarket(this.props.match.params.id, (data) => {
-          this.setState({
-            fancymarket: data.fancymarket,
-          });
-          if (this.state.fancymarket.length !== 0) {
-            if (this.state.selbetType !== "" && this.state.selOdds !== "") {
-              let getUodds = "";
-              let getUsize = "";
-              if (this.state.selbetType === "Back") {
-                getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
-                getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
-              } else {
-                getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
-                getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
-              }
-              this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
-            }
-          }
-        });
+      //console.log("marketOdds",this.state.marketOdds);
+      //console.log("data",this.state.data);
+      if(this.state.selbetType !== "" && this.state.selOdds!==""){
+        let getUodds = "";
+        if(this.state.selbetType==="Back"){
+          getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
+        }else{
+          getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
+        }
+        this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
       }
+    }
+    if(this.state.sportType===4){
+      let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
+      wsfancy.onerror = (e) =>{
+        alert("Something Went Wrong!!!");
+      }
+      wsfancy.onmessage = (e) => {
+        let data = JSON.parse(e.data);
+        console.log("Data" ,data)
+        this.setState({
+          fancymarket: data.fancymarket,
+
+        });
+        if(this.state.fancymarket.length!==0){
+          if(this.state.selbetType !== "" && this.state.selOdds!==""){
+            let getUodds = "";
+            let getUsize = "";
+            if(this.state.selbetType==="Back"){
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+            }else{
+              getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+              getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+
+            }
+            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId,this.state.selIndex);
+          }
+        }
+      }
+    }
+    this.interval = setInterval(() => {
+      // service.getListMarketType(this.props.match.params.id, (data) => {
+      //   this.setState({
+      //     marketOdds: data.odsData,
+      //     isenable: data.isEnabled,
+      //     data: data.pdata,
+      //     oddsload: false
+      //   });
+      //   //console.log("marketOdds",this.state.marketOdds);
+      //   //console.log("data",this.state.data);
+      //   if (this.state.selbetType !== "" && this.state.selOdds !== "") {
+      //     let getUodds = "";
+      //     if (this.state.selbetType === "Back") {
+      //       getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToBack[2].price;
+      //     } else {
+      //       getUodds = this.state.marketOdds[0].runners[this.state.selIndex].ex.availableToLay[0].price;
+      //     }
+      //     this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection);
+      //   }
+      // });
+      // if (this.state.sportType === 4) {
+      //   livevents.getFancyMarket(this.props.match.params.id, (data) => {
+      //     this.setState({
+      //       fancymarket: data.fancymarket,
+      //     });
+      //     if (this.state.fancymarket.length !== 0) {
+      //       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
+      //         let getUodds = "";
+      //         let getUsize = "";
+      //         if (this.state.selbetType === "Back") {
+      //           getUodds = this.state.fancymarket[this.state.selIndex].marketData.BackPrice;
+      //           getUsize = this.state.fancymarket[this.state.selIndex].marketData.BackSize;
+      //         } else {
+      //           getUodds = this.state.fancymarket[this.state.selIndex].marketData.LayPrice;
+      //           getUsize = this.state.fancymarket[this.state.selIndex].marketData.LaySize;
+      //         }
+      //         this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
+      //       }
+      //     }
+      //   });
+      // }
     }, 1000);
 
     this.setState({
