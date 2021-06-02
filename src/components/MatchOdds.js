@@ -597,7 +597,7 @@ export default class MatchOdds extends Component {
         let T2TotalPL = 0;
         let T3TotalPL = 0;
         this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName, this.props.match.params.id, 'getUserOpenBetHistory', (data) => {
-          let betFill = data.filter(e => e.marketName === item.marketName);
+          let betFill = data.filter(e => e.marketName === item.marketName && e.status==="open");
           console.log("betFill",betFill);
           betFill.map((item, index) => {
             if (item.bettype == 'Back') {
