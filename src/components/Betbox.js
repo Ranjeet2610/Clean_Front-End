@@ -109,7 +109,7 @@ export default class BetBox extends Component {
       device = 3;
       e.preventDefault();
       let dobet=true;
-      if(this.props.betData.betType !=undefined){
+      if(this.props.betData.betType==="Fancy"){
         if(this.props.betData.ManualPriceKey===true || this.props.betData.isItManual===true){
           if(this.props.fancyInfo.manuallockBet===true){
             this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
@@ -196,7 +196,7 @@ export default class BetBox extends Component {
           });
           await this.getBetTime();
           await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
-          if(this.props.betData.betType !=undefined){
+          if(this.props.betData.betType==="Fancy"){
             let fancysizeval;
             if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
               fancysizeval = 0;
@@ -221,7 +221,8 @@ export default class BetBox extends Component {
               loss:this.state.loss,
               IP:this.props.IP,
               device:device,
-              marketType: this.props.betData.betType,
+              marketType:'Fancy',
+              marketName:'Fancy',
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
@@ -278,7 +279,8 @@ export default class BetBox extends Component {
               loss:this.state.loss,
               IP:this.props.IP,
               device:device,
-              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+              marketType:(this.props.betData.marketName==="Match Odds" || this.props.betData.marketName==="Bookmaker")?'match odds':'Fancy',
+              marketName:this.props.betData.marketName!=undefined?this.props.betData.marketName:'Fancy',
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
@@ -321,13 +323,14 @@ export default class BetBox extends Component {
     }
     
     handleChange=(e)=>{
-      let teamSelection = this.props.betData.pData.runnerName;
-      let teamBetType = this.state.betData.type;
+      let marketName = this.props.betData.marketName;
+      let teamSelection = this.props.betData.pData.selectionId;
+      let teamBetType = this.props.betData.type;
       let stack = e.target.value;
       e.preventDefault();
       if(this.props.betData.betType==="Fancy"){
         let fancysize = this.props.betData.data.size;
-        if(this.state.betData.type === 'Back'){
+        if(this.props.betData.type === 'Back'){
           this.setState({
            profit:((fancysize/100)*stack).toFixed(2),
            loss:stack?stack:0.0
@@ -340,8 +343,8 @@ export default class BetBox extends Component {
           })
         }
       }else{
-        let odds = this.state.betData.odds-1;
-        if(this.state.betData.type === 'Back'){
+        let odds = this.props.betData.odds-1;
+        if(this.props.betData.type === 'Back'){
           this.setState({
             profit:(odds*e.target.value).toFixed(2),
             loss:e.target.value?e.target.value:0.0
@@ -406,16 +409,17 @@ export default class BetBox extends Component {
           }
         }
         setTimeout(()=> {
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true","handleChange");
+        this.props.getProfitandLoss(this.state.profit,this.state.loss,teamSelection,teamBetType,stack,"true","handleChange",marketName);
         }, 500)
         this.props.handleInput(e.target.value);
       }
     }
 
-    StaKeAmount=(val,ods,fancysize,type,index,facFrom)=>{
-      let teamSelection = this.props.betData.pData.runnerName;
+    StaKeAmount=(val,ods,fancysize,type,index,facFrom)=>{      
+      let marketName = this.props.betData.marketName;
+      let teamSelection = this.props.betData.pData.selectionId;
       document.getElementById('stakeValue').value = val
-      if(this.props.betData.betType !== undefined){
+      if(this.props.betData.betType==="Fancy"){
         if(type === 'Back'){
           this.setState({
             profit:((fancysize/100)*val).toFixed(2),
@@ -435,8 +439,8 @@ export default class BetBox extends Component {
             profit:(odds*val).toFixed(2),
             loss:val?val:0.0
           },()=>{
-            this.props.betData.betType === undefined && 
-          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
+          this.props.betData.betType !== "Fancy" && 
+          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom,marketName);
           })
           if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
             this.state.expoData = this.state.getExpo.map(item=>{
@@ -470,8 +474,8 @@ export default class BetBox extends Component {
             profit:val,
             loss:(odds*val).toFixed(2)
           },()=>{
-            this.props.betData.betType === undefined && 
-            this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
+            this.props.betData.betType !== "Fancy" && 
+            this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom,marketName);
           })
           if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
             this.state.expoData = this.state.runnderData.map(item=>{
@@ -549,9 +553,10 @@ export default class BetBox extends Component {
         loss:dval,
         display: 'none'
       });
-      let teamSelection = this.props.betData.pData.runnerName;
+      let marketName = this.props.betData.marketName;
+      let teamSelection = this.props.betData.pData.selectionId;
       let type = this.props.betData.betType;
-      this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection");
+      this.props.getProfitandLoss(dval,dval,teamSelection,type,dval,"true","ClearAllSelection",marketName);
     }
     closeWindow = () =>{
         document.getElementById('stakeValue').value=0
@@ -559,6 +564,7 @@ export default class BetBox extends Component {
         this.setState({
           showLoader:false
         });
+        this.ClearAllSelection();
     }
     render() {
         let ods = 0;
@@ -600,7 +606,7 @@ export default class BetBox extends Component {
                     <span id="msg_error" /><span id="errmsg" />
                     <form id="placeBetSilp" onSubmit={this.placeBet}>
                         <input type="hidden" name="compute" defaultValue="0868b55786c39fbc0074796526de70db" />
-                        <label className="control-label m-t-xs BetFor">{this.props.type} (Bet For)</label>
+                        <label className="control-label m-t-xs BetFor">{type} (Bet For)</label>
                         <div className="liabilityprofit" id=" ">
                             <span className="stake_label">Profit</span>
                             <div className="stack_input_field">

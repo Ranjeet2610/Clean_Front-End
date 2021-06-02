@@ -9,7 +9,6 @@ import {Link} from 'react-router-dom'
 import e from 'cors';
 import Livevents from '../Services/livevents'
 export default class SideBet extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -78,7 +77,8 @@ export default class SideBet extends Component {
   }
 
   handleChange=(e)=>{
-    let teamSelection = this.props.betData.pData.runnerName;
+    let marketName = this.props.betData.marketName;
+    let teamSelection = this.props.betData.pData.selectionId;
     let teamBetType = this.props.betData.type;
     let stack = e.target.value;
     e.preventDefault();
@@ -164,7 +164,7 @@ export default class SideBet extends Component {
         }
       }
      setTimeout(()=> {
-      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true","handleChange");
+      this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,teamBetType,stack,"true","handleChange",marketName);
      }, 500)
      this.props.handleInput(stack);
     }
@@ -247,7 +247,7 @@ export default class SideBet extends Component {
     device = 3;
     e.preventDefault();
     let dobet=true;
-    if(this.props.betData.betType !=undefined){
+    if(this.props.betData.betType==="Fancy"){
       if(this.props.betData.ManualPriceKey===true || this.props.betData.isItManual===true){
         if(this.props.fancyInfo.manuallockBet===true){
           this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
@@ -289,7 +289,7 @@ export default class SideBet extends Component {
         dobet=false;
       }
       else if(this.stackInput.value < this.props.sportInfo.minStacks || this.stackInput.value > this.props.sportInfo.maxStacks){
-        this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+      this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
         dobet=false;
       }
       else if(this.state.profit < 0 || this.state.profit > this.props.sportInfo.maxProfit){
@@ -312,16 +312,20 @@ export default class SideBet extends Component {
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
         dobet=false;
       }
-      if(inplay === "GOING IN-PLAY"){
-        if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
-          this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
-          dobet=false;
-        }
-        else if(this.state.profit > this.props.sportInfo.PreInplayProfit){
-          this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
-          dobet=false;
-        }
-      }
+      // if(inplay === "GOING IN-PLAY"){
+      //   if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
+      //     alert("value:"+this.stackInput.value)
+      //     alert("PreInplayStack:"+this.props.sportInfo.PreInplayStack)
+      //       this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+      //     dobet=false;
+      //   }
+      //   else if(this.state.profit > this.props.sportInfo.PreInplayProfit){
+      //     alert("value:"+this.state.profit)
+      //     alert("PreInplayStack:"+this.props.sportInfo.PreInplayStack)
+      //       this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
+      //     dobet=false;
+      //   }
+      // }
     }
     if(!disableBetting){
       if(dobet===true){
@@ -334,7 +338,7 @@ export default class SideBet extends Component {
           });
           await this.getBetTime();
           await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
-          if(this.props.betData.betType !=undefined){
+          if(this.props.betData.betType==="Fancy"){
             let fancysizeval;
             if(this.state.getselfancySize=='SUSPENDED' || this.state.getselfancySize=='Running'){
               fancysizeval = 0;
@@ -359,7 +363,8 @@ export default class SideBet extends Component {
               loss:this.state.loss,
               IP:this.props.IP,
               device:device,
-              marketType: this.props.betData.betType,
+              marketType:'Fancy',
+              marketName:'Fancy',
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
@@ -368,19 +373,13 @@ export default class SideBet extends Component {
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
               }
-              /*
-              this.users.getMyprofile(obj1,data=>{
-                localStorage.setItem('data',JSON.stringify(data.data));
-                this.props.handleBetPlaceBox("Bet Placed...!",'green','success')
-                this.getBetData();
-              })*/
               this.users.getMyprofile(obj1,data=>{
                 localStorage.setItem('data',JSON.stringify(data.data));
                 localStorage.setItem('expo', -(JSON.stringify(data.data.exposure)));
                 const obj2 = {
                   userid:JSON.parse(localStorage.getItem('data')).id,
                   eventID:this.props.eventId,
-                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  marketType: this.props.betData.betType!=undefined?this.props.betData.betType:'match odds',
                   runnersData :this.state.expoData
                 }
                 this.service.updateExpo(obj2,ddata=>{
@@ -416,12 +415,13 @@ export default class SideBet extends Component {
               loss:this.state.loss,
               IP:this.props.IP,
               device:device,
-              marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+              marketType:(this.props.betData.marketName==="Match Odds" || this.props.betData.marketName==="Bookmaker")?'match odds':'Fancy',
+              marketName:this.props.betData.marketName!=undefined?this.props.betData.marketName:'Fancy',
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
             //console.log(obj);
-            this.service.placeBet(obj,data=>{ 
+            this.service.placeBet(obj,data=>{
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
               }
@@ -431,7 +431,7 @@ export default class SideBet extends Component {
                 const obj2 = {
                   userid:JSON.parse(localStorage.getItem('data')).id,
                   eventID:this.props.eventId,
-                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  marketType: this.props.betData.betType!=undefined?this.props.betData.betType:'match odds',
                   runnersData :this.state.expoData
                 }
                 this.service.updateExpo(obj2,ddata=>{
@@ -791,7 +791,7 @@ export default class SideBet extends Component {
       this.setState({
         matchRunner: data.pdata,
       });
-      //console.log("CDM",this.state.matchRunner);
+      console.log("CDM",this.state.matchRunner);
       this.getBetData();
     });
     const obj ={
@@ -803,9 +803,10 @@ export default class SideBet extends Component {
   }
 
   StaKeAmount=(val,ods,fancysize,type,facFrom)=>{
-    let teamSelection = this.props.betData.pData.runnerName;
+    let marketName = this.props.betData.marketName;
+    let teamSelection = this.props.betData.pData.selectionId;
     document.getElementById('stakeValue').value = val
-    if(this.props.betData.betType !== undefined){
+    if(this.props.betData.betType==="Fancy"){
      if(type === 'Back'){
       this.setState({
         profit:((fancysize/100)*val).toFixed(2),
@@ -825,8 +826,8 @@ export default class SideBet extends Component {
           profit:(odds*val).toFixed(2),
           loss:val?val:0.0
         },()=>{
-        this.props.betData.betType === undefined && 
-        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
+        this.props.betData.betType !== "Fancy" && 
+        this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom, marketName);
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.getExpo.map(item=>{
@@ -860,8 +861,8 @@ export default class SideBet extends Component {
           profit:val,
           loss:(odds*val).toFixed(2)
         },()=>{
-          this.props.betData.betType === undefined && 
-          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom);
+          this.props.betData.betType !== "Fancy" && 
+          this.props.getProfitandLoss(this.state.profit, this.state.loss,teamSelection,type,val,"true",facFrom, marketName);
         })
         if(this.state.getExpo!=undefined && this.state.getExpo.length>0){
           this.state.expoData = this.state.runnderData.map(item=>{
@@ -1002,9 +1003,10 @@ export default class SideBet extends Component {
       loss:dval,
       display: 'none'
     });
-    let teamSelection = this.props.betData.pData.runnerName;
+    let marketName = this.props.betData.marketName;
+    let teamSelection = this.props.betData.pData.selectionId;
     let type = this.props.betData.betType;
-    this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection");
+    this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection", marketName);
   }
 
   handleEditStake=(event)=> {
@@ -1065,6 +1067,7 @@ export default class SideBet extends Component {
     this.setState({
       showLoader:false
     });
+    this.ClearAllSelection();
   }
 
   render() {
