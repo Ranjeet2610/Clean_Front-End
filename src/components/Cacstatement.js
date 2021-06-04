@@ -118,7 +118,8 @@ render(){
   let dwuserby;
   if(currentPosts.length>0){
     statements = this.state.resdata.map((item,index) => {
-     if(item.hasOwnProperty('depositedBy')){
+      console.log('item are --------------',item)
+      if(item.hasOwnProperty('depositedBy')){
         deposited = item.amount>0?item.amount:0;
         trantype = "Received From";
         dwuserby = item.depositedByName;
@@ -134,16 +135,31 @@ render(){
         withdraw = 0;
         deposited = item.amount;
       }
+      // return (
+      //   <tr key={index}>
+      //     <td className="text-center">{(this.state.resdata.length+1)-(indexOfFirstPost+index+1)}</td>
+      //     <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
+      //     <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
+      //     <td className="text-center">{deposited.toFixed(2)} </td>
+      //     <td className="text-center">{withdraw.toFixed(2)} </td> 					   
+      //     <td className="text-center">{item.balance.toFixed(2)} </td>
+      //   </tr>
+      //   )
       return (
         <tr key={index}>
-          <td className="text-center">{(this.state.resdata.length+1)-(indexOfFirstPost+index+1)}</td>
+          <td className="text-center">{(this.state.resdata.length + 1) - (indexOfFirstPost + index + 1)}</td>
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
-          <td className="text-center">{item.userName} {trantype}  {dwuserby}</td>
+          <td className="text-center">{
+
+            item.description ?
+            <p>{` ${item.description.message} / ${item.description.bettype}  / ${item.description.marketType}/ ${item.description.marketName}`} </p>
+            : item.userName
+          }</td>
           <td className="text-center">{deposited.toFixed(2)} </td>
-          <td className="text-center">{withdraw.toFixed(2)} </td> 					   
+          <td className="text-center">{withdraw.toFixed(2)} </td>
           <td className="text-center">{item.balance.toFixed(2)} </td>
         </tr>
-        )
+      )
     })
   }
   else{

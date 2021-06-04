@@ -18,7 +18,7 @@ import MatchOddsTable from '../widgets/matchOddsTable';
 import { sortDataByName } from '../helpers/matchOddHelper'
 
 // const BASE_URL = 'ws://localhost:4500';
-const BASE_URL = 'ws://65.1.77.8:4500';
+const BASE_URL = 'ws://3.108.46.86:4500';
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
@@ -171,40 +171,40 @@ export default class MatchOdds extends Component {
         if (type == 'Back') {
           let Mteams = [...this.state.Mteams];
           if (teamSelection == Team1) {
-            this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(this.state.betProfit);
-            this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(val);
+            this.state.Mteams[spindex].DTonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(this.state.betProfit);
+            this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(val);
             this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) - parseFloat(val);
           }
           if (teamSelection == Team2) {
-            this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(this.state.betProfit);
+            this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(this.state.betProfit);
             this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) - parseFloat(val);
             this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) - parseFloat(val);
           }
           if (getRunner == 3) {
             if (teamSelection == Team3) {
-              this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(this.state.betProfit);
-              this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(val);
-              this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) - parseFloat(val);
+              this.state.Mteams[spindex].DTthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(this.state.betProfit);
+              this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(val);
+              this.state.Mteams[spindex].DTonePL = parseFloat(this.state.Mteams[spindex].DTonePL) - parseFloat(val);
             }
           }
           this.setState({ Mteams });
         } else {
           let Mteams = [...this.state.Mteams];
           if (teamSelection == Team1) {
-            this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) - parseFloat(this.state.betLoss);
-            this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(val);
-            this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(val);
+            this.state.Mteams[spindex].DTonePL = parseFloat(this.state.Mteams[spindex].DTonePL) - parseFloat(this.state.betLoss);
+            this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(val);
+            this.state.Mteams[spindex].DTthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(val);
           }
           if (teamSelection == Team2) {
-            this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(this.state.betLoss);
-            this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(val);
-            this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(val);
+            this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) - parseFloat(this.state.betLoss);
+            this.state.Mteams[spindex].DTonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(val);
+            this.state.Mteams[spindex].DTthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) + parseFloat(val);
           }
           if (getRunner == 3) {
             if (teamSelection == Team3) {
-              this.state.Mteams[spindex].TthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) - parseFloat(this.state.betLoss);
-              this.state.Mteams[spindex].TtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(val);
-              this.state.Mteams[spindex].TonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(val);
+              this.state.Mteams[spindex].DTthreePL = parseFloat(this.state.Mteams[spindex].DTthreePL) - parseFloat(this.state.betLoss);
+              this.state.Mteams[spindex].DTtwoPL = parseFloat(this.state.Mteams[spindex].DTtwoPL) + parseFloat(val);
+              this.state.Mteams[spindex].DTonePL = parseFloat(this.state.Mteams[spindex].DTonePL) + parseFloat(val);
             }
           }
           this.setState({ Mteams });
