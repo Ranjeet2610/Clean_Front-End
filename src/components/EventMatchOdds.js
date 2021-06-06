@@ -10,6 +10,7 @@ export default class EventMatchOdds extends Component {
     this.state = {
       tableHead:["S.No.","Market_Id","Market_Name","Runner_Name","isEnable","Action"],
       marketata:'',
+      allEventData: [],
       runnersdata:[]
     };
     this.events = new Livevents();
@@ -17,21 +18,23 @@ export default class EventMatchOdds extends Component {
 
   componentDidMount() {
     this.events.getMatchOdds(this.props.match.params.id,data=>{
-      console.log(data);
       let allMdata = data.data.data[0].marketData;
       let allrunners = data.data.data[0].runners[0];
       this.setState({
         marketata:allMdata,
-        runnersdata:allrunners
+        runnersdata:allrunners,
+        allEventData: data.data.data
       })
     });
   }
 
-  handleChange = (event) => {
-    this.events.lockMatchOdds({marketId:this.state.marketata.marketId},data=>{
-      this.setState({
-        marketata:data.data.Data,
-      })
+  handleChange = (marketId, marketName) => {
+    this.events.lockMatchOdds({marketId: marketId,marketName: marketName},data=>{
+      this.events.getMatchOdds(this.props.match.params.id,data=>{
+        this.setState({
+          allEventData: data.data.data
+        })
+      });
     })
   }
 
@@ -45,7 +48,7 @@ export default class EventMatchOdds extends Component {
               <div className="right_col" role="main">
                 <div className="row">
                   <div className="col-md-12">
-                    <div className="title_new_at">Match Odds    
+                    <div className="title_new_at">Event Markets
                       <div className="pull-right">
                         <button className="btn_common" onClick={() => this.props.history.goBack()}>Back</button>
                       </div>
@@ -68,30 +71,37 @@ export default class EventMatchOdds extends Component {
                             }
                           </tr>
                         </thead>
+                        {this.state.allEventData.map((item, i) => {
+                       // console.log(item)
+                        return (<>
                         <tbody>
                           <tr>
-                            <td className="text-center">1</td>
-                            <td className="text-center">{this.state.marketata.marketId}</td>
-                            <td className="text-center">{this.state.marketata.marketName}</td>
+                            <td className="text-center">{i}</td>
+                            <td className="text-center">{item.marketData.marketId}</td>
+                            <td className="text-center">{item.marketData.marketName}</td>
                             <td className="text-center">
-                              {
-                                this.state.runnersdata.length > 0 &&
-                                this.state.runnersdata.map((item,index) => {
+                            {
+                                item.runners.length > 0 &&
+                                item.runners[0].map((tt, index) => {
                                   return (
                                     <div key={index}>
-                                      <p>Runner Name : {item.runnerName} </p>,
-                                      <p>Selection Id : {item.selectionId}</p><br/>
+                                      <p>Runner Name : {tt.runnerName} </p>,
+                                      <p>Selection Id : {tt.selectionId}</p><br />
                                     </div>
                                   )
                                 })
                               }
                             </td>
                             <td className="text-center">
-                              <input type="checkbox"  checked={this.state.marketata.isEnabled} name ="isEnable" onChange={(e)=>this.handleChange(e)}  style={{height: '20px',width: '20px'}}/>
+                              <input type="checkbox"  checked={item.marketData.isEnabled} name ="isEnable" onClick={() => this.handleChange(item.marketData.marketId, item.marketData.marketName)} style={{height: '20px',width: '20px'}}/>
                             </td> 					   
                             <td className="text-center"><Link to='#'>Action 1</Link> | <Link to="#">Action 2</Link></td>
                           </tr>
                         </tbody>
+                        </>
+                        )
+
+                    })}
                       </table>
                       <p id="paginateClick" className="pagination-row dataTables_paginate paging_simple_numbers"> </p>
                     </div>

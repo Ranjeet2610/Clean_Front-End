@@ -12,7 +12,11 @@ const MatchOddsTable = (props) => {
     let avilBlack;
     let availLay;
     let expoProfit;
+    let total_team1 = [];
+    let total_team2 = [];
+    let total_team3 = [];
     let userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
+    let showHide = (userDetails.Master !== true && userDetails.Admin !== true && userDetails.superAdmin !== true);
     const [marketName, setMarketName] = useState("")
     const [inPlay, setInPlay] = useState("")
     const [timer, setTimer] = useState("")
@@ -36,7 +40,8 @@ const MatchOddsTable = (props) => {
             selfancySize:props?.selfancySize,
             IP:props?.IP,
             sportInfo:props?.sportInfo,
-            fancyInfo:props?.fancyInfo
+            fancyInfo:props?.fancyInfo,
+            SoM:props?.SoM
         },
         marketData: props?.marketData,
 
@@ -50,7 +55,6 @@ const MatchOddsTable = (props) => {
 
     useEffect(() => {
         //console.log("state**********************8", state);
-
         setstate({
             ...props,
             ...{
@@ -71,13 +75,12 @@ const MatchOddsTable = (props) => {
                 selfancySize:props?.selfancySize,
                 IP:props?.IP,
                 sportInfo:props?.sportInfo,
-                fancyInfo:props?.fancyInfo
+                fancyInfo:props?.fancyInfo,
+                SoM:props?.SoM
             },
             marketData: props?.marketData,
-
             runners: props?.marketOdds?.runners || props?.pdata, //props.pdata, //[]
             marketOdds: props?.odsData,  //props.odsData //[]
-
             inplay: "",
             isenable: props?.isEnabled || false,
             data: props?.pdata, //props?.pdata //[]
@@ -103,13 +106,21 @@ const MatchOddsTable = (props) => {
             }
 
         }
-    }, [props])
 
+    }, [props])
+    state.SoM.length > 0 &&
+    state.SoM.map((item, index) => {
+    //   total_team1[item.marketName] = parseFloat(total_team1[item.marketName]) + parseFloat(item.T1TotalPL);
+    //   total_team2[item.marketName] = parseFloat(total_team2[item.marketName]) + parseFloat(item.T2TotalPL);
+    //   total_team3[item.marketName] = parseFloat(total_team3[item.marketName]) + parseFloat(item.T3TotalPL);
+    //   console.log(total_team1[item.marketName],total_team2[item.marketName],total_team3[item.marketName],item.marketName)
+        total_team1[item.marketName] = parseFloat(item.T1TotalPL);
+        total_team2[item.marketName] = parseFloat(item.T2TotalPL);
+        total_team3[item.marketName] = parseFloat(item.T3TotalPL);
+    })
     useEffect(() => {
         setTimer(props.timer)
     }, [props.timer])
-    //alert(state.marketOdds?.length);
-
     return (<div>
 
         <div className="match_score_box">
@@ -163,9 +174,6 @@ const MatchOddsTable = (props) => {
                     {
                         state?.data?.length > 0 ? state.marketOdds?.length > 0 ?
                             state.runners?.map((item, index) => {
-                             //    if(this.state.exporunnerdata.length > 0) {
-                             //       expoProfit = state.exporunnerdata.filter((itemexpo) => itemexpo.runnerId === item.selectionId).exposure;
-                             //    }
                                 filterrunners = state.data.filter(newdata => {
                                     return newdata.selectionId === state.marketOdds[0].runners[index]?.selectionId;
                                 })
@@ -230,7 +238,29 @@ const MatchOddsTable = (props) => {
                                     let Mindex = state.Mteams?.findIndex(x => x.marketName === marketName);
                                     return (
                                         <>
-                                            <tr id="user_row0" className="back_lay_color runner-row-32047099">
+                                        {
+                                        state.marketOdds[0].runners[index]?.status==='SUSPENDED'?
+                                        <tr id="user_row0" className="back_lay_color runner-row-32047099">
+                                        <td>
+                                            <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
+                                            <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
+                                            <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId}>0{/* {expoProfit} */}</span>
+                                            {
+                                                <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
+                                                    {
+                                                        showHide ? (state.data.length == 3 ? index === 0 ?
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> : index == 1 ?
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team1[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team1[marketName]}</div>) : index === 1 ? (<div class={`text-center ${total_team2[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team2[marketName]}</div>) : (<div class={`text-center ${total_team3[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team3[marketName]}</div>)}</>)
+                                                    }
+                                                </p>
+                                            }
+                                        </td>
+                                        <td colSpan="6"><div class="fancyOddsSBR" style={{ width: "100%" }}>SUSPENDED</div></td>
+                                        </tr>
+                                        :<tr id="user_row0" className="back_lay_color runner-row-32047099">
                                                 <td>
                                                     <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
                                                     <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
@@ -238,12 +268,12 @@ const MatchOddsTable = (props) => {
                                                     {
                                                         <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
                                                             {
-                                                                state.data.length == 3 ? index === 0 ?
+                                                                showHide ? (state.data.length == 3 ? index === 0 ?
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> : index == 1 ?
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>
+                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team1[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team1[marketName]}</div>) : index === 1 ? (<div class={`text-center ${total_team2[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team2[marketName]}</div>) : (<div class={`text-center ${total_team3[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team3[marketName]}</div>)}</>)
                                                             }
                                                         </p>
                                                     }
@@ -252,6 +282,7 @@ const MatchOddsTable = (props) => {
                                                 {avilBlack}
                                                 {availLay}
                                             </tr>
+                                            }
                                             <tr>
                                                 <td colSpan="7">
                                                     <div className="mobileBetBox">

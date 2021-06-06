@@ -152,7 +152,7 @@ render(){
           <td className="text-center">{
 
             item.description ?
-            <p>{` ${item.description.message} / ${item.description.bettype}  / ${item.description.marketType}/ ${item.description.marketName}`} </p>
+            <p>{` ${JSON.parse(item.description.message).name} / ${item.description.bettype}  / ${item.description.marketType}/ ${item.description.marketName}`} </p>
             : item.userName
           }</td>
           <td className="text-center">{deposited.toFixed(2)} </td>

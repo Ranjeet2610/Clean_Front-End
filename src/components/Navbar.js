@@ -81,23 +81,14 @@ validateChangePassword = async () => {
   }
 
   if (this.state.newpassword !== "") {
-    if (this.state.newpassword.length >= 8) {
-      let char = this.state.newpassword[0];
-      let chU = this.upperCaseLetters(char);
-      if (chU) {
-        await this.setState({
-          reqNpMsg: "1st letter capital & length must be 8",
-          np: false,
-        });
-      } else {
+    if (this.state.newpassword.length >= 4) {
         await this.setState({
           np: true,
           reqNpMsg: "",
         });
-      }
     } else {
       await this.setState({
-        reqNpMsg: "Password must have at least 8 character !",
+        reqNpMsg: "Password must have at least 4 character !",
         np: false,
       });
     }
