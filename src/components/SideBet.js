@@ -345,7 +345,7 @@ export default class SideBet extends Component {
             }else{
               fancysizeval = this.state.getselfancySize;
             }
-            if(fancysizeval > this.props.betData.data.size || fancysizeval===0){
+            if(fancysizeval > this.props.betData.data.size || fancysizeval==0){
               this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
             }else{
               await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,"placeBet");
@@ -415,7 +415,8 @@ export default class SideBet extends Component {
               loss:this.state.loss,
               IP:this.props.IP,
               device:device,
-              marketType:(this.props.betData.marketName==="Match Odds" || this.props.betData.marketName==="Bookmaker")?'match odds':'Fancy',
+              marketType:'match odds',
+              //marketType:(this.props.betData.marketName==="Match Odds" || this.props.betData.marketName==="Bookmaker")?'match odds':'Fancy',
               marketName:this.props.betData.marketName!=undefined?this.props.betData.marketName:'Fancy',
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
@@ -791,7 +792,6 @@ export default class SideBet extends Component {
       this.setState({
         matchRunner: data.pdata,
       });
-      console.log("CDM",this.state.matchRunner);
       this.getBetData();
     });
     const obj ={
@@ -965,13 +965,6 @@ export default class SideBet extends Component {
         })
       }
     }
-    if(nextProps.expoData){
-      if(nextProps.getExpo !== this.props.expoData){
-      this.setState({
-        getExpo:nextProps.expoData
-        })
-      }
-    }
     if(nextProps.selOdds){
       if(nextProps.getselOdds !== this.props.selOdds){
         this.setState({
@@ -990,6 +983,13 @@ export default class SideBet extends Component {
       if(nextProps.getselfancySize !== this.props.selfancySize){
         this.setState({
           getselfancySize:nextProps.selfancySize
+        })
+      }
+    }
+    if(nextProps.expoData){
+      if(nextProps.getExpo !== this.props.expoData){
+      this.setState({
+        getExpo:nextProps.expoData
         })
       }
     }
@@ -1107,7 +1107,14 @@ export default class SideBet extends Component {
     // const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
     // const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
     // const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
-
+    let getRunner = this.state.matchRunner.length;
+    let teams = this.props.matchName.split(" v ");
+    let CTeamone = teams[0];//this.state.data[0].runnerName;
+    let CTeamtwo = teams[1];//this.state.data[1].runnerName;
+    if(getRunner==3){
+      var CTeamthree = "The Draw";//this.state.data[2].runnerName;
+    }
+    
     return (
     <div className="col-md-4 col-xs-12">
       <div className="betSlipBox" style={{}}>
@@ -1404,11 +1411,9 @@ export default class SideBet extends Component {
                       <thead>
                         <tr className="headings">
                             <th className="text-center" style={{width:'50px'}}><b>Account</b></th>
-                            {this.props.runnderData?.length>0 &&
-                              this.props.runnderData.map((item,index)=>{
-                                return (<th key={index} className="text-center" style={{width:'50px'}}><b>{item.runnerName}</b></th>)
-                              })
-                            }
+                            <th key={0} className="text-center" style={{width:'50px'}}><b>{CTeamone}</b></th>
+                            <th key={1} className="text-center" style={{width:'50px'}}><b>{CTeamtwo}</b></th>
+                            {getRunner===3?<th key={2} className="text-center" style={{width:'50px'}}><b>{CTeamthree}</b></th>:null}
                         </tr>
                       </thead>
                       <tbody>

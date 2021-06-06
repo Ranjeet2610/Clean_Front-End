@@ -113,10 +113,16 @@ export default class MatchOdds extends Component {
       marketData16: [],
       teamRows: 0,
       TRindex: [],
+      boxopen:'close',
+      SoM: [],
+      curPoAcc: '',
+      curbetHistroy:'',
+      curmatchRunner:0
     };
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
+    this.MteamsDvalue = this.MteamsDvalue.bind(this); // Here
   }
 
   handleInputValue(val) {
@@ -280,7 +286,8 @@ export default class MatchOdds extends Component {
         },
         display: displayTest,
         toggleMatchIndex: index,
-        IP: this.state?.IP
+        IP: this.state?.IP,
+        boxopen:'open'
       });
       this.StaKeAmount(index, odds, type, pdata.selectionId, marketName);
     }
@@ -347,7 +354,8 @@ export default class MatchOdds extends Component {
             isItManual: isManual
           },
           display: displayTest,
-          IP: this.state.IP
+          IP: this.state.IP,
+          boxopen:'open'
         });
         this.fancyStaKeAmount(oddsprice, oddssize, type, data.marketId, index);
       }
@@ -404,6 +412,56 @@ export default class MatchOdds extends Component {
         }
         this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName);
       }
+
+      if(this.state.Mteams.length===0){
+        let teams=[];
+        let teamrows=0;
+        let teamrowsindex=[];
+        let findex = 0;
+        let Rmatch = 0;
+        data.map((item, index) => {
+          if(item.marketName=="Match Odds"){
+            Rmatch = item.odsData[0].runners.length;
+          }
+          if(item.odsData[0].runners.length === 3){
+            teams.push({
+              marketName:item.marketName,
+              [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0].runners.length).fill(1).map((_,i) => item.odsData[0].runners[i].selectionId)),
+              TonePL: 0,ToneColor: "blue-odds",
+              DTonePL: 0,DToneColor: "blue-odds",
+              TtwoPL: 0,TtwoColor: "blue-odds",
+              DTtwoPL: 0,DTtwoColor: "blue-odds",
+              TthreePL: 0,TthreeColor: "blue-odds",
+              DTthreePL: 0,DTthreeColor: "blue-odds"
+            });
+          }else{
+            teams.push({
+              marketName:item.marketName,
+              [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0].runners.length).fill(1).map((_,i) => item.odsData[0].runners[i].selectionId)),
+              TonePL: 0,ToneColor: "blue-odds",
+              DTonePL: 0,DToneColor: "blue-odds",
+              TtwoPL: 0,TtwoColor: "blue-odds",
+              DTtwoPL: 0,DTtwoColor: "blue-odds"
+            });
+          }
+          teamrows = teamrows+item.odsData[0].runners.length;
+          if(index===0){
+            teamrowsindex.push(0);
+            findex = item.odsData[0].runners.length;
+          }else if(index===1){
+            teamrowsindex.push(findex);
+          }else{
+            teamrowsindex.push(teamrows-item.odsData[0].runners.length);
+          }
+        })
+        // console.log("teams",teams);
+        this.setState({
+          Mteams:teams,
+          teamRows:teamrows,
+          TRindex:teamrowsindex,
+          curmatchRunner:Rmatch
+        })
+      }
     }
 
     if (this.state.sportType === 4) {
@@ -427,12 +485,16 @@ export default class MatchOdds extends Component {
               getUodds = this.state.fancymarket[this.state.selIndex]?.marketData?.LayPrice;
               getUsize = this.state.fancymarket[this.state.selIndex]?.marketData?.LaySize;
             }
+            //console.log(this.state.selIndex,getUodds,getUsize,this.state.selbetType,this.state.selfancymarketId)
             this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
           }
         }
       }
-    }
-    this.interval = setInterval(() => {
+    }    
+     this.interval = setInterval( async() => {
+      if(this.state.boxopen=="close"){
+        await this.MteamsDvalue();
+       }
       // service.getListMarketType(this.props.match.params.id, (data) => {
       //   // console.log("Data Abhi Kaisa aarha --->>>",data);
       //   this.setState({
@@ -474,8 +536,7 @@ export default class MatchOdds extends Component {
       //     }
       //   });
       // }  
-    }, 1000);
-
+    }, 30000);
     this.setState({
       load: false
     })
@@ -515,49 +576,10 @@ export default class MatchOdds extends Component {
     service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
         //console.log("sachin",this.state.matchOddData16,this.state.data)
         //let Mteams = Array(2).fill(0).map(row => new Array(3).fill(1))
-       //console.log("wholeData",wholeData);
-        let teams=[];
-        let teamrows=0;
-        let teamrowsindex=[];
-        let findex = 0;
-        wholeData.map((item, index) => {
-          if(item.marketData.runners.length === 3){
-            teams.push({
-              marketName:item.marketData.marketName,
-              [item.marketData.marketName]: Array(1).fill(0).map(row => new Array(item.marketData.runners.length).fill(1).map((_,i) => item.marketData.runners[i].selectionId)),
-              TonePL: 0,ToneColor: "blue-odds",
-              DTonePL: 0,DToneColor: "blue-odds",
-              TtwoPL: 0,TtwoColor: "blue-odds",
-              DTtwoPL: 0,DTtwoColor: "blue-odds",
-              TthreePL: 0,TthreeColor: "blue-odds",
-              DTthreePL: 0,DTthreeColor: "blue-odds"
-            });
-          }else{
-            teams.push({
-              marketName:item.marketData.marketName,
-              [item.marketData.marketName]: Array(1).fill(0).map(row => new Array(item.marketData.runners.length).fill(1).map((_,i) => item.marketData.runners[i].selectionId)),
-              TonePL: 0,ToneColor: "blue-odds",
-              DTonePL: 0,DToneColor: "blue-odds",
-              TtwoPL: 0,TtwoColor: "blue-odds",
-              DTtwoPL: 0,DTtwoColor: "blue-odds"
-            });
-          }
-          teamrows = teamrows+item.marketData.runners.length;
-          if(index===0){
-            teamrowsindex.push(0);
-            findex = item.marketData.runners.length;
-          }else if(index===1){
-            teamrowsindex.push(findex);
-          }else{
-            teamrowsindex.push(teamrows-item.marketData.runners.length);
-          }
-        })
+      // console.log("wholeData",wholeData);
         // console.log("teams",teams);
         this.setState({
           marketData16: wholeData,
-          Mteams:teams,
-          teamRows:teamrows,
-          TRindex:teamrowsindex
         })
         // console.log("marketData16",this.state.marketData16[0].runners[0].length);
          // console.log("Mteams",this.state.Mteams);
@@ -565,25 +587,23 @@ export default class MatchOdds extends Component {
         this.MteamsDvalue();
       /* end */
     });
-    fetch("https://api.ipify.org?format=json")
-      .then(response => {
+    /*********************************/
+    fetch("https://api.ipify.org?format=json").then(response => {
         return response.json();
-      }, "jsonp")
-      .then(res => {
+      }, "jsonp").then(res => {
         //console.log(res);
         this.setState({ IP: res.ip });
-      })
-      .catch(err => console.log(err))
+      }).catch(err => console.log(err))
     /*********************************/
-    fetch("http://173.249.21.26/SkyImporter/MatchImporter.svc/GetScoreId?eventid=" + this.props.match.params.id)
-      .then(response => {
+    fetch("http://173.249.21.26/SkyImporter/MatchImporter.svc/GetScoreId?eventid=" + this.props.match.params.id).then(response => {
         return response.json();
-      }, "jsonp")
-      .then(res => {
+      }, "jsonp").then(res => {
         //console.log(res);
         this.setState({ scoreId: res.scoreId });
-      })
-      .catch(err => console.log(err))
+      }).catch(err => console.log(err))
+    /*********************************/
+    this.getBetData();
+    // set Interval
   }
   MteamsDvalue() {
     this.state.Mteams.map((item, MTindex) => {
@@ -598,7 +618,7 @@ export default class MatchOdds extends Component {
         let T3TotalPL = 0;
         this.service.betHistory(JSON.parse(localStorage.getItem('data')).userName, this.props.match.params.id, 'getUserOpenBetHistory', (data) => {
           let betFill = data.filter(e => e.marketName === item.marketName);
-          console.log("betFill",betFill);
+          //console.log("betFill",betFill);
           betFill.map((item, index) => {
             if (item.bettype == 'Back') {
               if (Teamone == item.selectionID) {
@@ -734,6 +754,11 @@ export default class MatchOdds extends Component {
       zeroStatus: status,
       color: "red"
     })
+    if(facFrom==="ClearAllSelection"){
+      await this.setState({
+        boxopen: "close"
+      })
+    }
     if(typeof(marketName) !== 'undefined'){
       setTimeout(() => {
         const gpindex = this.state.Mteams.findIndex(x => x.marketName === marketName);
@@ -820,8 +845,234 @@ export default class MatchOdds extends Component {
     }
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
   }
+// getting all bet data
 
-  render() {
+getBetData = () => {
+  let userName = JSON.parse(localStorage.getItem('data')).userName;
+  if (this.userDetails.superAdmin) {
+    this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
+      this.setState({
+        curbetHistroy: Data.data.data,
+      });
+      this.handleCurrentPosition(this.state.curbetHistroy, userName);
+    });
+  }
+  else if (this.userDetails.Admin) {
+    this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
+      let betFill = Data.data.data.filter(item => item.userInfo[0].superAdmin[0] === userName);
+      this.setState({
+        curbetHistroy: betFill
+      });
+      this.handleCurrentPosition(this.state.curbetHistroy, userName);
+    });
+  }
+  else if (this.userDetails.Master) {
+    this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
+      let betFill = Data.data.data.filter(item => item.userInfo[0].admin[0] === userName)
+      this.setState({
+        curbetHistroy: betFill
+      });
+      this.handleCurrentPosition(this.state.curbetHistroy, userName);
+    });
+  }
+  else {
+    this.users.getAllBettings(`/getAllBetting?event_id=${this.props.match.params.id}`, (Data) => {
+      let betFill = Data.data.data.filter(item => item.clientName === userName)
+      this.setState({
+        curbetHistroy: betFill
+      });
+      this.handleCurrentPosition(this.state.curbetHistroy, userName);
+    });
+  }
+}
+
+handleCurrentPosition = async (data, userName) => {
+  await new Promise((resolve, reject) => setTimeout(resolve, 500));
+  let getRunner = this.state.curmatchRunner;
+  let teams = this.state.matchName.split(" v ");
+  let Teamone = teams[0];//this.state.data[0].runnerName;
+  let Teamtwo = teams[1];//this.state.data[1].runnerName;
+  if (getRunner == 3) {
+    var Teamthree = "The Draw";//this.state.data[2].runnerName;
+  }
+  if (this.userDetails.superAdmin) {
+    let arr = [];
+    data.map(item => {
+      let itemName = item?.userInfo[0]?.superAdmin[0];
+      let marketName = item.marketName;
+      if (arr.every((item) => item.marketName !== marketName)) {
+          arr.push({
+          name: item?.userInfo[0]?.superAdmin[0],
+          T1TotalPL: 0,
+          T2TotalPL: 0,
+          T3TotalPL: 0,
+          marketName: item?.marketName
+        })
+      }
+      let indx = arr.findIndex(e => e.marketName === marketName);
+      if (item.bettype == 'Back') {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          }
+        }
+      } else {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          }
+        }
+      }
+    })
+    this.setState({
+      SoM: arr
+    })
+  }
+  else if (this.userDetails.Admin) {
+    let arr = [];
+    let filterdata = data.filter(newdata => {
+      return newdata.userInfo[0].superAdmin[0] === userName;
+    })
+    filterdata.map(item => {
+      let marketName = item.marketName;
+      if (arr.every((item) => item.marketName !== marketName)) {
+          arr.push({
+          name: item?.userInfo[0]?.superAdmin[0],
+          T1TotalPL: 0,
+          T2TotalPL: 0,
+          T3TotalPL: 0,
+          marketName: item?.marketName
+        })
+      }
+      let indx = arr.findIndex(e => e.marketName === marketName);
+      if (item.bettype == 'Back') {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          }
+        }
+      } else {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          }
+        }
+      }
+    })
+    this.setState({
+      SoM: arr
+    })
+  }
+  else if (this.userDetails.Master) {
+    let arr = [];
+    let filterdata = data.filter(newdata => {
+      return newdata.userInfo[0].admin[0] === userName;
+    })
+    filterdata.map(item => {
+      let marketName = item.marketName;
+      if (arr.every((item) => item.marketName !== marketName)) {
+          arr.push({
+          name: item?.userInfo[0]?.superAdmin[0],
+          T1TotalPL: 0,
+          T2TotalPL: 0,
+          T3TotalPL: 0,
+          marketName: item?.marketName
+        })
+      }
+      let indx = arr.findIndex(e => e.marketName === marketName);
+      if (item.bettype == 'Back') {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.stack);
+          }
+        }
+      } else {
+        if (Teamone == item.selection) {
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) + parseFloat(item.P_L);
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (Teamtwo == item.selection) {
+          arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) + parseFloat(item.P_L);
+          arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) - parseFloat(item.stack);
+        }
+        if (getRunner == 3) {
+          if (Teamthree == item.selection) {
+            arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL) + parseFloat(item.P_L);
+            arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL) - parseFloat(item.stack);
+            arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL) - parseFloat(item.stack);
+          }
+        }
+      }
+    })
+    console.log(arr);
+    this.setState({
+      SoM: arr
+    })
+  }
+}
+render() {
     let inplay;
     let runners = this.state.data;
     let filterrunners = [];
@@ -932,7 +1183,8 @@ export default class MatchOdds extends Component {
                                       selfancySize={this.state.selfancySize}
                                       IP={this.state.IP}
                                       sportInfo={this.state.sportInfo}
-                                      fancyInfo={this.state.fancyInfo}    
+                                      fancyInfo={this.state.fancyInfo}
+                                      SoM={this.state.SoM}
                                     />
                                   ))
                                 }
@@ -940,9 +1192,7 @@ export default class MatchOdds extends Component {
                                 {
                                   //////////////////////// TABLE OF MATCH ODDS /////////////////////////////
                                 }
-
                               </div>
-
                               {
                                 this.state.sportType === 4
                                   && this.state.fancymarket?.length > 0
