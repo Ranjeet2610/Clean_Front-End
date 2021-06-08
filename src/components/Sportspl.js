@@ -64,7 +64,7 @@ export default class Clientpl extends Component {
   }
 
   componentDidMount(){
-    if(this.userDetails.superAdmin === false){
+    if (this.userDetails?.Master === false && this.userDetails?.Admin === false && this.userDetails?.superAdmin === false) {
       this.props.history.push('/dashboard')
     }
     let currD = new Date().toISOString().substr(0,10);

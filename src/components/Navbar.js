@@ -465,7 +465,7 @@ showchildMenu=(e)=>{
         <li>
           <Link to="/chipsummary">Chip Summary </Link>
         </li>
-        {/* <li>
+         <li>
           <Link to="/clientpl">Client P L</Link>
         </li>
         <li>
@@ -473,7 +473,7 @@ showchildMenu=(e)=>{
         </li>
         <li>
           <Link to="/sportspl">Sport P L</Link>
-        </li> */}
+        </li>
         <li>
           <Link to="/userpl">User P L</Link>
         </li>
@@ -526,7 +526,7 @@ showchildMenu=(e)=>{
         <li>
           <Link to="/chipsummary">Chip Summary </Link>
         </li>
-        {/* <li>
+        <li>
           <Link to="/clientpl">Client P L</Link>
         </li>
         <li>
@@ -534,7 +534,7 @@ showchildMenu=(e)=>{
         </li>
         <li>
           <Link to="/sportspl">Sport P L</Link>
-        </li> */}
+        </li>
         <li>
           <Link to="/userpl">User P L</Link>
         </li>
