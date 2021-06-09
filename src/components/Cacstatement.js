@@ -107,7 +107,7 @@ paginate = (pageNumber) => {
 }
 
 render(){
-  console.log(this.state.resdata);
+  //console.log(this.state.resdata);
   const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
   const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
   const currentPosts = this.state.resdata?.slice(indexOfFirstPost, indexOfLastPost);
@@ -118,7 +118,7 @@ render(){
   let dwuserby;
   if(currentPosts.length>0){
     statements = this.state.resdata.map((item,index) => {
-      console.log('item are --------------',item)
+      //console.log('item are --------------',item)
       if(item.hasOwnProperty('depositedBy')){
         deposited = item.amount>0?item.amount:0;
         trantype = "Received From";
@@ -149,11 +149,10 @@ render(){
         <tr key={index}>
           <td className="text-center">{(this.state.resdata.length + 1) - (indexOfFirstPost + index + 1)}</td>
           <td className="text-center">{this.convertDatePickerTimeToMySQLTime(item.createdDate)} </td>
-          <td className="text-center">{
-
-            item.description ?
-            <p>{` ${JSON.parse(item.description.message).name} / ${item.description.bettype}  / ${item.description.marketType}/ ${item.description.marketName}`} </p>
-            : item.userName
+          <td className="text-center">{ item.description ?
+          <p>{` ${ JSON.parse(item.description.message).sport === 4? "Cricket":JSON.parse(item.description.message).sport === 1? "Tennis":JSON.parse(item.description.message).sport === 2?"Soccer":"Event"}
+           / ${JSON.parse(item.description.message).name} /Selection: ${item?.description?.selection} /MarketType: ${item?.description?.marketType} /MarketName: ${item?.description?.marketName} /Result: ${item?.description?.winnerTeam}`} </p>
+          : <p>{`${item.userName} ${trantype} ${dwuserby}`}</p>
           }</td>
           <td className="text-center">{deposited.toFixed(2)} </td>
           <td className="text-center">{withdraw.toFixed(2)} </td>

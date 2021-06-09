@@ -70,7 +70,7 @@ export default class SuperMaster extends Component {
       userName:"",
       name: "",
       password: "",
-      partner: "",
+      partner: "2",
       masterUName: name,
       reqPwd: '',
       reqID: '',

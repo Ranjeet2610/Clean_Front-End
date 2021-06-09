@@ -192,7 +192,7 @@ export default class SideBet extends Component {
       await new Promise((resolve, reject) => setTimeout(resolve, 1000));
     }
     else{
-      this.event.getbetplacetime(this.props.eventType,async data=>{
+      this.event.getbetplacetime(this.state.sportType,async data=>{
         await this.setState({
           timeDuration:(data.data.data.timeDuration-1000)
         })

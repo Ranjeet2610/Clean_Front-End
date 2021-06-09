@@ -258,7 +258,9 @@ const MatchOddsTable = (props) => {
                                                 </p>
                                             }
                                         </td>
-                                        <td colSpan="6"><div class="fancyOddsSBR" style={{ width: "100%" }}>SUSPENDED</div></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td colSpan="2"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
                                         </tr>
                                         :<tr id="user_row0" className="back_lay_color runner-row-32047099">
                                                 <td>
