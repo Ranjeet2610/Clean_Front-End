@@ -304,7 +304,7 @@ const MatchOddsTable = (props) => {
                                                             }}
                                                             betLoss={state.betLoss}
                                                             setdisplay={state.display[index+state.TBindex]}
-                                                            eventId={props.match?.params?.id}
+                                                            eventId={props?.eventId}
                                                             handleInput={(e) => props.handleInputValue(e)}
                                                             runnderData={state.data}
                                                             expoData={state.exporunnerdata}

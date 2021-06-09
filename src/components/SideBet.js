@@ -312,20 +312,16 @@ export default class SideBet extends Component {
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
         dobet=false;
       }
-      // if(inplay === "GOING IN-PLAY"){
-      //   if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
-      //     alert("value:"+this.stackInput.value)
-      //     alert("PreInplayStack:"+this.props.sportInfo.PreInplayStack)
-      //       this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
-      //     dobet=false;
-      //   }
-      //   else if(this.state.profit > this.props.sportInfo.PreInplayProfit){
-      //     alert("value:"+this.state.profit)
-      //     alert("PreInplayStack:"+this.props.sportInfo.PreInplayStack)
-      //       this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
-      //     dobet=false;
-      //   }
-      // }
+      if(inplay === "GOING IN-PLAY"){
+        if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
+          this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
+          dobet=false;
+        }
+        else if(this.state.profit > this.props.sportInfo.PreInplayProfit){
+          this.props.handleBetPlaceBox("Profit limit exceed",'red','error')
+          dobet=false;
+        }
+      }
     }
     if(!disableBetting){
       if(dobet===true){
