@@ -302,7 +302,7 @@ getUserPLData = () => {
                          }
                          {
                            this.state.data.length > 0 ?
-                            <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
+                            <tr style={{backgroundColor:'#f0f0f0',fontWeight:'bold'}}>
                             <td className="text-center">Total</td>
                             <td class={cTotal>0?"text-center color_red":"text-center inplay_txt"}>{cTotal > 0? "-"+ cTotal.toFixed(2) : Math.abs(cTotal).toFixed(2)}</td>
                             <td className="text-center" style={{color:'green'}}>0.00</td>
