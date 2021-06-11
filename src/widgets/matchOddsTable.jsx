@@ -187,7 +187,7 @@ const MatchOddsTable = (props) => {
                                     }
                                     avilBlack = sordataBack?.map((itemback) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth, index)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                             </td>
@@ -208,7 +208,7 @@ const MatchOddsTable = (props) => {
 
                                     availLay = sordataLay?.map((itemlay) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth, index)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                             </td>
@@ -218,7 +218,7 @@ const MatchOddsTable = (props) => {
                                 else {
                                     avilBlack = state.avilBlack?.map((itemback) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Back", state.marketOdds[0].runners[index].ex.availableToBack[2].price, itemback, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth, index)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemback.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemback.size}</span>
                                             </td>
@@ -226,7 +226,7 @@ const MatchOddsTable = (props) => {
                                     })
                                     availLay = state.availLay?.map((itemlay) => {
                                         return (
-                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth)} >
+                                            <td className="32047099_0availableToBack2_price_1171389306" onClick={() => props.placeBet(marketName,"Lay", state.marketOdds[0].runners[index].ex.availableToLay[0].price, itemlay, state.data.filter(newdata => { return newdata.selectionId === state.marketOdds[0].runners[index].selectionId })[0], state.marketOdds, index+state.TBindex, window.innerWidth, index)} >
                                                 <span id="32047099_0availableToBack2_price_1171389306">{itemlay.price}</span>
                                                 <span id="32047099_0availableToBack2_size_1171389306">{itemlay.size}</span>
                                             </td>

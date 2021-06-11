@@ -162,11 +162,11 @@ export default class BetBox extends Component {
           this.props.handleBetPlaceBox("Loss limit exceed",'red','error')
           dobet=false;
         }
-        else if(this.odsInput.value > this.props.sportInfo.maxOdds){
+        else if(this.odsInput.value >= this.props.sportInfo.maxOdds){
           this.props.handleBetPlaceBox("Invalid Odds..",'red','error')
           dobet=false;
         }
-        else if(this.odsInput.value < this.props.sportInfo.minOdds){
+        else if(this.odsInput.value <= this.props.sportInfo.minOdds){
           this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
           dobet=false;
         }
@@ -242,7 +242,7 @@ export default class BetBox extends Component {
                 const obj2 = {
                   userid:JSON.parse(localStorage.getItem('data')).id,
                   eventID:this.props.eventId,
-                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  marketType: 'Fancy',
                   runnersData :this.state.expoData
                 }
                 this.service.updateExpo(obj2,ddata=>{
@@ -261,8 +261,10 @@ export default class BetBox extends Component {
             }
           }
           else{
-            if(this.state.getselOdds > this.odsInput.value){
+            if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
+            }else if(this.props.betData.marketName===''){
+              this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
             }else{
               await this.StaKeAmount(this.stackInput.value,this.state.getselOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
               const obj ={
@@ -281,7 +283,7 @@ export default class BetBox extends Component {
               device:device,
               marketType:'match odds',
               //marketType:(this.props.betData.marketName==="Match Odds" || this.props.betData.marketName==="Bookmaker")?'match odds':'Fancy',
-              marketName:this.props.betData.marketName!=undefined?this.props.betData.marketName:'Fancy',
+              marketName:this.props.betData.marketName,
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
@@ -296,7 +298,7 @@ export default class BetBox extends Component {
                 const obj2 = {
                   userid:JSON.parse(localStorage.getItem('data')).id,
                   eventID:this.props.eventId,
-                  marketType: this.props.betData.betType !=undefined?this.props.betData.betType:'match odds',
+                  marketType: 'match odds',
                   runnersData :this.state.expoData
                 }
                 this.service.updateExpo(obj2,ddata=>{

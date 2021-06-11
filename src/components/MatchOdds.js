@@ -96,6 +96,7 @@ export default class MatchOdds extends Component {
       selbetType: '',
       selTeamSelection: '',
       selIndex: '',
+      selmIndex: '',
       selmarketName:'',
       selfancymarketId: '',
       fbetHistroyProp: '',
@@ -137,16 +138,17 @@ export default class MatchOdds extends Component {
       loss = Math.round(odds * val);
     }
   }
-  getselOdds(index, ods, type, teamSelection, marketName) {
+  getselOdds(index, ods, type, teamSelection, marketName, mindex) {
     this.setState({
       selOdds: ods,
       selbetType: type,
       selTeamSelection: teamSelection,
       selIndex: index,
+      selmIndex: mindex,
       selmarketName:marketName
     });
   }
-  StaKeAmount(index, ods, type, teamSelection, marketName) {
+  StaKeAmount(index, ods, type, teamSelection, marketName, mindex) {
     if(this.state.selmarketName!==marketName){
       this.MteamsDvalue();
     }
@@ -163,7 +165,7 @@ export default class MatchOdds extends Component {
         betLoss: Math.round(odds * val),
       });
     }
-    this.getselOdds(index, ods, type, teamSelection, marketName);
+    this.getselOdds(index, ods, type, teamSelection, marketName, mindex);
     /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
     setTimeout(() => {
       const spindex = this.state.Mteams.findIndex(x => x.marketName === marketName);
@@ -257,7 +259,7 @@ export default class MatchOdds extends Component {
     //console.log('filterbookdata',this.state.filterbookdata)
   }
 
-  placeBet = (marketName, type, odds, data, pdata, mid, index, width) => {
+  placeBet = (marketName, type, odds, data, pdata, mid, index, width, mindex) => {
     // debugger
     let displayTest;
     let betType = "match odds";
@@ -282,14 +284,14 @@ export default class MatchOdds extends Component {
           odds: odds,
           mid: mid[0].marketId,
           betType: betType,
-          marketName:marketName
+          marketName:marketName?marketName:''
         },
         display: displayTest,
         toggleMatchIndex: index,
         IP: this.state?.IP,
         boxopen:'open'
       });
-      this.StaKeAmount(index, odds, type, pdata.selectionId, marketName);
+      this.StaKeAmount(index, odds, type, pdata.selectionId, marketName, mindex);
     }
   }
 
@@ -404,13 +406,20 @@ export default class MatchOdds extends Component {
         matchOddData16: sortedList //data //tempJson
       });
       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
+
+        //console.log(this.state.matchOddData16)
+        let filterrunners = this.state.matchOddData16.filter(newdata => {
+          return newdata.marketName === this.state.selmarketName;
+        })
+        //console.log("filterrunners",filterrunners[0].odsData[0]);
         let getUodds = "";
         if (this.state.selbetType === "Back") {
-          getUodds = this.state.marketOdds[0]?.runners[this.state.selIndex]?.ex?.availableToBack[0]?.price;
+          getUodds = filterrunners[0]?.odsData[0]?.runners[this.state.selmIndex]?.ex?.availableToBack[0]?.price;
         } else {
-          getUodds = this.state.marketOdds[0]?.runners[this.state.selIndex]?.ex.availableToLay[0]?.price;
+          getUodds = filterrunners[0]?.odsData[0]?.runners[this.state.selmIndex]?.ex.availableToLay[0]?.price;
         }
-        this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName);
+        //console.log("getselOdds",this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
+        this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
       }
 
       if(this.state.Mteams.length===0){
@@ -576,7 +585,7 @@ export default class MatchOdds extends Component {
     service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
         //console.log("sachin",this.state.matchOddData16,this.state.data)
         //let Mteams = Array(2).fill(0).map(row => new Array(3).fill(1))
-      // console.log("wholeData",wholeData);
+       //console.log("wholeData",wholeData);
         // console.log("teams",teams);
         this.setState({
           marketData16: wholeData,
