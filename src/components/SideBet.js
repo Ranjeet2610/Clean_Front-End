@@ -500,20 +500,16 @@ export default class SideBet extends Component {
 
   handleCurrentPosition = async (data,userName) => {
     let getRunner = this.state.matchRunner.length;
-    let teams = this.props.matchName.split(" v ");
-    let Teamone = teams[0];//this.state.data[0].runnerName;
-    let Teamtwo = teams[1];//this.state.data[1].runnerName;
-    if(getRunner==3){
-      var Teamthree = "The Draw";//this.state.data[2].runnerName;
+    let Teamone = this.state.matchRunner[0]?.selectionId;
+    let Teamtwo = this.state.matchRunner[1]?.selectionId;
+    if(getRunner===3){
+      var Teamthree = this.state.matchRunner[2]?.selectionId;
     }
-    /*let Teamone = this.state.matchRunner[0].runnerName;
-    let Teamtwo = this.state.matchRunner[1].runnerName;
-    if(getRunner==3){
-      var Teamthree = this.state.matchRunner[2].runnerName;
-    }*/
+    //console.log("getRunner",Teamone,Teamtwo,Teamthree,getRunner,this.state.curPoAcc)
     if(this.state.curPoAcc === 'Admin'){
       let arr = [];
       data.map(item => {
+        //console.log("item",item)
         let itemName = item?.userInfo[0]?.superAdmin[0]
         if(arr.every((item) => item.name !== itemName)){
           arr.push({
@@ -522,41 +518,41 @@ export default class SideBet extends Component {
             T2TotalPL : 0,
             T3TotalPL : 0,
             bettype: item?.bettype,
-            selection: item?.selection
+            selection: item?.selectionID
           })
         }
           let indx = arr.findIndex(e => e.name === itemName);
           if(item.bettype=='Back'){
-            if(Teamone==item.selection){
+            if(Teamone==item.selectionID){
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
             }
-            if(Teamtwo==item.selection){
+            if(Teamtwo==item.selectionID){
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
             }
             if(getRunner==3){
-              if(Teamthree==item.selection){
+              if(Teamthree==item.selectionID){
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
               }
             }  
           }else{
-            if(Teamone==item.selection){
+            if(Teamone==item.selectionID){
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
             }
-            if(Teamtwo==item.selection){
+            if(Teamtwo==item.selectionID){
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
             }
             if(getRunner==3){
-              if(Teamthree==item.selection){
+              if(Teamthree==item.selectionID){
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
@@ -583,41 +579,41 @@ export default class SideBet extends Component {
               T2TotalPL : 0,
               T3TotalPL : 0,
               bettype: item.bettype,
-              selection: item.selection
+              selection: item.selectionID
             })
           }
             let indx = arr.findIndex(e => e.name === itemName);
             if(item.bettype=='Back'){
-              if(Teamone==item.selection){
+              if(Teamone==item.selectionID){
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
               }
-              if(Teamtwo==item.selection){
+              if(Teamtwo==item.selectionID){
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
               }
               if(getRunner==3){
-                if(Teamthree==item.selection){
+                if(Teamthree==item.selectionID){
                   arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
                   arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
                   arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
                 }
               }  
             }else{
-              if(Teamone==item.selection){
+              if(Teamone==item.selectionID){
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
               }
-              if(Teamtwo==item.selection){
+              if(Teamtwo==item.selectionID){
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
               }
               if(getRunner==3){
-                if(Teamthree==item.selection){
+                if(Teamthree==item.selectionID){
                   arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
                   arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
                   arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
@@ -647,41 +643,41 @@ export default class SideBet extends Component {
             T2TotalPL: 0,
             T3TotalPL: 0,
             bettype: item.bettype,
-            selection: item.selection
+            selection: item.selectionID
           })
         }
           let indx = arr.findIndex(e => e.name === itemName);
           if(item.bettype=='Back'){
-            if(Teamone==item.selection){
+            if(Teamone==item.selectionID){
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.P_L);
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
             }
-            if(Teamtwo==item.selection){
+            if(Teamtwo==item.selectionID){
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.P_L);
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.stack);
             }
             if(getRunner==3){
-              if(Teamthree==item.selection){
+              if(Teamthree==item.selectionID){
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.stack);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.stack);
               }
             }  
           }else{
-            if(Teamone==item.selection){
+            if(Teamone==item.selectionID){
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)+parseFloat(item.P_L);
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
             }
-            if(Teamtwo==item.selection){
+            if(Teamtwo==item.selectionID){
               arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)+parseFloat(item.P_L);
               arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
               arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)-parseFloat(item.stack);
             }
             if(getRunner==3){
-              if(Teamthree==item.selection){
+              if(Teamthree==item.selectionID){
                 arr[indx].T3TotalPL = parseFloat(arr[indx].T3TotalPL)+parseFloat(item.P_L);
                 arr[indx].T2TotalPL = parseFloat(arr[indx].T2TotalPL)-parseFloat(item.stack);
                 arr[indx].T1TotalPL = parseFloat(arr[indx].T1TotalPL)-parseFloat(item.stack);
@@ -697,7 +693,6 @@ export default class SideBet extends Component {
       })
     }
   }
-
   getBetData = () => {
     if(this.userDetails.superAdmin){
       let userName = JSON.parse(localStorage.getItem('data')).userName
@@ -786,12 +781,22 @@ export default class SideBet extends Component {
       IP:this.props.IP
     });
     //matchRunner
-    this.service.getListMarketType(this.props.eventId, (data) => {
-      this.setState({
-        matchRunner: data.pdata,
+    if(this.state.sportType===4){
+      this.service.getMarketMatchOdds(this.props.eventId, (data) => {
+        this.setState({
+          matchRunner: data.pdata,
+        });
+        this.getBetData();
       });
-      this.getBetData();
-    });
+    }else{
+      this.service.getListMarketType(this.props.eventId, (data) => {
+        this.setState({
+          matchRunner: data.pdata,
+        });
+        this.getBetData();
+      });
+    }
+
     const obj ={
       id:JSON.parse(localStorage.getItem('data')).id
     }
@@ -1069,6 +1074,7 @@ export default class SideBet extends Component {
   }
 
   render() {
+    //console.log("SoM",this.state.SoM)
     let color = this.state.color
     let ods =0;
     let fancysize =0;
@@ -1106,11 +1112,10 @@ export default class SideBet extends Component {
     // const currentPosts = this.state.betHistroy?.slice(indexOfFirstPost, indexOfLastPost);
     // const fcurrentPosts = this.state.fbetHistroy?.slice(indexOfFirstPost, indexOfLastPost);
     let getRunner = this.state.matchRunner.length;
-    let teams = this.props.matchName.split(" v ");
-    let CTeamone = teams[0];//this.state.data[0].runnerName;
-    let CTeamtwo = teams[1];//this.state.data[1].runnerName;
-    if(getRunner==3){
-      var CTeamthree = "The Draw";//this.state.data[2].runnerName;
+    let CTeamone = this.state.matchRunner[0]?.runnerName;
+    let CTeamtwo = this.state.matchRunner[1]?.runnerName;
+    if(getRunner===3){
+      var CTeamthree = this.state.matchRunner[2]?.runnerName;
     }
     
     return (

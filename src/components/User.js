@@ -245,61 +245,77 @@ export default class User extends Component {
   }
 
   update_free_chips = () => {
-    if (this.state.isDeposit) {
-      const obj = {
-        userid: this.state.userdetails.id,
-        fillAmount: this.state.Chips
+      if (this.state.isDeposit) {
+        if(this.state.masterDetails.walletBalance < this.state.Chips){
+          switch ('error'){
+            case 'error':
+              NotificationManager.error("Invalid chip amount...!","Error");
+            break;
+          }
+        }else{
+          const obj = {
+            userid: this.state.userdetails.id,
+            fillAmount: this.state.Chips
+          }
+          this.users.creditbyUser(obj, "creditAmountByMaster", (Data) => {
+            // const obj1 = {
+            //   userName: JSON.parse(localStorage.getItem("data")).userName
+            // }
+            // this.users.getMyprofile(obj1, (data) => {
+            //   this.setState({
+            //     notifyMsg: Data.data.message
+            //   });
+            //   setTimeout(() => {
+            //     localStorage.setItem("data", JSON.stringify(data.data));
+            //     window.location.reload();
+            //   }, 1000)
+            // });
+          });
+          switch ('success') {
+            case 'success':
+              NotificationManager.success("Credit successfully  !","Success");
+            break;
+          }
+          this.supervisorBasedUser();
+          this.closechipDepositpopup();
+        }
       }
-      this.users.creditbyUser(obj, "creditAmountByMaster", (Data) => {
-        // const obj1 = {
-        //   userName: JSON.parse(localStorage.getItem("data")).userName
-        // }
-        // this.users.getMyprofile(obj1, (data) => {
-        //   this.setState({
-        //     notifyMsg: Data.data.message
-        //   });
-        //   setTimeout(() => {
-        //     localStorage.setItem("data", JSON.stringify(data.data));
-        //     window.location.reload();
-        //   }, 1000)
-        // });
-      });
-      switch ('success') {
-        case 'success':
-          NotificationManager.success("Credit successfully  !","Success");
-        break;
+      else {
+        if(this.state.userdetails.walletBalance < this.state.Chips){
+          switch ('error'){
+            case 'error':
+              NotificationManager.error("Invalid chip amount...!","Error");
+            break;
+          }
+        }else{
+          const obj = {
+            userid: this.state.userdetails.id,
+            fillAmount: this.state.Chips
+          }
+          this.users.debitbyUser(obj, "debitAmountByMaster", (Data) => {
+            // const obj1 = {
+            //   userName: JSON.parse(localStorage.getItem("data")).userName
+            // }
+            // this.users.getMyprofile(obj1, (data) => {
+            //   this.setState({
+            //     notifyMsg: Data.data.message
+            //   });
+            //   setTimeout(() => {
+            //     localStorage.setItem("data", JSON.stringify(data.data));
+            //     window.location.reload();
+            //   }, 1000)
+            // });
+          });
+          switch ('success') {
+            case 'success':
+              NotificationManager.success("Debited successfully...!","Success");
+            break;
+          }
+          this.supervisorBasedUser();
+          this.closechipWithdrawalpopup();
+        }
       }
-      this.supervisorBasedUser();
-      this.closechipDepositpopup();
     }
-    else {
-      const obj = {
-        userid: this.state.userdetails.id,
-        fillAmount: this.state.Chips
-      }
-      this.users.debitbyUser(obj, "debitAmountByMaster", (Data) => {
-        // const obj1 = {
-        //   userName: JSON.parse(localStorage.getItem("data")).userName
-        // }
-        // this.users.getMyprofile(obj1, (data) => {
-        //   this.setState({
-        //     notifyMsg: Data.data.message
-        //   });
-        //   setTimeout(() => {
-        //     localStorage.setItem("data", JSON.stringify(data.data));
-        //     window.location.reload();
-        //   }, 1000)
-        // });
-      });
-      switch ('success') {
-        case 'success':
-          NotificationManager.success("Debited successfully...!","Success");
-        break;
-      }
-      this.supervisorBasedUser();
-      this.closechipWithdrawalpopup();
-    }
-  }
 
   openChipDeposit = (userdetails) => {
     const obj = {

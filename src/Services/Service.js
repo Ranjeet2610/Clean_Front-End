@@ -88,6 +88,27 @@ getListMarketType(eid,cb){
       }
     }).catch((error) => console.log("Error",error));
 }
+getMarketMatchOdds(eid,cb){
+
+  // call for cricket
+  axios.post(Constants.APIURL+'marketTypeData', { eventId: eid })
+    .then((response) => {
+      if(response.data.data.length !== 0){
+        let filterdata = response?.data?.data?.filter(newdata=>{
+          return newdata.marketData.marketName==="Match Odds";
+        })
+        let mid = filterdata[0]?.marketData?.marketId;
+        let isEnabled = filterdata[0]?.marketData?.isEnabled;
+          if (filterdata[0]?.runners[0].length > 0) {
+            this.getlistMarketOdds(mid,data=>{
+              cb({pdata:filterdata[0]?.runners[0],odsData:data,isEnabled:isEnabled},response?.data?.data)
+            });
+          }
+      }else{
+        cb({pdata:'',odsData:'',isEnabled:''})
+      }
+    }).catch((error) => console.log("Error",error));
+}
 
 placeBet(data,cb){
   

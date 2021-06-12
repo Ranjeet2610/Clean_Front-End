@@ -143,47 +143,63 @@ export default class Master extends Component {
 
   update_free_chips = () => {
     if (this.state.isDeposit) {
-      const obj = {
-        userid: this.state.userdetails.id, fillAmount: this.state.Chips
-      }
-      if(this.state.Chips){
-        this.users.creditbyUser(obj, "creditAmountByAdmin", (pdata) => {
-          const obj1 = {
-            userName: JSON.parse(localStorage.getItem("data")).userName
-          }
-          this.users.getMyprofile(obj1, (data) => {
-            localStorage.setItem("data", JSON.stringify(data.data));
-            this.getmasterforSupermaster();
-            switch ('success') {
-              case 'success':
-                NotificationManager.success(pdata.data.message,"Success");
-              break;
+      if(this.state.parentwalletBalance < this.state.Chips){
+        switch ('error'){
+          case 'error':
+            NotificationManager.error("Invalid chip amount...!","Error");
+          break;
+        }
+      }else{
+        const obj = {
+          userid: this.state.userdetails.id, fillAmount: this.state.Chips
+        }
+        if(this.state.Chips){
+          this.users.creditbyUser(obj, "creditAmountByAdmin", (pdata) => {
+            const obj1 = {
+              userName: JSON.parse(localStorage.getItem("data")).userName
             }
+            this.users.getMyprofile(obj1, (data) => {
+              localStorage.setItem("data", JSON.stringify(data.data));
+              this.getmasterforSupermaster();
+              switch ('success') {
+                case 'success':
+                  NotificationManager.success(pdata.data.message,"Success");
+                break;
+              }
+            });
           });
-        });
-        this.closechipDepositpopup();
+          this.closechipDepositpopup();
+        }
       }
     }
     else {
-      const obj2 = {
-        userid: this.state.userdetails.id, fillAmount: this.state.Chips
-      }
-      if(this.state.Chips){
-        this.users.debitbyUser(obj2, "debitAmountByAdmin", (pdata) => {
-          const obj3 = {
-            userName: JSON.parse(localStorage.getItem("data")).userName
-          }
-          this.users.getMyprofile(obj3, (data) => {
-            localStorage.setItem("data", JSON.stringify(data.data));
-            this.getmasterforSupermaster();
-            switch ('success') {
-              case 'success':
-                NotificationManager.success(pdata.data.message,"Success");
-              break;
+      if(this.state.userdetails.walletBalance < this.state.Chips){
+        switch ('error'){
+          case 'error':
+            NotificationManager.error("Invalid chip amount...!","Error");
+          break;
+        }
+      }else{
+        const obj2 = {
+          userid: this.state.userdetails.id, fillAmount: this.state.Chips
+        }
+        if(this.state.Chips){
+          this.users.debitbyUser(obj2, "debitAmountByAdmin", (pdata) => {
+            const obj3 = {
+              userName: JSON.parse(localStorage.getItem("data")).userName
             }
+            this.users.getMyprofile(obj3, (data) => {
+              localStorage.setItem("data", JSON.stringify(data.data));
+              this.getmasterforSupermaster();
+              switch ('success') {
+                case 'success':
+                  NotificationManager.success(pdata.data.message,"Success");
+                break;
+              }
+            })
           })
-        })
-        this.closechipWithdrawalpopup();
+          this.closechipWithdrawalpopup();
+        }
       }
     }
   }

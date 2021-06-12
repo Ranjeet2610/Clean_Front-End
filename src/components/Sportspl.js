@@ -253,7 +253,7 @@ export default class Clientpl extends Component {
                             this.state.data.map((item,index)=>{
                             let userPl;
                             if(item.ProfitLoss>0){
-                              userPl = parseFloat(item.fancyProfitLoss)+(parseFloat(item.ProfitLoss)-(parseFloat(item.ProfitLoss)*item.Commission/100));
+                              userPl = parseFloat(item.fancyProfitLoss)+(parseFloat(item.ProfitLoss)-(parseFloat(item.cricketomProfit)*item.Commission/100));
                             }else{
                               userPl = parseFloat(item.fancyProfitLoss)+parseFloat(item.ProfitLoss);
                             }
@@ -280,7 +280,7 @@ export default class Clientpl extends Component {
                             this.state.masterData.map((item,index)=>{
                               let userPl;
                               if(item.profitLoss>0){
-                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.cricketomPL)*item.Commission/100));
                               }else{
                                 userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
                               }
@@ -311,7 +311,7 @@ export default class Clientpl extends Component {
                             this.state.adminData.map((item,index)=>{
                               let userPl;
                               if(item.profitLoss>0){
-                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.profitLoss)*item.Commission/100));
+                                userPl = parseFloat(item.fancyprofitLoss)+(parseFloat(item.profitLoss)-(parseFloat(item.cricketomPL)*item.Commission/100));
                               }else{
                                 userPl = parseFloat(item.fancyprofitLoss)+parseFloat(item.profitLoss);
                               }

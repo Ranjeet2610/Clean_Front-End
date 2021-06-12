@@ -154,6 +154,7 @@ export default class Marketpl extends Component {
     const currentadminDataPosts = this.state.adminData?.reverse().slice(indexOfFirstPost, indexOfLastPost);
     let sportType;
     let mTotal=0;
+    let mcTotal=0;
     return (
       <div>
         <Navbar />
@@ -225,8 +226,9 @@ export default class Marketpl extends Component {
                               }else{
                                 sportType = "Event";
                               }
-                              let userPl = parseFloat(item.ProfitLoss);
+                              let userPl = parseFloat(item.ProfitLoss)+parseFloat(item.mCommision);
                               mTotal=mTotal+userPl;
+                              mcTotal = mcTotal+parseFloat(item.mCommision);
                                 return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
@@ -236,9 +238,9 @@ export default class Marketpl extends Component {
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
+                                  <td className="text-center">{parseFloat(item.mCommision).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
+                                  <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                 </tr>
                               );
                             }):
@@ -253,8 +255,9 @@ export default class Marketpl extends Component {
                             }else{
                               sportType = "Event";
                             }
-                            let userPl = parseFloat(item.ProfitLoss);
+                            let userPl = parseFloat(item.ProfitLoss)+parseFloat(item.mCommision);
                             mTotal=mTotal+userPl;
+                            mcTotal = mcTotal+parseFloat(item.mCommision);
                             return (
                                 <tr>
                                   <td className="text-center">{item.data[0].createdAt}</td>
@@ -264,9 +267,9 @@ export default class Marketpl extends Component {
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
                                   <td className="text-center">0.00</td>
+                                  <td className="text-center">{parseFloat(item.mCommision).toFixed(2)}</td>
                                   <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
-                                  <td className="text-center">0.00</td>
+                                  <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                 </tr>
                               );
                             }):
@@ -281,8 +284,9 @@ export default class Marketpl extends Component {
                                 }else{
                                   sportType = "Event";
                                 }
-                                let userPl = parseFloat(item.ProfitLoss);
+                                let userPl = parseFloat(item.ProfitLoss)+parseFloat(item.mCommision);
                                 mTotal=mTotal+userPl;
+                                mcTotal = mcTotal+parseFloat(item.mCommision);
                                 return (  
                                   <tr>
                                     <td className="text-center">{new Date(item.data[0].createdDate).toLocaleString()}</td>
@@ -292,9 +296,9 @@ export default class Marketpl extends Component {
                                     <td className="text-center inplay_txt">0.00</td>
                                     <td className="text-center inplay_txt">0.00</td>
                                     <td className="text-center inplay_txt">0.00</td>
+                                    <td className="text-center inplay_txt">{parseFloat(item.mCommision).toFixed(2)}</td>
                                     <td className="text-center inplay_txt">0.00</td>
-                                    <td className="text-center inplay_txt">0.00</td>
-                                    <td className="text-center inplay_txt">0.00</td>
+                                    <td class={userPl>0?"text-center color_red":"text-center inplay_txt"}>{userPl>0?"-"+userPl.toFixed(2):Math.abs(userPl).toFixed(2)}</td>
                                   </tr>
                                 );
                               }):
@@ -310,9 +314,9 @@ export default class Marketpl extends Component {
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
+                            <td class={"text-center inplay_txt"}>{mcTotal.toFixed(2)}</td>
                             <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal.toFixed(2):Math.abs(mTotal).toFixed(2)}</td>
                           </tr>:
                           this.state.masterData.length > 0 ?
                           <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
@@ -321,9 +325,9 @@ export default class Marketpl extends Component {
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
+                            <td class={"text-center inplay_txt"}>{mcTotal.toFixed(2)}</td>
                             <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal.toFixed(2):Math.abs(mTotal).toFixed(2)}</td>
                           </tr>:
                             this.state.adminData.length > 0 ?
                             <tr style={{backgroundColor:'rgb(232 190 208)',fontWeight:'bold'}}>
@@ -332,9 +336,9 @@ export default class Marketpl extends Component {
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
                             <td className="text-center inplay_txt">0.00</td>
+                            <td class={"text-center inplay_txt"}>{mcTotal.toFixed(2)}</td>
                             <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
-                            <td className="text-center inplay_txt">0.00</td>
+                            <td class={mTotal>0?"text-center color_red":"text-center inplay_txt"}>{mTotal>0?"-"+mTotal.toFixed(2):Math.abs(mTotal).toFixed(2)}</td>
                         </tr>:null
                          }
                       </tbody>
