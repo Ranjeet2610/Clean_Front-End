@@ -27,6 +27,7 @@ const MatchOddsTable = (props) => {
             tableTd: ["0", "0", "0", "0", "0", "0"],
             display:props?.display,
             Mteams:props?.Mteams,
+            DMteams:props?.DMteams,
             TBindex:props?.TBindex,
             eventType:props?.eventType,
             betData:props?.betData,
@@ -52,7 +53,6 @@ const MatchOddsTable = (props) => {
         data: props?.pdata, //props?.pdata //[]
         
     });
-
     useEffect(() => {
         //console.log("state**********************8", state);
         setstate({
@@ -62,6 +62,7 @@ const MatchOddsTable = (props) => {
                 tableTd: ["0", "0", "0", "0", "0", "0"],
                 display:props?.display,
                 Mteams:props?.Mteams,
+                DMteams:props?.DMteams,
                 TBindex:props?.TBindex,
                 eventType:props?.eventType,
                 betData:props?.betData,
@@ -86,7 +87,6 @@ const MatchOddsTable = (props) => {
             data: props?.pdata, //props?.pdata //[]
         })
     }, [props])
-
     useEffect(() => {
         //  Status Of the match  
         if (new Date(JSON.parse(localStorage.getItem("matchname")).date).getTime() > new Date().getTime()) {
@@ -253,7 +253,13 @@ const MatchOddsTable = (props) => {
                                                         <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
                                                         <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
                                                         <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
-                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team1[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team1[marketName]}</div>) : index === 1 ? (<div class={`text-center ${total_team2[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team2[marketName]}</div>) : (<div class={`text-center ${total_team3[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team3[marketName]}</div>)}</>)
+                                                        <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : 
+                                                        (state.data.length == 3 ? index === 0 ?
+                                                            <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> : index == 1 ?
+                                                            <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span> :
+                                                            <span class={"runner_amount " + state.DMteams[Mindex]?.TthreeColor}>{state.DMteams[Mindex]?.TthreePL}</span> : index == 0 ?
+                                                            <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> :
+                                                            <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span>)
                                                     }
                                                 </p>
                                             }
@@ -275,7 +281,13 @@ const MatchOddsTable = (props) => {
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
                                                                 <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : (<>{index === 0 ? (<div class={`text-center ${total_team1[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team1[marketName]}</div>) : index === 1 ? (<div class={`text-center ${total_team2[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team2[marketName]}</div>) : (<div class={`text-center ${total_team3[marketName] >= 0 ? "total_green_class" : "color_red"}`}>{total_team3[marketName]}</div>)}</>)
+                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : 
+                                                                (state.data.length == 3 ? index === 0 ?
+                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> : index == 1 ?
+                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span> :
+                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TthreeColor}>{state.DMteams[Mindex]?.TthreePL}</span> : index == 0 ?
+                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> :
+                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span>)
                                                             }
                                                         </p>
                                                     }
