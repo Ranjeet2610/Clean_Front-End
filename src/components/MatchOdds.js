@@ -402,9 +402,8 @@ export default class MatchOdds extends Component {
         oddsload: false,
         matchOddData16: sortedList //data //tempJson
       });
-      //console.log("matchOddData16",this.state.matchOddData16)
+      console.log("matchOddData16",this.state.matchOddData16)
       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
-
         //console.log(this.state.matchOddData16)
         let filterrunners = this.state.matchOddData16.filter(newdata => {
           return newdata.marketName === this.state.selmarketName;
@@ -427,6 +426,7 @@ export default class MatchOdds extends Component {
         let findex = 0;
         let Rmatch = 0;
         data.map((item, index) => {
+        if(item.odsData[0]?.runners?.length){
           if(item.marketName=="Match Odds"){
             Rmatch = item.odsData[0]?.runners?.length;
           }
@@ -460,6 +460,7 @@ export default class MatchOdds extends Component {
           }else{
             teamrowsindex.push(teamrows-item.odsData[0]?.runners?.length);
           }
+        }
         })
         // console.log("teams",teams);
         this.setState({
