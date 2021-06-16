@@ -631,7 +631,7 @@ export default class MatchOdds extends Component {
         //console.log(res);
         this.setState({ scoreId: res.scoreId, scorecard:true });
       }).catch(err => console.log(err))
-    }, 3000)
+    }, 2000)
     /*********************************/
     // set Interval
   }
@@ -1059,7 +1059,7 @@ render() {
                               </div>
                               {//this.state.sportType === 4
                                 (this.state?.matchOddData16?.length > 0 && this.state.sportType===4 && <>
-                                  <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
+                                  <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '5px' }}>
                                     {this.state.scorecard?<iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>:''}
                                   </div>
                                 </>)

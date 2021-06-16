@@ -132,6 +132,14 @@ export default class BetBox extends Component {
             this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }
+          else if(this.state.loss > this.state.balance){
+            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            dobet=false;
+          }
+          else if(this.state.balance < 0){
+            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            dobet=false;
+          }
         }else{
           if(this.props.fancyInfo.lockBet===true){
             this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
@@ -149,6 +157,14 @@ export default class BetBox extends Component {
             this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }
+           else if(this.state.loss > this.state.balance){
+            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            dobet=false;
+          }
+          else if(this.state.balance < 0){
+            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            dobet=false;
+          }  
         }
       }else{
         if(this.props.sportInfo.lockBet===true){
@@ -177,6 +193,14 @@ export default class BetBox extends Component {
         }
         else if(this.stackInput.value > this.state.balance){
           this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+          dobet=false;
+        }
+        else if(this.state.loss > this.state.balance){
+          this.props.handleBetPlaceBox("Invalid Bet...B",'red','error')
+          dobet=false;
+        }
+        else if(this.state.balance < 0){
+          this.props.handleBetPlaceBox("Invalid Bet...0",'red','error')
           dobet=false;
         }
         if(inplay === "GOING IN-PLAY"){

@@ -269,6 +269,14 @@ export default class SideBet extends Component {
           this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           dobet=false;
         }
+        else if(this.state.loss > this.state.balance){
+          this.props.handleBetPlaceBox("Invalid Bet...B1",'red','error')
+          dobet=false;
+        }
+        else if(this.state.balance < 0){
+          this.props.handleBetPlaceBox("Invalid Bet...01",'red','error')
+          dobet=false;
+        }
       }else{
         if(this.props.fancyInfo.lockBet===true){
           this.props.handleBetPlaceBox("Your Betting is locked...!",'red','error')
@@ -284,6 +292,14 @@ export default class SideBet extends Component {
         }
         else if(this.stackInput.value > this.state.balance){
           this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
+          dobet=false;
+        }
+        else if(this.state.loss > this.state.balance){
+          this.props.handleBetPlaceBox("Invalid Bet...B2",'red','error')
+          dobet=false;
+        }
+        else if(this.state.balance < 0){
+          this.props.handleBetPlaceBox("Invalid Bet...02",'red','error')
           dobet=false;
         }
       }
@@ -316,6 +332,15 @@ export default class SideBet extends Component {
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
         dobet=false;
       }
+      else if(this.state.loss > this.state.balance){
+        this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+        dobet=false;
+      }
+      else if(this.state.balance < 0){
+        this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+        dobet=false;
+      }  
+
       if(inplay === "GOING IN-PLAY"){
         if(this.stackInput.value > this.props.sportInfo.PreInplayStack){
           this.props.handleBetPlaceBox("Invalid Stack...",'red','error')
@@ -330,7 +355,7 @@ export default class SideBet extends Component {
     if(!disableBetting){
       if(dobet===true){
         if(this.state.loss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+          this.props.handleBetPlaceBox("Invalid Bet......",'red','error')
         }
         else{
           this.setState({
