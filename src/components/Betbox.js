@@ -234,6 +234,8 @@ export default class BetBox extends Component {
             }
             if(fancysizeval > this.props.betData.data.size || fancysizeval==0){
               this.props.handleBetPlaceBox("Invaild Fancy odds",'red','error')
+            } else if(this.state.loss > this.state.balance){
+                this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
             }else{
               await this.StaKeAmount(this.stackInput.value,this.state.getselfancyOdds,this.state.getselfancySize,this.isbackInput.value,this.props.index,"placeBet");
               const obj = {
@@ -292,6 +294,8 @@ export default class BetBox extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
+            } else if(this.state.loss > this.state.balance){
+              this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
             }else{
