@@ -1037,7 +1037,6 @@ render() {
                           <div className="fullrow matchBoxMain  matchBox_29905278 matchBoxs_1171389306">
                             <div className="modal-dialog-staff">
                               <div className="match_score_box">
-
                                 {
                                   //////////////////////// HEADER OF MATCH ODDS /////////////////////////////////
                                 }
