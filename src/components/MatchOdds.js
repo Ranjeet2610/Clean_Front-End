@@ -18,7 +18,7 @@ import MatchOddsTable from '../widgets/matchOddsTable';
 import { sortDataByName } from '../helpers/matchOddHelper'
 
 // const BASE_URL = 'ws://localhost:4500';
-const BASE_URL = 'ws://3.108.46.86:4500';
+const BASE_URL = 'ws://3.108.95.93:4500';
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
