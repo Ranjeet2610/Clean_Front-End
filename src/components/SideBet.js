@@ -179,7 +179,7 @@ export default class SideBet extends Component {
         timeDuration=this.props.fancyInfo.betDelay
       }
       this.event.getbetplacetime(5,async data=>{
-        if(data.data.data.timeDuration>timeDuration){
+        if(data.data.data.timeDuration > (timeDuration!=undefined?timeDuration:0)){
           await this.setState({
             timeDuration:(data.data.data.timeDuration-1000)
           })
@@ -190,6 +190,10 @@ export default class SideBet extends Component {
         }
       })
       await new Promise((resolve, reject) => setTimeout(resolve, 1000));
+    }else if(this.props.betData.marketName==="Bookmaker"){
+      this.setState({
+        timeDuration:2000
+      })
     }
     else{
       this.event.getbetplacetime(this.state.sportType,async data=>{

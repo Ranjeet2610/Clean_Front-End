@@ -18,7 +18,7 @@ import MatchOddsTable from '../widgets/matchOddsTable';
 import { sortDataByName } from '../helpers/matchOddHelper'
 
 // const BASE_URL = 'ws://localhost:4500';
-const BASE_URL = 'ws://3.108.46.86:4500';
+const BASE_URL = 'ws://3.108.95.93:4500';
 export default class MatchOdds extends Component {
   constructor(props) {
     super(props);
@@ -119,7 +119,8 @@ export default class MatchOdds extends Component {
       SoM: [],
       curPoAcc: '',
       curbetHistroy:'',
-      curmatchRunner:0
+      curmatchRunner:0,
+      scorecard: false,
     };
     this.service = new Service();
     this.users = new Users();
@@ -365,41 +366,35 @@ export default class MatchOdds extends Component {
     }
     //console.log("FANCY", this.state.betData)  
   }
-
+  reverseArray(arr) {
+    var newArray = [];
+    var firstarr = false;
+    for (var i = arr.length - 1; i >= 0; i--) {
+      if(arr[i].marketName==="Match Odds"){
+        newArray.push(arr[i]);
+      }
+      firstarr = true;
+    }
+    for (var i = arr.length - 1; i >= 0; i--) {
+      if(firstarr && arr[i].marketName!=="Match Odds"){
+        newArray.push(arr[i]);
+      }
+    }
+    return newArray;
+  }
   componentDidMount() {
     var service = new Service();
     var livevents = new LiveEvents();
     this.setState({
       load: true
     })
-    let sportName;
-    let showHide = (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true);
-    //cricket,fancy,tennis,soccer
-    if (this.state.sportType === 1) {
-      sportName = "tennis";
-    } else if (this.state.sportType === 2) {
-      sportName = "soccer";
-    } else if (this.state.sportType === 4) {
-      sportName = "cricket";
-      this.users.userSportsInfo({ id: this.userDetails.id, type: "fancy" }, (data) => {
-        this.setState({
-          fancyInfo: data.data,
-        });
-      });
-    }
-    this.users.userSportsInfo({ id: this.userDetails.id, type: sportName }, (data) => {
-      this.setState({
-        sportInfo: data.data,
-      });
-    });
     let wsc = new WebSocket(`${BASE_URL}/marketTypeData/eventId/${this.props.match.params.id}`);
     wsc.onerror = (e) => {
       alert("Something Went Wrong!")
     }
     wsc.onmessage = (e) => {
       let data = JSON.parse(e.data);
-      // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>.Data", data)
-      const sortedList =  data.reverse(); //sortDataByName(this.state.marketData16, data)
+      const sortedList =  this.reverseArray(data); //data.reverse();//sortDataByName(this.state.marketData16, data)
       this.setState({
         marketOdds: sortedList[0].odsData,
         isenable: sortedList[0].isEnabled,
@@ -407,6 +402,7 @@ export default class MatchOdds extends Component {
         oddsload: false,
         matchOddData16: sortedList //data //tempJson
       });
+      //console.log("matchOddData16",this.state.matchOddData16)
       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
 
         //console.log(this.state.matchOddData16)
@@ -475,6 +471,26 @@ export default class MatchOdds extends Component {
         })
       }
     }
+    let sportName;
+    let showHide = (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true);
+    //cricket,fancy,tennis,soccer
+    if (this.state.sportType === 1) {
+      sportName = "tennis";
+    } else if (this.state.sportType === 2) {
+      sportName = "soccer";
+    } else if (this.state.sportType === 4) {
+      sportName = "cricket";
+      this.users.userSportsInfo({ id: this.userDetails.id, type: "fancy" }, (data) => {
+        this.setState({
+          fancyInfo: data.data,
+        });
+      });
+    }
+    this.users.userSportsInfo({ id: this.userDetails.id, type: sportName }, (data) => {
+      this.setState({
+        sportInfo: data.data,
+      });
+    });
 
     if (this.state.sportType === 4) {
       let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
@@ -608,12 +624,14 @@ export default class MatchOdds extends Component {
         this.setState({ IP: res.ip });
       }).catch(err => console.log(err))
     /*********************************/
+    setTimeout(() => {
     fetch("http://173.249.21.26/SkyImporter/MatchImporter.svc/GetScoreId?eventid=" + this.props.match.params.id).then(response => {
         return response.json();
       }, "jsonp").then(res => {
         //console.log(res);
-        this.setState({ scoreId: res.scoreId });
+        this.setState({ scoreId: res.scoreId, scorecard:true });
       }).catch(err => console.log(err))
+    }, 3000)
     /*********************************/
     // set Interval
   }
@@ -1042,7 +1060,7 @@ render() {
                               {//this.state.sportType === 4
                                 (this.state?.matchOddData16?.length > 0 && this.state.sportType===4 && <>
                                   <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '25px' }}>
-                                    <iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>
+                                    {this.state.scorecard?<iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>:''}
                                   </div>
                                 </>)
                               }

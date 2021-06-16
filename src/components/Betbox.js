@@ -51,7 +51,7 @@ export default class BetBox extends Component {
       });
     }
 
-    getBetTime = async () => {
+    getBetTime = async () =>{
       if(this.props.betData.betType==="Fancy"){
         let timeDuration;
         if(this.props.betData.ManualPriceKey===true || this.props.betData.isItManual===true){
@@ -60,7 +60,7 @@ export default class BetBox extends Component {
           timeDuration=this.props.fancyInfo.betDelay
         }
         this.event.getbetplacetime(5,async data=>{
-          if(data.data.data.timeDuration>timeDuration){
+          if(data.data.data.timeDuration > (timeDuration!=undefined?timeDuration:0)){
             await this.setState({
               timeDuration:(data.data.data.timeDuration-1000)
             })
@@ -71,7 +71,12 @@ export default class BetBox extends Component {
           }
         })
         await new Promise((resolve, reject) => setTimeout(resolve, 1000));
-      } else{
+      }else if(this.props.betData.marketName==="Bookmaker"){
+        this.setState({
+          timeDuration:2000
+        })
+      }
+      else{
         this.event.getbetplacetime(this.state.sportType,async data=>{
           await this.setState({
             timeDuration:(data.data.data.timeDuration-1000)
@@ -227,7 +232,7 @@ export default class BetBox extends Component {
               eventType:this.state.sportType
             }
             //console.log(obj);
-            this.service.fancyplaceBet(obj,data=>{ 
+            this.service.fancyplaceBet(obj,data=>{
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
               }
