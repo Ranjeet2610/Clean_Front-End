@@ -174,6 +174,7 @@ const obj = {
 exposureDistribution = () => {
   let name = JSON.parse(localStorage.getItem('data')).userName
   this.users.exposureDistribution(name, (data)=>{
+    //console.log("data",data.data.data)
     this.setState({
       expoData:data.data.data
     })
