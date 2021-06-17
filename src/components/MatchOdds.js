@@ -402,7 +402,7 @@ export default class MatchOdds extends Component {
         oddsload: false,
         matchOddData16: sortedList //data //tempJson
       });
-      console.log("matchOddData16",this.state.matchOddData16)
+      //console.log("matchOddData16",this.state.matchOddData16)
       if (this.state.selbetType !== "" && this.state.selOdds !== "") {
         //console.log(this.state.matchOddData16)
         let filterrunners = this.state.matchOddData16.filter(newdata => {
@@ -419,37 +419,38 @@ export default class MatchOdds extends Component {
         this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
       }
 
-      if(this.state.Mteams.length===0){
         let teams=[];
         let teamrows=0;
         let teamrowsindex=[];
         let findex = 0;
         let Rmatch = 0;
-        data.map((item, index) => {
+        sortedList.map((item, index) => {
         if(item.odsData[0]?.runners?.length){
-          if(item.marketName=="Match Odds"){
-            Rmatch = item.odsData[0]?.runners?.length;
-          }
-          if(item.odsData[0]?.runners?.length === 3){
-            teams.push({
-              marketName:item.marketName,
-              [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0]?.runners?.length).fill(1).map((_,i) => item.odsData[0]?.runners[i]?.selectionId)),
-              TonePL: 0,ToneColor: "blue-odds",
-              DTonePL: 0,DToneColor: "blue-odds",
-              TtwoPL: 0,TtwoColor: "blue-odds",
-              DTtwoPL: 0,DTtwoColor: "blue-odds",
-              TthreePL: 0,TthreeColor: "blue-odds",
-              DTthreePL: 0,DTthreeColor: "blue-odds"
-            });
-          }else{
-            teams.push({
-              marketName:item.marketName,
-              [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0]?.runners?.length).fill(1).map((_,i) => item.odsData[0]?.runners[i]?.selectionId)),
-              TonePL: 0,ToneColor: "blue-odds",
-              DTonePL: 0,DToneColor: "blue-odds",
-              TtwoPL: 0,TtwoColor: "blue-odds",
-              DTtwoPL: 0,DTtwoColor: "blue-odds"
-            });
+          if(this.state.Mteams.length===0){
+            if(item.marketName==="Match Odds"){
+              Rmatch = item.odsData[0]?.runners?.length;
+            }
+            if(item.odsData[0]?.runners?.length === 3){
+              teams.push({
+                marketName:item.marketName,
+                [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0]?.runners?.length).fill(1).map((_,i) => item.odsData[0]?.runners[i]?.selectionId)),
+                TonePL: 0,ToneColor: "blue-odds",
+                DTonePL: 0,DToneColor: "blue-odds",
+                TtwoPL: 0,TtwoColor: "blue-odds",
+                DTtwoPL: 0,DTtwoColor: "blue-odds",
+                TthreePL: 0,TthreeColor: "blue-odds",
+                DTthreePL: 0,DTthreeColor: "blue-odds"
+              });
+            }else{
+              teams.push({
+                marketName:item.marketName,
+                [item.marketName]: Array(1).fill(0).map(row => new Array(item.odsData[0]?.runners?.length).fill(1).map((_,i) => item.odsData[0]?.runners[i]?.selectionId)),
+                TonePL: 0,ToneColor: "blue-odds",
+                DTonePL: 0,DToneColor: "blue-odds",
+                TtwoPL: 0,TtwoColor: "blue-odds",
+                DTtwoPL: 0,DTtwoColor: "blue-odds"
+              });
+            }
           }
           teamrows = teamrows+item.odsData[0]?.runners?.length;
           if(index===0){
@@ -461,11 +462,17 @@ export default class MatchOdds extends Component {
             teamrowsindex.push(teamrows-item.odsData[0]?.runners?.length);
           }
         }
-        })
-        // console.log("teams",teams);
+      })
+      if(this.state.Mteams.length===0){
         this.setState({
           Mteams:teams,
           DMteams:teams,
+          teamRows:teamrows,
+          TRindex:teamrowsindex,
+          curmatchRunner:Rmatch
+        })
+      }else{
+        this.setState({
           teamRows:teamrows,
           TRindex:teamrowsindex,
           curmatchRunner:Rmatch
