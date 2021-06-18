@@ -30,6 +30,7 @@ export default class BetBox extends Component {
           getselfancyOdds:'',
           getselfancySize:'',
           showLoader:false,
+          timerstop:true,
           sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
           isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
           isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
@@ -223,6 +224,7 @@ export default class BetBox extends Component {
           this.setState({
             showLoader:true
           });
+          this.props.disabledbox(true);
           await this.getBetTime();
           await new Promise((resolve, reject) => setTimeout(resolve, this.state.timeDuration));
           if(this.props.betData.betType==="Fancy"){
@@ -589,9 +591,9 @@ export default class BetBox extends Component {
         loss:dval,
         display: 'none'
       });
-      let marketName = this.props.betData.marketName;
-      let teamSelection = this.props.betData.pData.selectionId;
-      let type = this.props.betData.betType;
+      let marketName = this.props?.betData?.marketName;
+      let teamSelection = this.props?.betData?.pData?.selectionId;
+      let type = this.props?.betData?.betType;
       this.props.getProfitandLoss(dval,dval,teamSelection,type,dval,"true","ClearAllSelection",marketName);
     }
     closeWindow = () =>{
@@ -600,6 +602,7 @@ export default class BetBox extends Component {
         this.setState({
           showLoader:false
         });
+        this.props.disabledbox(false);
         this.ClearAllSelection();
     }
     render() {
@@ -622,7 +625,15 @@ export default class BetBox extends Component {
         }
         if (this.props.setdisplay === 'block') {
             display = { display: 'block' };
-        }
+            setTimeout(() => {
+              if(this.state.timerstop){
+                this.closeWindow();
+              }
+              this.setState({
+                timerstop: false,
+              });
+            }, 8000)
+          }
         // Loader render
         const stylebox = this.state.showLoader ? {display: 'block'} : {display: 'none'};
         if(this.state.showLoader===true){

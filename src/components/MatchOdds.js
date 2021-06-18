@@ -73,7 +73,7 @@ export default class MatchOdds extends Component {
       betData: "",
       // betProfit: "",
       // betLoss: "",
-      display: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"],
+      display: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none" ],
       isenable: true,
       fancyOdds: "",
       fancymarket: "",
@@ -121,13 +121,14 @@ export default class MatchOdds extends Component {
       curbetHistroy:'',
       curmatchRunner:0,
       scorecard: false,
-    };
+      openboxid:0,
+      isdisabled: false,
+      warningTime: 10000, //10sec
+  };
     this.service = new Service();
     this.users = new Users();
     this.userDetails = JSON.parse(localStorage.getItem("data")) !== undefined ? JSON.parse(localStorage.getItem("data")) : "";
-    this.MteamsDvalue = this.MteamsDvalue.bind(this); // Here
   }
-
   handleInputValue(val) {
     let profit;
     let loss;
@@ -388,6 +389,7 @@ export default class MatchOdds extends Component {
     this.setState({
       load: true
     })
+    
     let wsc = new WebSocket(`${BASE_URL}/marketTypeData/eventId/${this.props.match.params.id}`);
     wsc.onerror = (e) => {
       alert("Something Went Wrong!")
@@ -416,7 +418,7 @@ export default class MatchOdds extends Component {
           getUodds = filterrunners[0]?.odsData[0]?.runners[this.state.selmIndex]?.ex.availableToLay[0]?.price;
         }
         //console.log("getselOdds",this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
-        this.getselOdds(this.state.selIndex, getUodds, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
+        this.getselOdds(this.state.selIndex, getUodds!=undefined?getUodds:0, this.state.selbetType, this.state.selTeamSelection, this.state.selmarketName,this.state.selmIndex);
       }
 
         let teams=[];
@@ -511,7 +513,7 @@ export default class MatchOdds extends Component {
           fancymarket: data.fancymarket,
         });
         if (this.state.fancymarket.length !== 0) {
-          if (this.state.selbetType !== "" && this.state.selOdds !== "") {
+          if (this.state.selbetType !== "" && this.state.selfancyOdds !== "") {
             let getUodds = "";
             let getUsize = "";
             if (this.state.selbetType === "Back") {
@@ -521,12 +523,12 @@ export default class MatchOdds extends Component {
               getUodds = this.state.fancymarket[this.state.selIndex]?.marketData?.LayPrice;
               getUsize = this.state.fancymarket[this.state.selIndex]?.marketData?.LaySize;
             }
-            //console.log(this.state.selIndex,getUodds,getUsize,this.state.selbetType,this.state.selfancymarketId)
-            this.getselfancyOdds(getUodds, getUsize, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
+            //console.log("fancy",this.state.selIndex,getUodds!=undefined?getUodds:0,getUsize!=undefined?getUsize:0,this.state.selbetType,this.state.selfancymarketId)
+            this.getselfancyOdds(getUodds!=undefined?getUodds:0, getUsize!=undefined?getUsize:0, this.state.selbetType, this.state.selfancymarketId, this.state.selIndex);
           }
         }
       }
-    }    
+    }
      this.interval = setInterval( async() => {
       if(this.state.boxopen=="close"){
         showHide? await this.MteamsDvalue() : await this.getBetData()
@@ -642,7 +644,54 @@ export default class MatchOdds extends Component {
     }, 2000)
     /*********************************/
     // set Interval
+
+  this.events = [
+    'load',
+    'mousemove',
+    'mousedown',
+    'click',
+    'scroll',
+    'keypress'
+  ];
+
+  //console.log(this.userdetail);
+  for (var i in this.events) {
+    window.addEventListener(this.events[i], this.resetTimeout);
   }
+  this.setTimeout();
+  /*********************************************/    
+  }
+  clearTimeoutFunc = () => {
+    if (this.warnTimeout) clearTimeout(this.warnTimeout);
+  };
+  
+  setTimeout = () => {
+    this.warnTimeout = setTimeout(this.warn, this.state.warningTime);
+  };
+  
+  resetTimeout = () => {
+    this.clearTimeoutFunc();
+    this.setTimeout();
+  };
+  
+  warn = () => {
+    if (this.state.sportType === 4) {
+      let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
+      wsfancy.onerror = (e) => {
+        alert("Something Went Wrong!!!");
+      }
+      wsfancy.onmessage = (e) => {
+        let data = JSON.parse(e.data);
+        this.setState({
+          fancymarket: data.fancymarket,
+          selfancyOdds: 0,
+          selfancySize: 0,
+        });
+      }
+    }
+    this.resetTimeout();
+  };
+
   MteamsDvalue() {
     this.state.Mteams.map((item, MTindex) => {
         let getRunner = this.state.Mteams[MTindex][item.marketName][0].length;
@@ -760,6 +809,13 @@ export default class MatchOdds extends Component {
       ToneColor: this.state.DToneColor,
       TtwoColor: this.state.DTtwoColor,
       TthreeColor: this.state.DTthreeColor
+    });
+  };
+
+  disabledbox = (index,status) => {
+    this.setState({
+      openboxid: index,
+      isdisabled: status
     });
   };
 
@@ -1091,6 +1147,7 @@ render() {
                                       exporunnerdata={this.state.exporunnerdata}
                                       matchName={this.state.matchName}
                                       handleRemove={this.handleRemove}
+                                      disabledbox={this.disabledbox}
                                       handleBetPlaceBox={this.handleBetPlaceBox}
                                       getProfitandLoss={this.getProfitandLoss}
                                       handleInputValue={(e) => this.handleInputValue(e)}
@@ -1114,6 +1171,7 @@ render() {
                                       sportInfo={this.state.sportInfo}
                                       fancyInfo={this.state.fancyInfo}
                                       SoM={this.state.SoM}
+                                      isdisabled={this.state.isdisabled}
                                     />
                                   ))
                                 }
@@ -1181,7 +1239,7 @@ render() {
                                                     <ul className="sport-high fancyListDiv">
                                                       <li>
                                                         <div className="ses-fan-box">
-                                                          <table className={`table table-striped bulk_actions ${parentitem.marketData.isEnabled ? "fancyOddsDisabled" : ""}`} >
+                                                          <table className={`table table-striped bulk_actions ${this.state.isdisabled ? "fancyOddsDisabled-placebet" : ""} ${parentitem.marketData.isEnabled ? "fancyOddsDisabled" : ""}`} >
                                                             <tbody>
                                                               <tr class="session_content">
                                                                 <td>
@@ -1224,6 +1282,9 @@ render() {
                                                     betProfit={this.state.betProfit}
                                                     handleRemove={(style, num) => {
                                                       this.handleRemove(style, num, index + this.state.teamRows);
+                                                    }}
+                                                    disabledbox={(isdisabled) => {
+                                                      this.disabledbox(index + this.state.teamRows,isdisabled);
                                                     }}
                                                     handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                                       this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);
@@ -1340,6 +1401,9 @@ render() {
                         betProfit={this.state.betProfit}
                         handleRemove={(style, num) => {
                           this.handleRemove(style, num, 'desktop');
+                        }}
+                        disabledbox={(isdisabled) => {
+                          this.disabledbox('desktop',isdisabled);
                         }}
                         handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                           this.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);

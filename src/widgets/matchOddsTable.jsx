@@ -42,7 +42,8 @@ const MatchOddsTable = (props) => {
             IP:props?.IP,
             sportInfo:props?.sportInfo,
             fancyInfo:props?.fancyInfo,
-            SoM:props?.SoM
+            SoM:props?.SoM,
+            isdisabled:props?.isdisabled
         },
         marketData: props?.marketData,
 
@@ -77,7 +78,8 @@ const MatchOddsTable = (props) => {
                 IP:props?.IP,
                 sportInfo:props?.sportInfo,
                 fancyInfo:props?.fancyInfo,
-                SoM:props?.SoM
+                SoM:props?.SoM,
+                isdisabled:props?.isdisabled
             },
             marketData: props?.marketData,
             runners: props?.marketOdds?.runners || props?.pdata, //props.pdata, //[]
@@ -157,7 +159,7 @@ const MatchOddsTable = (props) => {
             </div>
 
             <div className="fullrow MatchIndentB" style={{ position: "relative" }}>
-                <table className={`table table-striped  bulk_actions matchTable1171389306 ${!state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
+                <table className={`table table-striped  bulk_actions matchTable1171389306 ${state.isdisabled ? "betting-disabled-placebet" : ""} ${!state.isenable ? "betting-disabled" : ""}`} id="matchTable29905278">
                     <tbody>
                         <tr className="headings mobile_heading">
                             <th className="fix_heading color_red">Min stake:{state.sportInfo?.minStacks} Max stake:{state.sportInfo?.maxStacks}<br></br>
@@ -309,6 +311,9 @@ const MatchOddsTable = (props) => {
                                                             betProfit={state.betProfit}
                                                             handleRemove={(style, num) => {
                                                                 props.handleRemove(style, num, index+state.TBindex);
+                                                            }}
+                                                            disabledbox={(isdisabled) => {
+                                                                props.disabledbox(index+state.TBindex,isdisabled);
                                                             }}
                                                             handleBetPlaceBox={(notfyMsg, bgColor, notfyStatus) => {
                                                                 props.handleBetPlaceBox(notfyMsg, bgColor, notfyStatus);

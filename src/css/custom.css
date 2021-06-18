@@ -92,6 +92,15 @@ button:focus {outline:none;}
 .fancyOddsDisabled{position:relative;}
 .fancyOddsDisabled:after{position:absolute;background:rgba(255,255,255,0.5);content: '';width: 100%;height: 100%;left:0;top:0;border:solid 1px #dbdbdb;cursor: not-allowed;z-index: 11;}
 .fancyOddsDisabled:before {font-family: FontAwesome;content: "\f023";display: inline-block;padding-right: 3px;vertical-align: middle;position: absolute;left: 40%;right: 0;margin: 0 auto;display: block;font-size: 38px;z-index: 1;opacity: 0.3;text-align: center;}
+
+.betting-disabled-placebet{position:relative;}
+.betting-disabled-placebet:after{position:absolute;content: '';width: 100%;height: 100%;left:0;top:0;border:solid 1px #dbdbdb;cursor: not-allowed;z-index: 11;}
+.betting-disabled-placebet:before {font-family: FontAwesome;display: inline-block;padding-right: 3px;vertical-align: middle;position: absolute;top: 15%;left: 40%;right: 0;margin: 0 auto;display: block;font-size: 80px;z-index: 1;text-align: center;}
+.fancyOddsDisabled-placebet{position:relative;}
+.fancyOddsDisabled-placebet:after{position:absolute;content: '';width: 100%;height: 100%;left:0;top:0;border:solid 1px #dbdbdb;cursor: not-allowed;z-index: 11;}
+.fancyOddsDisabled-placebet:before {font-family: FontAwesome;display: inline-block;padding-right: 3px;vertical-align: middle;position: absolute;left: 40%;right: 0;margin: 0 auto;display: block;font-size: 38px;z-index: 1;text-align: center;}
+
+
 .btn-warning{color:#fff;background: linear-gradient(to bottom, #76c7ce 0%, #12717c 100%)!important;border-color:#217e89!important;font-weight:normal;}
 .btn-primary{color:#ffffff;background-color:#95335c;border-color:#6c1945;}
 .tv-icons{width:18px;float:right;}
