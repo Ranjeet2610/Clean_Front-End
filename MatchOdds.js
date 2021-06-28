@@ -1,5 +1,5 @@
 import BetBox from "./Betbox";
-
+import axios from 'axios';
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -642,6 +642,20 @@ export default class MatchOdds extends Component {
         this.setState({ scoreId: res.scoreId, scorecard:true });
       }).catch(err => console.log(err))
     }, 2000)
+    //this.getToken();
+    this.getTokenlordproexch();
+    //https://fawk.app/menu/home/567
+    //https://fawk.app/api/exchange/odds/56767
+    //https://fawk.app/result/past_result?gameId=67564
+
+    //https://apiauth.hypexone.com/login  //POST //  U:kld, P:Vvvv1234
+    //{"username":"kld","password":"","uuid":""}
+//cySBkdEilae0Jd9Z8Y+tOuNiuX5GpRQ6ppW3eBjQfGeeSD0eFLK5Q9RZ1bPosRdNjep2d9QEBdxNYKv2j/G059ncihRzVFaYZDOhds8lZciDWoOzYyp+1jjGvJS5iMWIFwcreqvvrjxDJ2sCqdQnTaLHa1ClmJ686IW9dfjU9AQ=
+//OSwMH5+LkDK08pv/cojxrWSLGy5aKjdxfSwpxxIKp7Z2XW5NK8XuLVYTEUwRUwvnLTHxnbnDj0TS9aU4Dj0dGQlC9UJ2iCyclHIyYHzE7SE7BtJFaCloYvijDPi0535qiFa3Y53Wn1I3XlXLE2XNX5BcybjS2z74jtspzkaSOAM=
+    //response = jwtToken
+
+    //https://fawk.app/operator/auth
+    //{"token":"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrbGQiLCJ1c2VySWQiOiIyOTQ5NTc0MDYiLCJyb2xlIjoiVXNlciIsInBlcm1pc3Npb24iOjQsInN0YXR1cyI6MSwiY3JlYXRlZEF0IjoiTW9uIEp1biAyMSAyMDIxIDA4OjM1OjE5IEdNVCswMDAwIChDb29yZGluYXRlZCBVbml2ZXJzYWwgVGltZSkiLCJhbGxvd2VkT3JpZ2luIjoic3VsdGFuNjY2LmNvbSIsImlhdCI6MTYyNDI2NDUxOSwiZXhwIjoxNjI0MjkzMzE5fQ.0cOihoLMWmulI-4lL6KxHNY9q8EYwCuqe5kin_lHSdoWMgGcal_Vda4sQp_j4az2n_Ir29XsKVxS_toJnppMjQ","operatorId":"9281"}
     /*********************************/
     // set Interval
 
@@ -673,25 +687,68 @@ export default class MatchOdds extends Component {
     this.clearTimeoutFunc();
     this.setTimeout();
   };
-  //Will Work on it.
+  
   warn = () => {
-    // if (this.state.sportType === 4) {
-    //   let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
-    //   wsfancy.onerror = (e) => {
-    //     alert("Something Went Wrong!!!");
-    //   }
-    //   wsfancy.onmessage = (e) => {
-    //     let data = JSON.parse(e.data);
-    //     this.setState({
-    //       fancymarket: data.fancymarket,
-    //       selfancyOdds: 0,
-    //       selfancySize: 0,
-    //     });
-    //   }
-    // }
-    // this.resetTimeout();
+    if (this.state.sportType === 4) {
+      let wsfancy = new WebSocket(`${BASE_URL}/fancyMarketTypeData/eventId/${this.props.match.params.id}`)
+      wsfancy.onerror = (e) => {
+        alert("Something Went Wrong!!!");
+      }
+      wsfancy.onmessage = (e) => {
+        let data = JSON.parse(e.data);
+        this.setState({
+          fancymarket: data.fancymarket,
+          selfancyOdds: 0,
+          selfancySize: 0,
+        });
+      }
+    }
+    this.resetTimeout();
   };
+  getTokenlordproexch = (cb) =>{
+    axios.post('https://lordproexch.com/api/user/login',
+    {"username":"demo2","password":"12345","IP_Address":"43.231.57.61","name":"MNR Broadband Services Pvt. Ltd.","region":"National Capital Territory of Delhi","city":"New Delhi","country":"India"},{
+      headers: {
+        "Access-Control-Allow-Origin": '*',
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Accept",
+        }}).then((response) => {
+          
+      console.log("lordproexch",response);
+     /* var options = {
+        method: 'GET',
+        url: 'https://lordproexch.com/api/user/getMatches',
+        headers: {'content-type': 'application/json', authorization: 'Bearer ACCESS_TOKEN'}
+      };
+      axios.request(options).then(function (response) {
+        console.log(response.data);
+      }).catch(function (error) {
+        console.error(error);
+      });*/
+    }).catch((error) => console.log(error));
+  }
 
+  /*getToken = (cb) =>{
+    axios.post('https://apiauth.hypexone.com/login',{username: 'kld',password: 'cySBkdEilae0Jd9Z8Y+tOuNiuX5GpRQ6ppW3eBjQfGeeSD0eFLK5Q9RZ1bPosRdNjep2d9QEBdxNYKv2j/G059ncihRzVFaYZDOhds8lZciDWoOzYyp+1jjGvJS5iMWIFwcreqvvrjxDJ2sCqdQnTaLHa1ClmJ686IW9dfjU9AQ=',uuid : this.generateUUID()})
+    .then((response) => {
+      console.log(response);
+    }).catch((error) => console.log(error));
+  }
+  generateUUID = () => { // Public Domain/MIT
+    var d = new Date().getTime();//Timestamp
+    var d2 = (performance && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16;//random number between 0 and 16
+        if(d > 0){//Use timestamp until depleted
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {//Use microseconds since page-load if supported
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }*/
   MteamsDvalue() {
     this.state.Mteams.map((item, MTindex) => {
         let getRunner = this.state.Mteams[MTindex][item.marketName][0].length;
