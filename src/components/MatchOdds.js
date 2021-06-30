@@ -124,6 +124,9 @@ export default class MatchOdds extends Component {
       openboxid:0,
       isdisabled: false,
       warningTime: 10000, //10sec
+      isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
+      isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
+      playstreaming:false
   };
     this.service = new Service();
     this.users = new Users();
@@ -818,7 +821,12 @@ export default class MatchOdds extends Component {
       isdisabled: status
     });
   };
-
+  streamingplay = () => {
+    this.setState({
+      playstreaming: this.state.playstreaming?false:true
+    });
+  };
+  
   handleBetPlaceBox = (notfyMsg, bgColor, notfyStatus) => {
     this.setState({
       notifyMsg: notfyMsg,
@@ -1118,9 +1126,13 @@ render() {
                                 </button>
                                     </div>
                                   </div>
-                                </div> */}
+                                </div> */
+                                this.state.playstreaming?
+                                <iframe id="destination" src="https://livingstreamvdo.com?aHR0cHM6Ly93d3cuYmJiZ2FtZXMueHl6" style={{width: '100%', height: '300px'}} ></iframe>
+                                :null
+                                }
                               </div>
-                              {//this.state.sportType === 4
+                              {
                                 (this.state?.matchOddData16?.length > 0 && this.state.sportType===4 && <>
                                   <div style={{ height: '100%', width: '100%', paddingTop: '0px', display: 'flex', marginBottom: '5px' }}>
                                     {this.state.scorecard?<iframe allowfullscreen="true" style={{ border: 'none', width: '100%', height: '281px' }} src={`https://shivexch.com/sport_score_api/cricketscore/index.html?scoreId=${this.state.scoreId}&matchDate=${JSON.parse(localStorage.getItem("matchname")).date}`}></iframe>:''}
@@ -1148,6 +1160,7 @@ render() {
                                       matchName={this.state.matchName}
                                       handleRemove={this.handleRemove}
                                       disabledbox={this.disabledbox}
+                                      streamingplay={this.streamingplay}
                                       handleBetPlaceBox={this.handleBetPlaceBox}
                                       getProfitandLoss={this.getProfitandLoss}
                                       handleInputValue={(e) => this.handleInputValue(e)}
@@ -1172,6 +1185,9 @@ render() {
                                       fancyInfo={this.state.fancyInfo}
                                       SoM={this.state.SoM}
                                       isdisabled={this.state.isdisabled}
+                                      isTab={this.state.isTab}
+                                      isMobile={this.state.isMobile}
+                                      playstreaming={this.state.playstreaming}
                                     />
                                   ))
                                 }
@@ -1182,8 +1198,7 @@ render() {
                               </div>
                               {
                                 this.state.sportType === 4
-                                  && this.state.fancymarket?.length > 0
-                                  && this.state.marketOdds?.length > 0 ?
+                                  && this.state.fancymarket?.length > 0?
                                   <div className="fullrow margin_bottom fancybox" id="fancyM_29905278" >
                                     <div style={{ display: "block" }} className="fancy-table" id="fbox29905278">
 

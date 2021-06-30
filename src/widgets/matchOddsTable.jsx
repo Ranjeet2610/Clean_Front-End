@@ -6,6 +6,7 @@ import tempJson from './temp.json'
 const MatchOddsTable = (props) => {
     // let inplay;
     let filterrunners = [];
+    let filteronodsrunners = [];
     let bookitems = [];
     let bookodds;
     let j = 0;
@@ -43,7 +44,10 @@ const MatchOddsTable = (props) => {
             sportInfo:props?.sportInfo,
             fancyInfo:props?.fancyInfo,
             SoM:props?.SoM,
-            isdisabled:props?.isdisabled
+            isdisabled:props?.isdisabled,
+            isTab:props?.isTab,
+            isMobile:props?.isMobile,
+            playstreaming:props?.playstreaming
         },
         marketData: props?.marketData,
 
@@ -79,7 +83,10 @@ const MatchOddsTable = (props) => {
                 sportInfo:props?.sportInfo,
                 fancyInfo:props?.fancyInfo,
                 SoM:props?.SoM,
-                isdisabled:props?.isdisabled
+                isdisabled:props?.isdisabled,
+                isTab:props?.isTab,
+                isMobile:props?.isMobile,
+                playstreaming:props?.playstreaming
             },
             marketData: props?.marketData,
             runners: props?.marketOdds?.runners || props?.pdata, //props.pdata, //[]
@@ -99,7 +106,7 @@ const MatchOddsTable = (props) => {
         // Set Market Name
         for (let i = 0; i < state.marketData?.length; i++) {
             const marketObj = state.marketData[i]?.marketData;
-            if (marketObj.marketId == state.marketOdds[0]?.marketId) {
+            if (marketObj.marketId == state.runners[0]?.marketId) {
                 setMarketName(marketObj.marketName)
                 // console.log("MatketName", marketObj.marketId == state.marketOdds[0]?.marketId, marketObj.marketName);
                 return
@@ -112,10 +119,10 @@ const MatchOddsTable = (props) => {
     }, [props])
     state.SoM.length > 0 &&
     state.SoM.map((item, index) => {
-    //   total_team1[item.marketName] = parseFloat(total_team1[item.marketName]) + parseFloat(item.T1TotalPL);
-    //   total_team2[item.marketName] = parseFloat(total_team2[item.marketName]) + parseFloat(item.T2TotalPL);
-    //   total_team3[item.marketName] = parseFloat(total_team3[item.marketName]) + parseFloat(item.T3TotalPL);
-    //   console.log(total_team1[item.marketName],total_team2[item.marketName],total_team3[item.marketName],item.marketName)
+        //total_team1[item.marketName] = parseFloat(total_team1[item.marketName]) + parseFloat(item.T1TotalPL);
+        //total_team2[item.marketName] = parseFloat(total_team2[item.marketName]) + parseFloat(item.T2TotalPL);
+        //total_team3[item.marketName] = parseFloat(total_team3[item.marketName]) + parseFloat(item.T3TotalPL);
+        //console.log(total_team1[item.marketName],total_team2[item.marketName],total_team3[item.marketName],item.marketName)
         total_team1[item.marketName] = parseFloat(item.T1TotalPL);
         total_team2[item.marketName] = parseFloat(item.T2TotalPL);
         total_team3[item.marketName] = parseFloat(item.T3TotalPL);
@@ -152,7 +159,7 @@ const MatchOddsTable = (props) => {
                 <div className="item match-status-odds">
                     <span className="going_inplay green"> {inPlay} </span>
                     <span className="click-tv">
-                        <img className="tv-icons" src={tv} alt="Live Games" />
+                        {marketName==="Match Odds"?state.isMobile && state.isTab?<img className="tv-icons" onClick={() => props.streamingplay(state.playstreaming)} src={tv} alt="Live Games" />:null:null}
                     </span>
                 </div>
                 <div className="item match-shedule" id="demo_29905278">{timer}</div>
@@ -174,13 +181,13 @@ const MatchOddsTable = (props) => {
                         </tr>
                     </tbody>
                     {
-                        state?.data?.length > 0 ? state.marketOdds?.length > 0 ?
+                        state?.data?.length > 0 ?
                             state.runners?.map((item, index) => {
-                                filterrunners = state.data.filter(newdata => {
-                                    return newdata.selectionId === state.marketOdds[0].runners[index]?.selectionId;
+                                filterrunners = state?.data?.filter(newdata => {
+                                    return newdata.selectionId === state?.marketOdds[0]?.runners[index]?.selectionId;
                                 })
                                 if (state.marketOdds?.length > 0) {
-                                    let sordataBack = state.marketOdds[0].runners[index]?.ex?.availableToBack.sort(function (a, b) {
+                                    let sordataBack = state?.marketOdds[0]?.runners[index]?.ex?.availableToBack.sort(function (a, b) {
                                         return a.price - b.price;
                                     })
 
@@ -339,21 +346,33 @@ const MatchOddsTable = (props) => {
                                             </tr>
                                         </>
                                     )
+                                }else{
+                                    return (
+                                        <>
+                                        {
+                                        index===1?
+                                        <tbody>
+                                        <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                            <td>
+                                                <p class="runner_text" id="runnderName0">{state.matchName.split(" v ")[0]}</p>
+                                                <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                                <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                            </td>
+                                            <td colSpan="6"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
+                                        </tr>
+                                        <tr id="user_row0" class="back_lay_color runner-row-32047099">
+                                            <td>
+                                                <p class="runner_text" id="runnderName0">{state.matchName.split(" v ")[1]}</p>
+                                                <p class="blue-odds" id="Val1-117138930632047099">0</p>
+                                                <span class="runner_amount" id="32047099_maxprofit_loss_runner_1171389306" >0</span>
+                                            </td>
+                                            <td colSpan="6"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
+                                        </tr>
+                                        </tbody>:null}
+                                        </>
+                                    )
                                 }
                             })
-                            :
-                            inPlay === "IN-PLAY" ?
-                                <tbody>
-                                    <tr>
-                                        <td colSpan="7" className="text-center"><h2>CLOSED</h2></td>
-                                    </tr>
-                                </tbody>
-                                :
-                                <tbody>
-                                    <tr>
-                                        <td colSpan="7" className="text-center"><h2>Start Soon..</h2></td>
-                                    </tr>
-                                </tbody>
                             :
                             filterrunners.length === 0 && inPlay === "IN-PLAY" ?
                                 state.oddsload ?
