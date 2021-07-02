@@ -19,6 +19,8 @@ export default class BetBox extends Component {
           betData:'',
           profit:0.00,
           loss: 0.00,
+          expoBprofit:0.00,
+          expoBloss: 0.00,
           betHistroy: [],
           count: 0,
           display:'none',
@@ -134,11 +136,11 @@ export default class BetBox extends Component {
             dobet=false;
           }
           else if(this.state.loss > this.state.balance){
-            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }
           else if(this.state.balance < 0){
-            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }
         }else{
@@ -159,11 +161,11 @@ export default class BetBox extends Component {
             dobet=false;
           }
            else if(this.state.loss > this.state.balance){
-            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }
           else if(this.state.balance < 0){
-            this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+            this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
             dobet=false;
           }  
         }
@@ -192,16 +194,12 @@ export default class BetBox extends Component {
           this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
           dobet=false;
         }
-        else if(this.stackInput.value > this.state.balance){
-          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-          dobet=false;
-        }
-        else if(this.state.loss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet...B",'red','error')
+        else if(this.state.expoBloss > this.state.balance){
+          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
           dobet=false;
         }
         else if(this.state.balance < 0){
-          this.props.handleBetPlaceBox("Invalid Bet...0",'red','error')
+          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
           dobet=false;
         }
         if(inplay === "GOING IN-PLAY"){
@@ -217,10 +215,6 @@ export default class BetBox extends Component {
       }
       if(!disableBetting){
         if(dobet===true){
-        if(this.state.loss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
-        }
-        else{
           this.setState({
             showLoader:true
           });
@@ -259,7 +253,8 @@ export default class BetBox extends Component {
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
-            //console.log(obj);
+            // console.log("balance",this.state.balance)
+            // console.log(obj);
             this.service.fancyplaceBet(obj,data=>{
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
@@ -296,7 +291,7 @@ export default class BetBox extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-            } else if(this.state.loss > this.state.balance){
+            } else if(this.state.expoBloss > this.state.balance){
               this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
@@ -322,7 +317,8 @@ export default class BetBox extends Component {
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
-            //console.log(obj);
+            // console.log(this.state.balance,this.state.expoBloss);
+            // console.log(obj);
             this.service.placeBet(obj,data=>{ 
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
@@ -351,7 +347,6 @@ export default class BetBox extends Component {
             })
             }
           }
-        }
       }
     }
     else{
@@ -582,6 +577,20 @@ export default class BetBox extends Component {
           getselfancySize:nextProps.selfancySize
         })
       }
+      if(nextProps.expoBetProfit){
+        if(nextProps.expoBetProfit!==this.props.expoBetProfit){
+        this.setState({
+          expoBprofit:nextProps.expoBetProfit
+        })
+        }
+      }
+      if(nextProps.expoBetLoss){
+        if(nextProps.expoBetLoss!==this.props.expoBetLoss){
+        this.setState({
+          expoBloss:nextProps.expoBetLoss
+          })
+        }
+      }
     }
     ClearAllSelection=()=>{
       document.getElementById('stakeValue').value=0
@@ -613,6 +622,8 @@ export default class BetBox extends Component {
         let selectionId = '';
         let betProfit = this.state.profit;
         let betLoss = this.state.loss;
+        let expoBetProfit= this.state.expoBprofit;
+        let expoBetLoss= this.state.expoBloss;
         let display = { display: this.state.display };
         if(this.props.betData){
           if(this.props.betData.betType==="Fancy"){
@@ -629,6 +640,7 @@ export default class BetBox extends Component {
               if(this.state.timerstop){
                 this.closeWindow();
               }
+              console.log("timer")
               this.setState({
                 timerstop: false,
               });

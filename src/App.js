@@ -4,6 +4,7 @@ import './css/custom.css'
 import './css/menu.css'
 import {BrowserRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
+import Livegames from './components/Livegames';
 import Master from './components/Master';
 import SuperMaster from './components/supermaster';
 import Login from './components/Login';
@@ -47,6 +48,7 @@ const App = () => {
           <Route exact path='/master/:username' component={Master} />
           <Route exact path='/supermaster' component={SuperMaster} />
           <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/livegames" component={Livegames} />
           <Route exact path="/user" component={User} />
           <Route exact path="/user/:username" component={User} />
           <Route exact path="/closeuser" component={CloseUser} />

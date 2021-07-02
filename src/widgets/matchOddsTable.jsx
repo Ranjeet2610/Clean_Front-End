@@ -13,6 +13,7 @@ const MatchOddsTable = (props) => {
     let avilBlack;
     let availLay;
     let expoProfit;
+    let expoLoss;
     let total_team1 = [];
     let total_team2 = [];
     let total_team3 = [];
@@ -43,6 +44,8 @@ const MatchOddsTable = (props) => {
             IP:props?.IP,
             sportInfo:props?.sportInfo,
             fancyInfo:props?.fancyInfo,
+            expoBetProfit:props?.expoBetProfit,
+            expoBetLoss:props?.expoBetLoss,
             SoM:props?.SoM,
             isdisabled:props?.isdisabled,
             isTab:props?.isTab,
@@ -82,6 +85,8 @@ const MatchOddsTable = (props) => {
                 IP:props?.IP,
                 sportInfo:props?.sportInfo,
                 fancyInfo:props?.fancyInfo,
+                expoBetProfit:props?.expoBetProfit,
+                expoBetLoss:props?.expoBetLoss,
                 SoM:props?.SoM,
                 isdisabled:props?.isdisabled,
                 isTab:props?.isTab,
@@ -119,10 +124,6 @@ const MatchOddsTable = (props) => {
     }, [props])
     state.SoM.length > 0 &&
     state.SoM.map((item, index) => {
-        //total_team1[item.marketName] = parseFloat(total_team1[item.marketName]) + parseFloat(item.T1TotalPL);
-        //total_team2[item.marketName] = parseFloat(total_team2[item.marketName]) + parseFloat(item.T2TotalPL);
-        //total_team3[item.marketName] = parseFloat(total_team3[item.marketName]) + parseFloat(item.T3TotalPL);
-        //console.log(total_team1[item.marketName],total_team2[item.marketName],total_team3[item.marketName],item.marketName)
         total_team1[item.marketName] = parseFloat(item.T1TotalPL);
         total_team2[item.marketName] = parseFloat(item.T2TotalPL);
         total_team3[item.marketName] = parseFloat(item.T3TotalPL);
@@ -246,9 +247,9 @@ const MatchOddsTable = (props) => {
                                 if (filterrunners?.length > 0) {
                                     let Mindex = state.Mteams?.findIndex(x => x.marketName === marketName);
                                     return (
-                                        <>
-                                        {
-                                        state.marketOdds[0].runners[index]?.status==='SUSPENDED'?
+                                    <>
+                                    {
+                                    state.marketOdds[0].runners[index]?.status==='SUSPENDED'?
                                         <tr id="user_row0" className="back_lay_color runner-row-32047099">
                                         <td>
                                             <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
@@ -340,6 +341,9 @@ const MatchOddsTable = (props) => {
                                                             IP={state.IP}
                                                             sportInfo={state.sportInfo}
                                                             fancyInfo={state.fancyInfo}
+                                                            expoBetProfit={state.expoBetProfit}
+                                                            expoBetLoss={state.expoBetLoss}
+                                                            betboxtime={8000}
                                                         />
                                                     </div>
                                                 </td>

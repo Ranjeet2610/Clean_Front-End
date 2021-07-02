@@ -1,5 +1,4 @@
 import BetBox from "./Betbox";
-
 import { NotificationContainer, NotificationManager } from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
 import Sound from "../images/Recording.mp3";
@@ -126,7 +125,9 @@ export default class MatchOdds extends Component {
       warningTime: 10000, //10sec
       isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
       isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
-      playstreaming:false
+      playstreaming:false,
+      expoBetProfit: 0,
+      expoBetLoss: 0
   };
     this.service = new Service();
     this.users = new Users();
@@ -938,6 +939,16 @@ export default class MatchOdds extends Component {
             this.state.Mteams[gpindex].DTthreePL = this.state.Mteams[gpindex].TthreePL;
             this.state.Mteams[gpindex].DTthreeColor = this.state.Mteams[gpindex].TthreeColor;
           }
+          
+          this.setState({
+            expoBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL,this.state.Mteams[gpindex].TthreePL]),
+            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL,this.state.Mteams[gpindex].TthreePL])
+          });
+        }else{
+          this.setState({
+            expoBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL]),
+            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL])
+          });
         }
         this.setState({ Mteams });
       }, 100)
@@ -1188,7 +1199,9 @@ render() {
                                       isTab={this.state.isTab}
                                       isMobile={this.state.isMobile}
                                       playstreaming={this.state.playstreaming}
-                                    />
+                                      expoBetProfit={this.state.expoBetProfit}
+                                      expoBetLoss={this.state.expoBetLoss}
+                                      />
                                   ))
                                 }
 
@@ -1319,7 +1332,10 @@ render() {
                                                     IP={this.state.IP}
                                                     sportInfo={this.state.sportInfo}
                                                     fancyInfo={this.state.fancyInfo}
-                                                  />
+                                                    expoBetProfit={this.state.expoBetProfit}
+                                                    expoBetLoss={this.state.expoBetLoss}
+                                                    betboxtime={8000}
+                                                    />
                                                 </div>
                                               </div>
                                             );
@@ -1441,6 +1457,8 @@ render() {
                         IP={this.state.IP}
                         sportInfo={this.state.sportInfo}
                         fancyInfo={this.state.fancyInfo}
+                        expoBetProfit={this.state.expoBetProfit}
+                        expoBetLoss={this.state.expoBetLoss}
                       />
                       <Footer />
                     </div>

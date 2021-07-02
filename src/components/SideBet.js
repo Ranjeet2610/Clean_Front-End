@@ -26,6 +26,8 @@ export default class SideBet extends Component {
         betData:'',
         profit:0.00,
         loss: 0.00,
+        expoBprofit:0.00,
+        expoBloss: 0.00,
         betHistroy:[],
         fbetHistroy:[],
         display:'none',
@@ -296,11 +298,11 @@ export default class SideBet extends Component {
           dobet=false;
         }
         else if(this.state.loss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet...B2",'red','error')
+          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           dobet=false;
         }
         else if(this.state.balance < 0){
-          this.props.handleBetPlaceBox("Invalid Bet...02",'red','error')
+          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           dobet=false;
         }
       }
@@ -333,7 +335,7 @@ export default class SideBet extends Component {
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
         dobet=false;
       }
-      else if(this.state.loss > this.state.balance){
+      else if(this.state.expoBloss > this.state.balance){
         this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
         dobet=false;
       }
@@ -355,10 +357,6 @@ export default class SideBet extends Component {
     }
     if(!disableBetting){
       if(dobet===true){
-        if(this.state.loss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet......",'red','error')
-        }
-        else{
           this.setState({
             showLoader:true
           });
@@ -428,7 +426,7 @@ export default class SideBet extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-            } else if(this.state.loss > this.state.balance){
+            } else if(this.state.expoBloss > this.state.balance){
               this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
@@ -482,7 +480,6 @@ export default class SideBet extends Component {
             })
             }
           }
-        }
       }
     }
     else{
@@ -1013,7 +1010,6 @@ export default class SideBet extends Component {
   }
 
   //this is called to before render method
-
   componentWillReceiveProps(nextProps){ 
     if(nextProps.betProfit){
       if(nextProps.betProfit!==this.props.betProfit){
@@ -1061,6 +1057,20 @@ export default class SideBet extends Component {
       if(nextProps.getExpo !== this.props.expoData){
       this.setState({
         getExpo:nextProps.expoData
+        })
+      }
+    }
+    if(nextProps.expoBetProfit){
+      if(nextProps.expoBetProfit!==this.props.expoBetProfit){
+      this.setState({
+        expoBprofit:nextProps.expoBetProfit
+      })
+      }
+    }
+    if(nextProps.expoBetLoss){
+      if(nextProps.expoBetLoss!==this.props.expoBetLoss){
+      this.setState({
+        expoBloss:nextProps.expoBetLoss
         })
       }
     }
@@ -1151,6 +1161,8 @@ export default class SideBet extends Component {
     let type =''; 
     let selectionId ='';
     let betProfit= this.state.profit;
+    let expoBetProfit= this.state.expoBprofit;
+    let expoBetLoss= this.state.expoBloss;
     let betLoss=this.state.loss;
     let display = {display:this.state.display};
     let parent_team1 = 0;
