@@ -72,7 +72,9 @@ export default class MatchOdds extends Component {
       betData: "",
       // betProfit: "",
       // betLoss: "",
+      sidboxdisplay:"none",
       display: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none" ],
+      newdisplay: ["none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none" ],
       isenable: true,
       fancyOdds: "",
       fancymarket: "",
@@ -127,7 +129,9 @@ export default class MatchOdds extends Component {
       isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
       playstreaming:false,
       expoBetProfit: 0,
-      expoBetLoss: 0
+      expoBetLoss: 0,
+      betboxtime:0,
+      sidebetboxtime:0
   };
     this.service = new Service();
     this.users = new Users();
@@ -265,7 +269,6 @@ export default class MatchOdds extends Component {
     })
     //console.log('filterbookdata',this.state.filterbookdata)
   }
-
   placeBet = (marketName, type, odds, data, pdata, mid, index, width, mindex) => {
     // debugger
     let displayTest;
@@ -280,8 +283,15 @@ export default class MatchOdds extends Component {
             displayTest[i] = "none";
           }
         });
+        this.setState({
+          display: displayTest,
+          betboxtime:800
+        });
       } else {
-        displayTest = "block";
+        this.setState({
+          sidboxdisplay: "block",
+          sidebetboxtime:800
+        });
       }
       this.setState({
         betData: {
@@ -293,7 +303,6 @@ export default class MatchOdds extends Component {
           betType: betType,
           marketName:marketName?marketName:''
         },
-        display: displayTest,
         toggleMatchIndex: index,
         IP: this.state?.IP,
         boxopen:'open'
@@ -311,7 +320,6 @@ export default class MatchOdds extends Component {
       selIndex: index
     });
   }
-
   fancyStaKeAmount(odds, oddsize, type, fancymarketId, index) {
     let val = document.getElementById("stakeValue").value;
     if (type === "Back") {
@@ -340,8 +348,15 @@ export default class MatchOdds extends Component {
               displayTest[i] = "none";
             }
           });
+          this.setState({
+            display: displayTest,
+            betboxtime:800
+          });
         } else {
-          displayTest = "block";
+          this.setState({
+            sidboxdisplay: "block",
+            sidebetboxtime:800
+          });
         }
         this.setState({
           betData: {
@@ -362,7 +377,6 @@ export default class MatchOdds extends Component {
             ManualPriceKey: MPriceKey,
             isItManual: isManual
           },
-          display: displayTest,
           IP: this.state.IP,
           boxopen:'open'
         });
@@ -794,18 +808,19 @@ export default class MatchOdds extends Component {
   }
 
   handleRemove = (style, num, index) => {
-    let displayTest;
     if (index !== 'desktop') {
-      displayTest = this.state.display;
-      displayTest[index] = style;
+      this.setState({
+        display: [...this.state.newdisplay]
+      });
     } else {
-      displayTest = style;
+      this.setState({
+        sidboxdisplay: "none"
+      });
     }
 
     this.setState({
-      display: displayTest,
-      betLoss: num,
-      betProfit: num,
+      betLoss: num!=='undefined'?num:0,
+      betProfit: num!=='undefined'?num:0,
       color: 'green',
       TonePL: this.state.DTonePL,
       TtwoPL: this.state.DTtwoPL,
@@ -822,6 +837,7 @@ export default class MatchOdds extends Component {
       isdisabled: status
     });
   };
+
   streamingplay = () => {
     this.setState({
       playstreaming: this.state.playstreaming?false:true
@@ -856,7 +872,9 @@ export default class MatchOdds extends Component {
     })
     if(facFrom==="ClearAllSelection"){
       await this.setState({
-        boxopen: "close"
+        boxopen: "close",
+        betboxtime: 0,
+        sidebetboxtime:0
       })
     }
     if(typeof(marketName) !== 'undefined'){
@@ -1302,6 +1320,7 @@ render() {
                                                 </div>
                                                 <div className="mobileBetBox">
                                                   <BetBox
+                                                    name={"Box-"+index + this.state.teamRows}
                                                     eventType={this.state.sportType}
                                                     matchName={this.state.matchName}
                                                     stake={0}
@@ -1334,7 +1353,7 @@ render() {
                                                     fancyInfo={this.state.fancyInfo}
                                                     expoBetProfit={this.state.expoBetProfit}
                                                     expoBetLoss={this.state.expoBetLoss}
-                                                    betboxtime={8000}
+                                                    betboxtime={this.state.betboxtime}
                                                     />
                                                 </div>
                                               </div>
@@ -1446,7 +1465,7 @@ render() {
                           this.getFancyBook(fbetHistroy)
                         }}
                         betLoss={this.state.betLoss}
-                        setdisplay={this.state.display}
+                        setdisplay={this.state.sidboxdisplay}
                         eventId={this.props.match.params.id}
                         handleInput={(e) => this.handleInputValue(e)}
                         runnderData={this.state.data}
@@ -1459,6 +1478,7 @@ render() {
                         fancyInfo={this.state.fancyInfo}
                         expoBetProfit={this.state.expoBetProfit}
                         expoBetLoss={this.state.expoBetLoss}
+                        sidebetboxtime={this.state.sidebetboxtime}
                       />
                       <Footer />
                     </div>

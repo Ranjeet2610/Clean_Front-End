@@ -50,7 +50,8 @@ const MatchOddsTable = (props) => {
             isdisabled:props?.isdisabled,
             isTab:props?.isTab,
             isMobile:props?.isMobile,
-            playstreaming:props?.playstreaming
+            playstreaming:props?.playstreaming,
+            betboxtime:props?.betboxtime
         },
         marketData: props?.marketData,
 
@@ -91,7 +92,8 @@ const MatchOddsTable = (props) => {
                 isdisabled:props?.isdisabled,
                 isTab:props?.isTab,
                 isMobile:props?.isMobile,
-                playstreaming:props?.playstreaming
+                playstreaming:props?.playstreaming,
+                betboxtime:props?.betboxtime
             },
             marketData: props?.marketData,
             runners: props?.marketOdds?.runners || props?.pdata, //props.pdata, //[]
@@ -311,6 +313,7 @@ const MatchOddsTable = (props) => {
                                                 <td colSpan="7">
                                                     <div className="mobileBetBox">
                                                         <BetBox
+                                                            name={"Box-"+index+state.TBindex}
                                                             eventType={state.sportType}
                                                             matchName={state.matchName}
                                                             index={index+state.TBindex}
@@ -343,7 +346,7 @@ const MatchOddsTable = (props) => {
                                                             fancyInfo={state.fancyInfo}
                                                             expoBetProfit={state.expoBetProfit}
                                                             expoBetLoss={state.expoBetLoss}
-                                                            betboxtime={8000}
+                                                            betboxtime={state.betboxtime}
                                                         />
                                                     </div>
                                                 </td>
@@ -353,8 +356,7 @@ const MatchOddsTable = (props) => {
                                 }else{
                                     return (
                                         <>
-                                        {
-                                        index===1?
+                                        { index===1?
                                         <tbody>
                                         <tr id="user_row0" class="back_lay_color runner-row-32047099">
                                             <td>

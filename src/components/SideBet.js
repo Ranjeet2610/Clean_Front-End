@@ -39,7 +39,6 @@ export default class SideBet extends Component {
         expoData:'',
         historyType:'open',
         newResData:[],
-        betHistroy:[],
         curPoAcc:'',
         DfPoAcc:'',
         backPoAcc:'',
@@ -236,6 +235,9 @@ export default class SideBet extends Component {
   }
 
   placeBet=async(e)=>{
+    this.setState({
+      timerstop:false
+    });
     this.getBetTime();
     let disableBetting = JSON.parse(localStorage.getItem('data')).enableBetting
     let inplay;
@@ -331,12 +333,8 @@ export default class SideBet extends Component {
         this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
         dobet=false;
       }
-      else if(this.stackInput.value > this.state.balance){
+      else if(Math.abs(this.state.expoBloss) > this.state.balance){
         this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
-        dobet=false;
-      }
-      else if(this.state.expoBloss > this.state.balance){
-        this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
         dobet=false;
       }
       else if(this.state.balance < 0){
@@ -395,7 +393,7 @@ export default class SideBet extends Component {
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
-            //console.log(obj);
+            console.log(obj);
             this.service.fancyplaceBet(obj,data=>{ 
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
@@ -426,8 +424,8 @@ export default class SideBet extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-            } else if(this.state.expoBloss > this.state.balance){
-              this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
+            } else if(Math.abs(this.state.expoBloss) > this.state.balance){
+              this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
             }else{
@@ -452,7 +450,8 @@ export default class SideBet extends Component {
               bettype:this.isbackInput.value,
               eventType:this.state.sportType
             }
-            //console.log(obj);
+            console.log(this.state.expoBloss,this.state.balance);
+            console.log(obj);
             this.service.placeBet(obj,data=>{
               const obj1 = {
                 userName:JSON.parse(localStorage.getItem('data')).userName
@@ -834,7 +833,7 @@ export default class SideBet extends Component {
       //console.log("fancydata:",this.state.fbetHistroy.slice().reverse())
       this.props.getFancyBook(this.state.fbetHistroy)
     }, 5000);
-}
+  }
 
   componentDidMount() {
     // this.getBetTime(this.props.betData.betType);
@@ -1074,6 +1073,13 @@ export default class SideBet extends Component {
         })
       }
     }
+    if(nextProps.sidebetboxtime){
+      if(nextProps.sidebetboxtime!==this.props.sidebetboxtime){
+        setTimeout(() => {
+            this.closeautoWindow();
+        }, 8000)
+      }
+    }
   }
   
   ClearAllSelection=()=>{
@@ -1141,17 +1147,21 @@ export default class SideBet extends Component {
       console.log(data);
     })
   }
-
+  closeautoWindow = () =>{
+    if(this.state.timerstop===true){
+      this.closeWindow();
+    }
+  }
   closeWindow = () =>{
     document.getElementById('stakeValue').value=0;
     this.props.handleRemove("none");
     this.setState({
-      showLoader:false
+      showLoader:false,
+      timerstop:true
     });
     this.props.disabledbox(false);
     this.ClearAllSelection();
   }
-
   render() {
     //console.log("SoM",this.state.SoM)
     let color = this.state.color
@@ -1161,8 +1171,6 @@ export default class SideBet extends Component {
     let type =''; 
     let selectionId ='';
     let betProfit= this.state.profit;
-    let expoBetProfit= this.state.expoBprofit;
-    let expoBetLoss= this.state.expoBloss;
     let betLoss=this.state.loss;
     let display = {display:this.state.display};
     let parent_team1 = 0;
@@ -1182,14 +1190,6 @@ export default class SideBet extends Component {
     }
     if(this.props.setdisplay==='block'){
       display = {display:'block'};
-      setTimeout(() => {
-        if(this.state.timerstop){
-          this.closeWindow();
-        }
-        this.setState({
-          timerstop: false,
-        });
-      }, 8000)
     }
     // Loader render
     const stylebox = this.state.showLoader ? {display: 'block'} : {display: 'none'};

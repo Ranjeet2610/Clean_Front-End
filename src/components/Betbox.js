@@ -37,12 +37,14 @@ export default class BetBox extends Component {
           isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
           isTab       : window.matchMedia("only screen and (max-width: 767px)").matches,
           isDesktop   : window.matchMedia("only screen and (max-width: 1280px)").matches,
+          timecount: 0,
+          boxName:''
       }
       this.service = new Service();
       this.users = new Users();
       this.event = new Livevents();
       this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
-      this.matchName = this.props.matchName.split(" v ")
+      this.matchName = this.props.matchName.split(" v ");
     }
     
     componentDidMount() {
@@ -50,10 +52,10 @@ export default class BetBox extends Component {
       document.getElementById('tital_change').focus();
       this.setState({
           betData: this.props.betData,
-          IP:this.props.IP
+          IP:this.props.IP,
+          boxName:this.props.name
       });
     }
-
     getBetTime = async () =>{
       if(this.props.betData.betType==="Fancy"){
         let timeDuration;
@@ -99,6 +101,9 @@ export default class BetBox extends Component {
     }
 
     placeBet=async(e)=>{
+      this.setState({
+        timerstop:false
+      });
       this.getBetTime();
       let disableBetting = JSON.parse(localStorage.getItem('data')).enableBetting;
       let inplay;
@@ -194,8 +199,8 @@ export default class BetBox extends Component {
           this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
           dobet=false;
         }
-        else if(this.state.expoBloss > this.state.balance){
-          this.props.handleBetPlaceBox("Invalid Bet...",'red','error')
+        else if(Math.abs(this.state.expoBloss) > this.state.balance){
+          this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           dobet=false;
         }
         else if(this.state.balance < 0){
@@ -291,8 +296,8 @@ export default class BetBox extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-            } else if(this.state.expoBloss > this.state.balance){
-              this.props.handleBetPlaceBox("Invalid Bet...F",'red','error')      
+            } else if(Math.abs(this.state.expoBloss) > this.state.balance){
+              this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
             }else{
@@ -541,7 +546,7 @@ export default class BetBox extends Component {
       }
     }
 
-    componentWillReceiveProps(nextProps){ 
+    componentWillReceiveProps(nextProps){
       if(nextProps.betProfit!==this.props.betProfit){
       this.setState({
         profit:nextProps.betProfit
@@ -591,6 +596,14 @@ export default class BetBox extends Component {
           })
         }
       }
+      if(nextProps.betboxtime){
+        if(nextProps.betboxtime!==this.props.betboxtime){
+          setTimeout(() => {
+            this.closeautoWindow();
+              //console.log("close",nextProps.name)
+            }, 8000)
+        }
+      }
     }
     ClearAllSelection=()=>{
       document.getElementById('stakeValue').value=0
@@ -605,16 +618,23 @@ export default class BetBox extends Component {
       let type = this.props?.betData?.betType;
       this.props.getProfitandLoss(dval,dval,teamSelection,type,dval,"true","ClearAllSelection",marketName);
     }
+    closeautoWindow = () =>{
+      if(this.state.timerstop===true){
+        this.closeWindow();
+      }
+    }  
     closeWindow = () =>{
-        document.getElementById('stakeValue').value=0
-        this.props.handleRemove("none");
-        this.setState({
-          showLoader:false
-        });
-        this.props.disabledbox(false);
-        this.ClearAllSelection();
+      document.getElementById('stakeValue').value=0
+      this.props.handleRemove("none");
+      this.setState({
+        showLoader:false,
+        timerstop:true
+      });
+      this.props.disabledbox(false);
+      this.ClearAllSelection();
     }
     render() {
+      //console.log(this.state.boxName)
         let ods = 0;
         let fancysize =0;
         let runnerName = '';
@@ -622,8 +642,6 @@ export default class BetBox extends Component {
         let selectionId = '';
         let betProfit = this.state.profit;
         let betLoss = this.state.loss;
-        let expoBetProfit= this.state.expoBprofit;
-        let expoBetLoss= this.state.expoBloss;
         let display = { display: this.state.display };
         if(this.props.betData){
           if(this.props.betData.betType==="Fancy"){
@@ -636,16 +654,7 @@ export default class BetBox extends Component {
         }
         if (this.props.setdisplay === 'block') {
             display = { display: 'block' };
-            setTimeout(() => {
-              if(this.state.timerstop){
-                this.closeWindow();
-              }
-              console.log("timer")
-              this.setState({
-                timerstop: false,
-              });
-            }, 8000)
-          }
+        }
         // Loader render
         const stylebox = this.state.showLoader ? {display: 'block'} : {display: 'none'};
         if(this.state.showLoader===true){
