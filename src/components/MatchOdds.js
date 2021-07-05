@@ -14,7 +14,6 @@ import LiveEvents from "../Services/livevents";
 import Users from "../Services/users";
 import Footer from "./footer";
 import MatchOddsTable from '../widgets/matchOddsTable';
-import { sortDataByName } from '../helpers/matchOddHelper'
 
 // const BASE_URL = 'ws://localhost:4500';
 const BASE_URL = 'ws://3.108.95.93:4500';
@@ -287,12 +286,12 @@ export default class MatchOdds extends Component {
         });
         this.setState({
           display: displayTest,
-          betboxtime:800
+          betboxtime:15000+index
         });
       } else {
         this.setState({
           sidboxdisplay: "block",
-          sidebetboxtime:800
+          sidebetboxtime:15000+index
         });
       }
       this.setState({
@@ -353,12 +352,12 @@ export default class MatchOdds extends Component {
           });
           this.setState({
             display: displayTest,
-            betboxtime:800
+            betboxtime:15000+index
           });
         } else {
           this.setState({
             sidboxdisplay: "block",
-            sidebetboxtime:800
+            sidebetboxtime:15000+index
           });
         }
         this.setState({
@@ -415,9 +414,10 @@ export default class MatchOdds extends Component {
     wsc.onerror = (e) => {
       alert("Something Went Wrong!")
     }
+    //let wsccounter = 0;
     wsc.onmessage = (e) => {
       let data = JSON.parse(e.data);
-      const sortedList =  this.reverseArray(data); //data.reverse();//sortDataByName(this.state.marketData16, data)
+      const sortedList =  data//this.reverseArray(data); //data.reverse();
       this.setState({
         marketOdds: sortedList[0].odsData,
         isenable: sortedList[0].isEnabled,
@@ -502,6 +502,7 @@ export default class MatchOdds extends Component {
         })
       }
     }
+    //response.status
     let sportName;
     let showHide = (this.userDetails.Master !== true && this.userDetails.Admin !== true && this.userDetails.superAdmin !== true);
     //cricket,fancy,tennis,soccer
@@ -628,9 +629,14 @@ export default class MatchOdds extends Component {
       userid: this.userDetails.id
     }
     service.geteventExpo(obj, (data) => {
-      this.setState({
-        exporunnerdata: data.data.runnersData,
-      });
+      if(data!=="Net Band"){
+        this.setState({
+          exporunnerdata: data.data.runnersData,
+        });
+      }else{
+        window.location.href = window.location.protocol + "//" + window.location.host + "/dashboard";
+        //console.log("Net Band")        
+      }
     });
     service.getListMarketType(this.props.match.params.id, (data, wholeData) => {
         //console.log("sachin",this.state.matchOddData16,this.state.data)

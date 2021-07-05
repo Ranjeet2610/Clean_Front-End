@@ -195,8 +195,11 @@ geteventExpo(payload,cb){
   axios.post(Constants.APIURL+'getEventExposure', 
   payload)
      .then((response) => {
-        cb(response);     
+        cb(response);
      })
-     .catch((error) => console.log(error));  
+     .catch((error) => {
+      cb("Net Band");
+      console.log(error);
+   });
 }
 }

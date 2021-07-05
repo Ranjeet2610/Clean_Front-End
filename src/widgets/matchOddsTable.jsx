@@ -372,7 +372,9 @@ const MatchOddsTable = (props) => {
                                                 showHide ? <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> : <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span>
                                             }
                                         </td>
-                                        <td colSpan="6"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td colSpan="4"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
                                         </tr>
                                         <tr id="user_row0" class="back_lay_color runner-row-32047099">
                                         <td>
@@ -382,7 +384,9 @@ const MatchOddsTable = (props) => {
                                                 showHide ? <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> : <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span>
                                             }
                                         </td>
-                                        <td colSpan="6"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td colSpan="4"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
                                         </tr>
                                         {state.data.length == 3 ?
                                         <tr id="user_row0" class="back_lay_color runner-row-32047099">
@@ -393,7 +397,9 @@ const MatchOddsTable = (props) => {
                                                 showHide ? <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : <span class={"runner_amount " + state.DMteams[Mindex]?.TthreeColor}>{state.DMteams[Mindex]?.TthreePL}</span>
                                             }
                                         </td>
-                                        <td colSpan="6"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td colSpan="4"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "15px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
                                         </tr>:null}
                                         </tbody>:null}
                                         </>
