@@ -21,6 +21,8 @@ export default class BetBox extends Component {
           loss: 0.00,
           expoBprofit:0.00,
           expoBloss: 0.00,
+          expoDBprofit:0.00,
+          expoDBloss: 0.00,
           betHistroy: [],
           count: 0,
           display:'none',
@@ -199,7 +201,7 @@ export default class BetBox extends Component {
           this.props.handleBetPlaceBox("Invalid Odds...",'red','error')
           dobet=false;
         }
-        else if(Math.abs(this.state.expoBloss) > this.state.balance){
+        else if(Math.abs(this.state.expoBloss) > (this.state.balance+Math.abs(this.state.expoDBloss))){
           this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')
           dobet=false;
         }
@@ -296,7 +298,7 @@ export default class BetBox extends Component {
           else{
             if((this.state.getselOdds > this.odsInput.value) || (this.state.getselOdds <= 1) || (this.odsInput.value <= 1)){
               this.props.handleBetPlaceBox("Invaild Match odds...",'red','error')
-            } else if(Math.abs(this.state.expoBloss) > this.state.balance){
+            } else if(Math.abs(this.state.expoBloss) > (this.state.balance+Math.abs(this.state.expoDBloss))){
               this.props.handleBetPlaceBox("Don't have enough balance...",'red','error')      
             }else if(this.props.betData.marketName===''){
               this.props.handleBetPlaceBox("Invaild Market Name...",'red','error')
@@ -596,12 +598,26 @@ export default class BetBox extends Component {
           })
         }
       }
+      if(nextProps.expoDBetProfit){
+        if(nextProps.expoDBetProfit!==this.props.expoDBetProfit){
+        this.setState({
+          expoDBprofit:nextProps.expoDBetProfit
+        })
+        }
+      }
+      if(nextProps.expoDBetLoss){
+        if(nextProps.expoDBetLoss!==this.props.expoDBetLoss){
+        this.setState({
+          expoDBloss:nextProps.expoDBetLoss
+          })
+        }
+      }
       if(nextProps.betboxtime){
         if(nextProps.betboxtime!==this.props.betboxtime){
-          setTimeout(() => {
-            this.closeautoWindow();
-              //console.log("close",nextProps.name)
-            }, 8000)
+          // setTimeout(() => {
+          //   this.closeautoWindow();
+          //     console.log("close",nextProps.name)
+          // }, 8000)
         }
       }
     }

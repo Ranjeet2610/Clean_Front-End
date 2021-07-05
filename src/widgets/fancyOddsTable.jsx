@@ -3,7 +3,7 @@ import BetBox from '../components/Betbox';
 import SideBet from '../components/SideBet';
 import tv from "../images/tv-screen.png";
 import tempJson from './temp.json'
-const MatchOddsTable = (props) => {
+const FancyOddsTable = (props) => {
     // let inplay;
     let filterrunners = [];
     let filteronodsrunners = [];
@@ -488,4 +488,4 @@ const MatchOddsTable = (props) => {
         </div>
     </div>)
 }
-export default React.memo(MatchOddsTable)
+export default React.memo(FancyOddsTable)

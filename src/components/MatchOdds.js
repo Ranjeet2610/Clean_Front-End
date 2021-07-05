@@ -130,6 +130,8 @@ export default class MatchOdds extends Component {
       playstreaming:false,
       expoBetProfit: 0,
       expoBetLoss: 0,
+      expoDBetProfit:0,
+      expoDBetLoss:0,
       betboxtime:0,
       sidebetboxtime:0
   };
@@ -160,10 +162,10 @@ export default class MatchOdds extends Component {
     });
   }
   StaKeAmount(index, ods, type, teamSelection, marketName, mindex) {
+    let val = 0;
     if(this.state.selmarketName!==marketName){
       this.MteamsDvalue();
     }
-    let val = document.getElementById("stakeValue").value;
     let odds = ods - 1;
     if (type === "Back") {
       this.setState({
@@ -307,6 +309,7 @@ export default class MatchOdds extends Component {
         IP: this.state?.IP,
         boxopen:'open'
       });
+      this.MteamsDvalue();
       this.StaKeAmount(index, odds, type, pdata.selectionId, marketName, mindex);
     }
   }
@@ -940,7 +943,6 @@ export default class MatchOdds extends Component {
         } else {
           this.state.Mteams[gpindex].TtwoColor = "color_red";
         }
-
         if (facFrom === "placeBet") {
             this.state.Mteams[gpindex].DTonePL = this.state.Mteams[gpindex].TonePL;
             this.state.Mteams[gpindex].DTtwoPL = this.state.Mteams[gpindex].TtwoPL;
@@ -960,12 +962,16 @@ export default class MatchOdds extends Component {
           
           this.setState({
             expoBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL,this.state.Mteams[gpindex].TthreePL]),
-            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL,this.state.Mteams[gpindex].TthreePL])
+            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL,this.state.Mteams[gpindex].TthreePL]),
+            expoDBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].DTonePL,this.state.Mteams[gpindex].DTtwoPL,this.state.Mteams[gpindex].DTthreePL]),
+            expoDBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].DTonePL,this.state.Mteams[gpindex].DTtwoPL,this.state.Mteams[gpindex].DTthreePL])
           });
         }else{
           this.setState({
             expoBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL]),
-            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL])
+            expoBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].TonePL,this.state.Mteams[gpindex].TtwoPL]),
+            expoDBetProfit: Math.max.apply(null, [this.state.Mteams[gpindex].DTonePL,this.state.Mteams[gpindex].DTtwoPL]),
+            expoDBetLoss:  Math.min.apply(null, [this.state.Mteams[gpindex].DTonePL,this.state.Mteams[gpindex].DTtwoPL])
           });
         }
         this.setState({ Mteams });
@@ -1219,6 +1225,8 @@ render() {
                                       playstreaming={this.state.playstreaming}
                                       expoBetProfit={this.state.expoBetProfit}
                                       expoBetLoss={this.state.expoBetLoss}
+                                      expoDBetProfit={this.state.expoDBetProfit}
+                                      expoDBetLoss={this.state.expoDBetLoss}
                                       />
                                   ))
                                 }
@@ -1353,6 +1361,8 @@ render() {
                                                     fancyInfo={this.state.fancyInfo}
                                                     expoBetProfit={this.state.expoBetProfit}
                                                     expoBetLoss={this.state.expoBetLoss}
+                                                    expoDBetProfit={this.state.expoDBetProfit}
+                                                    expoDBetLoss={this.state.expoDBetLoss}
                                                     betboxtime={this.state.betboxtime}
                                                     />
                                                 </div>
@@ -1478,6 +1488,8 @@ render() {
                         fancyInfo={this.state.fancyInfo}
                         expoBetProfit={this.state.expoBetProfit}
                         expoBetLoss={this.state.expoBetLoss}
+                        expoDBetProfit={this.state.expoDBetProfit}
+                        expoDBetLoss={this.state.expoDBetLoss}
                         sidebetboxtime={this.state.sidebetboxtime}
                       />
                       <Footer />
