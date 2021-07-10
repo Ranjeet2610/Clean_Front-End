@@ -47,6 +47,7 @@ export default class BetBox extends Component {
       this.event = new Livevents();
       this.userDetails = JSON.parse(localStorage.getItem('data'))!=undefined?JSON.parse(localStorage.getItem('data')):'';
       this.matchName = this.props.matchName.split(" v ");
+      this.doneTimeout = null;
     }
     
     componentDidMount() {
@@ -614,10 +615,11 @@ export default class BetBox extends Component {
       }
       if(nextProps.betboxtime){
         if(nextProps.betboxtime!==this.props.betboxtime){
-          // setTimeout(() => {
-          //   this.closeautoWindow();
-          //     console.log("close",nextProps.name)
-          // }, 8000)
+          clearTimeout(this.doneTimeout);
+          this.doneTimeout = setTimeout(() => {
+            this.closeautoWindow();
+            //console.log(nextProps.betboxtime)
+          }, nextProps.betboxtime);
         }
       }
     }

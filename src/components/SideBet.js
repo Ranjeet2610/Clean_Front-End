@@ -52,6 +52,7 @@ export default class SideBet extends Component {
         getselfancySize:'',
         showLoader:false,
         timerstop:true,
+        timertime:0,
         UsM:'',
         sportType: JSON.parse(localStorage.getItem("matchname")).sport !== undefined ? JSON.parse(localStorage.getItem("matchname")).sport : null,
         isMobile    : window.matchMedia("only screen and (max-width: 480px)").matches,
@@ -78,6 +79,7 @@ export default class SideBet extends Component {
     if(this.state.isMobile){ setInterval(() => {
       this.getBetData();
     }, 3000)}
+    this.doneTimeout = null;
   }
 
   handleChange=(e)=>{
@@ -1002,6 +1004,7 @@ export default class SideBet extends Component {
 
   componentWillUnmount() {
     clearInterval(this.interval);
+    //clearTimeout(this.timer());
   }
 
   paginate = (pageNumber) => {
@@ -1077,9 +1080,9 @@ export default class SideBet extends Component {
     }
     if(nextProps.expoDBetProfit){
       if(nextProps.expoDBetProfit!==this.props.expoDBetProfit){
-      this.setState({
-        expoDBprofit:nextProps.expoDBetProfit
-      })
+        this.setState({
+          expoDBprofit:nextProps.expoDBetProfit
+        })
       }
     }
     if(nextProps.expoDBetLoss){
@@ -1091,13 +1094,15 @@ export default class SideBet extends Component {
     }
     if(nextProps.sidebetboxtime){
       if(nextProps.sidebetboxtime!==this.props.sidebetboxtime){
-        setTimeout(() => {
-            this.closeautoWindow();
-        }, 15000)
+        clearTimeout(this.doneTimeout);
+        this.doneTimeout = setTimeout(() => {
+          this.closeautoWindow();
+          //console.log(nextProps.sidebetboxtime)
+        }, nextProps.sidebetboxtime);
       }
     }
   }
-  
+
   ClearAllSelection=()=>{
     document.getElementById('stakeValue').value=0;
     let dval = 0.0;
@@ -1111,14 +1116,12 @@ export default class SideBet extends Component {
     let type = this.props?.betData?.betType;
     this.props.getProfitandLoss(dval, dval,teamSelection,type,dval,"true","ClearAllSelection", marketName);
   }
-
   handleEditStake=(event)=> {
     this.setState({
       [event.target.name]:event.target.value
     })
     // console.log(event.target.name,"=>",event.target.value);
   }
-
   handleSubmit = () => {
     let userId = this.userDetails.id
     const obj = {id:userId}
