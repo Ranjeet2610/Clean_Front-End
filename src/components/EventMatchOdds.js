@@ -8,7 +8,7 @@ export default class EventMatchOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["S.No.","Market_Id","Market_Name","Runner_Name","isEnable","Action"],
+      tableHead:["S.No.","Market_Id","Market_Name","Runner_Name","isEnable","isVisible","Accept And Avoid Bets","Action"],
       marketata:'',
       allEventData: [],
       runnersdata:[]
@@ -38,6 +38,26 @@ export default class EventMatchOdds extends Component {
     })
   }
 
+  visibleBookMaker  = (marketId, marketName) => {
+    this.events.visibleMatchOdds({marketId: marketId,marketName: marketName},data=>{
+      this.events.getMatchOdds(this.props.match.params.id,data=>{
+        this.setState({
+          allEventData: data.data.data
+        })
+      });
+    })
+  }
+  
+  acceptAvoidBookMakerBets  = (marketId, marketName) => {
+    this.events.acceptAvoidBookMaker({marketId: marketId,marketName: marketName},data=>{
+      this.events.getMatchOdds(this.props.match.params.id,data=>{
+        this.setState({
+          allEventData: data.data.data
+        })
+      });
+    })
+  }
+  
   render(){
     return (
         <div>
@@ -94,6 +114,12 @@ export default class EventMatchOdds extends Component {
                             </td>
                             <td className="text-center">
                               <input type="checkbox"  checked={item.marketData.isEnabled} name ="isEnable" onClick={() => this.handleChange(item.marketData.marketId, item.marketData.marketName)} style={{height: '20px',width: '20px'}}/>
+                            </td> 					   
+                            <td className="text-center">
+                              <input type="checkbox"  checked={item.marketData.isVisible} name ="isVisible" onClick={() => this.visibleBookMaker(item.marketData.marketId, item.marketData.marketName)} style={{height: '20px',width: '20px'}}/>
+                            </td> 					   
+                            <td className="text-center">
+                              <input type="checkbox"  checked={item.marketData.betAcceptandAvoid} name ="betAcceptandAvoid" onClick={() => this.acceptAvoidBookMakerBets(item.marketData.marketId, item.marketData.marketName)} style={{height: '20px',width: '20px'}}/>
                             </td> 					   
                             <td className="text-center"><Link to='#'>Action 1</Link> | <Link to="#">Action 2</Link></td>
                           </tr>

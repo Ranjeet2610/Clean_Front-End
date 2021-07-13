@@ -156,6 +156,10 @@ export default class Liveevents extends Component {
                                       (this.state.access&&this.props?.location?.state?.eventType===4)?
                                       <Link to={'/manualfancyodds/' + item?.eventId}>&nbsp;|&nbsp;Manual Fancy</Link>:null
                                     }
+                                    {
+                                      (this.state.access&&this.props?.location?.state?.eventType===4)?
+                                      <Link to={'/manualbookmakerodds/' + item?.eventId}>&nbsp;|&nbsp;Manual BookMaker</Link>:null
+                                    }
                                   </td>
                                 </tr>
                               )

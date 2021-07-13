@@ -30,9 +30,8 @@ export default class Livevents extends Component {
     }
 
     getMatchOdds(eid,cb){
-        
         axios.post(Constants.APIURL+'marketTypeData',{ "eventId":eid }).then((response)=>{
-          console.log("response",response);
+          //console.log("response",response);
             cb(response);
         }).catch((error)=>console.log(error));
     }
@@ -122,8 +121,7 @@ async  getFancyMarket(eid,cb){
         }).catch((error)=>console.log(error));
     }
 
-    updateInitialOdds(odds,cb){
-       
+    updateInitialOdds(odds,cb){       
         //console.log(odds);
         axios.post(Constants.APIURL+'setManualOdds',odds).then((response)=>{
             cb(response);         
@@ -131,33 +129,40 @@ async  getFancyMarket(eid,cb){
         }).catch((error)=>console.log(error));
     }
     lockMatchOdds(data,cb){
-       
-        axios.post(Constants.APIURL+'lockMatchOdds', 
-       data)
+        axios.post(Constants.APIURL+'lockMatchOdds',data)
           .then((response) => {
              cb(response);     
           })
           .catch((error) => console.log(error));
-      }
-enableFancyOdds(data,cb){
-       
-        axios.post(Constants.APIURL+'enableFancyOdds', 
-       data)
-          .then((response) => {
-             cb(response);     
-          })
-          .catch((error) => console.log(error));
-}
+    }
+    visibleMatchOdds(data,cb){
+      axios.post(Constants.APIURL+'visibleMatchOdds',data)
+        .then((response) => {
+              cb(response);     
+        }).catch((error) => console.log(error));
+    }
+    acceptAvoidBookMaker(data,cb){
+      axios.post(Constants.APIURL+'acceptAvoidBookMaker',data)
+        .then((response) => {
+              cb(response);     
+        }).catch((error) => console.log(error));
+    }
+    updateOddsdiffBackLay = (data,cb) => {
+      axios.put(Constants.APIURL+'updateOddsdiffBackLay',data).then((res)=>{
+          cb(res);
+      })
+    }
+    enableFancyOdds(data,cb){
+      axios.post(Constants.APIURL+'enableFancyOdds', data).then((response) => {
+          cb(response);
+      }).catch((error) => console.log(error));
+    }
 
-storeMarketType(data,cb){
-       
-        axios.post(Constants.APIURL+'storeMarketType', 
-       data)
-          .then((response) => {
-             cb(response);     
-          })
-          .catch((error) => console.log(error));
-      }
+    storeMarketType(data,cb){
+      axios.post(Constants.APIURL+'storeMarketType', data).then((response) => {
+            cb(response);     
+        }).catch((error) => console.log(error));
+    }
 // 
 
 // 
@@ -166,7 +171,6 @@ storeMarketType(data,cb){
   axios.post(Constants.APIURL+'storeLiveEvents',
   data).then((response)=>{
    console.log('stored',response);
-  
     this.storeMarketType( data=>{
         cb(data);   
     })
@@ -203,6 +207,25 @@ fancyBetSettle = (data,cb) => {
 getbetplacetime = (gameId,cb) => {
   axios.get(Constants.APIURL+'getbetplacetime?gameId='+gameId).then((res)=>{
     cb(res);
+  })
+}
+
+getManualBookMakerOdds(eid,cb){
+  axios.get(Constants.APIURL+'getManualBookmakerByEventId/'+eid).then((response)=>{
+    cb({bookmakerodds:response.data.data});
+   }).catch((error)=>console.log(error));
+}
+
+addManualBookMakerOdds(eid,cb){
+  axios.post(Constants.APIURL+'addmanualbookmaker/',{ "eventId":eid }).then((response)=>{
+    //console.log('stored',response);
+    cb(response); 
+   }).catch((error)=>console.log(error));
+}
+
+updateManualBookMakerOdds = (data,cb) => {
+  axios.put(Constants.APIURL+'updatemanualbookmaker',data).then((res)=>{
+      cb(res);
   })
 }
 

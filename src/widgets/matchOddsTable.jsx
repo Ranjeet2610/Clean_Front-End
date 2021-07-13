@@ -211,7 +211,7 @@ const MatchOddsTable = (props) => {
                                     })
 
                                     let sordataLay = state.marketOdds[0]?.runners[index]?.ex?.availableToLay.sort(function (a, b) {
-                                        if(marketName==="Bookmaker"){
+                                        if(marketName==="Bookmaker" || marketName==="Match Bookmaker"){
                                             return b.price - a.price;
                                         }else{
                                             return a.price - b.price;
@@ -285,32 +285,32 @@ const MatchOddsTable = (props) => {
                                         <td colSpan="2"><div style={{ width: "100%",background: "#95335c",margin: "-3px 0px -3px 0px",padding: "18px 0px",color: "white",fontWeight: "bold" }}>SUSPENDED</div></td>
                                         </tr>
                                         :<tr id="user_row0" className="back_lay_color runner-row-32047099">
-                                                <td>
-                                                    <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
-                                                    <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
-                                                    <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId}>0{/* {expoProfit} */}</span>
-                                                    {
-                                                        <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
-                                                            {
-                                                                showHide ? (state.data.length == 3 ? index === 0 ?
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> : index == 1 ?
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
-                                                                <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : 
-                                                                (state.data.length == 3 ? index === 0 ?
-                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> : index == 1 ?
-                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span> :
-                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TthreeColor}>{state.DMteams[Mindex]?.TthreePL}</span> : index == 0 ?
-                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> :
-                                                                    <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span>)
-                                                            }
-                                                        </p>
-                                                    }
-                                                    <input type="hidden" className="position_1171389306" id="selection_0" data-id={32047099} defaultValue={0} />
-                                                </td>
-                                                {avilBlack}
-                                                {availLay}
+                                            <td>
+                                                <p className="runner_text" id="runnderName0">{filterrunners[0]?.runnerName}</p>
+                                                <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}></p>
+                                                <span className="runner_amount" style={{ color: "black" }} id={"loss" + filterrunners[0]?.selectionId}>0{/* {expoProfit} */}</span>
+                                                {
+                                                    <p className="blue-odds" id={"profit" + filterrunners[0]?.selectionId}>
+                                                        {
+                                                            showHide ? (state.data.length == 3 ? index === 0 ?
+                                                            <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> : index == 1 ?
+                                                            <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span> :
+                                                            <span class={"runner_amount " + state.Mteams[Mindex]?.TthreeColor}>{state.Mteams[Mindex]?.TthreePL}</span> : index == 0 ?
+                                                            <span class={"runner_amount " + state.Mteams[Mindex]?.ToneColor}>{state.Mteams[Mindex]?.TonePL}</span> :
+                                                            <span class={"runner_amount " + state.Mteams[Mindex]?.TtwoColor}>{state.Mteams[Mindex]?.TtwoPL}</span>) : 
+                                                            (state.data.length == 3 ? index === 0 ?
+                                                                <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> : index == 1 ?
+                                                                <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span> :
+                                                                <span class={"runner_amount " + state.DMteams[Mindex]?.TthreeColor}>{state.DMteams[Mindex]?.TthreePL}</span> : index == 0 ?
+                                                                <span class={"runner_amount " + state.DMteams[Mindex]?.ToneColor}>{state.DMteams[Mindex]?.TonePL}</span> :
+                                                                <span class={"runner_amount " + state.DMteams[Mindex]?.TtwoColor}>{state.DMteams[Mindex]?.TtwoPL}</span>)
+                                                        }
+                                                    </p>
+                                                }
+                                                <input type="hidden" className="position_1171389306" id="selection_0" data-id={32047099} defaultValue={0} />
+                                            </td>
+                                            {avilBlack}
+                                            {availLay}
                                             </tr>
                                             }
                                             <tr>

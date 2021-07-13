@@ -397,7 +397,7 @@ export default class MatchOdds extends Component {
       firstarr = true;
     }
     for (var i = arr.length - 1; i >= 0; i--) {
-      if(firstarr && arr[i].marketName!=="Match Odds"){
+      if(firstarr && arr[i].marketName!=="Match Odds" && arr[i].isVisible===true){
         newArray.push(arr[i]);
       }
     }
@@ -417,7 +417,8 @@ export default class MatchOdds extends Component {
     //let wsccounter = 0;
     wsc.onmessage = (e) => {
       let data = JSON.parse(e.data);
-      const sortedList =  data//this.reverseArray(data); //data.reverse();
+      console.log(data)
+      const sortedList =  this.reverseArray(data); //data.reverse();
       this.setState({
         marketOdds: sortedList[0].odsData,
         isenable: sortedList[0].isEnabled,
