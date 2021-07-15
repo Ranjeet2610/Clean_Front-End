@@ -12,7 +12,7 @@ export default class ManualBookMakerOdds extends Component {
   constructor(props){
     super(props);
     this.state = {
-      tableHead:["S.No.","Market_Id","RunnerName","BackOdds","LayOdds","Status"],
+      tableHead:["S.No.","Market_Id","RunnerName","Favorite Team","BackOdds","LayOdds","Status"],
       notifyMsg:'',
       msgBox:'none',
       marketata:[],
@@ -43,6 +43,12 @@ importManualBookMakerOdds = () => {
         break;
     }
     this.getbookmakeroddsType();
+    this.events.getMatchOdds(this.props.match.params.id,data=>{
+      let bookmakerdata = this.reverseArray(data.data.data);
+      this.setState({
+        bookmakerstatus: bookmakerdata
+      })
+    });
   });
 }
 
@@ -115,6 +121,16 @@ acceptAvoidBookMakerBets  = (marketId, marketName) => {
   })
 }
 
+handleChangeoddsdiffBackLay  = (e) => {
+  const obj = {
+    id: this.state.bookmakerstatus[0]?._id,
+    oddsdiffBackLay: e.target.value
+  }
+  this.events.updateOddsdiffBackLay(obj,data=>{
+    window.location.reload();
+  })
+}
+
 onKeyUp(event) {
   if(event.target.name==="manualLayOdds"){
     const obj = {
@@ -172,6 +188,16 @@ handlemanualSatus = (event,id) =>{
     })
 }
 
+favoriteteamstatus = (market_id,id) =>{
+  const obj = {
+    id: id,
+    marketId:market_id,
+  }
+  this.events.updatefavoriteteamstatus(obj,data=>{
+    this.getbookmakeroddsType();
+  })
+}
+
 render(){
   let BackOdds = [this.state.BackOddsT1,this.state.BackOddsT2,this.state.BackOddsT3];
   let LayOdds = [this.state.LayOddsT1,this.state.LayOddsT2,this.state.LayOddsT3];
@@ -209,10 +235,11 @@ render(){
                         this.state.marketata.length > 0 ?
                           this.state.marketata.map((item,index) => {
                             return (
-                              <tr key={index}>
+                              <tr key={index} style={item.favoriteteam?{backgroundColor: '#95335c', color:"#FFF" }:null}>
                                   <td>{index+1}</td>
-                                  <td className="">{item.marketId}</td>
-                                  <td className="">{item.runnerName}</td>
+                                  <td>{item.marketId}</td>
+                                  <td>{item.runnerName}</td>
+                                  <td><input type="radio" name="favoriteteam" onChange={(e)=>this.favoriteteamstatus(item.marketId,item._id)} value="OPEN" checked={item.favoriteteam} style={{height: '20px',width: '20px'}} className="form-control" /></td>
                                   <td className="back_heading_color text-center">
                                       <label>Price:
                                         <input onKeyUp={this.onKeyUp} defaultValue={BackOdds[index]} type="text" required alt={item._id} id={"backprice"+item._id} name ="manualBackOdds"  style={{height:'20px',width:'50px'}}/></label><br/>
@@ -244,7 +271,29 @@ render(){
                         </tr>
                       }
                         <tr>
-                          <td className="text-center" colSpan={9}>Back And Lay Price Difference: <input onChange={this.onKeyUp} defaultValue={this.state.bookmakerstatus[0]?.oddsdiffBackLay} type="number" required alt={this.state.bookmakerstatus[0]?._id} name ="oddsdiffBackLay"  style={{height:'20px',width:'50px'}}/></td>
+                          <td className="text-center" colSpan={9}>Back And Lay Price Difference: 
+                          {/* <Select
+                          defaultValue={this.state.bookmakerstatus[0]?.oddsdiffBackLay}
+                          value={this.state.bookmakerstatus[0]?.oddsdiffBackLay}
+                          onChange={this.onKeyUp}
+                          options={1,2,3,4,5,6}
+                          /> */}
+                          <select name="oddsdiffBackLay" value={this.state.bookmakerstatus[0]?.oddsdiffBackLay}  onChange={this.handleChangeoddsdiffBackLay}>
+                          <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                          </select></td>
                         </tr>
                         <tr>
                           <td className="text-center" colSpan={9}><input type="checkbox"  checked={this.state.bookmakerstatus[0]?.isEnabled} name ="isEnable" onClick={() => this.lockBookMaker(this.state.bookmakerstatus[0]?.marketId, this.state.bookmakerstatus[0]?.marketName)} style={{height: '10px',width: '10px'}}/>BookMaker isEnable <input type="checkbox"  checked={this.state.bookmakerstatus[0]?.isVisible} name ="isVisible" onClick={() => this.visibleBookMaker(this.state.bookmakerstatus[0]?.marketId, this.state.bookmakerstatus[0]?.marketName)} style={{height: '10px',width: '10px'}}/>BookMaker isVisible <input type="checkbox"  checked={this.state.bookmakerstatus[0]?.betAcceptandAvoid} name ="betAcceptandAvoid" onClick={() => this.acceptAvoidBookMakerBets(this.state.bookmakerstatus[0]?.marketId, this.state.bookmakerstatus[0]?.marketName)} style={{height: '10px',width: '10px'}}/>Accept And Avoid Bets</td>

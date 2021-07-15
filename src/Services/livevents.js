@@ -228,5 +228,10 @@ updateManualBookMakerOdds = (data,cb) => {
       cb(res);
   })
 }
+updatefavoriteteamstatus = (data,cb) => {
+  axios.put(Constants.APIURL+'updatemanualbookmakerfavoriteteam',data).then((res)=>{
+      cb(res);
+  })
+}
 
 }
