@@ -635,7 +635,7 @@ export default class MatchOdds extends Component {
           exporunnerdata: data.data.runnersData,
         });
       }else{
-        alert("Net Band...")
+        //alert("Net Band...")
         window.location.reload(false);
         // window.location.href = window.location.protocol + "//" + window.location.host + "/dashboard";
         //console.log("Net Band")        
