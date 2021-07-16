@@ -39,10 +39,15 @@ export default class ManualFancyOdds extends Component {
 }
 
   getFancyMarketType = async () => {
-    this.events.getFancyMarketType(this.props.match.params.id,data=>{ 
+    this.events.getFancyMarketType(this.props.match.params.id,data=>{
       this.setState({
         marketata:data.fancymarket,
-        eventId:data.fancymarket[0].marketData.eventId,
+        eventId:data.fancymarket[0].marketData.eventId
+      });
+      this.setState({
+        addmarketId:parseInt((this.props.match.params.id).slice(-3)+0)+parseInt(data.fancymarket.length)+1,
+        LaySize:100,
+        BackSize:100
       });
     });
     await this.setState({
@@ -57,8 +62,12 @@ export default class ManualFancyOdds extends Component {
   }
 
   handleChange = async (event,marketId,type) => {
+    const obj = {
+      eventId:this.props.match.params.id,
+      marketId:marketId
+    }
     if(type==1){
-      this.events.enableFancyOdds({marketId:marketId},data=>{
+      this.events.enableFancyOdds(obj,data=>{
         this.events.getFancyMarketType(this.props.match.params.id,data=>{      
             this.setState({
               marketata:data.fancymarket
@@ -67,7 +76,7 @@ export default class ManualFancyOdds extends Component {
       })
     }
     else if(type==2){
-      this.events.visiableFancyOdds({marketId:marketId},data=>{
+      this.events.visiableFancyOdds(obj,data=>{
         this.events.getFancyMarketType(this.props.match.params.id,data=>{      
           this.setState({
             marketata:data.fancymarket
@@ -89,7 +98,7 @@ export default class ManualFancyOdds extends Component {
   }
   onKeyUpChange(event) {
     this.setState({
-      BackPrice:parseInt(event.target.value)+2
+      BackPrice:parseInt(event.target.value)+1
     })
   }   
   onKeyUp(event) {
@@ -163,7 +172,7 @@ export default class ManualFancyOdds extends Component {
 
   handleSubmitManualFancies = (eventId) => {
     const obj = { 
-      selectionI:this.state.addmarketId,
+      selectionId:this.state.addmarketId,
       runnerName:this.state.addmarketName,
       eventId:eventId,
       marketId:this.state.addmarketId,
@@ -172,10 +181,10 @@ export default class ManualFancyOdds extends Component {
       ManualLaySize:this.state.LaySize,
       ManualBackPrice:this.state.BackPrice,
       ManualBackSize:this.state.BackSize,
-      status:this.state.status,
-      ManualPriceKey:this.state.PriceKey,
-      isEnabled:this.state.addEnable,
-      isVisible:this.state.addVisible, 
+      status:this.state.status?this.state.status:"",
+      ManualPriceKey:this.state.PriceKey?this.state.PriceKey:false,
+      isEnabled:this.state.addEnable?this.state.addEnable:false,
+      isVisible:this.state.addVisible?this.state.addVisible:false, 
     }
     if(this.state.addmarketId!==""&&this.state.addmarketName!==""){
       this.users.addmanualfancy(obj,data=>{
@@ -185,6 +194,7 @@ export default class ManualFancyOdds extends Component {
           ManualBackPrice:"",
           indx:""
         })
+        alert(data);
       })
       this.setState({
         addmarketId:"",
@@ -199,8 +209,7 @@ export default class ManualFancyOdds extends Component {
         eventId:""
       })
       document.getElementById("cancel").click();
-    }
-    else{
+    }else{
       this.setState({
         msgshow:true
       })
@@ -227,7 +236,6 @@ export default class ManualFancyOdds extends Component {
   }
 
   render(){
-    let lastMarketID;
     return (
       <div>
         <Navbar />
@@ -261,17 +269,16 @@ export default class ManualFancyOdds extends Component {
                         {
                           this.state.marketata.length > 0 ?
                             this.state.marketata.map((item,index) => {
-                              lastMarketID = parseInt(item.marketData.marketId)+1;
                               return (
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td className="">{item.marketData.marketId}</td>
                                     <td className="">{item.marketData.marketName}</td>
                                     <td className="red text-left">
-                                        <input type="checkbox"  checked={item.marketData.isEnabled?item.marketData.isEnabled:false} name ="isEnable" onChange={(e)=>this.handleChange(e,item.marketData.marketId,1)}  style={{height: '20px',width: '20px'}}/>
+                                        <input type="checkbox"  checked={item.marketData.isEnabled?item.marketData.isEnabled:false} name ="isEnable" onClick={(e)=>this.handleChange(e,item.marketData.marketId,1)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
-                                        <input type="checkbox"  checked={item.marketData.isVisible?item.marketData.isVisible:false} name ="isVisible" onChange={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
+                                        <input type="checkbox"  checked={item.marketData.isVisible?item.marketData.isVisible:false} name ="isVisible" onClick={(e)=>this.handleChange(e,item.marketData.marketId,2)}  style={{height: '20px',width: '20px'}}/>
                                     </td> 					   
                                     <td className="red text-center">
                                         <label>Price:
@@ -350,7 +357,7 @@ export default class ManualFancyOdds extends Component {
                       <div className="row">
                         <div className="col-md-4 col-xs-6">
                           <label> MarketId*</label>
-                          <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={lastMarketID?lastMarketID:this.state.addmarketId} name="addmarketId" className="form-control" autocomplete="off" />
+                          <input type="number" required value={this.state.addmarketId} name="addmarketId" className="form-control" autocomplete="off" />
                         </div>
 
                         <div className="col-md-4 col-xs-6">
@@ -365,7 +372,7 @@ export default class ManualFancyOdds extends Component {
 
                         <div className="col-md-4 col-xs-6">
                           <label>LaySize</label>
-                          <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.LaySize?this.state.LaySize:100} name="LaySize" className="form-control"  />
+                          <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.LaySize} name="LaySize" className="form-control"  />
                         </div>
 
                         <div className="col-md-4 col-xs-6">
@@ -375,7 +382,7 @@ export default class ManualFancyOdds extends Component {
 
                         <div className="col-md-4 col-xs-6">
                           <label>BackSize</label>
-                          <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.BackSize?this.state.BackSize:100} name="BackSize" className="form-control" />
+                          <input type="number" required onChange={(event)=>this.methodOnChange(event,"notCheck")} value={this.state.BackSize} name="BackSize" className="form-control" />
                         </div>
 
                         <div class="col-md-4 col-xs-4" style={{display:'flex'}}>

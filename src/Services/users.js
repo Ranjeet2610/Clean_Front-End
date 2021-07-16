@@ -94,7 +94,6 @@ getAllAdmin(cb){
     .catch((error) => alert(error))
 }
 createUser(data,cb){
-    
     axios.post(Constants.APIURL+'createAccount', data)
     .then((response) => {
         if (response.data.success) {
@@ -423,9 +422,19 @@ userSportsInfo(data,cb){
         })
     }
     addmanualfancy = (data,cb) => {
-        axios.put(Constants.APIURL+'addmanualfancy',data).then((res)=>{
-            cb(res);
+        axios.put(Constants.APIURL+'addmanualfancy', data,{ validateStatus() { return true } })
+        .then(res => {
+            if (res) {
+                cb(res.data.message);
+            }
+            else{
+                cb({error:"error"}) 
+            }
         })
+        .catch(err => console.log('error', err.response.data))
+        // axios.put(Constants.APIURL+'addmanualfancy',data).then((res)=>{
+        //     cb(res);
+        // })
     }
     updateUserChipsInfo = (data,cb) => {
         axios.post(Constants.APIURL+'updateUserChipsInfo',data).then((res)=>{

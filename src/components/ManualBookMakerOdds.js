@@ -242,7 +242,7 @@ render(){
                                   <td><input type="radio" name="favoriteteam" onChange={(e)=>this.favoriteteamstatus(item.marketId,item._id)} value="OPEN" checked={item.favoriteteam} style={{height: '20px',width: '20px'}} className="form-control" /></td>
                                   <td className="back_heading_color text-center">
                                       <label>Price:
-                                        <input onKeyUp={this.onKeyUp} defaultValue={BackOdds[index]} type="text" required alt={item._id} id={"backprice"+item._id} name ="manualBackOdds"  style={{height:'20px',width:'50px'}}/></label><br/>
+                                        <input onKeyUp={this.onKeyUp} defaultValue={BackOdds[index]} type="number" required alt={item._id} id={"backprice"+item._id} name ="manualBackOdds"  style={{height:'20px',width:'50px'}}/></label><br/>
                                       <label>Size:&nbsp;&nbsp;
                                         <input onKeyUp={this.onKeyUp} defaultValue={item.manualBackSize} type="text" required alt={item._id} id={"backsize"+item._id} name ="manualBackSize"  style={{outline:'none',height:'20px',width:'50px'}}/></label>
                                   </td>
